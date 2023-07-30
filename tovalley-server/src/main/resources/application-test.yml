@@ -28,5 +28,5 @@ spring:
 
 logging:
   level:
-    '[kr.co.kumoh.illdang100.tovalley]': DEBUG
+    '[kr.ac.kumoh.illdang100.tovalley]': DEBUG
     '[org.hibernate.type]': TRACE
