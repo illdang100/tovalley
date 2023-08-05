@@ -1,7 +1,7 @@
 package kr.ac.kumoh.illdang100.tovalley.domain.medical_facility;
 
 import kr.ac.kumoh.illdang100.tovalley.domain.Coordinate;
-import kr.ac.kumoh.illdang100.tovalley.domain.valley.Valley;
+import kr.ac.kumoh.illdang100.tovalley.domain.waterplace.WaterPlace;
 import lombok.*;
 
 import javax.persistence.*;
@@ -19,8 +19,8 @@ public class MedicalFacility {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "valley_id")
-    private Valley valley;
+    @JoinColumn(name = "water_place_id")
+    private WaterPlace waterPlace;
 
     @Column(nullable = false, length=20)
     private String facilityName;

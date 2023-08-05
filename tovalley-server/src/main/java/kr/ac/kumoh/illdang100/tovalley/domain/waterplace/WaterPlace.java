@@ -1,4 +1,4 @@
-package kr.ac.kumoh.illdang100.tovalley.domain.valley;
+package kr.ac.kumoh.illdang100.tovalley.domain.waterplace;
 
 import kr.ac.kumoh.illdang100.tovalley.domain.BaseTimeEntity;
 import kr.ac.kumoh.illdang100.tovalley.domain.Coordinate;
@@ -11,11 +11,11 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class Valley extends BaseTimeEntity {
+public class WaterPlace extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "valley_id")
+    @Column(name = "water_place_id")
     private Long id;
 
     @Column(nullable = false, length = 10)
