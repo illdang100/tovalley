@@ -1,6 +1,6 @@
-package kr.ac.kumoh.illdang100.tovalley.domain.weather.valley_weather;
+package kr.ac.kumoh.illdang100.tovalley.domain.weather.water_place_weather;
 
-import kr.ac.kumoh.illdang100.tovalley.domain.valley.Valley;
+import kr.ac.kumoh.illdang100.tovalley.domain.waterplace.WaterPlace;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.Climate;
 import lombok.*;
 
@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class ValleyWeather {
+public class WaterPlaceWeather {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,8 +20,8 @@ public class ValleyWeather {
     private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "valley_id")
-    private Valley valley;
+    @JoinColumn(name = "water_place_id")
+    private WaterPlace waterPlace;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 12)
