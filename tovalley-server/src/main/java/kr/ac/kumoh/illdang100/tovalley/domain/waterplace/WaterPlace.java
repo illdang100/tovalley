@@ -22,7 +22,7 @@ public class WaterPlace extends BaseTimeEntity {
     private String province;
 
     @Column(nullable = false, length = 10)
-    private String valleyName;
+    private String waterPlaceName;
 
     private Double waterQuality;
 
@@ -31,7 +31,7 @@ public class WaterPlace extends BaseTimeEntity {
     private Double averageDepth;
 
     @Column(nullable = false, length = 25)
-    private String valleyAddress;
+    private String waterPlaceAddress;
 
     @Embedded
     private Coordinate coordinate;
