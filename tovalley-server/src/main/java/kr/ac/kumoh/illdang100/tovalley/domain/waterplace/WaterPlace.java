@@ -35,4 +35,8 @@ public class WaterPlace extends BaseTimeEntity {
 
     @Embedded
     private Coordinate coordinate;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 6)
+    private WaterPlaceCategory waterPlaceCategory;
 }

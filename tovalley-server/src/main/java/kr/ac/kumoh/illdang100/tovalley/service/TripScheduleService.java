@@ -23,5 +23,5 @@ public interface TripScheduleService {
     List<TripScheduleDetailRespDto> getPastTripSchedulesByMemberId(Long memberId);
 
     // 날짜별 물놀이 장소 여행자 수 (Map<LocalDate, Integer>)
-    List<WaterPlaceVisitorCntRespDto> getTravelAttendeesByWaterPlaceId(String waterPlaceId)
+    List<WaterPlaceVisitorCntRespDto> getTravelAttendeesByWaterPlaceId(String waterPlaceId);
 }
