@@ -1,5 +1,6 @@
 package kr.ac.kumoh.illdang100.tovalley.domain.weather.national_weather;
 
+import kr.ac.kumoh.illdang100.tovalley.domain.BaseTimeEntity;
 import kr.ac.kumoh.illdang100.tovalley.domain.Coordinate;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.Climate;
 import lombok.*;
@@ -12,7 +13,7 @@ import java.time.LocalDate;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class NationalWeather {
+public class NationalWeather extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
