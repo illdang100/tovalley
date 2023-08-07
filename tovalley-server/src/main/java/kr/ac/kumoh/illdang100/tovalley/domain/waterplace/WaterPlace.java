@@ -21,7 +21,7 @@ public class WaterPlace extends BaseTimeEntity {
     @Column(nullable = false, length = 10)
     private String province;
 
-    @Column(nullable = false, length = 10)
+    @Column(nullable = false, unique = true, length = 15)
     private String waterPlaceName;
 
     private Double waterQuality;
@@ -30,7 +30,7 @@ public class WaterPlace extends BaseTimeEntity {
 
     private Double averageDepth;
 
-    @Column(nullable = false, length = 25)
+    @Column(nullable = false, length = 50)
     private String waterPlaceAddress;
 
     @Embedded

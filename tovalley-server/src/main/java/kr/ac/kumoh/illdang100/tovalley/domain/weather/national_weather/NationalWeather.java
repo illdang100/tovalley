@@ -1,7 +1,7 @@
 package kr.ac.kumoh.illdang100.tovalley.domain.weather.national_weather;
 
 import kr.ac.kumoh.illdang100.tovalley.domain.BaseTimeEntity;
-import kr.ac.kumoh.illdang100.tovalley.domain.Coordinate;
+import kr.ac.kumoh.illdang100.tovalley.domain.national_region.NationalRegion;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.Climate;
 import lombok.*;
 
@@ -20,17 +20,20 @@ public class NationalWeather extends BaseTimeEntity {
     @Column(name = "national_weather_id")
     private Long id;
 
-    private String regionName;
-
-    @Embedded
-    private Coordinate coordinate;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "national_region_id", nullable = false)
+    private NationalRegion nationalRegion;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 12)
     private Climate climate;
 
+    @Column(nullable = false)
     private Double lowestTemperature;
 
+    @Column(nullable = false)
     private Double highestTemperature;
 
+    @Column(nullable = false)
     private LocalDate weatherDate;
 }
