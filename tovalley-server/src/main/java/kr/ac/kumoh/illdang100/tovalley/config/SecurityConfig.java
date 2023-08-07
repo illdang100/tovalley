@@ -72,7 +72,7 @@ public class SecurityConfig {
                 .anyRequest().permitAll();
 
         http
-                .oauth2Login().loginPage("/token/expired")
+                .oauth2Login().loginPage("/token/expired");
 //                .successHandler(oAuth2SuccessHandler)
 //                .failureHandler(oAuth2FailureHandler)
 //                .userInfoEndpoint().userService(oAuth2UserService);
