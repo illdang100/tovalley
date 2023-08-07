@@ -7,7 +7,6 @@ import lombok.Getter;
 @Getter
 public enum SpecialWeatherEnum {
 
-    STRONGWIND("강풍"), WIND("풍랑"), HEAVYRAIN("호우"), HEAVYSNOW("대설"), DRY("건조"), STORMSURGE("폭풍해일"),
-    COLDWAVE("한파"), TYPHOON("태풍"), YELLOWSAND("황사"), HEATWAVE("폭염");
+    BREAKING("특보"), PRELIMINARY("예비특보");
     private String value;
 }

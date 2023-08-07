@@ -1,5 +1,6 @@
 package kr.ac.kumoh.illdang100.tovalley.domain.review;
 
+import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.domain.waterplace.WaterPlace;
 import lombok.*;
 
@@ -18,8 +19,12 @@ public class Review {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "water_place_id")
+    @JoinColumn(name = "water_place_id", nullable = false)
     private WaterPlace waterPlace;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member member;
 
     @Column(nullable = false, length = 256)
     private String reviewContent;

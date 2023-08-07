@@ -20,11 +20,11 @@ public class TripSchedule {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "water_place_id")
+    @JoinColumn(name = "water_place_id", nullable = false)
     private WaterPlace waterPlace;
 
     @Column(nullable = false)
