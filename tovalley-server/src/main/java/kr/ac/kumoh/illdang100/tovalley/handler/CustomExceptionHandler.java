@@ -3,6 +3,7 @@ package kr.ac.kumoh.illdang100.tovalley.handler;
 import kr.ac.kumoh.illdang100.tovalley.dto.ResponseDto;
 import kr.ac.kumoh.illdang100.tovalley.handler.ex.CustomApiException;
 import kr.ac.kumoh.illdang100.tovalley.handler.ex.CustomValidationException;
+import kr.ac.kumoh.illdang100.tovalley.handler.ex.OpenApiException;
 import kr.ac.kumoh.illdang100.tovalley.handler.ex.SuspensionException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -39,6 +40,14 @@ public class CustomExceptionHandler {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<?> typeMismatchApiException(HttpMessageNotReadableException e) {
 
+        log.error(e.getMessage());
         return new ResponseEntity<>(new ResponseDto<>(-1, "typeMismatch", null), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(OpenApiException.class)
+    public ResponseEntity<?> openApiFetchException(OpenApiException e) {
+
+        log.error(e.getMessage());
+        return new ResponseEntity<>(new ResponseDto<>(-1, e.getMessage(), null), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
