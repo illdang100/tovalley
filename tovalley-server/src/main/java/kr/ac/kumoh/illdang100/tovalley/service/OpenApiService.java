@@ -21,7 +21,7 @@ public interface OpenApiService {
      * 전국 물놀이 지역 날씨를 Open API로부터 가져와 데이터베이스에 저장
      * 이 메서드는 일정 시간마다 주기적으로 실행된다.
      */
-    void fetchAndSaveAllWaterPlaceWeatherData() throws IOException;
+    void fetchAndSaveAllWaterPlaceWeatherData();
 
     /**
      * 전국 물놀이 지역 정보를 Open API로부터 가져와 데이터베이스에 저장
