@@ -1,0 +1,49 @@
+.weather {
+  width: 100%;
+  margin-bottom: 2em;
+  margin-right: 1.5em;
+  min-width: 20em;
+}
+
+.weather h4 {
+  font-size: 1.2rem;
+  margin: 2em 1em 0.5em;
+}
+
+.dayContainer {
+  border: 1px solid #cccccc;
+  padding: 0em 1.5em;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-around;
+}
+
+.date {
+  cursor: pointer;
+  padding: 0.7em 0.3em 0.5em 0.3em;
+}
+
+.dayContainer span {
+  display: block;
+  text-align: center;
+}
+
+.dayContainer > div > span:first-child {
+  font-weight: bold;
+}
+
+.dayContainer > div > span:last-child {
+  font-size: small;
+}
+
+.dateClicked {
+  border-bottom: 2px solid #66a5fc;
+  color: #66a5fc;
+  padding: 0.7em 0.3em 0.2em 0.3em;
+}
+
+.weatherMap {
+  width: 100%;
+  height: 80vh;
+  margin-top: 0.5em;
+}
