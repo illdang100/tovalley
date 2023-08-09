@@ -14,9 +14,9 @@ import javax.persistence.Embeddable;
 @AllArgsConstructor
 public class Coordinate {
 
-    @Column(nullable = false, length = 11)
+    @Column(nullable = false, length = 20)
     private String latitude;
 
-    @Column(nullable = false, length = 11)
+    @Column(nullable = false, length = 20)
     private String longitude;
 }
