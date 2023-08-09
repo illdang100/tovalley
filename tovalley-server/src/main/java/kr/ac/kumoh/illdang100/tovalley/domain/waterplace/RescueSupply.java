@@ -1,6 +1,5 @@
-package kr.ac.kumoh.illdang100.tovalley.domain.rescue_supply;
+package kr.ac.kumoh.illdang100.tovalley.domain.waterplace;
 
-import kr.ac.kumoh.illdang100.tovalley.domain.waterplace.WaterPlace;
 import lombok.*;
 
 import javax.persistence.*;
@@ -21,15 +20,10 @@ public class RescueSupply {
     @JoinColumn(name = "water_place_id", nullable = false)
     private WaterPlace waterPlace;
 
-    private Integer lifeBoatNum;
-
-    private Integer lifeJacketNum;
-
-    private Integer lifeRopeNum;
-
-    private Integer lifeRingNum;
-
-    private Integer lifeBuoyNum;
-
-    private Integer movableCradleNum;
+    private Integer lifeBoardNum; // 인명구조함
+    private Integer portableStandNum; // 이동식거치대
+    private Integer lifeJacketNum; // 구명조끼
+    private Integer lifeRingNum; // 구명환
+    private Integer rescueRopeNum; // 구명로프
+    private Integer rescueRodNum; // 구조봉
 }

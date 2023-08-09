@@ -1,4 +1,4 @@
-package kr.ac.kumoh.illdang100.tovalley.domain.rescue_supply;
+package kr.ac.kumoh.illdang100.tovalley.domain.waterplace;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
