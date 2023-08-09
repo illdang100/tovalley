@@ -1,4 +1,4 @@
-package kr.ac.kumoh.illdang100.tovalley.domain.national_region;
+package kr.ac.kumoh.illdang100.tovalley.domain.weather.national_weather;
 
 import kr.ac.kumoh.illdang100.tovalley.domain.Coordinate;
 import lombok.*;
