@@ -3,23 +3,23 @@ package kr.ac.kumoh.illdang100.tovalley.domain.weather.special_weather;
 import lombok.*;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class SpecialWeatherTime {
+public class SpecialWeatherDetail {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "special_weather_time_id")
+    @Column(name = "special_weather_detail_id")
     private Long id;
 
-    @Column(nullable = false)
-    private LocalDateTime announcementTime;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "special_weather_id", nullable = false)
+    private SpecialWeather specialWeather;
 
-    @Column(nullable = false)
-    private LocalDateTime effectiveTime;
+    @Column(nullable = false, length = 500)
+    private String content;
 }

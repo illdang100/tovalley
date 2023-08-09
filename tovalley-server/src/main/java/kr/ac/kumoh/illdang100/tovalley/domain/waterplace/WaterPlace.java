@@ -1,6 +1,5 @@
 package kr.ac.kumoh.illdang100.tovalley.domain.waterplace;
 
-import kr.ac.kumoh.illdang100.tovalley.domain.BaseTimeEntity;
 import kr.ac.kumoh.illdang100.tovalley.domain.Coordinate;
 import lombok.*;
 
@@ -11,32 +10,37 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class WaterPlace extends BaseTimeEntity {
+public class WaterPlace {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "water_place_id")
     private Long id;
 
-    @Column(nullable = false, length = 10)
-    private String province;
+    @Column(nullable = false, length = 254)
+    private String waterPlaceName; // 물놀이 지역 명칭
 
-    @Column(nullable = false, unique = true, length = 15)
-    private String waterPlaceName;
+    @Column(nullable = false, length = 20)
+    private String province; // 시도
 
-    private Double waterQuality;
+    @Column(nullable = false, length = 20)
+    private String city; // 시군구
 
-    private Double deepestDepth;
+    @Column(length = 20)
+    private String town; // 읍면
 
-    private Double averageDepth;
+    @Column(length = 254)
+    private String subLocation; // 세부지명
 
-    @Column(nullable = false, length = 50)
-    private String waterPlaceAddress;
+    @Column(nullable = false, length = 254)
+    private String address; // 주소
+
+    @Column(length = 20)
+    private String waterPlaceCategory; // 구분(계곡, 하천)
 
     @Embedded
-    private Coordinate coordinate;
+    private Coordinate coordinate; // 위경도 좌표
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 6)
-    private WaterPlaceCategory waterPlaceCategory;
+    @Column(nullable = false, length = 20)
+    private String managementType; // 관리유형(일반지역, 중점관리지역)
 }
