@@ -81,15 +81,15 @@ public class OpenApiServiceImpl implements OpenApiService {
         for (NationalRegion nationalRegion : nationalRegions) {
             JSONObject response = fetchWeatherData(nationalRegion.getCoordinate().getLatitude(), nationalRegion.getCoordinate().getLongitude());
             JSONArray weatherDataList = response.getJSONArray("list");
-            List<WaterPlaceWeather> waterPlaceWeatherList = extractNationalWeatherData(weatherDataList, nationalRegion);
-            waterPlaceWeatherRepository.saveAll(waterPlaceWeatherList);
+            List<NationalWeather> waterPlaceWeatherList = extractNationalWeatherData(weatherDataList, nationalRegion);
+            nationalWeatherRepository.saveAll(waterPlaceWeatherList);
         }
 
         log.info("전국 지역 날씨 정보 업데이트 완료!!");
     }
 
-    private List<WaterPlaceWeather> extractNationalWeatherData(JSONArray weatherDataList, NationalRegion nationalRegion) {
-        List<WaterPlaceWeather> waterPlaceWeatherList = new ArrayList<>();
+    private List<NationalWeather> extractNationalWeatherData(JSONArray weatherDataList, NationalRegion nationalRegion) {
+        List<NationalWeather> nationalWeatherList = new ArrayList<>();
 
         for (int i = 0; i < weatherDataList.length(); i++) {
             JSONObject weatherData = weatherDataList.getJSONObject(i);
@@ -108,18 +108,18 @@ public class OpenApiServiceImpl implements OpenApiService {
             String description = weather.getString("description");
             String climateIcon = weather.getString("icon");
 
-            nationalWeatherRepository.save(NationalWeather.builder()
-                            .nationalRegion(nationalRegion)
-                            .climate(climate)
-                            .climateIcon(climateIcon)
-                            .climateDescription(description)
-                            .lowestTemperature(min)
-                            .highestTemperature(max)
-                            .weatherDate(weatherDate)
-                            .rainPrecipitation(rainPrecipitation)
+            nationalWeatherList.add(NationalWeather.builder()
+                    .nationalRegion(nationalRegion)
+                    .climate(climate)
+                    .climateIcon(climateIcon)
+                    .climateDescription(description)
+                    .lowestTemperature(min)
+                    .highestTemperature(max)
+                    .weatherDate(weatherDate)
+                    .rainPrecipitation(rainPrecipitation)
                     .build());
         }
-        return waterPlaceWeatherList;
+        return nationalWeatherList;
     }
 
     /**
@@ -135,11 +135,7 @@ public class OpenApiServiceImpl implements OpenApiService {
 
         JSONObject specialWeatherData = fetchSpecialWeatherData();
 
-        JSONArray itemArray = specialWeatherData
-                .getJSONObject("response")
-                .getJSONObject("body")
-                .getJSONObject("items")
-                .getJSONArray("item");
+        JSONArray itemArray = getItemArray(specialWeatherData);
 
         deleteWeatherAlertStatus();
 
@@ -154,6 +150,14 @@ public class OpenApiServiceImpl implements OpenApiService {
             extractPreWeatherAlertStatus(item, tmEfTime, tmFcTime);
         }
         log.info("특보 정보 업데이트 완료!!");
+    }
+
+    private JSONArray getItemArray(JSONObject specialWeatherData) {
+        return specialWeatherData
+                .getJSONObject("response")
+                .getJSONObject("body")
+                .getJSONObject("items")
+                .getJSONArray("item");
     }
 
     private void deleteWeatherAlertStatus() {
@@ -194,28 +198,25 @@ public class OpenApiServiceImpl implements OpenApiService {
         }
     }
 
-    private void extractWeatherAlertStatus(JSONObject item, LocalDateTime tmEfTime, LocalDateTime tmFcTime) {
+    private void extractWeatherAlertStatus(JSONObject item, LocalDateTime effectiveTime, LocalDateTime announcementTime) {
 
         String weatherAlert = item.getString("t6");
 
         Map<String, String> alertMap = parseAlertString(weatherAlert);
 
         for (Map.Entry<String, String> entry : alertMap.entrySet()) {
-            SpecialWeather savedSpecialWeather = specialWeatherRepository.save(SpecialWeather.builder()
-                    .announcementTime(tmFcTime)
-                    .effectiveTime(tmEfTime)
-                    .type(SpecialWeatherEnum.BREAKING)
-                    .title(entry.getKey().substring(2))
-                    .build());
 
-            specialWeatherDetailRepository.save(SpecialWeatherDetail.builder()
-                    .specialWeather(savedSpecialWeather)
-                    .content(entry.getValue())
-                    .build());
+            String title = entry.getKey().substring(2);
+
+            WeatherAlertType weatherAlertType = determineWeatherAlertType(title);
+
+            SpecialWeather savedSpecialWeather = saveSpecialWeather(announcementTime, effectiveTime, weatherAlertType, SpecialWeatherEnum.BREAKING, title);
+
+            saveSpecialWeatherDetail(savedSpecialWeather, entry.getValue());
         }
     }
 
-    private static Map<String, String> parseAlertString(String alertString) {
+    private Map<String, String> parseAlertString(String alertString) {
         Map<String, String> alertMap = new HashMap<>();
 
         String[] lines = alertString.split("\n");
@@ -240,6 +241,7 @@ public class OpenApiServiceImpl implements OpenApiService {
         SpecialWeather specialWeather = null;
 
         String[] alertSections = preWeatherAlert.split("\\(\\d+\\)\\s+");
+
         for (String section : alertSections) {
             String[] lines = section.split("\r\n");
             for (int i = 0; i < lines.length; i++) {
@@ -247,28 +249,65 @@ public class OpenApiServiceImpl implements OpenApiService {
 
                 if (!line.isEmpty()) {
                     if (i == 0) {
-                        specialWeather = specialWeatherRepository.save(SpecialWeather.builder()
-                                .type(SpecialWeatherEnum.PRELIMINARY)
-                                .title(line)
-                                .announcementTime(announcementTime)
-                                .effectiveTime(effectiveTime)
-                                .build());
+                        WeatherAlertType weatherAlertType = determineWeatherAlertType(line);
+                        if ("o 없음".equals(line)) return;
+                        specialWeather = saveSpecialWeather(announcementTime, effectiveTime, weatherAlertType, SpecialWeatherEnum.PRELIMINARY, line);
+
                     } else {
                         String content = line.substring(2);
-                        specialWeatherDetailRepository.save(SpecialWeatherDetail.builder()
-                                .specialWeather(specialWeather)
-                                .content(content)
-                                .build());
+                        saveSpecialWeatherDetail(specialWeather, content);
                     }
                 }
             }
         }
     }
 
+    private WeatherAlertType determineWeatherAlertType(String title) {
+        if (title.contains("강풍")) {
+            return WeatherAlertType.WINDSTORM;
+        } else if (title.contains("호우")) {
+            return WeatherAlertType.HEAVY_RAIN;
+        } else if (title.contains("한파")) {
+            return WeatherAlertType.COLD_WAVE;
+        } else if (title.contains("건조")) {
+            return WeatherAlertType.DROUGHT;
+        } else if (title.contains("폭풍해일")) {
+            return WeatherAlertType.STORM_SURGE;
+        } else if (title.contains("풍랑")) {
+            return WeatherAlertType.ROUGH_SEA;
+        } else if (title.contains("태풍")) {
+            return WeatherAlertType.TYPHOON;
+        } else if (title.contains("대설")) {
+            return WeatherAlertType.HEAVY_SNOW;
+        } else if (title.contains("황사")) {
+            return WeatherAlertType.YELLOW_DUST;
+        } else if (title.contains("폭염")) {
+            return WeatherAlertType.HEAT_WAVE;
+        } else {
+            return WeatherAlertType.ETC;
+        }
+    }
+
+    private SpecialWeather saveSpecialWeather(LocalDateTime announcementTime, LocalDateTime effectiveTime, WeatherAlertType weatherAlertType, SpecialWeatherEnum category, String title) {
+        return specialWeatherRepository.save(SpecialWeather.builder()
+                .announcementTime(announcementTime)
+                .effectiveTime(effectiveTime)
+                .weatherAlertType(weatherAlertType)
+                .category(category)
+                .title(title)
+                .build());
+    }
+
+    private void saveSpecialWeatherDetail(SpecialWeather specialWeather, String content) {
+        specialWeatherDetailRepository.save(SpecialWeatherDetail.builder()
+                .specialWeather(specialWeather)
+                .content(content)
+                .build());
+    }
+
 
     /**
      * 전국 물놀이 지역 날씨를 Open API로부터 가져와 데이터베이스에 저장
-     * 이 메서드는 일정 시간마다 주기적으로 실행된다.
      */
     @Override
     @Transactional

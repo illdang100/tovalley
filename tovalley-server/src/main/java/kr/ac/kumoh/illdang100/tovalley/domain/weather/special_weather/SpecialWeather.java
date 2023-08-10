@@ -24,7 +24,10 @@ public class SpecialWeather {
     private LocalDateTime effectiveTime;
 
     @Enumerated(EnumType.STRING)
-    private SpecialWeatherEnum type;
+    private WeatherAlertType weatherAlertType;
+
+    @Enumerated(EnumType.STRING)
+    private SpecialWeatherEnum category;
 
     @Column(nullable = false, length = 20)
     private String title;
