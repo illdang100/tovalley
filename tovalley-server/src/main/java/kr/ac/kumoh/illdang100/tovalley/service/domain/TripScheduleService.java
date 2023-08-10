@@ -1,4 +1,4 @@
-package kr.ac.kumoh.illdang100.tovalley.service;
+package kr.ac.kumoh.illdang100.tovalley.service.domain;
 
 import kr.ac.kumoh.illdang100.tovalley.domain.trip_schedule.TripSchedule;
 
@@ -17,11 +17,11 @@ public interface TripScheduleService {
     void deleteTripSchedule(Long memberId, Long scheduleId);
 
     // 특정 회원의 앞으로의 일정 조회
-    List<TripScheduleDetailRespDto> getUpcomingTripSchedules(Long memberId);
+//    List<TripScheduleDetailRespDto> getUpcomingTripSchedules(Long memberId);
 
     // 특정 회원의 지난 일정 조회
-    List<TripScheduleDetailRespDto> getPastTripSchedulesByMemberId(Long memberId);
+//    List<TripScheduleDetailRespDto> getPastTripSchedulesByMemberId(Long memberId);
 
     // 날짜별 물놀이 장소 여행자 수 (Map<LocalDate, Integer>)
-    List<WaterPlaceVisitorCntRespDto> getTravelAttendeesByWaterPlaceId(String waterPlaceId);
+//    List<WaterPlaceVisitorCntRespDto> getTravelAttendeesByWaterPlaceId(String waterPlaceId);
 }

@@ -1,4 +1,4 @@
-package kr.ac.kumoh.illdang100.tovalley.service;
+package kr.ac.kumoh.illdang100.tovalley.service.domain;
 
 import java.util.List;
 
