@@ -65,11 +65,11 @@ public class OpenApiServiceImpl implements OpenApiService {
     /**
      * 전국 몇몇 지역의 날씨 정보를 Open API로부터 가져와 데이터베이스에 저장
      * 백령, 서울, 춘천, 강릉, 수원, 청주, 울릉/독도, 대전, 안동, 전주, 대구, 울산, 광주, 목포, 부산, 제주, 여수
-     * 이 메서드는 일정 시간마다 주기적으로 실행된다.
+     * 이 메서드는 일정 시간마다 주기적으로 실행된다. (자정, 그 후 30분마다)
      */
     @Override
     @Transactional
-    @Scheduled(cron = "0 */30 * * * *")
+    @Scheduled(cron = "0 0/30 0 * * *")
     public void fetchAndSaveNationalWeatherData() {
 
         log.info("전국 지역 날씨 정보 업데이트중!!");
@@ -309,6 +309,7 @@ public class OpenApiServiceImpl implements OpenApiService {
     /**
      * 전국 물놀이 지역 날씨를 Open API로부터 가져와 데이터베이스에 저장
      */
+    // TODO: 이것도 서버 시작시 전체 가져오지 말고 사용자가 요청했을 때 없거나 3시간 이전이면 가져오기
     @Override
     @Transactional
     public void fetchAndSaveAllWaterPlaceWeatherData() {
