@@ -1,5 +1,8 @@
 package kr.ac.kumoh.illdang100.tovalley.service.page;
 
+import kr.ac.kumoh.illdang100.tovalley.domain.ProvinceEnum;
+import kr.ac.kumoh.illdang100.tovalley.service.domain.AccidentService;
+import kr.ac.kumoh.illdang100.tovalley.service.domain.WaterPlaceService;
 import kr.ac.kumoh.illdang100.tovalley.service.domain.WeatherService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,22 +21,28 @@ import static kr.ac.kumoh.illdang100.tovalley.dto.page.MainPageRespDto.*;
 public class MainPageServiceImpl implements MainPageService {
 
     private final WeatherService weatherService;
+    private final AccidentService accidentService;
+    private final WaterPlaceService waterPlaceService;
 
     @Override
     public MainPageAllRespDto getMainPageAllData() {
 
-        List<NationalWeatherRespDto> nationalWeathers = weatherService.getNationalWeathers();
+        List<NationalWeatherRespDto> nationalWeatherDto = weatherService.getNationalWeathers();
+        AlertRespDto alertRespDto = weatherService.getAllSpecialWeathers();
+        AccidentCountDto nationalAccidentCountDto = accidentService.getAccidentCntPerMonthByProvince(ProvinceEnum.NATIONWIDE.getValue());
+        List<NationalPopularWaterPlacesDto> popularWaterPlaces = waterPlaceService.getPopularWaterPlaces("RATING");
 
-        return null;
+        return new MainPageAllRespDto(nationalWeatherDto, alertRespDto, nationalAccidentCountDto, popularWaterPlaces);
     }
 
     @Override
-    public AccidentCountDto getTotalAccidents(RetrieveYearlyAccidentCondition yearlyAccidentCondition) {
-        return null;
+    public AccidentCountDto getTotalAccidents(String province) {
+
+        return accidentService.getAccidentCntPerMonthByProvince(province);
     }
 
     @Override
-    public List<NationalPopularWaterPlacesDto> getPopularWaterPlaces(RetrievePopularWaterPlacesCondition popularWaterPlacesCondition) {
-        return null;
+    public List<NationalPopularWaterPlacesDto> getPopularWaterPlaces(String cond) {
+        return waterPlaceService.getPopularWaterPlaces(cond);
     }
 }

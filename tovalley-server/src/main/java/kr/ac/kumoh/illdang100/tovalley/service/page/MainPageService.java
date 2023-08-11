@@ -11,7 +11,7 @@ public interface MainPageService {
 
     MainPageAllRespDto getMainPageAllData();
 
-    AccidentCountDto getTotalAccidents(RetrieveYearlyAccidentCondition yearlyAccidentCondition);
+    AccidentCountDto getTotalAccidents(String province);
 
-    List<NationalPopularWaterPlacesDto> getPopularWaterPlaces(RetrievePopularWaterPlacesCondition popularWaterPlacesCondition);
+    List<NationalPopularWaterPlacesDto> getPopularWaterPlaces(String cond);
 }
