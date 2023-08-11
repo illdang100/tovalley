@@ -1,6 +1,6 @@
 package kr.ac.kumoh.illdang100.tovalley.service.domain;
 
-import kr.ac.kumoh.illdang100.tovalley.domain.review.ReviewRepository;
+import kr.ac.kumoh.illdang100.tovalley.domain.waterplace.WaterPlace;
 import kr.ac.kumoh.illdang100.tovalley.domain.waterplace.WaterPlaceRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,7 +25,6 @@ import static kr.ac.kumoh.illdang100.tovalley.dto.water_place.WaterPlaceRespDto.
 public class WaterPlaceServiceImpl implements WaterPlaceService {
 
     private final WaterPlaceRepository waterPlaceRepository;
-    private final ReviewRepository reviewRepository;
 
     /**
      * // 물놀이 장소 리스트 조회 페이지
@@ -39,34 +39,31 @@ public class WaterPlaceServiceImpl implements WaterPlaceService {
 
     @Override
     public List<NationalPopularWaterPlacesDto> getPopularWaterPlaces(String cond) {
+        List<WaterPlace> waterPlaces;
 
-        List<NationalPopularWaterPlacesDto> result;
-
-        PageRequest pageRequest = PageRequest.of(0, 4);
         if ("RATING".equals(cond)) {
-
-            // 평점 높은순으로 4개 조회
-            result = waterPlaceRepository.findTop4ByOrderByRatingDesc(pageRequest)
-                    .stream()
-                    .map(wp -> {
-                        Long waterPlaceId = wp.getId();
-                        String location = wp.getProvince() + " " + wp.getCity();
-                        int reviewCnt = reviewRepository.findReviewCnt(waterPlaceId);
-                        return new NationalPopularWaterPlacesDto(waterPlaceId, wp.getWaterPlaceName(), location, wp.getRating(), reviewCnt);
-                    }).collect(Collectors.toList());
+            waterPlaces = waterPlaceRepository.findTop4ByOrderByRatingDesc(PageRequest.of(0, 4));
         } else {
-
-            // 리뷰 많은순으로 4개 조회
-            result = waterPlaceRepository.findTop4ByOrderByReviewCountDesc(pageRequest)
-                    .stream()
-                    .map(wp -> {
-                        Long waterPlaceId = wp.getId();
-                        String location = wp.getProvince() + " " + wp.getCity();
-                        int reviewCnt = reviewRepository.findReviewCnt(waterPlaceId);
-                        return new NationalPopularWaterPlacesDto(waterPlaceId, wp.getWaterPlaceName(), location, wp.getRating(), reviewCnt);
-                    }).collect(Collectors.toList());
+            waterPlaces = waterPlaceRepository.findTop4ByOrderByReviewCountDesc(PageRequest.of(0, 4));
         }
 
-        return result;
+        return waterPlaces.stream()
+                .map(this::mapToPopularWaterPlaceDto)
+                .collect(Collectors.toList());
     }
+
+    private NationalPopularWaterPlacesDto mapToPopularWaterPlaceDto(WaterPlace wp) {
+        String location = wp.getProvince() + " " + wp.getCity();
+        int reviewCount = wp.getReviewCount();
+        Double rating = wp.getRating();
+        String formattedRating = getFormattedRating(rating);
+
+        return new NationalPopularWaterPlacesDto(wp.getId(), wp.getWaterPlaceName(), location, formattedRating, reviewCount);
+    }
+
+    private String getFormattedRating(Double rating) {
+        DecimalFormat decimalFormat = new DecimalFormat("#.#");
+        return decimalFormat.format(rating);
+    }
+
 }
