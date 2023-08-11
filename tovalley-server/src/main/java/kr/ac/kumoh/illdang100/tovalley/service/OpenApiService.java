@@ -1,7 +1,5 @@
 package kr.ac.kumoh.illdang100.tovalley.service;
 
-import java.io.IOException;
-
 public interface OpenApiService {
 
     /**

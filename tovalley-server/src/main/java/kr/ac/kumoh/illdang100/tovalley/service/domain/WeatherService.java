@@ -1,7 +1,8 @@
-package kr.ac.kumoh.illdang100.tovalley.service;
+package kr.ac.kumoh.illdang100.tovalley.service.domain;
 
 import java.util.List;
 
+import static kr.ac.kumoh.illdang100.tovalley.dto.page.MainPageRespDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.weather.WeatherRespDto.*;
 
 public interface WeatherService {
@@ -17,7 +18,7 @@ public interface WeatherService {
      * 전국 특보 정보 조회
      * @return 전국 특보 정보 목록
      */
-    List<SpecialWeatherRespDto> getAllSpecialWeatherAdvisories();
+    AlertRespDto getAllSpecialWeathers();
 
     /**
      * 특정 계곡의 날씨 정보를 가져옵니다.

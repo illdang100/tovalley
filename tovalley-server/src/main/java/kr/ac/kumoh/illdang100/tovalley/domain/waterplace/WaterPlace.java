@@ -43,4 +43,16 @@ public class WaterPlace {
 
     @Column(nullable = false, length = 20)
     private String managementType; // 관리유형(일반지역, 중점관리지역)
+
+    @Column(nullable = false)
+    private Double rating; // 평점
+
+    @Column(nullable = false)
+    private int reviewCount; // 리뷰 개수
+
+    public void calculateRating(Double rating) {
+        double sum = rating * reviewCount;
+        this.reviewCount = reviewCount + 1;
+        this.rating = sum / reviewCount;
+    }
 }

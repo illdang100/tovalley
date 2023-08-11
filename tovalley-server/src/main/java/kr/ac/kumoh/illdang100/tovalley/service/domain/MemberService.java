@@ -1,4 +1,4 @@
-package kr.ac.kumoh.illdang100.tovalley.service;
+package kr.ac.kumoh.illdang100.tovalley.service.domain;
 
 import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.domain.review.Review;
