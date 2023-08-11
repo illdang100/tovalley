@@ -1,19 +1,23 @@
 package kr.ac.kumoh.illdang100.tovalley.service.domain;
 
-import kr.ac.kumoh.illdang100.tovalley.domain.weather.national_weather.NationalRegion;
-import kr.ac.kumoh.illdang100.tovalley.domain.weather.national_weather.NationalRegionRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.national_weather.NationalWeather;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.national_weather.NationalWeatherRepository;
+import kr.ac.kumoh.illdang100.tovalley.domain.weather.special_weather.SpecialWeather;
+import kr.ac.kumoh.illdang100.tovalley.domain.weather.special_weather.SpecialWeatherDetail;
+import kr.ac.kumoh.illdang100.tovalley.domain.weather.special_weather.SpecialWeatherDetailRepository;
+import kr.ac.kumoh.illdang100.tovalley.domain.weather.special_weather.SpecialWeatherEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static kr.ac.kumoh.illdang100.tovalley.dto.page.MainPageRespDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.weather.WeatherRespDto.*;
@@ -25,6 +29,7 @@ import static kr.ac.kumoh.illdang100.tovalley.dto.weather.WeatherRespDto.*;
 public class WeatherServiceImpl implements WeatherService {
 
     private final NationalWeatherRepository nationalWeatherRepository;
+    private final SpecialWeatherDetailRepository specialWeatherDetailRepository;
 
     @Override
     public List<NationalWeatherRespDto> getNationalWeathers() {
@@ -71,8 +76,38 @@ public class WeatherServiceImpl implements WeatherService {
     }
 
     @Override
-    public List<SpecialWeatherRespDto> getAllSpecialWeatherAdvisories() {
-        return null;
+    public AlertRespDto getAllSpecialWeathers() {
+        List<SpecialWeatherDetail> specialWeatherDetailsWithSpecialWeather =
+                specialWeatherDetailRepository.findAllWithSpecialWeather();
+
+        Map<SpecialWeather, List<SpecialWeatherDetail>> weatherDetailsMap = new HashMap<>();
+
+        for (SpecialWeatherDetail detail : specialWeatherDetailsWithSpecialWeather) {
+            weatherDetailsMap.computeIfAbsent(detail.getSpecialWeather(), key -> new ArrayList<>()).add(detail);
+        }
+
+        List<WeatherAlertDto> weatherAlerts = new ArrayList<>();
+        List<WeatherPreliminaryAlertDto> weatherPreAlerts = new ArrayList<>();
+
+        weatherDetailsMap.forEach((specialWeather, details) -> {
+            String weatherAlertType = specialWeather.getWeatherAlertType().getValue();
+            String title = specialWeather.getTitle();
+            LocalDateTime announcementTime = specialWeather.getAnnouncementTime();
+            LocalDateTime effectiveTime = specialWeather.getEffectiveTime();
+
+            if (specialWeather.getCategory() == SpecialWeatherEnum.BREAKING) {
+                String content = details.get(0).getContent();
+                weatherAlerts.add(new WeatherAlertDto(weatherAlertType, title, announcementTime, effectiveTime, content));
+            } else if (specialWeather.getCategory() == SpecialWeatherEnum.PRELIMINARY) {
+                List<WeatherPreliminaryAlertContentDto> contentDtos = details.stream()
+                        .map(d -> new WeatherPreliminaryAlertContentDto(d.getContent()))
+                        .collect(Collectors.toList());
+
+                weatherPreAlerts.add(new WeatherPreliminaryAlertDto(announcementTime, title, weatherAlertType, contentDtos));
+            }
+        });
+
+        return new AlertRespDto(weatherAlerts, weatherPreAlerts);
     }
 
     @Override

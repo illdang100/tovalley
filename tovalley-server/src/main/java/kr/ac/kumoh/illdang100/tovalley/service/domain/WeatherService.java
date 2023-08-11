@@ -18,7 +18,7 @@ public interface WeatherService {
      * 전국 특보 정보 조회
      * @return 전국 특보 정보 목록
      */
-    List<SpecialWeatherRespDto> getAllSpecialWeatherAdvisories();
+    AlertRespDto getAllSpecialWeathers();
 
     /**
      * 특정 계곡의 날씨 정보를 가져옵니다.
