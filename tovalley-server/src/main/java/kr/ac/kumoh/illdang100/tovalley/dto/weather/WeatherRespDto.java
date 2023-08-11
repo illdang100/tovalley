@@ -10,22 +10,6 @@ public class WeatherRespDto {
 
     @AllArgsConstructor
     @Data
-    public static class NationalWeatherRespDto {
-
-        private String regionName;
-        private String latitude;
-        private String longitude;
-        private String climate;
-        private double lowestTemperature;
-        private double highestTemperature;
-        private double weatherDate;
-        private int humidity;
-        private String windDirection;
-        private double windSpeed;
-    }
-
-    @AllArgsConstructor
-    @Data
     public static class SpecialWeatherRespDto {
 
         private String type;
