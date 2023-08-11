@@ -13,6 +13,6 @@ public interface WaterPlaceRepository extends JpaRepository<WaterPlace, Long> {
     @Query("select wp from WaterPlace wp order by wp.rating desc")
     List<WaterPlace> findTop4ByOrderByRatingDesc(Pageable pageable);
 
-    @Query("select wp from WaterPlace wp left join Review  r on wp.id = r.waterPlace.id group by wp.id order by count(r.id) desc")
+    @Query("select wp from WaterPlace wp order by wp.reviewCount desc")
     List<WaterPlace> findTop4ByOrderByReviewCountDesc(Pageable pageable);
 }
