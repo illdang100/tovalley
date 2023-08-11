@@ -43,4 +43,7 @@ public class WaterPlace {
 
     @Column(nullable = false, length = 20)
     private String managementType; // 관리유형(일반지역, 중점관리지역)
+
+    @Column(nullable = false)
+    private Double rating;
 }
