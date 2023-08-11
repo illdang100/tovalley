@@ -1,9 +1,9 @@
 package kr.ac.kumoh.illdang100.tovalley.dto.page;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -16,7 +16,7 @@ public class MainPageRespDto {
     public static class MainPageAllRespDto {
 
         private List<NationalWeatherRespDto> nationalWeather; // 전국 지역 날씨 (5일)
-        private AlertDto weatherAlert; // 기상 특보 정보
+        private AlertRespDto weatherAlert; // 기상 특보 정보
         private AccidentCountDto accidentCountDto; // 전국 지역 올해 사고 발생수
         private List<NationalPopularWaterPlacesDto> nationalPopularWaterPlaces; // 전국 인기 물놀이 지역 리스트
     }
@@ -44,7 +44,7 @@ public class MainPageRespDto {
 
     @AllArgsConstructor
     @Data
-    private static class AlertDto {
+    public static class AlertRespDto {
 
         List<WeatherAlertDto> weatherAlerts;
         List<WeatherPreliminaryAlertDto> weatherPreAlerts;
@@ -52,22 +52,31 @@ public class MainPageRespDto {
 
     @AllArgsConstructor
     @Data
-    private static class WeatherAlertDto {
+    public static class WeatherAlertDto {
 
         private String weatherAlertType;
         private String title;
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
         private LocalDateTime announcementTime;
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
         private LocalDateTime effectiveTime;
         private String content;
     }
 
     @AllArgsConstructor
     @Data
-    private static class WeatherPreliminaryAlertDto {
+    public static class WeatherPreliminaryAlertDto {
 
-        private String weatherAlertType;
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
         private LocalDateTime announcementTime;
         private String title;
+        private String weatherAlertType;
+        private List<WeatherPreliminaryAlertContentDto> contents;
+    }
+
+    @AllArgsConstructor
+    @Data
+    public static class WeatherPreliminaryAlertContentDto {
         private String content;
     }
 
@@ -77,7 +86,7 @@ public class MainPageRespDto {
 
         private List<AccidentCountPerMonthDto> accidentCountPerMonth;
 
-        private ProvinceEnum province;
+        private String province;
 
         private Integer totalDeathCnt;
         private Integer totalDisappearanceCnt;
@@ -85,23 +94,25 @@ public class MainPageRespDto {
     }
 
     @AllArgsConstructor
-    @Getter
-    private enum ProvinceEnum {
-
-        ULSAN("울산"), DAEJEON("대전"), GWANGJU("광주"), BUSAN("부산"),
-        SEOUL("서울"), JEJU("제주"), SEJONG("세종"),
-        JEOLLA("전라"), GYEONGGI("경기"), GYEONGSANG("경상"), CHUNGCHEONG("충청"), GANGWON("강원");
-        private String value;
-    }
-
-    @AllArgsConstructor
     @Data
-    private static class AccidentCountPerMonthDto {
+    public static class AccidentCountPerMonthDto {
 
         private Integer month;
         private Integer deathCnt;
         private Integer disappearanceCnt;
         private Integer injuryCnt;
+
+        public void incrementDeathCnt(int cnt) {
+            this.deathCnt = deathCnt + cnt;
+        }
+
+        public void incrementDisappearanceCnt(int cnt) {
+            this.disappearanceCnt = disappearanceCnt + cnt;
+        }
+
+        public void incrementInjuryCnt(int cnt) {
+            this.injuryCnt = injuryCnt + cnt;
+        }
     }
 
     @AllArgsConstructor
