@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -123,7 +124,7 @@ public class MainPageRespDto {
         private Long waterPlaceId; // 물놀이 지역 pk
         private String waterPlaceName; // 물놀이 지역 이름
         private String location; // province + city
-        private Double rating; // 평점
+        private String rating; // 평점
         private Integer reviewCnt; // 리뷰 개수
     }
 }
