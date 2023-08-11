@@ -1,0 +1,70 @@
+.report {
+  margin-top: 7em;
+  margin-right: 2.5em;
+  min-width: 12em;
+}
+
+.menu {
+  margin-left: 0.3em;
+}
+
+.menu span {
+  border: 1px solid #66a5fc;
+  border-radius: 5px;
+  padding: 0.3em 0.5em;
+  margin-right: 0.3em;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.reportList {
+  margin-top: 1em;
+  height: 78vh;
+  overflow-y: scroll;
+  padding: 0.3em;
+}
+
+.reportList::-webkit-scrollbar {
+  display: none;
+}
+
+.reportItem:not(:first-of-type) {
+  margin-top: 0.8em;
+}
+
+.reportItem {
+  box-shadow: 0 2px 4px rgb(159, 159, 159);
+  border-radius: 12px;
+}
+
+.reportTitle {
+  background-color: #fd7878;
+  color: white;
+  font-weight: bold;
+  border-radius: 12px 12px 0 0;
+  padding: 0.8em 1.2em;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+}
+
+.reportTitle > span:first-child {
+  margin-right: 0.3em;
+}
+
+.reportContent {
+  background-color: #ffaaaa;
+  color: white;
+  border-radius: 0 0 12px 12px;
+  padding: 0.9em;
+  font-size: 0.8rem;
+}
+
+.presentation > span:first-child {
+  font-weight: bold;
+  margin-right: 0.5em;
+}
+
+.region {
+  margin-top: 0.5em;
+}

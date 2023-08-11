@@ -1,0 +1,45 @@
+.footer {
+  background-color: #5a5a5a;
+  text-align: center;
+  color: #f1f1f1;
+  padding: 1.5em 0;
+  font-size: 0.9rem;
+}
+
+.terms {
+  margin-top: 0.8em;
+}
+
+.terms span:not(:last-of-type) {
+  margin-right: 1.5em;
+  cursor: pointer;
+}
+
+.terms span:last-child {
+  border: 1px solid white;
+  padding: 0.4em 0.8em;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  cursor: pointer;
+}
+
+.engineerInfo {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.5em;
+}
+
+.engineerInfo > div span {
+  display: block;
+  margin-right: 1em;
+  font-weight: lighter;
+  margin-bottom: 0.5em;
+}
+
+.engineerInfo > span:nth-child(odd) {
+  margin-right: 1em;
+}
+
+.engineerInfo > span:last-child {
+  font-weight: lighter;
+}
