@@ -438,6 +438,8 @@ public class OpenApiServiceImpl implements OpenApiService {
 
             if (!isWaterPlaceExist(item.getString("WTRPLAY_PLC_NM"))) {
 
+                // TODO: 물놀이 장소 사진 넣는 작업 필요!!
+
                 WaterPlace waterPlace = createWaterPlace(item);
                 WaterPlaceDetail waterPlaceDetail = createWaterPlaceDetail(item, waterPlace);
                 RescueSupply rescueSupply = createRescueSupply(item, waterPlace);
@@ -487,6 +489,7 @@ public class OpenApiServiceImpl implements OpenApiService {
                 .waterPlaceCategory(item.optString("WTRPLAY_PLC_TYPE", ""))
                 .coordinate(coordinate)
                 .managementType(item.getString("MANAGEMENT_TYPE"))
+                .rating(0.0)
                 .build();
     }
 
