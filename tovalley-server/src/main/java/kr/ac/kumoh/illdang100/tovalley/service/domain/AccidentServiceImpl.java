@@ -2,7 +2,6 @@ package kr.ac.kumoh.illdang100.tovalley.service.domain;
 
 import kr.ac.kumoh.illdang100.tovalley.domain.accident.Accident;
 import kr.ac.kumoh.illdang100.tovalley.domain.accident.AccidentRepository;
-import kr.ac.kumoh.illdang100.tovalley.dto.page.MainPageRespDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
