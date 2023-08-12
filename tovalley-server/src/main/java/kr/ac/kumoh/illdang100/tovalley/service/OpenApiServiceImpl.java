@@ -516,7 +516,7 @@ public class OpenApiServiceImpl implements OpenApiService {
     private RescueSupply createRescueSupply(JSONObject item, WaterPlace waterPlace) {
         return RescueSupply.builder()
                 .waterPlace(waterPlace)
-                .lifeBoardNum(item.optInt("HUMNLF_RESCUSHIP_CNT", -1))
+                .lifeBoatNum(item.optInt("HUMNLF_RESCUSHIP_CNT", -1))
                 .portableStandNum(item.optInt("ROVNGNS_STANDS_CNT", -1))
                 .lifeJacketNum(item.optInt("RESCUE_VEST_CNT", -1))
                 .lifeRingNum(item.optInt("LIFEBUOY_CNT", -1))
