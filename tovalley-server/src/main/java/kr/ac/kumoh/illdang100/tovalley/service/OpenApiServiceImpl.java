@@ -1,7 +1,7 @@
 package kr.ac.kumoh.illdang100.tovalley.service;
 
 import kr.ac.kumoh.illdang100.tovalley.domain.Coordinate;
-import kr.ac.kumoh.illdang100.tovalley.domain.waterplace.*;
+import kr.ac.kumoh.illdang100.tovalley.domain.water_place.*;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.national_weather.NationalRegion;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.national_weather.NationalRegionRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.national_weather.NationalWeather;
