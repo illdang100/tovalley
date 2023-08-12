@@ -31,6 +31,13 @@ public class WeatherServiceImpl implements WeatherService {
     private final NationalWeatherRepository nationalWeatherRepository;
     private final SpecialWeatherDetailRepository specialWeatherDetailRepository;
 
+    /**
+     * @methodnme: getNationalWeathers
+     * @author: JYeonJun
+     * @description: 전국 특정 지역 날씨 정보 조회
+     *
+     * @return: Openweather 날씨 정보
+     */
     @Override
     public List<NationalWeatherRespDto> getNationalWeathers() {
         List<NationalWeather> nationalWeatherWithNationalRegion = nationalWeatherRepository.findAllWithNationalRegion();
@@ -75,16 +82,21 @@ public class WeatherServiceImpl implements WeatherService {
         return result;
     }
 
+    /**
+     * @methodnme: getAllSpecialWeathers
+     * @author: JYeonJun
+     * @description: 전국 특보 정보 조회
+     *
+     * @return: 기상청 전국 특보 정보
+     */
     @Override
     public AlertRespDto getAllSpecialWeathers() {
         List<SpecialWeatherDetail> specialWeatherDetailsWithSpecialWeather =
                 specialWeatherDetailRepository.findAllWithSpecialWeather();
 
-        Map<SpecialWeather, List<SpecialWeatherDetail>> weatherDetailsMap = new HashMap<>();
 
-        for (SpecialWeatherDetail detail : specialWeatherDetailsWithSpecialWeather) {
-            weatherDetailsMap.computeIfAbsent(detail.getSpecialWeather(), key -> new ArrayList<>()).add(detail);
-        }
+        Map<SpecialWeather, List<SpecialWeatherDetail>> weatherDetailsMap =
+                groupWeatherDetails(specialWeatherDetailsWithSpecialWeather);
 
         List<WeatherAlertDto> weatherAlerts = new ArrayList<>();
         List<WeatherPreliminaryAlertDto> weatherPreAlerts = new ArrayList<>();
@@ -99,15 +111,24 @@ public class WeatherServiceImpl implements WeatherService {
                 String content = details.get(0).getContent();
                 weatherAlerts.add(new WeatherAlertDto(weatherAlertType, title, announcementTime, effectiveTime, content));
             } else if (specialWeather.getCategory() == SpecialWeatherEnum.PRELIMINARY) {
-                List<WeatherPreliminaryAlertContentDto> contentDtos = details.stream()
-                        .map(d -> new WeatherPreliminaryAlertContentDto(d.getContent()))
-                        .collect(Collectors.toList());
+                List<WeatherPreliminaryAlertContentDto> contentDtos = createContentDtos(details);
 
                 weatherPreAlerts.add(new WeatherPreliminaryAlertDto(announcementTime, title, weatherAlertType, contentDtos));
             }
         });
 
         return new AlertRespDto(weatherAlerts, weatherPreAlerts);
+    }
+
+    private Map<SpecialWeather, List<SpecialWeatherDetail>> groupWeatherDetails(List<SpecialWeatherDetail> details) {
+        return details.stream()
+                .collect(Collectors.groupingBy(SpecialWeatherDetail::getSpecialWeather));
+    }
+
+    private List<WeatherPreliminaryAlertContentDto> createContentDtos(List<SpecialWeatherDetail> details) {
+        return details.stream()
+                .map(d -> new WeatherPreliminaryAlertContentDto(d.getContent()))
+                .collect(Collectors.toList());
     }
 
     @Override
