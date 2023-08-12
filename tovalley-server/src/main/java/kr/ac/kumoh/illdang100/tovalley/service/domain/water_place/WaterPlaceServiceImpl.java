@@ -51,9 +51,9 @@ public class WaterPlaceServiceImpl implements WaterPlaceService {
         Pageable pageable = PageRequest.of(0, 8);
 
         if ("RATING".equals(cond)) {
-            waterPlaces = waterPlaceRepository.findTop4ByOrderByRatingDesc(pageable);
+            waterPlaces = waterPlaceRepository.findTop8ByOrderByRatingDesc(pageable);
         } else {
-            waterPlaces = waterPlaceRepository.findTop4ByOrderByReviewCountDesc(pageable);
+            waterPlaces = waterPlaceRepository.findTop8ByOrderByReviewCountDesc(pageable);
         }
 
         return waterPlaces.stream()
