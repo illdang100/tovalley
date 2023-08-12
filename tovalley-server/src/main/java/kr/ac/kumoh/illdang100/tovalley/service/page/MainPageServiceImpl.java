@@ -24,6 +24,13 @@ public class MainPageServiceImpl implements MainPageService {
     private final AccidentService accidentService;
     private final WaterPlaceService waterPlaceService;
 
+    /**
+     * @methodnme: getMainPageAllData
+     * @author: JYeonJun
+     * @description: 메인페이지 정보 요청시 데이터를 취합해서 보내주는 메서드
+     *
+     * @return: 전국 날씨 정보, 특보, 예비 특보, 지역별 사건 사고 발생률, 인기 계곡 현황
+     */
     @Override
     public MainPageAllRespDto getMainPageAllData() {
 
@@ -33,16 +40,5 @@ public class MainPageServiceImpl implements MainPageService {
         List<NationalPopularWaterPlacesDto> popularWaterPlaces = waterPlaceService.getPopularWaterPlaces("RATING");
 
         return new MainPageAllRespDto(nationalWeatherDto, alertRespDto, nationalAccidentCountDto, popularWaterPlaces);
-    }
-
-    @Override
-    public AccidentCountDto getTotalAccidents(String province) {
-
-        return accidentService.getAccidentCntPerMonthByProvince(province);
-    }
-
-    @Override
-    public List<NationalPopularWaterPlacesDto> getPopularWaterPlaces(String cond) {
-        return waterPlaceService.getPopularWaterPlaces(cond);
     }
 }

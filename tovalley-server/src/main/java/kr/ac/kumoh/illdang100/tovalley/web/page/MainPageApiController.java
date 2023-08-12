@@ -2,6 +2,8 @@ package kr.ac.kumoh.illdang100.tovalley.web.page;
 
 import kr.ac.kumoh.illdang100.tovalley.domain.ProvinceEnum;
 import kr.ac.kumoh.illdang100.tovalley.dto.ResponseDto;
+import kr.ac.kumoh.illdang100.tovalley.service.domain.AccidentService;
+import kr.ac.kumoh.illdang100.tovalley.service.domain.WaterPlaceService;
 import kr.ac.kumoh.illdang100.tovalley.service.page.MainPageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +26,8 @@ import static kr.ac.kumoh.illdang100.tovalley.dto.page.MainPageRespDto.*;
 public class MainPageApiController {
 
     private final MainPageService mainPageService;
+    private final AccidentService accidentService;
+    private final WaterPlaceService waterPlaceService;
 
     @GetMapping
     public ResponseEntity<?> getMainPage() {
@@ -37,7 +41,7 @@ public class MainPageApiController {
                                                    BindingResult bindingResult) {
 
         AccidentCountDto totalAccidents =
-                mainPageService.getTotalAccidents(yearlyAccidentCondition.getProvince().getValue());
+                accidentService.getAccidentCntPerMonthByProvince(yearlyAccidentCondition.getProvince().getValue());
         return new ResponseEntity<>(new ResponseDto<>(1, "올해 사고 발생수 조회에 성공하였습니다", totalAccidents), HttpStatus.OK);
     }
 
@@ -45,7 +49,8 @@ public class MainPageApiController {
     public ResponseEntity<?> getPopularWaterPlaces(@ModelAttribute @Valid RetrievePopularWaterPlacesCondition popularWaterPlacesCondition,
                                                    BindingResult bindingResult) {
 
-        List<NationalPopularWaterPlacesDto> popularWaterPlaces = mainPageService.getPopularWaterPlaces(popularWaterPlacesCondition.getCond());
+        List<NationalPopularWaterPlacesDto> popularWaterPlaces =
+                waterPlaceService.getPopularWaterPlaces(popularWaterPlacesCondition.getCond());
         return new ResponseEntity<>(new ResponseDto<>(1, "인기 물놀이 지역 조회에 성공하였습니다", popularWaterPlaces), HttpStatus.OK);
     }
 }
