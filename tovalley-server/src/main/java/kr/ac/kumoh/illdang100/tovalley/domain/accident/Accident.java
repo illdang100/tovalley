@@ -1,6 +1,6 @@
 package kr.ac.kumoh.illdang100.tovalley.domain.accident;
 
-import kr.ac.kumoh.illdang100.tovalley.domain.waterplace.WaterPlace;
+import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlace;
 import lombok.*;
 
 import javax.persistence.*;

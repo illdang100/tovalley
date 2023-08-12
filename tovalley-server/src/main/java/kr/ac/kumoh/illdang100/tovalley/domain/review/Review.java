@@ -1,7 +1,7 @@
 package kr.ac.kumoh.illdang100.tovalley.domain.review;
 
 import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
-import kr.ac.kumoh.illdang100.tovalley.domain.waterplace.WaterPlace;
+import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlace;
 import lombok.*;
 
 import javax.persistence.*;

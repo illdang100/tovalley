@@ -1,9 +1,9 @@
 package kr.ac.kumoh.illdang100.tovalley.service.page;
 
 import kr.ac.kumoh.illdang100.tovalley.domain.ProvinceEnum;
-import kr.ac.kumoh.illdang100.tovalley.service.domain.AccidentService;
-import kr.ac.kumoh.illdang100.tovalley.service.domain.WaterPlaceService;
-import kr.ac.kumoh.illdang100.tovalley.service.domain.WeatherService;
+import kr.ac.kumoh.illdang100.tovalley.service.domain.accident.AccidentService;
+import kr.ac.kumoh.illdang100.tovalley.service.domain.water_place.WaterPlaceService;
+import kr.ac.kumoh.illdang100.tovalley.service.domain.weather.WeatherService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static kr.ac.kumoh.illdang100.tovalley.dto.page.MainPageReqDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.page.MainPageRespDto.*;
 
 @Slf4j

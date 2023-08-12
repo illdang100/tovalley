@@ -1,4 +1,4 @@
-package kr.ac.kumoh.illdang100.tovalley.service.domain;
+package kr.ac.kumoh.illdang100.tovalley.service.domain.weather;
 
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.national_weather.NationalWeather;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.national_weather.NationalWeatherRepository;

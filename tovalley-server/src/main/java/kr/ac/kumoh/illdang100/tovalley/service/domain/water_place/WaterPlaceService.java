@@ -1,4 +1,4 @@
-package kr.ac.kumoh.illdang100.tovalley.service.domain;
+package kr.ac.kumoh.illdang100.tovalley.service.domain.water_place;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -1,7 +1,7 @@
-package kr.ac.kumoh.illdang100.tovalley.service.domain;
+package kr.ac.kumoh.illdang100.tovalley.service.domain.water_place;
 
-import kr.ac.kumoh.illdang100.tovalley.domain.waterplace.WaterPlace;
-import kr.ac.kumoh.illdang100.tovalley.domain.waterplace.WaterPlaceRepository;
+import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlace;
+import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlaceRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
