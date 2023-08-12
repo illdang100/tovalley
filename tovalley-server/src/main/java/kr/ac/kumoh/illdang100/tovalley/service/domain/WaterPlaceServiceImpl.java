@@ -33,18 +33,27 @@ public class WaterPlaceServiceImpl implements WaterPlaceService {
      * @return
      */
     @Override
-    public Page<RetrieveWaterPlaceDto> getWaterPlaces(RetrieveWaterPlacesCondition retrieveWaterPlacesCondition, Pageable pageable) {
+    public Page<RetrieveWaterPlacesDto> getWaterPlaces(RetrieveWaterPlacesCondition retrieveWaterPlacesCondition, Pageable pageable) {
         return null;
     }
 
+    /**
+     * @methodnme: getPopularWaterPlaces
+     * @author: JYeonJun
+     * @description: 전국 인기 계곡 리스트(8개) 조회 메서드
+     *
+     * @return: 인기 계곡 내림차순(평점 or 리뷰수) 정보
+     */
     @Override
     public List<NationalPopularWaterPlacesDto> getPopularWaterPlaces(String cond) {
         List<WaterPlace> waterPlaces;
 
+        Pageable pageable = PageRequest.of(0, 8);
+
         if ("RATING".equals(cond)) {
-            waterPlaces = waterPlaceRepository.findTop4ByOrderByRatingDesc(PageRequest.of(0, 4));
+            waterPlaces = waterPlaceRepository.findTop4ByOrderByRatingDesc(pageable);
         } else {
-            waterPlaces = waterPlaceRepository.findTop4ByOrderByReviewCountDesc(PageRequest.of(0, 4));
+            waterPlaces = waterPlaceRepository.findTop4ByOrderByReviewCountDesc(pageable);
         }
 
         return waterPlaces.stream()
