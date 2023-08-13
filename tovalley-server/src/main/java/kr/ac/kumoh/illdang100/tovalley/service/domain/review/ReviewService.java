@@ -1,4 +1,4 @@
-package kr.ac.kumoh.illdang100.tovalley.service.domain;
+package kr.ac.kumoh.illdang100.tovalley.service.domain.review;
 
 import kr.ac.kumoh.illdang100.tovalley.domain.review.Review;
 import org.springframework.data.domain.Page;

@@ -1,4 +1,4 @@
-package kr.ac.kumoh.illdang100.tovalley.domain.waterplace;
+package kr.ac.kumoh.illdang100.tovalley.domain.water_place;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,8 +11,8 @@ public interface WaterPlaceRepository extends JpaRepository<WaterPlace, Long> {
     boolean existsByWaterPlaceName(String waterPlaceName);
 
     @Query("select wp from WaterPlace wp order by wp.rating desc")
-    List<WaterPlace> findTop4ByOrderByRatingDesc(Pageable pageable);
+    List<WaterPlace> findTop8ByOrderByRatingDesc(Pageable pageable);
 
     @Query("select wp from WaterPlace wp order by wp.reviewCount desc")
-    List<WaterPlace> findTop4ByOrderByReviewCountDesc(Pageable pageable);
+    List<WaterPlace> findTop8ByOrderByReviewCountDesc(Pageable pageable);
 }

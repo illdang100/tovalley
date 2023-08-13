@@ -1,4 +1,4 @@
-package kr.ac.kumoh.illdang100.tovalley.service.domain;
+package kr.ac.kumoh.illdang100.tovalley.service.domain.accident;
 
 import kr.ac.kumoh.illdang100.tovalley.domain.accident.Accident;
 import kr.ac.kumoh.illdang100.tovalley.domain.accident.AccidentRepository;
@@ -28,12 +28,40 @@ public class AccidentServiceImpl implements AccidentService {
 
     }
 
+    /**
+     * @methodnme: getAccidentCntPerMonthByProvince
+     * @author: JYeonJun
+     * @description: 지역별(행정자치구) 사건사고 수 조회
+     *
+     * @return: 달별 사망, 실종, 부상 사고수 정보 조회 및 총 사망, 실종, 부상 사고수 정보 조회
+     */
     @Override
     public AccidentCountDto getAccidentCntPerMonthByProvince(String province) {
-        List<Accident> accidents = accidentRepository.findByProvince(province);
+
+        List<Accident> accidents = getAllAccidentsByProvince(province);
 
         Map<Integer, AccidentCountPerMonthDto> accidentCountMap = initializeAccidentCountMap();
 
+        calculateAccidentCounts(accidents, accidentCountMap);
+
+        List<AccidentCountPerMonthDto> accidentCountPerMonthList = new ArrayList<>(accidentCountMap.values());
+
+        Integer totalDeathCnt = calculateTotal(accidentCountPerMonthList, AccidentCountPerMonthDto::getDeathCnt);
+        Integer totalDisappearanceCnt = calculateTotal(accidentCountPerMonthList, AccidentCountPerMonthDto::getDisappearanceCnt);
+        Integer totalInjuryCnt = calculateTotal(accidentCountPerMonthList, AccidentCountPerMonthDto::getInjuryCnt);
+
+        return new AccidentCountDto(accidentCountPerMonthList, province, totalDeathCnt, totalDisappearanceCnt, totalInjuryCnt);
+    }
+
+    private List<Accident> getAllAccidentsByProvince(String province) {
+        if ("전국".equals(province)) {
+            return accidentRepository.findAll();
+        } else {
+            return accidentRepository.findByProvinceStartingWithProvince(province);
+        }
+    }
+
+    private void calculateAccidentCounts(List<Accident> accidents, Map<Integer, AccidentCountPerMonthDto> accidentCountMap) {
         for (Accident accident : accidents) {
             Integer month = accident.getAccidentDate().getMonthValue();
             AccidentCountPerMonthDto accidentCountDto = accidentCountMap.get(month);
@@ -52,14 +80,6 @@ public class AccidentServiceImpl implements AccidentService {
                     break;
             }
         }
-
-        List<AccidentCountPerMonthDto> accidentCountPerMonthList = new ArrayList<>(accidentCountMap.values());
-
-        Integer totalDeathCnt = calculateTotal(accidentCountPerMonthList, AccidentCountPerMonthDto::getDeathCnt);
-        Integer totalDisappearanceCnt = calculateTotal(accidentCountPerMonthList, AccidentCountPerMonthDto::getDisappearanceCnt);
-        Integer totalInjuryCnt = calculateTotal(accidentCountPerMonthList, AccidentCountPerMonthDto::getInjuryCnt);
-
-        return new AccidentCountDto(accidentCountPerMonthList, province, totalDeathCnt, totalDisappearanceCnt, totalInjuryCnt);
     }
 
     private Map<Integer, AccidentCountPerMonthDto> initializeAccidentCountMap() {

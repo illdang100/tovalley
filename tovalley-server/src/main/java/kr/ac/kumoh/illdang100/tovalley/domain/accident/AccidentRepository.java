@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface AccidentRepository extends JpaRepository<Accident, Long> {
 
-    @Query("select a from Accident a join a.waterPlace wp where wp.waterPlaceName like %:province%")
-    List<Accident> findByProvince(@Param("province") String province);
+    @Query("select a from Accident a join a.waterPlace wp where wp.province like :province%")
+    List<Accident> findByProvinceStartingWithProvince(@Param("province") String province);
 }

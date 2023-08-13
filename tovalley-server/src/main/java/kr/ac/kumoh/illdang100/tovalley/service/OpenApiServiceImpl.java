@@ -1,7 +1,7 @@
 package kr.ac.kumoh.illdang100.tovalley.service;
 
 import kr.ac.kumoh.illdang100.tovalley.domain.Coordinate;
-import kr.ac.kumoh.illdang100.tovalley.domain.waterplace.*;
+import kr.ac.kumoh.illdang100.tovalley.domain.water_place.*;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.national_weather.NationalRegion;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.national_weather.NationalRegionRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.national_weather.NationalWeather;
@@ -63,9 +63,9 @@ public class OpenApiServiceImpl implements OpenApiService {
     private final NationalWeatherRepository nationalWeatherRepository;
 
     /**
-     * 전국 몇몇 지역의 날씨 정보를 Open API로부터 가져와 데이터베이스에 저장
-     * 백령, 서울, 춘천, 강릉, 수원, 청주, 울릉/독도, 대전, 안동, 전주, 대구, 울산, 광주, 목포, 부산, 제주, 여수
-     * 이 메서드는 일정 시간마다 주기적으로 실행된다. (자정, 그 후 30분마다)
+     * @methodnme: fetchAndSaveNationalWeatherData
+     * @author: JYeonJun
+     * @description: 전국 몇몇 지역의 날씨 정보를 Open API로부터 가져와 데이터베이스에 저장
      */
     @Override
     @Transactional
@@ -123,8 +123,9 @@ public class OpenApiServiceImpl implements OpenApiService {
     }
 
     /**
-     * 전국 특보 정보를 Open API로부터 가져와 데이터베이스에 저장
-     * 이 메서드는 일정 시간마다 주기적으로 실행된다.
+     * @methodnme: fetchAndSaveSpecialWeatherData
+     * @author: JYeonJun
+     * @description: 전국 특보 정보를 Open API로부터 가져와 데이터베이스에 저장
      */
     @Override
     @Transactional
@@ -305,11 +306,12 @@ public class OpenApiServiceImpl implements OpenApiService {
                 .build());
     }
 
-
+    // TODO: 서버 시작시 전체 가져오지 말고 사용자가 요청했을 때 날씨 정보가 없거나 3시간 이전이면 가져오기
     /**
-     * 전국 물놀이 지역 날씨를 Open API로부터 가져와 데이터베이스에 저장
+     * @methodnme: fetchAndSaveAllWaterPlaceWeatherData
+     * @author: JYeonJun
+     * @description: 전국 물놀이 지역 날씨를 Open API로부터 가져와 데이터베이스에 저장
      */
-    // TODO: 이것도 서버 시작시 전체 가져오지 말고 사용자가 요청했을 때 없거나 3시간 이전이면 가져오기
     @Override
     @Transactional
     public void fetchAndSaveAllWaterPlaceWeatherData() {
@@ -417,6 +419,11 @@ public class OpenApiServiceImpl implements OpenApiService {
         return seoulDate;
     }
 
+    /**
+     * @methodnme: fetchAndSaveWaterPlacesData
+     * @author: JYeonJun
+     * @description: 행정안전부에서 제공해주는 전국 물놀이 관리지역 정보 가져와 데이터 저장
+     */
     @Override
     @Transactional
     public void fetchAndSaveWaterPlacesData() {
@@ -509,7 +516,7 @@ public class OpenApiServiceImpl implements OpenApiService {
     private RescueSupply createRescueSupply(JSONObject item, WaterPlace waterPlace) {
         return RescueSupply.builder()
                 .waterPlace(waterPlace)
-                .lifeBoardNum(item.optInt("HUMNLF_RESCUSHIP_CNT", -1))
+                .lifeBoatNum(item.optInt("HUMNLF_RESCUSHIP_CNT", -1))
                 .portableStandNum(item.optInt("ROVNGNS_STANDS_CNT", -1))
                 .lifeJacketNum(item.optInt("RESCUE_VEST_CNT", -1))
                 .lifeRingNum(item.optInt("LIFEBUOY_CNT", -1))

@@ -1,6 +1,6 @@
 package kr.ac.kumoh.illdang100.tovalley.domain.trip_schedule;
 
-import kr.ac.kumoh.illdang100.tovalley.domain.waterplace.WaterPlace;
+import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlace;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import lombok.*;
 

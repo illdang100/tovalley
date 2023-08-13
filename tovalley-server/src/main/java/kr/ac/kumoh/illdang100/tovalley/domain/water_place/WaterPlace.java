@@ -1,4 +1,4 @@
-package kr.ac.kumoh.illdang100.tovalley.domain.waterplace;
+package kr.ac.kumoh.illdang100.tovalley.domain.water_place;
 
 import kr.ac.kumoh.illdang100.tovalley.domain.Coordinate;
 import lombok.*;

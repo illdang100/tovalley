@@ -7,7 +7,9 @@ truncate table review_image;
 truncate table accident;
 truncate table rescue_supply;
 truncate table water_place_weather;
-truncate table medical_facility;
+truncate table water_place_detail;
+truncate table national_region;
 truncate table national_weather;
 truncate table special_weather;
+truncate table special_weather_detail;
 SET REFERENTIAL_INTEGRITY TRUE; -- 모든 제약 조건 활성화

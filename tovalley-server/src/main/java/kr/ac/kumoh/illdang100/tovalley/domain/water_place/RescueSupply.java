@@ -1,4 +1,4 @@
-package kr.ac.kumoh.illdang100.tovalley.domain.waterplace;
+package kr.ac.kumoh.illdang100.tovalley.domain.water_place;
 
 import lombok.*;
 
@@ -20,7 +20,7 @@ public class RescueSupply {
     @JoinColumn(name = "water_place_id", nullable = false)
     private WaterPlace waterPlace;
 
-    private Integer lifeBoardNum; // 인명구조함
+    private Integer lifeBoatNum; // 인명구조함
     private Integer portableStandNum; // 이동식거치대
     private Integer lifeJacketNum; // 구명조끼
     private Integer lifeRingNum; // 구명환

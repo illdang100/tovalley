@@ -1,7 +1,7 @@
 package kr.ac.kumoh.illdang100.tovalley.domain.weather.water_place_weather;
 
 import kr.ac.kumoh.illdang100.tovalley.domain.BaseTimeEntity;
-import kr.ac.kumoh.illdang100.tovalley.domain.waterplace.WaterPlace;
+import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlace;
 import lombok.*;
 
 import javax.persistence.*;
