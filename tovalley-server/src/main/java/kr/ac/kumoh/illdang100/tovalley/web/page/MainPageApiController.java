@@ -1,5 +1,7 @@
 package kr.ac.kumoh.illdang100.tovalley.web.page;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.ac.kumoh.illdang100.tovalley.dto.ResponseDto;
 import kr.ac.kumoh.illdang100.tovalley.service.domain.accident.AccidentService;
 import kr.ac.kumoh.illdang100.tovalley.service.domain.water_place.WaterPlaceService;
@@ -22,6 +24,7 @@ import static kr.ac.kumoh.illdang100.tovalley.dto.page.MainPageRespDto.*;
 @RequiredArgsConstructor
 @RequestMapping("/api/main-page")
 @Slf4j
+@Tag(name = "MainPage", description = "메인페이지 API Document")
 public class MainPageApiController {
 
     private final MainPageService mainPageService;
@@ -29,6 +32,7 @@ public class MainPageApiController {
     private final WaterPlaceService waterPlaceService;
 
     @GetMapping
+    @Operation(summary = "메인 화면", description = "메인 화면을 출력합니다.")
     public ResponseEntity<?> getMainPage() {
 
         MainPageAllRespDto mainPageAllRespDto = mainPageService.getMainPageAllData();
@@ -36,6 +40,7 @@ public class MainPageApiController {
     }
 
     @GetMapping("/accidents")
+    @Operation(summary = "올해 물놀이 사건 사고", description = "올해 사고 발생 수를 출력합니다.")
     public ResponseEntity<?> getAccidentsByProvince(@ModelAttribute @Valid RetrieveYearlyAccidentCondition yearlyAccidentCondition,
                                                    BindingResult bindingResult) {
 
@@ -45,6 +50,7 @@ public class MainPageApiController {
     }
 
     @GetMapping("/popular-water-places")
+    @Operation(summary = "인기 물놀이 장소", description = "인기 물놀이 장소 리스트를 출력합니다.")
     public ResponseEntity<?> getPopularWaterPlaces(@ModelAttribute @Valid RetrievePopularWaterPlacesCondition popularWaterPlacesCondition,
                                                    BindingResult bindingResult) {
 
