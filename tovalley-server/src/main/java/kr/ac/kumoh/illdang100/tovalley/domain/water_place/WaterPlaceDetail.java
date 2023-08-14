@@ -41,9 +41,12 @@ public class WaterPlaceDetail {
     @Column(length = 254)
     private String safetyMeasures; // 안전조치 사항
 
+    @Column(precision = 3, scale = 1)
     private Double waterTemperature; // 계곡 수온(°C)
 
+    @Column(precision = 3, scale = 1)
     private Double bod; // BOD(mg/L)
 
+    @Column(precision = 3, scale = 1)
     private Double turbidity; // 탁도(NTU)
 }
