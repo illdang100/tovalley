@@ -26,16 +26,16 @@ public class WaterPlace {
     @Column(nullable = false, length = 20)
     private String city; // 시군구
 
-    @Column(length = 20)
+    @Column(nullable = false, length = 20)
     private String town; // 읍면
 
-    @Column(length = 254)
+    @Column(nullable = false, length = 254)
     private String subLocation; // 세부지명
 
     @Column(nullable = false, length = 254)
     private String address; // 주소
 
-    @Column(length = 20)
+    @Column(nullable = false, length = 20)
     private String waterPlaceCategory; // 구분(계곡, 하천)
 
     @Embedded
