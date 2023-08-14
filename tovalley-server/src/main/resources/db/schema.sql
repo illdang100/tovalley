@@ -35,6 +35,8 @@ CREATE TABLE IF NOT EXISTS `review` (
                           `water_place_id`	BIGINT	NOT NULL,
                           `member_id`	BIGINT	NOT NULL	COMMENT 'member 테이블',
                           `review_content`	VARCHAR(256)	NOT NULL,
+                          `created_date`	DATETIME(6)	NOT NULL,
+                          `last_modified_date`	DATETIME(6)	NOT NULL,
                           `rating`	DOUBLE	NOT NULL,
     primary key (review_id)
 ) engine=InnoDB;
