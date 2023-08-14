@@ -1,5 +1,6 @@
 package kr.ac.kumoh.illdang100.tovalley.domain.review;
 
+import kr.ac.kumoh.illdang100.tovalley.domain.BaseTimeEntity;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlace;
 import lombok.*;
@@ -11,7 +12,7 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class Review {
+public class Review extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
