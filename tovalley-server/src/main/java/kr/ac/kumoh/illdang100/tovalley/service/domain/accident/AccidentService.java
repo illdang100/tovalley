@@ -1,6 +1,7 @@
 package kr.ac.kumoh.illdang100.tovalley.service.domain.accident;
 
 import static kr.ac.kumoh.illdang100.tovalley.dto.page.MainPageRespDto.*;
+import static kr.ac.kumoh.illdang100.tovalley.dto.page.WaterPlaceDetailPageRespDto.*;
 
 public interface AccidentService {
 
@@ -18,4 +19,6 @@ public interface AccidentService {
 
     // 행정자치구역별 사건사고 수 조회
     AccidentCountDto getAccidentCntPerMonthByProvince(String province);
+
+    WaterPlaceAccidentFor5YearsDto getAccidentsFor5YearsByWaterPlace(Long waterPlaceId);
 }
