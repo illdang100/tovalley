@@ -6,6 +6,9 @@ import kr.ac.kumoh.illdang100.tovalley.domain.weather.special_weather.SpecialWea
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.special_weather.SpecialWeatherDetail;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.special_weather.SpecialWeatherDetailRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.special_weather.SpecialWeatherEnum;
+import kr.ac.kumoh.illdang100.tovalley.domain.weather.water_place_weather.WaterPlaceWeather;
+import kr.ac.kumoh.illdang100.tovalley.domain.weather.water_place_weather.WaterPlaceWeatherRepository;
+import kr.ac.kumoh.illdang100.tovalley.service.OpenApiService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -13,14 +16,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static kr.ac.kumoh.illdang100.tovalley.dto.page.MainPageRespDto.*;
-import static kr.ac.kumoh.illdang100.tovalley.dto.weather.WeatherRespDto.*;
+import static kr.ac.kumoh.illdang100.tovalley.dto.page.WaterPlaceDetailPageRespDto.*;
 
 @Slf4j
 @Service
@@ -30,12 +30,13 @@ public class WeatherServiceImpl implements WeatherService {
 
     private final NationalWeatherRepository nationalWeatherRepository;
     private final SpecialWeatherDetailRepository specialWeatherDetailRepository;
+    private final WaterPlaceWeatherRepository waterPlaceWeatherRepository;
+    private final OpenApiService openApiService;
 
     /**
      * @methodnme: getNationalWeathers
      * @author: JYeonJun
      * @description: 전국 특정 지역 날씨 정보 조회
-     *
      * @return: Openweather 날씨 정보
      */
     @Override
@@ -86,7 +87,6 @@ public class WeatherServiceImpl implements WeatherService {
      * @methodnme: getAllSpecialWeathers
      * @author: JYeonJun
      * @description: 전국 특보 정보 조회
-     *
      * @return: 기상청 전국 특보 정보
      */
     @Override
@@ -131,12 +131,53 @@ public class WeatherServiceImpl implements WeatherService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * @methodnme: getWaterPlaceWeatherData
+     * @author: JYeonJun
+     * @description: 물놀이 장소 날씨 조회
+     * @return: 물놀이 장소 날씨 리스트(5일)
+     */
     @Override
-    public WaterPlaceWeatherRespDto getValleyWeatherData(Long waterPlaceId) {
+    public List<DailyWaterPlaceWeatherDto> getWaterPlaceWeatherData(Long waterPlaceId) {
+        List<WaterPlaceWeather> findWaterPlaceWeathers =
+                waterPlaceWeatherRepository.findAllByWaterPlace_Id(waterPlaceId);
 
-        // 조회한 계곡 날씨의 lastModifiedDate 시간을 확인해 현재시간으로부터 3시간 이전이라면 전부 삭제하고 새로 가져오기!!
-        // 그리고 현재 날짜 이전 날짜 정보가 있다면 삭제하고 새로 가져오기!!
+        if (findWaterPlaceWeathers.isEmpty() || shouldUpdateWeatherData(findWaterPlaceWeathers)) {
 
-        return null;
+            List<WaterPlaceWeather> waterPlaceWeatherList = updateWaterPlaceWeatherData(waterPlaceId);
+
+            return createDailyWaterPlaceWeatherDtoList(waterPlaceWeatherList);
+        }
+
+        return createDailyWaterPlaceWeatherDtoList(findWaterPlaceWeathers);
+    }
+
+    private List<WaterPlaceWeather> updateWaterPlaceWeatherData(Long waterPlaceId) {
+        waterPlaceWeatherRepository.deleteByWaterPlace_Id(waterPlaceId);
+
+        return openApiService.fetchAndSaveWaterPlaceWeatherData(waterPlaceId);
+    }
+
+    private List<DailyWaterPlaceWeatherDto> createDailyWaterPlaceWeatherDtoList(List<WaterPlaceWeather> waterPlaceWeatherList) {
+
+        return waterPlaceWeatherList.stream()
+                .map(this::createDailyWaterPlaceWeatherDto)
+                .collect(Collectors.toList());
+    }
+
+    private boolean shouldUpdateWeatherData(List<WaterPlaceWeather> weatherList) {
+        LocalDateTime now = LocalDateTime.now();
+        return weatherList.stream()
+                .anyMatch(weather -> now.isAfter(weather.getLastModifiedDate().plusHours(3)) ||
+                        now.toLocalDate().isAfter(weather.getWeatherDate()));
+    }
+
+    private DailyWaterPlaceWeatherDto createDailyWaterPlaceWeatherDto(WaterPlaceWeather weather) {
+        return new DailyWaterPlaceWeatherDto(weather.getWeatherDate(),
+                weather.getClimateIcon(), weather.getClimateDescription(),
+                weather.getLowestTemperature(), weather.getHighestTemperature(),
+                weather.getHumidity(), weather.getWindSpeed(),
+                weather.getRainPrecipitation(), weather.getClouds(),
+                weather.getDayFeelsLike());
     }
 }

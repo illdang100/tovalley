@@ -306,29 +306,36 @@ public class OpenApiServiceImpl implements OpenApiService {
                 .build());
     }
 
-    // TODO: 서버 시작시 전체 가져오지 말고 사용자가 요청했을 때 날씨 정보가 없거나 3시간 이전이면 가져오기
     /**
-     * @methodnme: fetchAndSaveAllWaterPlaceWeatherData
+     * @methodnme: fetchAndSaveWaterPlaceWeatherData
      * @author: JYeonJun
-     * @description: 전국 물놀이 지역 날씨를 Open API로부터 가져와 데이터베이스에 저장
+     * @description: 물놀이 지역 날씨를 Open API로부터 가져와 데이터베이스에 저장
      */
     @Override
-    @Transactional
-    public void fetchAndSaveAllWaterPlaceWeatherData() {
-        log.info("전국 물놀이 지역 날씨 정보 업데이트 중!!");
+    public List<WaterPlaceWeather> fetchAndSaveWaterPlaceWeatherData(Long waterPlaceId) {
+        log.info("물놀이 장소 날씨 정보 업데이트 중!!");
 
-        List<WaterPlace> waterPlaces = waterPlaceRepository.findAll();
+        WaterPlace findWaterPlace = findWaterPlaceByIdOrElseThrowEx(waterPlaceId);
+        JSONArray weatherDataList = fetchWeatherApiResponseArray(findWaterPlace);
+        List<WaterPlaceWeather> waterPlaceWeatherList = extractWaterPlaceWeatherData(weatherDataList, findWaterPlace);
 
-        for (WaterPlace waterPlace : waterPlaces) {
-            JSONObject response = fetchWeatherData(waterPlace.getCoordinate().getLatitude(), waterPlace.getCoordinate().getLongitude());
-            JSONArray weatherDataList = response.getJSONArray("list");
-            List<WaterPlaceWeather> waterPlaceWeatherList = extractWaterPlaceWeatherData(weatherDataList, waterPlace);
-            waterPlaceWeatherRepository.saveAll(waterPlaceWeatherList);
-        }
-        log.info("전국 물놀이 지역 날씨 정보 업데이트 완료!!");
+        log.info("물놀이 장소 날씨 정보 업데이트 완료!!");
+        return waterPlaceWeatherRepository.saveAll(waterPlaceWeatherList);
     }
 
-    public List<WaterPlaceWeather> extractWaterPlaceWeatherData(JSONArray weatherDataList, WaterPlace waterPlace) {
+    private JSONArray fetchWeatherApiResponseArray(WaterPlace findWaterPlace) {
+        Coordinate coordinate = findWaterPlace.getCoordinate();
+        JSONObject response = fetchWeatherData(coordinate.getLatitude(), coordinate.getLongitude());
+        return response.getJSONArray("list");
+    }
+
+    private WaterPlace findWaterPlaceByIdOrElseThrowEx(Long waterPlaceId) {
+        WaterPlace findWaterPlace = waterPlaceRepository.findById(waterPlaceId)
+                .orElseThrow(() -> new CustomApiException("물놀이 장소가 존재하지 않습니다"));
+        return findWaterPlace;
+    }
+
+    private List<WaterPlaceWeather> extractWaterPlaceWeatherData(JSONArray weatherDataList, WaterPlace waterPlace) {
         List<WaterPlaceWeather> waterPlaceWeatherList = new ArrayList<>();
 
         for (int i = 0; i < weatherDataList.length(); i++) {
@@ -372,7 +379,7 @@ public class OpenApiServiceImpl implements OpenApiService {
         return waterPlaceWeatherList;
     }
 
-    public JSONObject fetchWeatherData(String lat, String lon) {
+    private JSONObject fetchWeatherData(String lat, String lon) {
 
         try {
             StringBuilder urlBuilder = new StringBuilder("https://pro.openweathermap.org/data/2.5/forecast/climate"); /*URL*/
