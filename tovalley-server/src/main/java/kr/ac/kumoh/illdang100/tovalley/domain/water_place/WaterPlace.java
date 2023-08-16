@@ -50,9 +50,9 @@ public class WaterPlace {
     @Column(nullable = false)
     private int reviewCount; // 리뷰 개수
 
-    public void calculateRating(Double rating) {
-        double sum = rating * reviewCount;
-        this.reviewCount = reviewCount + 1;
+    public void calculateRating(Integer rating) {
+        double sum = this.rating * reviewCount + rating;
+        this.reviewCount++;
         this.rating = sum / reviewCount;
     }
 }
