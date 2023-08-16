@@ -10,6 +10,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static kr.ac.kumoh.illdang100.tovalley.dto.page.WaterPlaceDetailPageRespDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.review.ReviewRespDto.*;
 
 @Slf4j
@@ -41,9 +46,16 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public Page<WaterPlaceReviewRespDto> getReviewsByWaterPlaceId(Long waterPlaceId,
+    public WaterPlaceReviewDetailRespDto getReviewsByWaterPlaceId(Long waterPlaceId,
                                                                   Pageable pageable) {
 
-        return reviewRepository.findReviewsByWaterPlaceId(waterPlaceId, pageable);
+        List<Review> allReviews = reviewRepository.findAllByWaterPlaceId(waterPlaceId);
+
+        Map<Integer, Long> ratingRatioMap = allReviews.stream()
+                .collect(Collectors.groupingBy(Review::getRating, Collectors.counting()));
+
+        Page<WaterPlaceReviewRespDto> reviewsByWaterPlaceId = reviewRepository.findReviewsByWaterPlaceId(waterPlaceId, pageable);
+
+        return new WaterPlaceReviewDetailRespDto(ratingRatioMap, reviewsByWaterPlaceId);
     }
 }

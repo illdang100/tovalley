@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
+import static kr.ac.kumoh.illdang100.tovalley.dto.page.WaterPlaceDetailPageRespDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.review.ReviewRespDto.*;
 
 /**
@@ -26,5 +27,5 @@ public interface ReviewService {
     Page<WaterPlaceReviewRespDto> getReviewsByMemberId(Long memberId);
 
     // 특정 물놀이 장소의 리뷰 조회
-    Page<WaterPlaceReviewRespDto> getReviewsByWaterPlaceId(Long waterPlaceId, Pageable pageable);
+    WaterPlaceReviewDetailRespDto getReviewsByWaterPlaceId(Long waterPlaceId, Pageable pageable);
 }

@@ -2,6 +2,7 @@ package kr.ac.kumoh.illdang100.tovalley.web;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import kr.ac.kumoh.illdang100.tovalley.domain.review.ReviewRepository;
 import kr.ac.kumoh.illdang100.tovalley.dto.ResponseDto;
 import kr.ac.kumoh.illdang100.tovalley.service.domain.review.ReviewService;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,7 @@ import static kr.ac.kumoh.illdang100.tovalley.dto.review.ReviewRespDto.*;
 public class ReviewApiController {
 
     private final ReviewService reviewService;
+    private final ReviewRepository reviewRepository;
 
     @GetMapping("/auth/water-places/{id}/reviews")
     @Operation(summary = "물놀이 장소별 리뷰 조회", description = "물놀이 장소별 리뷰 정보를 반환합니다.")
@@ -34,7 +36,7 @@ public class ReviewApiController {
                                                   @PageableDefault(size = 5, sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable) {
 
         Page<WaterPlaceReviewRespDto> result =
-                reviewService.getReviewsByWaterPlaceId(waterPlaceId, pageable);
+                reviewRepository.findReviewsByWaterPlaceId(waterPlaceId, pageable);
 
         return new ResponseEntity<>(new ResponseDto<>(1, "물놀이 장소의 리뷰 조회에 성공하였습니다", result), HttpStatus.OK);
     }
