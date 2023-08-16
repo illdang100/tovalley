@@ -2,6 +2,9 @@ package kr.ac.kumoh.illdang100.tovalley.service.domain.review;
 
 import kr.ac.kumoh.illdang100.tovalley.domain.review.Review;
 import kr.ac.kumoh.illdang100.tovalley.domain.review.ReviewRepository;
+import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlace;
+import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlaceRepository;
+import kr.ac.kumoh.illdang100.tovalley.handler.ex.CustomApiException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -10,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -24,6 +28,7 @@ import static kr.ac.kumoh.illdang100.tovalley.dto.review.ReviewRespDto.*;
 public class ReviewServiceImpl implements ReviewService {
 
     private final ReviewRepository reviewRepository;
+    private final WaterPlaceRepository waterPlaceRepository;
 
     @Override
     public Review writeReview(Long memberId, Long waterPlaceId) {
@@ -46,8 +51,9 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public WaterPlaceReviewDetailRespDto getReviewsByWaterPlaceId(Long waterPlaceId,
-                                                                  Pageable pageable) {
+    public WaterPlaceReviewDetailRespDto getReviewsByWaterPlaceId(Long waterPlaceId, Pageable pageable) {
+        WaterPlace findWaterPlace = waterPlaceRepository.findById(waterPlaceId)
+                .orElseThrow(() -> new CustomApiException("물놀이 장소[" + waterPlaceId + "]가 존재하지 않습니다"));
 
         List<Review> allReviews = reviewRepository.findAllByWaterPlaceId(waterPlaceId);
 
@@ -56,6 +62,12 @@ public class ReviewServiceImpl implements ReviewService {
 
         Page<WaterPlaceReviewRespDto> reviewsByWaterPlaceId = reviewRepository.findReviewsByWaterPlaceId(waterPlaceId, pageable);
 
-        return new WaterPlaceReviewDetailRespDto(ratingRatioMap, reviewsByWaterPlaceId);
+        double formattedRating = formatRating(findWaterPlace.getRating());
+
+        return new WaterPlaceReviewDetailRespDto(formattedRating, findWaterPlace.getReviewCount(), ratingRatioMap, reviewsByWaterPlaceId);
+    }
+
+    private double formatRating(double rating) {
+        return Double.parseDouble(String.format("%.1f", rating));
     }
 }
