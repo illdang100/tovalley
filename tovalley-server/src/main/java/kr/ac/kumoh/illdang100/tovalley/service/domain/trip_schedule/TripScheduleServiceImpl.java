@@ -31,6 +31,15 @@ public class TripScheduleServiceImpl implements TripScheduleService {
 
     }
 
+
+    /**
+     * @methodnme: getTripAttendeesByWaterPlace
+     * @author: JYeonJun
+     * @param waterPlaceId: 물놀이 장소 pk
+     * @param yearMonth: 클라이언트로부터 요청받은 날짜 정보
+     * @description: 물놀이 장소 여행객 수 조회
+     * @return: 요청한 달의 여행객 수
+     */
     @Override
     public Map<LocalDate, Integer> getTripAttendeesByWaterPlace(Long waterPlaceId, YearMonth yearMonth) {
         LocalDate firstDayOfMonth = yearMonth.atDay(1);

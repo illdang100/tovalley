@@ -36,6 +36,12 @@ public class WaterPlaceDetailPageServiceImpl implements WaterPlaceDetailPageServ
     private final AccidentService accidentService;
     private final TripScheduleService tripScheduleService;
 
+    /**
+     * @methodnme: getWaterPlaceDetailPageAllData
+     * @author: JYeonJun
+     * @description: 물놀이 장소 상세보기 페이지 정보 조회
+     * @return: 물놀이 장소 상세정보, 날씨, 사건사고 정보, 여행객 수, 리뷰
+     */
     @Override
     @Transactional
     public WaterPlaceDetailAllRespDto getWaterPlaceDetailPageAllData(Long waterPlaceId, Pageable pageable) {

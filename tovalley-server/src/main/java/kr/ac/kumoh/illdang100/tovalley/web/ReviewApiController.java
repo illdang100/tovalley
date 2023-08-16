@@ -41,7 +41,7 @@ public class ReviewApiController {
 
     @GetMapping("/auth/members/reviews")
     @Operation(summary = "사용자별 리뷰 조회", description = "사용자가 작성한 리뷰 정보를 반환합니다.")
-    public ResponseEntity<?> getWaterPlaceReviews(/*@PathVariable("id") Long memberId,*/
+    public ResponseEntity<?> getWaterPlaceReviews(/*@AuthenticationPrincipal PrincipalDetails principalDetails,*/
                                                   @PageableDefault(size = 5, sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable) {
 
         Page<WaterPlaceReviewRespDto> result =

@@ -135,6 +135,7 @@ public class WeatherServiceImpl implements WeatherService {
      * @methodnme: getWaterPlaceWeatherData
      * @author: JYeonJun
      * @description: 물놀이 장소 날씨 조회
+     * @param waterPlaceId: 물놀이 장소 pk
      * @return: 물놀이 장소 날씨 리스트(5일)
      */
     @Override

@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -50,12 +49,19 @@ public class ReviewServiceImpl implements ReviewService {
         return null;
     }
 
+    /**
+     * @methodnme: getReviewsByWaterPlaceId
+     * @author: JYeonJun
+     * @param waterPlaceId: 물놀이 장소 pk
+     * @param pageable: 페이징 정보
+     * @description: 물놀이 장소 리뷰 정보 조회
+     * @return: 평점, 리뷰수, 리뷰 페이징 정보
+     */
     @Override
     public WaterPlaceReviewDetailRespDto getReviewsByWaterPlaceId(Long waterPlaceId, Pageable pageable) {
-        WaterPlace findWaterPlace = waterPlaceRepository.findById(waterPlaceId)
-                .orElseThrow(() -> new CustomApiException("물놀이 장소[" + waterPlaceId + "]가 존재하지 않습니다"));
+        WaterPlace findWaterPlace = findWaterPlaceByWaterPlaceIdOrElseThrowEx(waterPlaceId);
 
-        List<Review> allReviews = reviewRepository.findAllByWaterPlaceId(waterPlaceId);
+        List<Review> allReviews = reviewRepository.findAllByWaterPlace_Id(waterPlaceId);
 
         Map<Integer, Long> ratingRatioMap = allReviews.stream()
                 .collect(Collectors.groupingBy(Review::getRating, Collectors.counting()));
@@ -65,6 +71,12 @@ public class ReviewServiceImpl implements ReviewService {
         double formattedRating = formatRating(findWaterPlace.getRating());
 
         return new WaterPlaceReviewDetailRespDto(formattedRating, findWaterPlace.getReviewCount(), ratingRatioMap, reviewsByWaterPlaceId);
+    }
+
+    private WaterPlace findWaterPlaceByWaterPlaceIdOrElseThrowEx(Long waterPlaceId) {
+        WaterPlace findWaterPlace = waterPlaceRepository.findById(waterPlaceId)
+                .orElseThrow(() -> new CustomApiException("물놀이 장소[" + waterPlaceId + "]가 존재하지 않습니다"));
+        return findWaterPlace;
     }
 
     private double formatRating(double rating) {

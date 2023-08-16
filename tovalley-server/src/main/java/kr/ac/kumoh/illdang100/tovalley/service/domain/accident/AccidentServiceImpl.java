@@ -96,6 +96,13 @@ public class AccidentServiceImpl implements AccidentService {
         return list.stream().mapToInt(mapper).sum();
     }
 
+    /**
+     * @methodnme: getAccidentsFor5YearsByWaterPlace
+     * @author: JYeonJun
+     * @param waterPlaceId: 물놀이 장소 pk
+     * @description: 물놀이 장소에서 발생한 최근 5년간 사건사고 현황 정보 조회
+     * @return: 사건사고 현황 정보
+     */
     @Override
     public WaterPlaceAccidentFor5YearsDto getAccidentsFor5YearsByWaterPlace(Long waterPlaceId) {
         LocalDate fiveYearsAgo = LocalDate.now().minusYears(5);

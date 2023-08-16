@@ -79,6 +79,13 @@ public class WaterPlaceServiceImpl implements WaterPlaceService {
         return decimalFormat.format(rating);
     }
 
+    /**
+     * @methodnme: getWaterPlaceDetailByWaterPlace
+     * @author: JYeonJun
+     * @param waterPlaceId: 물놀이 장소 pk
+     * @description: 물놀이 장소 상세정보 조회
+     * @return: 물놀이 장소 상세정보
+     */
     @Override
     public WaterPlaceDetailRespDto getWaterPlaceDetailByWaterPlace(Long waterPlaceId) {
         WaterPlaceDetail findWaterPlaceDetail = findWaterPlaceDetailByWaterPlaceIdOrElseThrowEx(waterPlaceId);
@@ -113,6 +120,13 @@ public class WaterPlaceServiceImpl implements WaterPlaceService {
                 .build();
     }
 
+    /**
+     * @methodnme: getRescueSuppliesByWaterPlace
+     * @author: JYeonJun
+     * @param waterPlaceId: 물놀이 장소 pk
+     * @description: 물놀이 장소에 배치된 구조용품 현황 조회
+     * @return: 구조용품 수량
+     */
     @Override
     public RescueSupplyRespDto getRescueSuppliesByWaterPlace(Long waterPlaceId) {
 
