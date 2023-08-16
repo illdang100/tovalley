@@ -2,5 +2,9 @@ package kr.ac.kumoh.illdang100.tovalley.domain.review;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ReviewRepository extends JpaRepository<Review, Long> {
+import java.util.List;
+
+public interface ReviewRepository extends JpaRepository<Review, Long>, ReviewRepositoryCustom {
+
+    List<Review> findAllByWaterPlace_Id(Long waterPlaceId);
 }

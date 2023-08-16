@@ -1,9 +1,16 @@
 package kr.ac.kumoh.illdang100.tovalley.dummy;
 
 import kr.ac.kumoh.illdang100.tovalley.domain.Coordinate;
+import kr.ac.kumoh.illdang100.tovalley.domain.ImageFile;
 import kr.ac.kumoh.illdang100.tovalley.domain.accident.Accident;
 import kr.ac.kumoh.illdang100.tovalley.domain.accident.AccidentEnum;
+import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
+import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberEnum;
+import kr.ac.kumoh.illdang100.tovalley.domain.review.Review;
+import kr.ac.kumoh.illdang100.tovalley.domain.review.ReviewImage;
+import kr.ac.kumoh.illdang100.tovalley.domain.trip_schedule.TripSchedule;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlace;
+import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlaceRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.national_weather.NationalRegion;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.national_weather.NationalWeather;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.special_weather.SpecialWeather;
@@ -16,6 +23,37 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class DummyObject {
+
+    protected Member newMember(String username, String nickname) {
+
+//        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+//        String encPassword = passwordEncoder.encode("1234");
+
+        return Member.builder()
+                .username(username)
+                .memberName("name")
+                .password("임시 비밀번호")
+                .email(username + "@naver.com")
+                .nickname(nickname)
+                .imageFile(null)
+                .role(MemberEnum.CUSTOMER)
+                .build();
+    }
+
+    protected Member newMockMember(Long id, String username, String nickname, MemberEnum memberEnum) {
+
+//        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+//        String encPassword = passwordEncoder.encode("1234");
+        return Member.builder()
+                .id(id)
+                .username(username)
+                .memberName("name")
+                .password("임시 비밀번호")
+                .email(username + "@naver.com")
+                .nickname(nickname)
+                .role(memberEnum)
+                .build();
+    }
 
     protected WaterPlace newWaterPlace(String name, String province, Double rating, Integer reviewCnt) {
 
@@ -45,7 +83,7 @@ public class DummyObject {
                 .subLocation("subLocation")
                 .address("address")
                 .waterPlaceCategory("계곡")
-                .coordinate(new Coordinate("38.10000000", "128.10000000"))
+                .coordinate(new Coordinate("37.46822799867968", "126.94553962920112"))
                 .managementType("일반지역")
                 .rating(rating)
                 .reviewCount(reviewCnt)
@@ -72,6 +110,53 @@ public class DummyObject {
                 .accidentDate(accidentDate)
                 .accidentCondition(accidentCondition)
                 .peopleNum(peopleNum)
+                .build();
+    }
+
+    protected TripSchedule newTripSchedule(Member member, WaterPlace waterPlace,
+                                           LocalDate tripDate, int tripNum) {
+
+        return TripSchedule.builder()
+                .member(member)
+                .waterPlace(waterPlace)
+                .tripDate(tripDate)
+                .tripNumber(tripNum)
+                .build();
+    }
+
+    protected Review newReview(WaterPlace waterPlace, Member member,
+                               String content, Integer rating, WaterPlaceRepository waterPlaceRepository) {
+
+        waterPlace.calculateRating(rating);
+        waterPlaceRepository.save(waterPlace);
+
+        return Review.builder()
+                .waterPlace(waterPlace)
+                .member(member)
+                .reviewContent(content)
+                .rating(rating)
+                .build();
+    }
+
+    protected ReviewImage newReviewImage(Review review, String storeUrl) {
+
+        ImageFile imageFile = new ImageFile("storeFileName", storeUrl);
+
+        return ReviewImage.builder()
+                .review(review)
+                .imageFile(imageFile)
+                .build();
+    }
+
+    protected Review newMockReview(Long id, WaterPlace waterPlace, Member member,
+                               String content, Integer rating) {
+
+        return Review.builder()
+                .id(id)
+                .waterPlace(waterPlace)
+                .member(member)
+                .reviewContent(content)
+                .rating(rating)
                 .build();
     }
 

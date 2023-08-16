@@ -26,16 +26,16 @@ public class WaterPlace {
     @Column(nullable = false, length = 20)
     private String city; // 시군구
 
-    @Column(length = 20)
+    @Column(nullable = false, length = 20)
     private String town; // 읍면
 
-    @Column(length = 254)
+    @Column(nullable = false, length = 254)
     private String subLocation; // 세부지명
 
     @Column(nullable = false, length = 254)
     private String address; // 주소
 
-    @Column(length = 20)
+    @Column(nullable = false, length = 20)
     private String waterPlaceCategory; // 구분(계곡, 하천)
 
     @Embedded
@@ -50,9 +50,9 @@ public class WaterPlace {
     @Column(nullable = false)
     private int reviewCount; // 리뷰 개수
 
-    public void calculateRating(Double rating) {
-        double sum = rating * reviewCount;
-        this.reviewCount = reviewCount + 1;
+    public void calculateRating(Integer rating) {
+        double sum = this.rating * reviewCount + rating;
+        this.reviewCount++;
         this.rating = sum / reviewCount;
     }
 }

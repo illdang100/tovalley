@@ -21,7 +21,7 @@ public class WaterPlaceDetail {
     private WaterPlace waterPlace;
 
     @Column(nullable = false, length = 20)
-    private String waterPlaySegment; // 물놀이구간(m)
+    private String waterPlaceSegment; // 물놀이구간(m)
 
     @Column(nullable = false, length = 20)
     private String deepestDepth; // 수심(깊은곳)
@@ -40,4 +40,13 @@ public class WaterPlaceDetail {
 
     @Column(length = 254)
     private String safetyMeasures; // 안전조치 사항
+
+    @Column(precision = 3, scale = 1)
+    private Double waterTemperature; // 계곡 수온(°C)
+
+    @Column(precision = 3, scale = 1)
+    private Double bod; // BOD(mg/L)
+
+    @Column(precision = 3, scale = 1)
+    private Double turbidity; // 탁도(NTU)
 }

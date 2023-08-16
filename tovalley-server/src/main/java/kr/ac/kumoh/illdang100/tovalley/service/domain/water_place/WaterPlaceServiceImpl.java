@@ -1,7 +1,8 @@
 package kr.ac.kumoh.illdang100.tovalley.service.domain.water_place;
 
-import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlace;
-import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlaceRepository;
+import kr.ac.kumoh.illdang100.tovalley.domain.Coordinate;
+import kr.ac.kumoh.illdang100.tovalley.domain.water_place.*;
+import kr.ac.kumoh.illdang100.tovalley.handler.ex.CustomApiException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static kr.ac.kumoh.illdang100.tovalley.dto.page.MainPageRespDto.*;
+import static kr.ac.kumoh.illdang100.tovalley.dto.page.WaterPlaceDetailPageRespDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.water_place.WaterPlaceReqDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.water_place.WaterPlaceRespDto.*;
 
@@ -25,6 +27,8 @@ import static kr.ac.kumoh.illdang100.tovalley.dto.water_place.WaterPlaceRespDto.
 public class WaterPlaceServiceImpl implements WaterPlaceService {
 
     private final WaterPlaceRepository waterPlaceRepository;
+    private final WaterPlaceDetailRepository waterPlaceDetailRepository;
+    private final RescueSupplyRepository rescueSupplyRepository;
 
     /**
      * // 물놀이 장소 리스트 조회 페이지
@@ -75,4 +79,75 @@ public class WaterPlaceServiceImpl implements WaterPlaceService {
         return decimalFormat.format(rating);
     }
 
+    /**
+     * @methodnme: getWaterPlaceDetailByWaterPlace
+     * @author: JYeonJun
+     * @param waterPlaceId: 물놀이 장소 pk
+     * @description: 물놀이 장소 상세정보 조회
+     * @return: 물놀이 장소 상세정보
+     */
+    @Override
+    public WaterPlaceDetailRespDto getWaterPlaceDetailByWaterPlace(Long waterPlaceId) {
+        WaterPlaceDetail findWaterPlaceDetail = findWaterPlaceDetailByWaterPlaceIdOrElseThrowEx(waterPlaceId);
+
+        WaterPlace findWaterPlace = findWaterPlaceDetail.getWaterPlace();
+        Coordinate coordinate = findWaterPlace.getCoordinate();
+
+        return createWaterPlaceDetailRespDto(findWaterPlace, coordinate, findWaterPlaceDetail);
+    }
+
+    private WaterPlaceDetail findWaterPlaceDetailByWaterPlaceIdOrElseThrowEx(Long waterPlaceId) {
+        return waterPlaceDetailRepository.findWaterPlaceDetailWithWaterPlaceById(waterPlaceId)
+                .orElseThrow(() -> new CustomApiException("물놀이 장소[" + waterPlaceId + "]가 존재하지 않습니다"));
+    }
+
+    private WaterPlaceDetailRespDto createWaterPlaceDetailRespDto(WaterPlace waterPlace, Coordinate coordinate, WaterPlaceDetail waterPlaceDetail) {
+        return WaterPlaceDetailRespDto.builder()
+                .waterPlaceImage(null) // TODO: 추후 물놀이 장소 이미지 필드 추가되면 추가
+                .waterPlaceName(waterPlace.getWaterPlaceName())
+                .latitude(coordinate.getLatitude())
+                .longitude(coordinate.getLongitude())
+                .detailAddress(waterPlace.getAddress() + " " + waterPlace.getSubLocation())
+                .town(waterPlace.getTown())
+                .annualVisitors(waterPlaceDetail.getAnnualVisitors())
+                .safetyMeasures(waterPlaceDetail.getSafetyMeasures())
+                .waterPlaceSegment(waterPlaceDetail.getWaterPlaceSegment())
+                .dangerSegments(waterPlaceDetail.getDangerSegments())
+                .dangerSignboardsNum(waterPlaceDetail.getDangerSignboardsNum())
+                .waterTemperature(waterPlaceDetail.getWaterTemperature())
+                .bod(waterPlaceDetail.getBod())
+                .turbidity(waterPlaceDetail.getTurbidity())
+                .build();
+    }
+
+    /**
+     * @methodnme: getRescueSuppliesByWaterPlace
+     * @author: JYeonJun
+     * @param waterPlaceId: 물놀이 장소 pk
+     * @description: 물놀이 장소에 배치된 구조용품 현황 조회
+     * @return: 구조용품 수량
+     */
+    @Override
+    public RescueSupplyRespDto getRescueSuppliesByWaterPlace(Long waterPlaceId) {
+
+        RescueSupply findRescueSupply = findRescueSupplyByWaterPlaceIdOrElseThrowEx(waterPlaceId);
+
+        return createRescueSupplyRespDto(findRescueSupply);
+    }
+
+    private RescueSupplyRespDto createRescueSupplyRespDto(RescueSupply findRescueSupply) {
+        return RescueSupplyRespDto.builder()
+                .lifeBoatNum(findRescueSupply.getLifeBoatNum())
+                .portableStandNum(findRescueSupply.getPortableStandNum())
+                .lifeJacketNum(findRescueSupply.getLifeJacketNum())
+                .lifeRingNum(findRescueSupply.getLifeRingNum())
+                .rescueRopeNum(findRescueSupply.getRescueRopeNum())
+                .rescueRodNum(findRescueSupply.getRescueRodNum())
+                .build();
+    }
+
+    private RescueSupply findRescueSupplyByWaterPlaceIdOrElseThrowEx(Long waterPlaceId) {
+        return rescueSupplyRepository.findByWaterPlace_Id(waterPlaceId)
+        .orElseThrow(() -> new CustomApiException("물놀이 장소[" + waterPlaceId + "]: 구급용품이 존재하지 않습니다"));
+    }
 }

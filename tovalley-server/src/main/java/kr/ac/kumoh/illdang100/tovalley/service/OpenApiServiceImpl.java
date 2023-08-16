@@ -306,29 +306,36 @@ public class OpenApiServiceImpl implements OpenApiService {
                 .build());
     }
 
-    // TODO: 서버 시작시 전체 가져오지 말고 사용자가 요청했을 때 날씨 정보가 없거나 3시간 이전이면 가져오기
     /**
-     * @methodnme: fetchAndSaveAllWaterPlaceWeatherData
+     * @methodnme: fetchAndSaveWaterPlaceWeatherData
      * @author: JYeonJun
-     * @description: 전국 물놀이 지역 날씨를 Open API로부터 가져와 데이터베이스에 저장
+     * @description: 물놀이 지역 날씨를 Open API로부터 가져와 데이터베이스에 저장
      */
     @Override
-    @Transactional
-    public void fetchAndSaveAllWaterPlaceWeatherData() {
-        log.info("전국 물놀이 지역 날씨 정보 업데이트 중!!");
+    public List<WaterPlaceWeather> fetchAndSaveWaterPlaceWeatherData(Long waterPlaceId) {
+        log.info("물놀이 장소 날씨 정보 업데이트 중!!");
 
-        List<WaterPlace> waterPlaces = waterPlaceRepository.findAll();
+        WaterPlace findWaterPlace = findWaterPlaceByIdOrElseThrowEx(waterPlaceId);
+        JSONArray weatherDataList = fetchWeatherApiResponseArray(findWaterPlace);
+        List<WaterPlaceWeather> waterPlaceWeatherList = extractWaterPlaceWeatherData(weatherDataList, findWaterPlace);
 
-        for (WaterPlace waterPlace : waterPlaces) {
-            JSONObject response = fetchWeatherData(waterPlace.getCoordinate().getLatitude(), waterPlace.getCoordinate().getLongitude());
-            JSONArray weatherDataList = response.getJSONArray("list");
-            List<WaterPlaceWeather> waterPlaceWeatherList = extractWaterPlaceWeatherData(weatherDataList, waterPlace);
-            waterPlaceWeatherRepository.saveAll(waterPlaceWeatherList);
-        }
-        log.info("전국 물놀이 지역 날씨 정보 업데이트 완료!!");
+        log.info("물놀이 장소 날씨 정보 업데이트 완료!!");
+        return waterPlaceWeatherRepository.saveAll(waterPlaceWeatherList);
     }
 
-    public List<WaterPlaceWeather> extractWaterPlaceWeatherData(JSONArray weatherDataList, WaterPlace waterPlace) {
+    private JSONArray fetchWeatherApiResponseArray(WaterPlace findWaterPlace) {
+        Coordinate coordinate = findWaterPlace.getCoordinate();
+        JSONObject response = fetchWeatherData(coordinate.getLatitude(), coordinate.getLongitude());
+        return response.getJSONArray("list");
+    }
+
+    private WaterPlace findWaterPlaceByIdOrElseThrowEx(Long waterPlaceId) {
+        WaterPlace findWaterPlace = waterPlaceRepository.findById(waterPlaceId)
+                .orElseThrow(() -> new CustomApiException("물놀이 장소가 존재하지 않습니다"));
+        return findWaterPlace;
+    }
+
+    private List<WaterPlaceWeather> extractWaterPlaceWeatherData(JSONArray weatherDataList, WaterPlace waterPlace) {
         List<WaterPlaceWeather> waterPlaceWeatherList = new ArrayList<>();
 
         for (int i = 0; i < weatherDataList.length(); i++) {
@@ -372,7 +379,7 @@ public class OpenApiServiceImpl implements OpenApiService {
         return waterPlaceWeatherList;
     }
 
-    public JSONObject fetchWeatherData(String lat, String lon) {
+    private JSONObject fetchWeatherData(String lat, String lon) {
 
         try {
             StringBuilder urlBuilder = new StringBuilder("https://pro.openweathermap.org/data/2.5/forecast/climate"); /*URL*/
@@ -474,7 +481,6 @@ public class OpenApiServiceImpl implements OpenApiService {
         rescueSupplyRepository.saveAll(rescueSupplyList);
     }
 
-
     private WaterPlace createWaterPlace(JSONObject item) {
         double x = item.getDouble("X");
         double y = item.getDouble("Y");
@@ -501,28 +507,49 @@ public class OpenApiServiceImpl implements OpenApiService {
     }
 
     private WaterPlaceDetail createWaterPlaceDetail(JSONObject item, WaterPlace waterPlace) {
+
+        double waterTemperature = generateRandomValue(20.0, 30.0);
+        double bod = generateRandomValue(0.0, 6.0);
+        double turbidity = generateRandomValue(1.0, 50.0);
+
         return WaterPlaceDetail.builder()
                 .waterPlace(waterPlace)
-                .waterPlaySegment(item.getString("WTRPLAY_SEC"))
+                .waterPlaceSegment(item.getString("WTRPLAY_SEC"))
                 .deepestDepth(item.getString("WTRPLAY_DEEP"))
                 .avgDepth(item.getString("WTRPLAY_DEEP_AVG"))
                 .annualVisitors(item.optString("YEAR_VISITOR", ""))
                 .dangerSegments(item.optString("WTRPLAY_ER", ""))
                 .dangerSignboardsNum(item.optString("ER_SIGN_CO", ""))
                 .safetyMeasures(item.optString("SAFETY_ACT", ""))
+                .waterTemperature(roundToOneDecimalPlace(waterTemperature))
+                .bod(roundToOneDecimalPlace(bod))
+                .turbidity(roundToOneDecimalPlace(turbidity))
                 .build();
+    }
+
+    private double generateRandomValue(double minValue, double maxValue) {
+        Random random = new Random();
+        return minValue + (maxValue - minValue) * random.nextDouble();
+    }
+
+    private double roundToOneDecimalPlace(double value) {
+        return Math.round(value * 10.0) / 10.0;
     }
 
     private RescueSupply createRescueSupply(JSONObject item, WaterPlace waterPlace) {
         return RescueSupply.builder()
                 .waterPlace(waterPlace)
-                .lifeBoatNum(item.optInt("HUMNLF_RESCUSHIP_CNT", -1))
-                .portableStandNum(item.optInt("ROVNGNS_STANDS_CNT", -1))
-                .lifeJacketNum(item.optInt("RESCUE_VEST_CNT", -1))
-                .lifeRingNum(item.optInt("LIFEBUOY_CNT", -1))
-                .rescueRopeNum(item.optInt("RESCUE_ROPE_CNT", -1))
-                .rescueRodNum(item.optInt("RESCUBNG_CNT", -1))
+                .lifeBoatNum(getIntValueFromItem(item, "HUMNLF_RESCUSHIP_CNT"))
+                .portableStandNum(getIntValueFromItem(item, "ROVNGNS_STANDS_CNT"))
+                .lifeJacketNum(getIntValueFromItem(item, "RESCUE_VEST_CNT"))
+                .lifeRingNum(getIntValueFromItem(item, "LIFEBUOY_CNT"))
+                .rescueRopeNum(getIntValueFromItem(item, "RESCUE_ROPE_CNT"))
+                .rescueRodNum(getIntValueFromItem(item, "RESCUBNG_CNT"))
                 .build();
+    }
+
+    private int getIntValueFromItem(JSONObject item, String key) {
+        return item.optInt(key, -1);
     }
 
     private JSONObject fetchWaterPlacesData() {

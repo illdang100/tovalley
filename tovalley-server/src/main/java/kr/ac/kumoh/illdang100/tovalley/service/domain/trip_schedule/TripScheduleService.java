@@ -3,6 +3,7 @@ package kr.ac.kumoh.illdang100.tovalley.service.domain.trip_schedule;
 import kr.ac.kumoh.illdang100.tovalley.domain.trip_schedule.TripSchedule;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.Map;
 
 /**
@@ -23,5 +24,5 @@ public interface TripScheduleService {
 //    List<TripScheduleDetailRespDto> getPastTripSchedulesByMemberId(Long memberId);
 
     // 날짜별 물놀이 장소 여행자 수 (Map<LocalDate, Integer>)
-//    List<WaterPlaceVisitorCntRespDto> getTravelAttendeesByWaterPlaceId(String waterPlaceId);
+    Map<LocalDate, Integer> getTripAttendeesByWaterPlace(Long waterPlaceId, YearMonth yearMonth);
 }

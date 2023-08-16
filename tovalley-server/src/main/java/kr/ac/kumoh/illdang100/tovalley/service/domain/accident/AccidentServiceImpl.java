@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.Map;
 import java.util.function.ToIntFunction;
 
 import static kr.ac.kumoh.illdang100.tovalley.dto.page.MainPageRespDto.*;
+import static kr.ac.kumoh.illdang100.tovalley.dto.page.WaterPlaceDetailPageRespDto.*;
 
 @Slf4j
 @Service
@@ -92,5 +94,40 @@ public class AccidentServiceImpl implements AccidentService {
 
     private Integer calculateTotal(List<AccidentCountPerMonthDto> list, ToIntFunction<AccidentCountPerMonthDto> mapper) {
         return list.stream().mapToInt(mapper).sum();
+    }
+
+    /**
+     * @methodnme: getAccidentsFor5YearsByWaterPlace
+     * @author: JYeonJun
+     * @param waterPlaceId: 물놀이 장소 pk
+     * @description: 물놀이 장소에서 발생한 최근 5년간 사건사고 현황 정보 조회
+     * @return: 사건사고 현황 정보
+     */
+    @Override
+    public WaterPlaceAccidentFor5YearsDto getAccidentsFor5YearsByWaterPlace(Long waterPlaceId) {
+        LocalDate fiveYearsAgo = LocalDate.now().minusYears(5);
+
+        List<Accident> accidents =
+                accidentRepository.findByWaterPlaceIdAndAccidentDateAfter(waterPlaceId, fiveYearsAgo);
+
+        int totalDeathCnt = 0;
+        int totalDisappearanceCnt = 0;
+        int totalInjuryCnt = 0;
+
+        for (Accident accident : accidents) {
+            switch (accident.getAccidentCondition()) {
+                case DEATH:
+                    totalDeathCnt += accident.getPeopleNum();
+                    break;
+                case DISAPPEARANCE:
+                    totalDisappearanceCnt += accident.getPeopleNum();
+                    break;
+                case INJURY:
+                    totalInjuryCnt += accident.getPeopleNum();
+                    break;
+            }
+        }
+
+        return new WaterPlaceAccidentFor5YearsDto(totalDeathCnt, totalDisappearanceCnt, totalInjuryCnt);
     }
 }

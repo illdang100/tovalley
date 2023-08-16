@@ -3,7 +3,7 @@ package kr.ac.kumoh.illdang100.tovalley.service.domain.weather;
 import java.util.List;
 
 import static kr.ac.kumoh.illdang100.tovalley.dto.page.MainPageRespDto.*;
-import static kr.ac.kumoh.illdang100.tovalley.dto.weather.WeatherRespDto.*;
+import static kr.ac.kumoh.illdang100.tovalley.dto.page.WaterPlaceDetailPageRespDto.*;
 
 public interface WeatherService {
 
@@ -21,10 +21,10 @@ public interface WeatherService {
     AlertRespDto getAllSpecialWeathers();
 
     /**
-     * 특정 계곡의 날씨 정보를 가져옵니다.
+     * 특정 물놀이 장소의 날씨 정보를 가져옵니다.
      *
-     * @param waterPlaceId 특정 계곡의 ID
-     * @return 특정 계곡의 날씨 정보
+     * @param waterPlaceId 특정 물놀이 장소의 ID
+     * @return 특정 물놀이 장소의 날씨 정보
      */
-    WaterPlaceWeatherRespDto getValleyWeatherData(Long waterPlaceId);
+    List<DailyWaterPlaceWeatherDto> getWaterPlaceWeatherData(Long waterPlaceId);
 }

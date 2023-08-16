@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 import static kr.ac.kumoh.illdang100.tovalley.dto.page.MainPageRespDto.*;
+import static kr.ac.kumoh.illdang100.tovalley.dto.page.WaterPlaceDetailPageRespDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.water_place.WaterPlaceReqDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.water_place.WaterPlaceRespDto.*;
 
@@ -16,4 +17,8 @@ public interface WaterPlaceService {
 
     // 평점순 || 리뷰순 인기 물놀이 지역 리스트(4개) 조회
     List<NationalPopularWaterPlacesDto> getPopularWaterPlaces(String cond);
+
+    WaterPlaceDetailRespDto getWaterPlaceDetailByWaterPlace(Long waterPlaceId);
+
+    RescueSupplyRespDto getRescueSuppliesByWaterPlace(Long waterPlaceId);
 }

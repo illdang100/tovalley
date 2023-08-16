@@ -1,5 +1,9 @@
 package kr.ac.kumoh.illdang100.tovalley.service;
 
+import kr.ac.kumoh.illdang100.tovalley.domain.weather.water_place_weather.WaterPlaceWeather;
+
+import java.util.List;
+
 public interface OpenApiService {
 
     /**
@@ -16,10 +20,9 @@ public interface OpenApiService {
     void fetchAndSaveSpecialWeatherData();
 
     /**
-     * 전국 물놀이 지역 날씨를 Open API로부터 가져와 데이터베이스에 저장
-     * 이 메서드는 일정 시간마다 주기적으로 실행된다.
+     * 특정 물놀이 장소 날씨를 Open API로부터 가져와 데이터베이스에 저장
      */
-    void fetchAndSaveAllWaterPlaceWeatherData();
+    List<WaterPlaceWeather> fetchAndSaveWaterPlaceWeatherData(Long waterPlaceId);
 
     /**
      * 전국 물놀이 지역 정보를 Open API로부터 가져와 데이터베이스에 저장
