@@ -117,19 +117,19 @@ class ReviewRepositoryImplTest extends DummyObject {
         WaterPlace waterPlace1 = waterPlaceRepository.save(newWaterPlace("서울계곡", "서울특별시", 4.9, 2010));
         WaterPlace waterPlace2 = waterPlaceRepository.save(newWaterPlace("서울계곡", "서울특별시", 4.9, 2010));
 
-        reviewRepository.save(newReview(waterPlace1, member2, "content2", 2.0));
-        reviewRepository.save(newReview(waterPlace1, member3, "content3", 3.0));
-        reviewRepository.save(newReview(waterPlace1, member4, "content4", 4.0));
-        reviewRepository.save(newReview(waterPlace1, member6, "content6", 4.0));
-        reviewRepository.save(newReview(waterPlace1, member1, "content1", 1.0));
-        reviewRepository.save(newReview(waterPlace1, member5, "content5", 5.0));
+        reviewRepository.save(newReview(waterPlace1, member2, "content2", 2, waterPlaceRepository));
+        reviewRepository.save(newReview(waterPlace1, member3, "content3", 3, waterPlaceRepository));
+        reviewRepository.save(newReview(waterPlace1, member4, "content4", 4, waterPlaceRepository));
+        reviewRepository.save(newReview(waterPlace1, member6, "content6", 4, waterPlaceRepository));
+        reviewRepository.save(newReview(waterPlace1, member1, "content1", 1, waterPlaceRepository));
+        reviewRepository.save(newReview(waterPlace1, member5, "content5", 5, waterPlaceRepository));
 
-        reviewRepository.save(newReview(waterPlace2, member2, "content2", 2.0));
-        reviewRepository.save(newReview(waterPlace2, member3, "content3", 3.0));
-        reviewRepository.save(newReview(waterPlace2, member4, "content4", 4.0));
-        reviewRepository.save(newReview(waterPlace2, member6, "content6", 4.0));
-        reviewRepository.save(newReview(waterPlace2, member1, "content1", 1.0));
-        reviewRepository.save(newReview(waterPlace2, member5, "content5", 5.0));
+        reviewRepository.save(newReview(waterPlace2, member2, "content2", 2, waterPlaceRepository));
+        reviewRepository.save(newReview(waterPlace2, member3, "content3", 3, waterPlaceRepository));
+        reviewRepository.save(newReview(waterPlace2, member4, "content4", 4, waterPlaceRepository));
+        reviewRepository.save(newReview(waterPlace2, member6, "content6", 4, waterPlaceRepository));
+        reviewRepository.save(newReview(waterPlace2, member1, "content1", 1, waterPlaceRepository));
+        reviewRepository.save(newReview(waterPlace2, member5, "content5", 5, waterPlaceRepository));
     }
 
     private void autoIncrementReset() {
