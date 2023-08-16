@@ -1,7 +1,6 @@
 package kr.ac.kumoh.illdang100.tovalley.web.page;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kr.ac.kumoh.illdang100.tovalley.domain.ProvinceEnum;
 import kr.ac.kumoh.illdang100.tovalley.domain.accident.Accident;
 import kr.ac.kumoh.illdang100.tovalley.domain.accident.AccidentEnum;
 import kr.ac.kumoh.illdang100.tovalley.domain.accident.AccidentRepository;
@@ -11,7 +10,6 @@ import kr.ac.kumoh.illdang100.tovalley.domain.weather.national_weather.NationalR
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.national_weather.NationalRegionRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.national_weather.NationalWeatherRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.special_weather.*;
-import kr.ac.kumoh.illdang100.tovalley.dto.page.MainPageReqDto;
 import kr.ac.kumoh.illdang100.tovalley.dummy.DummyObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,11 +27,9 @@ import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import static kr.ac.kumoh.illdang100.tovalley.dto.page.MainPageReqDto.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.web.servlet.function.RequestPredicates.contentType;
 
 @ActiveProfiles("test")
 @AutoConfigureMockMvc

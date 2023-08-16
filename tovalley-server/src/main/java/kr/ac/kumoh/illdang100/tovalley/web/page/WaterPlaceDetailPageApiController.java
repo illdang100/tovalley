@@ -3,16 +3,9 @@ package kr.ac.kumoh.illdang100.tovalley.web.page;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.ac.kumoh.illdang100.tovalley.dto.ResponseDto;
-import kr.ac.kumoh.illdang100.tovalley.dto.review.ReviewRespDto;
-import kr.ac.kumoh.illdang100.tovalley.service.domain.accident.AccidentService;
-import kr.ac.kumoh.illdang100.tovalley.service.domain.review.ReviewService;
-import kr.ac.kumoh.illdang100.tovalley.service.domain.trip_schedule.TripScheduleService;
-import kr.ac.kumoh.illdang100.tovalley.service.domain.water_place.WaterPlaceService;
-import kr.ac.kumoh.illdang100.tovalley.service.domain.weather.WeatherService;
 import kr.ac.kumoh.illdang100.tovalley.service.page.WaterPlaceDetailPageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -30,11 +23,6 @@ import static kr.ac.kumoh.illdang100.tovalley.dto.page.WaterPlaceDetailPageRespD
 public class WaterPlaceDetailPageApiController {
 
     private final WaterPlaceDetailPageService waterPlaceDetailPageService;
-    private final ReviewService reviewService;
-    private final WaterPlaceService waterPlaceService;
-    private final WeatherService weatherService;
-    private final AccidentService accidentService;
-    private final TripScheduleService tripScheduleService;
 
     @GetMapping("/auth/water-places/{id}")
     @Operation(summary = "물놀이 장소 상세보기 화면", description = "물놀이 장소 상세보기 페이지 정보를 반환합니다.")

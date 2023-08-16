@@ -9,7 +9,9 @@ import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberEnum;
 import kr.ac.kumoh.illdang100.tovalley.domain.review.Review;
 import kr.ac.kumoh.illdang100.tovalley.domain.review.ReviewImage;
 import kr.ac.kumoh.illdang100.tovalley.domain.trip_schedule.TripSchedule;
+import kr.ac.kumoh.illdang100.tovalley.domain.water_place.RescueSupply;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlace;
+import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlaceDetail;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlaceRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.national_weather.NationalRegion;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.national_weather.NationalWeather;
@@ -227,5 +229,53 @@ public class DummyObject {
                 .content(content)
                 .build();
 
+    }
+
+    protected WaterPlaceWeather newWaterPlaceWeather (WaterPlace waterPlace, LocalDate date) {
+
+        return WaterPlaceWeather.builder()
+                .waterPlace(waterPlace)
+                .climate("Rain")
+                .climateIcon("10d")
+                .climateDescription("굵은 비")
+                .lowestTemperature(11.1)
+                .highestTemperature(28.9)
+                .weatherDate(date)
+                .humidity(18)
+                .windSpeed(0.48)
+                .rainPrecipitation(11.1)
+                .clouds(10)
+                .dayFeelsLike(25.5)
+                .build();
+    }
+
+    protected WaterPlaceDetail newWaterPlaceDetail (WaterPlace waterPlace) {
+
+        return WaterPlaceDetail.builder()
+                .waterPlace(waterPlace)
+                .waterPlaceSegment("10")
+                .deepestDepth("5")
+                .avgDepth("1")
+                .annualVisitors("2.5")
+                .dangerSegments("1")
+                .dangerSignboardsNum("10")
+                .safetyMeasures("안전조치사항")
+                .waterTemperature(25.8)
+                .bod(4.5)
+                .turbidity(2.3)
+                .build();
+    }
+
+    protected RescueSupply newRescueSupply (WaterPlace waterPlace) {
+
+        return RescueSupply.builder()
+                .waterPlace(waterPlace)
+                .lifeBoatNum(10)
+                .portableStandNum(10)
+                .lifeJacketNum(10)
+                .lifeRingNum(10)
+                .rescueRopeNum(10)
+                .rescueRodNum(10)
+                .build();
     }
 }
