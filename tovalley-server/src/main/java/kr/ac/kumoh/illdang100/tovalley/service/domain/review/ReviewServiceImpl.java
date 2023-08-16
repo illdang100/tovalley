@@ -13,9 +13,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static kr.ac.kumoh.illdang100.tovalley.dto.page.WaterPlaceDetailPageRespDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.review.ReviewRespDto.*;
@@ -63,8 +63,15 @@ public class ReviewServiceImpl implements ReviewService {
 
         List<Review> allReviews = reviewRepository.findAllByWaterPlace_Id(waterPlaceId);
 
-        Map<Integer, Long> ratingRatioMap = allReviews.stream()
-                .collect(Collectors.groupingBy(Review::getRating, Collectors.counting()));
+        Map<Integer, Long> ratingRatioMap = new HashMap<>();
+        for (int i = 1; i <= 5; i++) {
+            ratingRatioMap.put(i, 0L);
+        }
+
+        allReviews.forEach(review -> {
+            int rating = review.getRating();
+            ratingRatioMap.put(rating, ratingRatioMap.getOrDefault(rating, 0L) + 1);
+        });
 
         Page<WaterPlaceReviewRespDto> reviewsByWaterPlaceId = reviewRepository.findReviewsByWaterPlaceId(waterPlaceId, pageable);
 
