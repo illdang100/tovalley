@@ -18,13 +18,13 @@ public class ReviewRespDto {
         private Long reviewId;
         private String memberProfileImg;
         private String nickname;
-        private Double rating;
+        private Integer rating;
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
         private LocalDateTime createdReviewDate;
         private String content;
         private List<String> reviewImages;
 
-        public WaterPlaceReviewRespDto(Long reviewId, String memberProfileImg, String nickname, Double rating, LocalDateTime createdReviewDate, String content) {
+        public WaterPlaceReviewRespDto(Long reviewId, String memberProfileImg, String nickname, Integer rating, LocalDateTime createdReviewDate, String content) {
             this.reviewId = reviewId;
             this.memberProfileImg = memberProfileImg;
             this.nickname = nickname;

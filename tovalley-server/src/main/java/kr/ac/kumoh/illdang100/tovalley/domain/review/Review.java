@@ -31,5 +31,5 @@ public class Review extends BaseTimeEntity {
     private String reviewContent;
 
     @Column(nullable = false)
-    private Double rating;
+    private Integer rating;
 }
