@@ -125,5 +125,6 @@ public class MainPageRespDto {
         private String location; // province + city
         private String rating; // 평점
         private Integer reviewCnt; // 리뷰 개수
+        private String waterPlaceImageUrl; // 물놀이 지역 이미지
     }
 }
