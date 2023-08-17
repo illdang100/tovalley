@@ -104,7 +104,7 @@ public class WaterPlaceServiceImpl implements WaterPlaceService {
 
     private WaterPlaceDetailRespDto createWaterPlaceDetailRespDto(WaterPlace waterPlace, Coordinate coordinate, WaterPlaceDetail waterPlaceDetail) {
         return WaterPlaceDetailRespDto.builder()
-                .waterPlaceImage(null) // TODO: 추후 물놀이 장소 이미지 필드 추가되면 추가
+                .waterPlaceImage(waterPlace.getWaterPlaceImageUrl())
                 .waterPlaceName(waterPlace.getWaterPlaceName())
                 .latitude(coordinate.getLatitude())
                 .longitude(coordinate.getLongitude())
