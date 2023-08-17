@@ -193,7 +193,9 @@ public class OpenApiServiceImpl implements OpenApiService {
             rd.close();
             conn.disconnect();
 
-            return new JSONObject(sb.toString());
+            String result = sb.toString();
+            log.debug("special weather open api result = {}", result);
+            return new JSONObject(result);
         } catch (IOException e) {
             throw new CustomApiException(e.getMessage());
         }
