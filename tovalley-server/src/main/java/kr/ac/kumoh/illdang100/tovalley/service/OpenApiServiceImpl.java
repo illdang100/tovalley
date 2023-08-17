@@ -1,6 +1,7 @@
 package kr.ac.kumoh.illdang100.tovalley.service;
 
 import kr.ac.kumoh.illdang100.tovalley.domain.Coordinate;
+import kr.ac.kumoh.illdang100.tovalley.domain.ImageFile;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.*;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.national_weather.NationalRegion;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.national_weather.NationalRegionRepository;
@@ -16,13 +17,16 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.locationtech.proj4j.*;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -47,6 +51,8 @@ public class OpenApiServiceImpl implements OpenApiService {
     @Value("${key.waterplace}")
     private String waterPlaceKey;
 
+    @Value("${key.googlemap}")
+    private String googleMapKey;
     private static final String PROJECTED_CRS = "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs";
     private static final String WGS84_CRS = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
 
@@ -61,6 +67,8 @@ public class OpenApiServiceImpl implements OpenApiService {
 
     private final NationalRegionRepository nationalRegionRepository;
     private final NationalWeatherRepository nationalWeatherRepository;
+
+    private final S3Service s3Service;
 
     /**
      * @methodnme: fetchAndSaveNationalWeatherData
@@ -452,11 +460,14 @@ public class OpenApiServiceImpl implements OpenApiService {
         for (int i = 0; i < items.length(); i++) {
             JSONObject item = items.getJSONObject(i);
 
-            if (!isWaterPlaceExist(item.getString("WTRPLAY_PLC_NM"))) {
+            String waterPlaceName = item.getString("WTRPLAY_PLC_NM");
+            String wpName = waterPlaceName.replaceAll("\\s", "");
 
+            if (!isWaterPlaceExist(waterPlaceName)) {
                 // TODO: 물놀이 장소 사진 넣는 작업 필요!!
+                String waterPlaceImageUrl = saveWaterPlaceImage(wpName);
+                WaterPlace waterPlace = createWaterPlace(item, waterPlaceImageUrl);
 
-                WaterPlace waterPlace = createWaterPlace(item);
                 WaterPlaceDetail waterPlaceDetail = createWaterPlaceDetail(item, waterPlace);
                 RescueSupply rescueSupply = createRescueSupply(item, waterPlace);
 
@@ -483,7 +494,7 @@ public class OpenApiServiceImpl implements OpenApiService {
         rescueSupplyRepository.saveAll(rescueSupplyList);
     }
 
-    private WaterPlace createWaterPlace(JSONObject item) {
+    private WaterPlace createWaterPlace(JSONObject item, String waterPlaceImageUrl) {
         double x = item.getDouble("X");
         double y = item.getDouble("Y");
         double[] latLng = convertToLatLon(x, y);
@@ -505,6 +516,7 @@ public class OpenApiServiceImpl implements OpenApiService {
                 .coordinate(coordinate)
                 .managementType(item.getString("MANAGEMENT_TYPE"))
                 .rating(0.0)
+                .waterPlaceImageUrl(waterPlaceImageUrl)
                 .build();
     }
 
@@ -603,5 +615,120 @@ public class OpenApiServiceImpl implements OpenApiService {
         CoordinateReferenceSystem targetCRS = crsFactory.createFromParameters("targetCRS", targetCrs);
         CoordinateTransformFactory ctFactory = new CoordinateTransformFactory();
         return ctFactory.createTransform(sourceCRS, targetCRS);
+    }
+
+    /**
+     * 물놀이 장소 사진 저장
+     * @param waterPlaceName
+     * @return
+     */
+    private String saveWaterPlaceImage(String waterPlaceName) {
+        try {
+            String placeId = findPlaceId(waterPlaceName);
+            if (placeId == null || placeId.trim().isEmpty())
+                return null;
+
+            List<String> photoAttributions = findPhotoAttributions(placeId);
+            if (photoAttributions == null || photoAttributions.isEmpty())
+                return null;
+
+            String imageUrl = findPlaceImage(photoAttributions, FileRootPathVO.WATER_PLACE_PATH, waterPlaceName);
+            log.info("waterPlace={} url={}", waterPlaceName, imageUrl);
+
+            return imageUrl;
+        } catch (IOException e) {
+            throw new CustomApiException("사진 저장을 실패했습니다.\n" + e.getMessage());
+        }
+    }
+
+    private String findPlaceImage(List<String> photoAttributions, String fileRootPath, String waterPlaceName) throws IOException {
+        String apiUrl = "https://maps.googleapis.com/maps/api/place/photo";
+        Map<String, String> params = new HashMap<>();
+        params.put("photo_reference", photoAttributions.get(1));
+        params.put("maxwidth", photoAttributions.get(0));
+
+        String googleApiUrl = buildGoogleApiUrl(apiUrl, params);
+        URL url = new URL(googleApiUrl);
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+
+        InputStream inputStream = con.getInputStream();
+        byte[] imageBytes = inputStream.readAllBytes();
+
+        String filaName = "_" + waterPlaceName + ".jpg";
+
+        MultipartFile multipartFile = new MockMultipartFile(filaName, filaName, "image/jpeg", imageBytes);
+        ImageFile uploadFile = s3Service.upload(multipartFile, fileRootPath);
+
+        return uploadFile.getStoreFileUrl();
+    }
+
+    private List<String> findPhotoAttributions(String placeId) throws IOException {
+        String apiUrl = "https://maps.googleapis.com/maps/api/place/details/json";
+        String field = "photos";
+        Map<String, String> params = new HashMap<>();
+        params.put("place_id", placeId);
+        params.put("fields", field);
+        String googleApiUrl = buildGoogleApiUrl(apiUrl, params);
+
+
+        JSONObject jsonResponse = getJsonObject(googleApiUrl);
+        JSONObject result = jsonResponse.getJSONObject("result");
+        if (result.isEmpty()) return null;
+        JSONArray photos = result.getJSONArray("photos");
+        JSONObject jsonObject = photos.getJSONObject(0);
+        String width = jsonObject.get("width").toString();
+        String photoReference = jsonObject.get("photo_reference").toString();
+
+        return Arrays.asList(width, photoReference);
+    }
+
+    private String findPlaceId(String waterPlaceName) throws IOException {
+        String apiUrl = "https://maps.googleapis.com/maps/api/place/findplacefromtext/json";
+        StringBuilder sb = new StringBuilder(apiUrl);
+        String inputType = "textquery";
+        Map<String, String> params = new HashMap<>();
+        params.put("input", waterPlaceName);
+        params.put("inputtype", inputType);
+        String googleApiUrl = buildGoogleApiUrl(apiUrl, params);
+
+        JSONObject jsonResponse = getJsonObject(googleApiUrl);
+        JSONArray candidates = jsonResponse.getJSONArray("candidates");
+        if (candidates.isEmpty()) return null;
+        JSONObject jsonObject = candidates.getJSONObject(0);
+
+        return jsonObject.get("place_id").toString();
+    }
+
+    private String buildGoogleApiUrl(String baseUrl, Map<String, String> params) {
+        StringBuilder sb = new StringBuilder(baseUrl);
+        sb.append("?key=" + googleMapKey);
+        sb.append("&");
+
+        for (Map.Entry<String, String> entry : params.entrySet()) {
+            sb.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
+        }
+
+        sb.deleteCharAt(sb.length() - 1); // Remove the last '&' character
+
+        return sb.toString();
+    }
+
+    private static JSONObject getJsonObject(String apiUrl) throws IOException {
+        URL url = new URL(apiUrl);
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        String inputLine;
+        StringBuilder response = new StringBuilder();
+
+        while ((inputLine = reader.readLine()) != null) {
+            response.append(inputLine);
+        }
+
+        reader.close();
+        con.disconnect();
+
+        JSONObject jsonResponse = new JSONObject(response.toString());
+        return jsonResponse;
     }
 }

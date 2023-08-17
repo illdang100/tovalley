@@ -1,6 +1,7 @@
 package kr.ac.kumoh.illdang100.tovalley.domain.water_place;
 
 import kr.ac.kumoh.illdang100.tovalley.domain.Coordinate;
+import kr.ac.kumoh.illdang100.tovalley.domain.ImageFile;
 import lombok.*;
 
 import javax.persistence.*;
@@ -49,6 +50,9 @@ public class WaterPlace {
 
     @Column(nullable = false)
     private int reviewCount; // 리뷰 개수
+
+    @Column(length = 250)
+    private String waterPlaceImageUrl;
 
     public void calculateRating(Integer rating) {
         double sum = this.rating * reviewCount + rating;
