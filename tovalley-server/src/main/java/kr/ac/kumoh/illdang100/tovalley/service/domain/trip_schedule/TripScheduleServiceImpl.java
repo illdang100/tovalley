@@ -2,6 +2,9 @@ package kr.ac.kumoh.illdang100.tovalley.service.domain.trip_schedule;
 
 import kr.ac.kumoh.illdang100.tovalley.domain.trip_schedule.TripSchedule;
 import kr.ac.kumoh.illdang100.tovalley.domain.trip_schedule.TripScheduleRepository;
+import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlace;
+import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlaceRepository;
+import kr.ac.kumoh.illdang100.tovalley.handler.ex.CustomApiException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,6 +23,7 @@ import java.util.Map;
 public class TripScheduleServiceImpl implements TripScheduleService {
 
     private final TripScheduleRepository tripScheduleRepository;
+    private final WaterPlaceRepository waterPlaceRepository;
 
     @Override
     public TripSchedule addTripSchedule(Long memberId, Long waterPlaceId) {
@@ -42,6 +46,9 @@ public class TripScheduleServiceImpl implements TripScheduleService {
      */
     @Override
     public Map<LocalDate, Integer> getTripAttendeesByWaterPlace(Long waterPlaceId, YearMonth yearMonth) {
+
+        findWaterPlaceByWaterPlaceIdOrElseThrowEx(waterPlaceId);
+
         LocalDate firstDayOfMonth = yearMonth.atDay(1);
         LocalDate lastDayOfMonth = yearMonth.atEndOfMonth();
 
@@ -59,5 +66,11 @@ public class TripScheduleServiceImpl implements TripScheduleService {
         }
 
         return attendeesByDate;
+    }
+
+    private WaterPlace findWaterPlaceByWaterPlaceIdOrElseThrowEx(Long waterPlaceId) {
+        WaterPlace findWaterPlace = waterPlaceRepository.findById(waterPlaceId)
+                .orElseThrow(() -> new CustomApiException("물놀이 장소[" + waterPlaceId + "]가 존재하지 않습니다"));
+        return findWaterPlace;
     }
 }

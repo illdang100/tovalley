@@ -7,7 +7,5 @@ import java.util.List;
 
 public interface TripScheduleRepository extends JpaRepository<TripSchedule, Long> {
 
-    List<TripSchedule> findByWaterPlaceId(Long waterPlaceId);
-
     List<TripSchedule> findByWaterPlaceIdAndTripDateBetween(Long waterPlaceId, LocalDate firstDayOfMonth, LocalDate lastDayOfMonth);
 }
