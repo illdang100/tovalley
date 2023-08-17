@@ -115,8 +115,8 @@ public class DummyDevInit extends DummyObject {
             reviewImageRepository.save(newReviewImage(review6, "storeFileUrl6"));
 
             reviewRepository.save(newReview(b, member2, "content2", 3, waterPlaceRepository));
-            reviewRepository.save(newReview(b, member3, "content3", 3, waterPlaceRepository));
-            reviewRepository.save(newReview(b, member4, "content4", 3, waterPlaceRepository));
+            reviewRepository.save(newReview(b, member3, "content3", 5, waterPlaceRepository));
+            reviewRepository.save(newReview(b, member4, "content4", 5, waterPlaceRepository));
             reviewRepository.save(newReview(b, member6, "content6", 4, waterPlaceRepository));
             reviewRepository.save(newReview(b, member1, "content1", 1, waterPlaceRepository));
             reviewRepository.save(newReview(b, member5, "content5", 5, waterPlaceRepository));
