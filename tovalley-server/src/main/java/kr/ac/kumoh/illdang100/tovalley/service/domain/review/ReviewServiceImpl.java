@@ -1,6 +1,8 @@
 package kr.ac.kumoh.illdang100.tovalley.service.domain.review;
 
 import kr.ac.kumoh.illdang100.tovalley.domain.review.Review;
+import kr.ac.kumoh.illdang100.tovalley.domain.review.ReviewImage;
+import kr.ac.kumoh.illdang100.tovalley.domain.review.ReviewImageRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.review.ReviewRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlace;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlaceRepository;
@@ -16,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static kr.ac.kumoh.illdang100.tovalley.dto.page.WaterPlaceDetailPageRespDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.review.ReviewRespDto.*;
@@ -28,6 +31,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     private final ReviewRepository reviewRepository;
     private final WaterPlaceRepository waterPlaceRepository;
+    private final ReviewImageRepository reviewImageRepository;
 
     @Override
     public Review writeReview(Long memberId, Long waterPlaceId) {
@@ -63,22 +67,42 @@ public class ReviewServiceImpl implements ReviewService {
 
         List<Review> allReviews = reviewRepository.findAllByWaterPlace_Id(waterPlaceId);
 
-        Map<Integer, Long> ratingRatioMap = new HashMap<>();
-        for (int i = 1; i <= 5; i++) {
-            ratingRatioMap.put(i, 0L);
-        }
-
-        allReviews.forEach(review -> {
-            int rating = review.getRating();
-            ratingRatioMap.put(rating, ratingRatioMap.getOrDefault(rating, 0L) + 1);
-        });
+        Map<Integer, Long> ratingRatioMap = calculateRatingRatioMap(allReviews);
 
         Page<WaterPlaceReviewRespDto> reviewsByWaterPlaceId = reviewRepository.findReviewsByWaterPlaceId(waterPlaceId, pageable);
 
         double formattedRating = formatRating(findWaterPlace.getRating());
 
+        includeReviewImages(reviewsByWaterPlaceId.getContent());
+
         return new WaterPlaceReviewDetailRespDto(formattedRating, findWaterPlace.getReviewCount(), ratingRatioMap, reviewsByWaterPlaceId);
     }
+
+    private Map<Integer, Long> calculateRatingRatioMap(List<Review> reviews) {
+        Map<Integer, Long> ratingRatioMap = new HashMap<>();
+        for (int i = 1; i <= 5; i++) {
+            ratingRatioMap.put(i, 0L);
+        }
+
+        reviews.forEach(review -> {
+            int rating = review.getRating();
+            ratingRatioMap.put(rating, ratingRatioMap.getOrDefault(rating, 0L) + 1);
+        });
+
+        return ratingRatioMap;
+    }
+
+    private void includeReviewImages(List<WaterPlaceReviewRespDto> reviews) {
+        for (WaterPlaceReviewRespDto review : reviews) {
+            Long reviewId = review.getReviewId();
+            List<ReviewImage> reviewImages = reviewImageRepository.findByReview_Id(reviewId);
+            List<String> reviewStoreFileUrls = reviewImages.stream()
+                    .map(image -> image.getImageFile().getStoreFileUrl())
+                    .collect(Collectors.toList());
+            review.setReviewImages(reviewStoreFileUrls);
+        }
+    }
+
 
     private WaterPlace findWaterPlaceByWaterPlaceIdOrElseThrowEx(Long waterPlaceId) {
         WaterPlace findWaterPlace = waterPlaceRepository.findById(waterPlaceId)

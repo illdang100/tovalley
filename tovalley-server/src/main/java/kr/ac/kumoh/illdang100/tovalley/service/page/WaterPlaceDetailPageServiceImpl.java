@@ -1,7 +1,5 @@
 package kr.ac.kumoh.illdang100.tovalley.service.page;
 
-import kr.ac.kumoh.illdang100.tovalley.domain.review.ReviewImage;
-import kr.ac.kumoh.illdang100.tovalley.domain.review.ReviewImageRepository;
 import kr.ac.kumoh.illdang100.tovalley.service.domain.accident.AccidentService;
 import kr.ac.kumoh.illdang100.tovalley.service.domain.review.ReviewService;
 import kr.ac.kumoh.illdang100.tovalley.service.domain.trip_schedule.TripScheduleService;
@@ -18,10 +16,8 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static kr.ac.kumoh.illdang100.tovalley.dto.page.WaterPlaceDetailPageRespDto.*;
-import static kr.ac.kumoh.illdang100.tovalley.dto.review.ReviewRespDto.*;
 
 @Slf4j
 @Service
@@ -30,7 +26,6 @@ import static kr.ac.kumoh.illdang100.tovalley.dto.review.ReviewRespDto.*;
 public class WaterPlaceDetailPageServiceImpl implements WaterPlaceDetailPageService {
 
     private final ReviewService reviewService;
-    private final ReviewImageRepository reviewImageRepository;
     private final WeatherService weatherService;
     private final WaterPlaceService waterPlaceService;
     private final AccidentService accidentService;
@@ -51,7 +46,6 @@ public class WaterPlaceDetailPageServiceImpl implements WaterPlaceDetailPageServ
         WaterPlaceAccidentFor5YearsDto accidentsFor5Years = getAccidentsFor5Years(waterPlaceId);
         Map<LocalDate, Integer> travelPlans = getTravelPlans(waterPlaceId);
         WaterPlaceReviewDetailRespDto reviewDetailRespDto = getReviews(waterPlaceId, pageable);
-        includeReviewImages(reviewDetailRespDto.getReviews().getContent());
 
         return new WaterPlaceDetailAllRespDto(waterPlaceWeathers, waterPlaceDetail, rescueSupplies,
                 accidentsFor5Years, travelPlans, reviewDetailRespDto);
@@ -79,16 +73,5 @@ public class WaterPlaceDetailPageServiceImpl implements WaterPlaceDetailPageServ
 
     private WaterPlaceReviewDetailRespDto getReviews(Long waterPlaceId, Pageable pageable) {
         return reviewService.getReviewsByWaterPlaceId(waterPlaceId, pageable);
-    }
-
-    private void includeReviewImages(List<WaterPlaceReviewRespDto> reviews) {
-        for (WaterPlaceReviewRespDto review : reviews) {
-            Long reviewId = review.getReviewId();
-            List<ReviewImage> reviewImages = reviewImageRepository.findByReview_Id(reviewId);
-            List<String> reviewStoreFileUrls = reviewImages.stream()
-                    .map(image -> image.getImageFile().getStoreFileUrl())
-                    .collect(Collectors.toList());
-            review.setReviewImages(reviewStoreFileUrls);
-        }
     }
 }
