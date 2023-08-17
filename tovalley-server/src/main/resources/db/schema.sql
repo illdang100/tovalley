@@ -27,6 +27,7 @@ CREATE TABLE IF NOT EXISTS `water_place` (
                                `management_type`	VARCHAR(8)	NOT NULL,
                                `rating`	DOUBLE	NOT NULL,
                                `review_count` INT NOT NULL,
+                               `water_place_image_url`	VARCHAR(250) NULL,
     primary key (water_place_id)
 ) engine=InnoDB;
 
@@ -150,6 +151,13 @@ CREATE TABLE IF NOT EXISTS `water_place_detail` (
                                       `bod` DOUBLE NULL,
                                       `turbidity` DOUBLE NULL,
     primary key (water_place_detail_id)
+) engine=InnoDB;
+
+CREATE TABLE IF NOT EXISTS `email_code` (
+                                            `email_code_id`	BIGINT	NOT NULL AUTO_INCREMENT,
+                                            `email`	VARCHAR(25)	NOT NULL,
+                                            `verify_code`	VARCHAR(7)	NOT NULL,
+    primary key (email_code_id)
 ) engine=InnoDB;
 
 alter table member
