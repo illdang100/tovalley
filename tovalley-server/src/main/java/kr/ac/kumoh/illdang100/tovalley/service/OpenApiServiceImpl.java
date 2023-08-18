@@ -1,6 +1,7 @@
 package kr.ac.kumoh.illdang100.tovalley.service;
 
 import kr.ac.kumoh.illdang100.tovalley.domain.Coordinate;
+import kr.ac.kumoh.illdang100.tovalley.domain.FileRootPathVO;
 import kr.ac.kumoh.illdang100.tovalley.domain.ImageFile;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.*;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.national_weather.NationalRegion;
@@ -53,6 +54,7 @@ public class OpenApiServiceImpl implements OpenApiService {
 
     @Value("${key.googlemap}")
     private String googleMapKey;
+
     private static final String PROJECTED_CRS = "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs";
     private static final String WGS84_CRS = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
 
