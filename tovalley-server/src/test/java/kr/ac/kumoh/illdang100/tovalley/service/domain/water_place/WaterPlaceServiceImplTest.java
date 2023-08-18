@@ -2,17 +2,20 @@ package kr.ac.kumoh.illdang100.tovalley.service.domain.water_place;
 
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlace;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlaceRepository;
+import kr.ac.kumoh.illdang100.tovalley.dto.water_place.WaterPlaceRespDto.RetrieveWaterPlacesDto;
 import kr.ac.kumoh.illdang100.tovalley.dummy.DummyObject;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static kr.ac.kumoh.illdang100.tovalley.dto.page.MainPageRespDto.*;
+import static kr.ac.kumoh.illdang100.tovalley.dto.water_place.WaterPlaceReqDto.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -79,5 +82,40 @@ class WaterPlaceServiceImplTest extends DummyObject {
 
         assertThat(result2.get(0).getWaterPlaceName()).isEqualTo("서울계곡");
         assertThat(result2.get(7).getWaterPlaceName()).isEqualTo("울릉계곡");
+    }
+
+    @Test
+    public void findWaterPlaceList_테스트() {
+
+        // given
+        List<RetrieveWaterPlacesDto> waterPlaceDtoList = new ArrayList<>();
+        RetrieveWaterPlacesDto retrieveWaterPlacesDto1 = new RetrieveWaterPlacesDto(1L, "서울계곡", "종로구", 4.9, 50, "중점관리지역", "계곡");
+        RetrieveWaterPlacesDto retrieveWaterPlacesDto2 = new RetrieveWaterPlacesDto(1L, "금오계곡", "형곡동", 4.8, 40, "중점관리지역", "계곡");
+        RetrieveWaterPlacesDto retrieveWaterPlacesDto3 = new RetrieveWaterPlacesDto(1L, "대전계곡", "서구", 4.7, 30, "중점관리지역", "계곡");
+        RetrieveWaterPlacesDto retrieveWaterPlacesDto4 = new RetrieveWaterPlacesDto(1L, "부산계곡", "중구", 4.6, 20, "중점관리지역", "계곡");
+        RetrieveWaterPlacesDto retrieveWaterPlacesDto5 = new RetrieveWaterPlacesDto(1L, "울산계곡", "북구", 4.5, 10, "중점관리지역", "계곡");
+
+        waterPlaceDtoList.add(retrieveWaterPlacesDto1);
+        waterPlaceDtoList.add(retrieveWaterPlacesDto2);
+        waterPlaceDtoList.add(retrieveWaterPlacesDto3);
+        waterPlaceDtoList.add(retrieveWaterPlacesDto4);
+        waterPlaceDtoList.add(retrieveWaterPlacesDto5);
+
+        RetrieveWaterPlacesCondition condition = new RetrieveWaterPlacesCondition("경상북도", null);
+        Pageable pageable = PageRequest.of(0, 5, Sort.by(Sort.Direction.DESC, "rating"));
+        Page<RetrieveWaterPlacesDto> page = new PageImpl<>(waterPlaceDtoList, pageable, waterPlaceDtoList.size());
+
+        // stub
+        when(waterPlaceRepository.findWaterPlaceList(any(), any())).thenReturn(page);
+
+        // when
+        Page<RetrieveWaterPlacesDto> waterPlaceList = waterPlaceRepository.findWaterPlaceList(condition, pageable);
+
+        // then
+        assertThat(waterPlaceList.getContent()).isEqualTo(page.getContent());
+        assertThat(waterPlaceList.getTotalElements()).isEqualTo(page.getTotalElements());
+        assertThat(waterPlaceList.getTotalPages()).isEqualTo(page.getTotalPages());
+        assertThat(waterPlaceList.getNumber()).isEqualTo(page.getNumber());
+        assertThat(waterPlaceList.getSize()).isEqualTo(page.getSize());
     }
 }
