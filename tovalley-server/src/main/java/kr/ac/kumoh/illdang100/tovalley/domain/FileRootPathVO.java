@@ -1,4 +1,4 @@
-package kr.ac.kumoh.illdang100.tovalley.domain.water_place;
+package kr.ac.kumoh.illdang100.tovalley.domain;
 
 public interface FileRootPathVO {
 

@@ -24,3 +24,10 @@
        enabled: true
    cache:
      disabled: true
+     
+ logging:
+   level:
+     com:
+       amazonaws:
+         util:
+           EC2MetadataUtils: error
