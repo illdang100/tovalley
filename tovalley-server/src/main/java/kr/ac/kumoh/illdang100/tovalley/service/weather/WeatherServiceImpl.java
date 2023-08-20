@@ -1,4 +1,4 @@
-package kr.ac.kumoh.illdang100.tovalley.service.domain.weather;
+package kr.ac.kumoh.illdang100.tovalley.service.weather;
 
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.national_weather.NationalWeather;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.national_weather.NationalWeatherRepository;
@@ -19,8 +19,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static kr.ac.kumoh.illdang100.tovalley.dto.page.MainPageRespDto.*;
-import static kr.ac.kumoh.illdang100.tovalley.dto.page.WaterPlaceDetailPageRespDto.*;
+import static kr.ac.kumoh.illdang100.tovalley.dto.weather.WeatherRespDto.*;
 
 @Slf4j
 @Service

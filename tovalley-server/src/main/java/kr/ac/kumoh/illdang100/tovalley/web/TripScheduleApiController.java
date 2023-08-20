@@ -3,7 +3,7 @@ package kr.ac.kumoh.illdang100.tovalley.web;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.ac.kumoh.illdang100.tovalley.dto.ResponseDto;
-import kr.ac.kumoh.illdang100.tovalley.service.domain.trip_schedule.TripScheduleService;
+import kr.ac.kumoh.illdang100.tovalley.service.trip_schedule.TripScheduleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

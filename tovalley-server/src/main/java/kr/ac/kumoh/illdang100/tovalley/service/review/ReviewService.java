@@ -1,11 +1,11 @@
-package kr.ac.kumoh.illdang100.tovalley.service.domain.review;
+package kr.ac.kumoh.illdang100.tovalley.service.review;
 
 import kr.ac.kumoh.illdang100.tovalley.domain.review.Review;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
-import static kr.ac.kumoh.illdang100.tovalley.dto.page.WaterPlaceDetailPageRespDto.*;
+import static kr.ac.kumoh.illdang100.tovalley.dto.page.PageRespDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.review.ReviewRespDto.*;
 
 /**
