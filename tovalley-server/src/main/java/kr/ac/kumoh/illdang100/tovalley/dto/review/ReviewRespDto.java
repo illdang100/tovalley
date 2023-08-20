@@ -1,6 +1,7 @@
 package kr.ac.kumoh.illdang100.tovalley.dto.review;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import kr.ac.kumoh.illdang100.tovalley.domain.review.WaterQualityReviewEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.data.domain.Page;
@@ -23,14 +24,17 @@ public class ReviewRespDto {
         private LocalDateTime createdReviewDate;
         private String content;
         private List<String> reviewImages;
+        private String waterQuality;
 
-        public WaterPlaceReviewRespDto(Long reviewId, String memberProfileImg, String nickname, Integer rating, LocalDateTime createdReviewDate, String content) {
+        public WaterPlaceReviewRespDto(Long reviewId, String memberProfileImg, String nickname, Integer rating,
+                                       LocalDateTime createdReviewDate, String content, WaterQualityReviewEnum waterQuality) {
             this.reviewId = reviewId;
             this.memberProfileImg = memberProfileImg;
             this.nickname = nickname;
             this.rating = rating;
             this.createdReviewDate = createdReviewDate;
             this.content = content;
+            this.waterQuality = waterQuality.getValue();
         }
     }
 
