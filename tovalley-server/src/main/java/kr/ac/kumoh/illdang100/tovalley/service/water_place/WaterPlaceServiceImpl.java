@@ -43,7 +43,7 @@ public class WaterPlaceServiceImpl implements WaterPlaceService {
      */
     @Override
     public Page<RetrieveWaterPlacesDto> getWaterPlaces(RetrieveWaterPlacesCondition retrieveWaterPlacesCondition, Pageable pageable) {
-        return null;
+        return waterPlaceRepository.findWaterPlaceList(retrieveWaterPlacesCondition, pageable);
     }
 
     /**

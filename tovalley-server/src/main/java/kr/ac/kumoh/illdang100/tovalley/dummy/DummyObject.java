@@ -75,6 +75,23 @@ public class DummyObject {
                 .build();
     }
 
+    protected WaterPlace newWaterPlaceWithCity(String name, String province, String city, Double rating, Integer reviewCnt) {
+
+        return WaterPlace.builder()
+                .waterPlaceName(name)
+                .province(province)
+                .city(city)
+                .town("town")
+                .subLocation("subLocation")
+                .address("address")
+                .waterPlaceCategory("계곡")
+                .coordinate(new Coordinate("38.10000000", "128.10000000"))
+                .managementType("일반지역")
+                .rating(rating)
+                .reviewCount(reviewCnt)
+                .build();
+    }
+
     protected WaterPlace newMockWaterPlace(Long id, String name, String province, Double rating, Integer reviewCnt) {
 
         return WaterPlace.builder()

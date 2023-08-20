@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface WaterPlaceRepository extends JpaRepository<WaterPlace, Long> {
+public interface WaterPlaceRepository extends JpaRepository<WaterPlace, Long>, WaterPlaceRepositoryCustom {
 
     boolean existsByWaterPlaceName(String waterPlaceName);
 
