@@ -1,11 +1,11 @@
 package kr.ac.kumoh.illdang100.tovalley.dto.review;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import kr.ac.kumoh.illdang100.tovalley.domain.review.WaterQualityReviewEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.data.domain.Page;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -24,14 +24,17 @@ public class ReviewRespDto {
         private LocalDateTime createdReviewDate;
         private String content;
         private List<String> reviewImages;
+        private String waterQuality;
 
-        public WaterPlaceReviewRespDto(Long reviewId, String memberProfileImg, String nickname, Integer rating, LocalDateTime createdReviewDate, String content) {
+        public WaterPlaceReviewRespDto(Long reviewId, String memberProfileImg, String nickname, Integer rating,
+                                       LocalDateTime createdReviewDate, String content, WaterQualityReviewEnum waterQuality) {
             this.reviewId = reviewId;
             this.memberProfileImg = memberProfileImg;
             this.nickname = nickname;
             this.rating = rating;
             this.createdReviewDate = createdReviewDate;
             this.content = content;
+            this.waterQuality = waterQuality.getValue();
         }
     }
 
@@ -53,6 +56,6 @@ public class ReviewRespDto {
         private Double waterPlaceRating; // 물놀이 장소 평점
         private int reviewCnt; // 리뷰 수
         private Map<Integer, Long> ratingRatio;
-        private Page<ReviewRespDto.WaterPlaceReviewRespDto> reviews; // 리뷰
+        private Page<WaterPlaceReviewRespDto> reviews; // 리뷰
     }
 }

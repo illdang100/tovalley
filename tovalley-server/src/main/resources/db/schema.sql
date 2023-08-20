@@ -39,6 +39,7 @@ CREATE TABLE IF NOT EXISTS `review` (
                           `created_date`	DATETIME(6)	NOT NULL,
                           `last_modified_date`	DATETIME(6)	NOT NULL,
                           `rating`	DOUBLE	NOT NULL,
+                          `water_quality_review` VARCHAR(5) NOT NULL,
     primary key (review_id)
 ) engine=InnoDB;
 
