@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.data.domain.Page;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -53,6 +52,6 @@ public class ReviewRespDto {
         private Double waterPlaceRating; // 물놀이 장소 평점
         private int reviewCnt; // 리뷰 수
         private Map<Integer, Long> ratingRatio;
-        private Page<ReviewRespDto.WaterPlaceReviewRespDto> reviews; // 리뷰
+        private Page<WaterPlaceReviewRespDto> reviews; // 리뷰
     }
 }

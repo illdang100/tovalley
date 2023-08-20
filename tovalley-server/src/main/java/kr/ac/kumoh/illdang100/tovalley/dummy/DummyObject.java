@@ -8,6 +8,7 @@ import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberEnum;
 import kr.ac.kumoh.illdang100.tovalley.domain.review.Review;
 import kr.ac.kumoh.illdang100.tovalley.domain.review.ReviewImage;
+import kr.ac.kumoh.illdang100.tovalley.domain.review.WaterQualityReviewEnum;
 import kr.ac.kumoh.illdang100.tovalley.domain.trip_schedule.TripSchedule;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.RescueSupply;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlace;
@@ -127,7 +128,9 @@ public class DummyObject {
     }
 
     protected Review newReview(WaterPlace waterPlace, Member member,
-                               String content, Integer rating, WaterPlaceRepository waterPlaceRepository) {
+                               String content, Integer rating,
+                               WaterQualityReviewEnum waterQualityReviewEnum,
+                               WaterPlaceRepository waterPlaceRepository) {
 
         waterPlace.calculateRating(rating);
         waterPlaceRepository.save(waterPlace);
@@ -137,6 +140,7 @@ public class DummyObject {
                 .member(member)
                 .reviewContent(content)
                 .rating(rating)
+                .waterQualityReview(waterQualityReviewEnum)
                 .build();
     }
 

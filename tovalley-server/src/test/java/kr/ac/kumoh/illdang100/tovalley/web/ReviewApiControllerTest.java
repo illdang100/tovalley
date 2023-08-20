@@ -6,10 +6,7 @@ import kr.ac.kumoh.illdang100.tovalley.domain.accident.AccidentEnum;
 import kr.ac.kumoh.illdang100.tovalley.domain.accident.AccidentRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberRepository;
-import kr.ac.kumoh.illdang100.tovalley.domain.review.Review;
-import kr.ac.kumoh.illdang100.tovalley.domain.review.ReviewImage;
-import kr.ac.kumoh.illdang100.tovalley.domain.review.ReviewImageRepository;
-import kr.ac.kumoh.illdang100.tovalley.domain.review.ReviewRepository;
+import kr.ac.kumoh.illdang100.tovalley.domain.review.*;
 import kr.ac.kumoh.illdang100.tovalley.domain.trip_schedule.TripSchedule;
 import kr.ac.kumoh.illdang100.tovalley.domain.trip_schedule.TripScheduleRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.*;
@@ -125,12 +122,12 @@ class ReviewApiControllerTest extends DummyObject {
         waterPlaceRepository.saveAll(waterPlaceList);
 
         List<Review> reviewList = new ArrayList<>();
-        reviewList.add(newReview(waterPlace, member2, "content2", 2, waterPlaceRepository));
-        reviewList.add(newReview(waterPlace, member3, "content3", 3, waterPlaceRepository));
-        reviewList.add(newReview(waterPlace, member4, "content4", 4, waterPlaceRepository));
-        reviewList.add(newReview(waterPlace, member6, "content6", 4, waterPlaceRepository));
-        reviewList.add(newReview(waterPlace, member1, "content1", 1, waterPlaceRepository));
-        Review review6 = newReview(waterPlace, member5, "content5", 5, waterPlaceRepository);
+        reviewList.add(newReview(waterPlace, member2, "content2", 2, WaterQualityReviewEnum.DIRTY, waterPlaceRepository));
+        reviewList.add(newReview(waterPlace, member3, "content3", 3, WaterQualityReviewEnum.CLEAN, waterPlaceRepository));
+        reviewList.add(newReview(waterPlace, member4, "content4", 4, WaterQualityReviewEnum.FINE, waterPlaceRepository));
+        reviewList.add(newReview(waterPlace, member6, "content6", 4, WaterQualityReviewEnum.CLEAN, waterPlaceRepository));
+        reviewList.add(newReview(waterPlace, member1, "content1", 1, WaterQualityReviewEnum.CLEAN, waterPlaceRepository));
+        Review review6 = newReview(waterPlace, member5, "content5", 5, WaterQualityReviewEnum.DIRTY, waterPlaceRepository);
         reviewList.add(review6);
         reviewRepository.saveAll(reviewList);
 

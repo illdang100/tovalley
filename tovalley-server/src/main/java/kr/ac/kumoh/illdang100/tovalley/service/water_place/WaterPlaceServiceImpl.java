@@ -1,6 +1,9 @@
 package kr.ac.kumoh.illdang100.tovalley.service.water_place;
 
 import kr.ac.kumoh.illdang100.tovalley.domain.Coordinate;
+import kr.ac.kumoh.illdang100.tovalley.domain.review.Review;
+import kr.ac.kumoh.illdang100.tovalley.domain.review.ReviewRepository;
+import kr.ac.kumoh.illdang100.tovalley.domain.review.WaterQualityReviewEnum;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.*;
 import kr.ac.kumoh.illdang100.tovalley.handler.ex.CustomApiException;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +15,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.DecimalFormat;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static kr.ac.kumoh.illdang100.tovalley.dto.rescue_supply.RescueSupplyRespDto.*;
@@ -28,6 +33,7 @@ public class WaterPlaceServiceImpl implements WaterPlaceService {
     private final WaterPlaceRepository waterPlaceRepository;
     private final WaterPlaceDetailRepository waterPlaceDetailRepository;
     private final RescueSupplyRepository rescueSupplyRepository;
+    private final ReviewRepository reviewRepository;
 
     /**
      * // 물놀이 장소 리스트 조회 페이지
@@ -90,10 +96,25 @@ public class WaterPlaceServiceImpl implements WaterPlaceService {
     public WaterPlaceDetailRespDto getWaterPlaceDetailByWaterPlace(Long waterPlaceId) {
         WaterPlaceDetail findWaterPlaceDetail = findWaterPlaceDetailByWaterPlaceIdOrElseThrowEx(waterPlaceId);
 
+        List<Review> findReviews = reviewRepository.findAllByWaterPlace_Id(waterPlaceId);
+        Map<String, Integer> reviewCounts = countReviewOccurrences(findReviews);
+
         WaterPlace findWaterPlace = findWaterPlaceDetail.getWaterPlace();
         Coordinate coordinate = findWaterPlace.getCoordinate();
 
-        return createWaterPlaceDetailRespDto(findWaterPlace, coordinate, findWaterPlaceDetail);
+        return createWaterPlaceDetailRespDto(findWaterPlace, coordinate, findWaterPlaceDetail, reviewCounts);
+    }
+
+    private Map<String, Integer> countReviewOccurrences(List<Review> reviews) {
+        Map<String, Integer> reviewCounts = new HashMap<>();
+
+        for (Review review : reviews) {
+            WaterQualityReviewEnum reviewEnum = review.getWaterQualityReview();
+
+            reviewCounts.put(reviewEnum.getValue(), reviewCounts.getOrDefault(reviewEnum.getValue(), 0) + 1);
+        }
+
+        return reviewCounts;
     }
 
     private WaterPlaceDetail findWaterPlaceDetailByWaterPlaceIdOrElseThrowEx(Long waterPlaceId) {
@@ -101,7 +122,7 @@ public class WaterPlaceServiceImpl implements WaterPlaceService {
                 .orElseThrow(() -> new CustomApiException("물놀이 장소[" + waterPlaceId + "]가 존재하지 않습니다"));
     }
 
-    private WaterPlaceDetailRespDto createWaterPlaceDetailRespDto(WaterPlace waterPlace, Coordinate coordinate, WaterPlaceDetail waterPlaceDetail) {
+    private WaterPlaceDetailRespDto createWaterPlaceDetailRespDto(WaterPlace waterPlace, Coordinate coordinate, WaterPlaceDetail waterPlaceDetail, Map<String, Integer> reviewCounts) {
         return WaterPlaceDetailRespDto.builder()
                 .waterPlaceImage(waterPlace.getWaterPlaceImageUrl())
                 .waterPlaceName(waterPlace.getWaterPlaceName())
@@ -117,6 +138,7 @@ public class WaterPlaceServiceImpl implements WaterPlaceService {
                 .waterTemperature(waterPlaceDetail.getWaterTemperature())
                 .bod(waterPlaceDetail.getBod())
                 .turbidity(waterPlaceDetail.getTurbidity())
+                .waterQualityReviews(reviewCounts)
                 .build();
     }
 

@@ -32,4 +32,7 @@ public class Review extends BaseTimeEntity {
 
     @Column(nullable = false)
     private Integer rating;
+
+    @Column(nullable = false, length = 5)
+    private WaterQualityReviewEnum waterQualityReview;
 }

@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.Map;
+
 public class WaterPlaceRespDto {
 
     @AllArgsConstructor
@@ -38,6 +40,7 @@ public class WaterPlaceRespDto {
         private Double waterTemperature; // 계곡 수온(°C)
         private Double bod; // BOD(mg/L)
         private Double turbidity; // 탁도(NTU)
+        private Map<String, Integer> waterQualityReviews;
     }
 
     @AllArgsConstructor
