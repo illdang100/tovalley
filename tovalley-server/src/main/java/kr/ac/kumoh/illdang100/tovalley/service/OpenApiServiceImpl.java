@@ -466,7 +466,6 @@ public class OpenApiServiceImpl implements OpenApiService {
             String wpName = waterPlaceName.replaceAll("\\s", "");
 
             if (!isWaterPlaceExist(waterPlaceName)) {
-                // TODO: 물놀이 장소 사진 넣는 작업 필요!!
                 String waterPlaceImageUrl = saveWaterPlaceImage(wpName);
                 WaterPlace waterPlace = createWaterPlace(item, waterPlaceImageUrl);
 
@@ -635,7 +634,7 @@ public class OpenApiServiceImpl implements OpenApiService {
                 return null;
 
             String imageUrl = findPlaceImage(photoAttributions, FileRootPathVO.WATER_PLACE_PATH, waterPlaceName);
-            log.info("waterPlace={} url={}", waterPlaceName, imageUrl);
+            log.debug("waterPlace={} url={}", waterPlaceName, imageUrl);
 
             return imageUrl;
         } catch (IOException e) {
@@ -686,7 +685,6 @@ public class OpenApiServiceImpl implements OpenApiService {
 
     private String findPlaceId(String waterPlaceName) throws IOException {
         String apiUrl = "https://maps.googleapis.com/maps/api/place/findplacefromtext/json";
-        StringBuilder sb = new StringBuilder(apiUrl);
         String inputType = "textquery";
         Map<String, String> params = new HashMap<>();
         params.put("input", waterPlaceName);
