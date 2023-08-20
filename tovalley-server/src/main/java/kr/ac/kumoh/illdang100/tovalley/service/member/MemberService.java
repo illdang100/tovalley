@@ -1,13 +1,9 @@
-package kr.ac.kumoh.illdang100.tovalley.service.domain.member;
+package kr.ac.kumoh.illdang100.tovalley.service.member;
 
 import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
-import kr.ac.kumoh.illdang100.tovalley.domain.review.Review;
-import kr.ac.kumoh.illdang100.tovalley.domain.trip_schedule.TripSchedule;
-import kr.ac.kumoh.illdang100.tovalley.dto.member.MemberRespDto;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 
 import static kr.ac.kumoh.illdang100.tovalley.dto.member.MemberReqDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.member.MemberRespDto.*;
@@ -39,7 +35,7 @@ public interface MemberService {
     void reIssueToken(HttpServletResponse response, String refreshToken);
 
     // 사용자 정보 조회
-    MemberDetailRespDto getMemberDetail(Long memberId);
+    MemberProfileRespDto getMemberDetail(Long memberId);
 
     // 사용자 로그아웃 - 리프래시 토큰 삭제
     void logout();

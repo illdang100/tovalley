@@ -1,35 +1,52 @@
 package kr.ac.kumoh.illdang100.tovalley.service.page;
 
-import kr.ac.kumoh.illdang100.tovalley.service.domain.accident.AccidentService;
-import kr.ac.kumoh.illdang100.tovalley.service.domain.review.ReviewService;
-import kr.ac.kumoh.illdang100.tovalley.service.domain.trip_schedule.TripScheduleService;
-import kr.ac.kumoh.illdang100.tovalley.service.domain.water_place.WaterPlaceService;
-import kr.ac.kumoh.illdang100.tovalley.service.domain.weather.WeatherService;
+import kr.ac.kumoh.illdang100.tovalley.domain.ProvinceEnum;
+import kr.ac.kumoh.illdang100.tovalley.service.accident.AccidentService;
+import kr.ac.kumoh.illdang100.tovalley.service.review.ReviewService;
+import kr.ac.kumoh.illdang100.tovalley.service.trip_schedule.TripScheduleService;
+import kr.ac.kumoh.illdang100.tovalley.service.water_place.WaterPlaceService;
+import kr.ac.kumoh.illdang100.tovalley.service.weather.WeatherService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
 import java.util.Map;
 
-import static kr.ac.kumoh.illdang100.tovalley.dto.page.WaterPlaceDetailPageRespDto.*;
+import static kr.ac.kumoh.illdang100.tovalley.dto.page.PageRespDto.*;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class WaterPlaceDetailPageServiceImpl implements WaterPlaceDetailPageService {
-
-    private final ReviewService reviewService;
+public class PageServiceImpl implements PageService{
     private final WeatherService weatherService;
-    private final WaterPlaceService waterPlaceService;
     private final AccidentService accidentService;
+    private final WaterPlaceService waterPlaceService;
+    private final ReviewService reviewService;
     private final TripScheduleService tripScheduleService;
+
+    /**
+     * @methodnme: getMainPageAllData
+     * @author: JYeonJun
+     * @description: 메인페이지 정보 요청시 데이터를 취합해서 보내주는 메서드
+     *
+     * @return: 전국 날씨 정보, 특보, 예비 특보, 지역별 사건 사고 발생률, 인기 계곡 현황
+     */
+    @Override
+    public MainPageAllRespDto getMainPageAllData() {
+
+        List<NationalWeatherRespDto> nationalWeatherDto = weatherService.getNationalWeathers();
+        AlertRespDto alertRespDto = weatherService.getAllSpecialWeathers();
+        AccidentCountDto nationalAccidentCountDto = accidentService.getAccidentCntPerMonthByProvince(ProvinceEnum.NATIONWIDE.getValue());
+        List<NationalPopularWaterPlacesDto> popularWaterPlaces = waterPlaceService.getPopularWaterPlaces("RATING");
+
+        return new MainPageAllRespDto(nationalWeatherDto, alertRespDto, nationalAccidentCountDto, popularWaterPlaces);
+    }
 
     /**
      * @methodnme: getWaterPlaceDetailPageAllData
@@ -73,5 +90,10 @@ public class WaterPlaceDetailPageServiceImpl implements WaterPlaceDetailPageServ
 
     private WaterPlaceReviewDetailRespDto getReviews(Long waterPlaceId, Pageable pageable) {
         return reviewService.getReviewsByWaterPlaceId(waterPlaceId, pageable);
+    }
+
+    @Override
+    public MyPageAllRespDto getMyPageAllData() {
+        return null;
     }
 }

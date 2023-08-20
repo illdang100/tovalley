@@ -1,9 +1,11 @@
-package kr.ac.kumoh.illdang100.tovalley.service.domain.weather;
+package kr.ac.kumoh.illdang100.tovalley.service.weather;
+
+
+import kr.ac.kumoh.illdang100.tovalley.dto.page.PageRespDto;
 
 import java.util.List;
 
-import static kr.ac.kumoh.illdang100.tovalley.dto.page.MainPageRespDto.*;
-import static kr.ac.kumoh.illdang100.tovalley.dto.page.WaterPlaceDetailPageRespDto.*;
+import static kr.ac.kumoh.illdang100.tovalley.dto.page.PageRespDto.*;
 
 public interface WeatherService {
 

@@ -1,7 +1,6 @@
-package kr.ac.kumoh.illdang100.tovalley.service.domain.accident;
+package kr.ac.kumoh.illdang100.tovalley.service.accident;
 
-import static kr.ac.kumoh.illdang100.tovalley.dto.page.MainPageRespDto.*;
-import static kr.ac.kumoh.illdang100.tovalley.dto.page.WaterPlaceDetailPageRespDto.*;
+import static kr.ac.kumoh.illdang100.tovalley.dto.page.PageRespDto.*;
 
 public interface AccidentService {
 
