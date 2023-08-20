@@ -7,6 +7,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.PathBuilder;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import kr.ac.kumoh.illdang100.tovalley.domain.CityEnum;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -28,9 +29,11 @@ public class WaterPlaceRepositoryImpl implements WaterPlaceRepositoryCustom {
     }
 
     @Override
-    public Page<RetrieveWaterPlacesDto> findWaterPlaceList(RetrieveWaterPlacesCondition RetrieveWaterPlacesCondition, Pageable pageable) {
-        String region = RetrieveWaterPlacesCondition.getRegion();
-        String searchWord = RetrieveWaterPlacesCondition.getSearchWord();
+    public Page<RetrieveWaterPlacesDto> findWaterPlaceList(RetrieveWaterPlacesCondition condition, Pageable pageable) {
+        String province = condition.getProvince();
+        CityEnum city = condition.getCity();
+        String searchWord = condition.getSearchWord();
+
         JPAQuery<RetrieveWaterPlacesDto> query = queryFactory
                 .select(Projections.constructor(RetrieveWaterPlacesDto.class,
                         waterPlace.id,
@@ -41,61 +44,59 @@ public class WaterPlaceRepositoryImpl implements WaterPlaceRepositoryCustom {
                         waterPlace.managementType,
                         waterPlace.waterPlaceCategory
                 ))
-                .from(waterPlace);
-
-        BooleanExpression regionPredicate;
-
-        if (region.equals("전국")) {
-            regionPredicate = waterPlace.id.isNotNull();
-        } else {
-            regionPredicate = waterPlace.province.eq(region);
-        }
-
-        if (searchWord != null && !searchWord.isEmpty()) {
-            regionPredicate = regionPredicate.and(waterPlace.waterPlaceName.containsIgnoreCase(searchWord));
-        }
-
-        query = query.where(regionPredicate)
+                .from(waterPlace)
+                .where(provinceEq(province),
+                        cityEq(city),
+                        searchWordContain(searchWord))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize());
 
-        for (Sort.Order o : pageable.getSort()) {
-            PathBuilder pathBuilder = new PathBuilder(
-                    waterPlace.getType(), waterPlace.getMetadata()
-            );
-
-            String property = o.getProperty();
-            if (property.equals("rating")) {
-                query.orderBy(
-                        new OrderSpecifier<>(o.isAscending() ? Order.ASC : Order.DESC, pathBuilder.getNumber(property, Double.class)),
-                        pathBuilder.getNumber("reviewCount", Long.class).desc(),
-                        pathBuilder.getNumber("id", Long.class).asc()
-                );
-            } else if (property.equals("reviewCount")) {
-                query.orderBy(
-                        new OrderSpecifier<>(o.isAscending() ? Order.ASC : Order.DESC, pathBuilder.getNumber(property, Long.class)),
-                        pathBuilder.getNumber("rating", Double.class).desc(),
-                        pathBuilder.getNumber("id", Long.class).asc()
-                );
-            }
-        }
+        addSorting(query, pageable.getSort());
 
         List<RetrieveWaterPlacesDto> content = query.fetch();
 
         JPAQuery<Long> countQuery = queryFactory
                 .select(waterPlace.count())
-                .from(waterPlace);
-
-        if (region.equals("전국")) {
-            countQuery.where(waterPlace.id.isNotNull());
-        } else {
-            countQuery.where(waterPlace.province.eq(region));
-        }
-
-        if (searchWord != null && !searchWord.isEmpty()) {
-            countQuery.where(waterPlace.waterPlaceName.containsIgnoreCase(searchWord));
-        }
+                .from(waterPlace)
+                .where(provinceEq(province),
+                        cityEq(city),
+                        searchWordContain(searchWord));
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
+    }
+
+    private BooleanExpression provinceEq(String province) {
+        return province.equals("전국") ? null : waterPlace.province.eq(province);
+    }
+
+    private BooleanExpression cityEq(CityEnum city) {
+        return (city == null) ? null : waterPlace.city.eq(city.toString());
+    }
+
+    private BooleanExpression searchWordContain (String searchWord) {
+        return (searchWord == null) ? null : waterPlace.waterPlaceName.containsIgnoreCase(searchWord);
+    }
+
+
+    private void addSorting(JPAQuery<?> query, Sort sort) {
+        PathBuilder<?> pathBuilder = new PathBuilder<>(waterPlace.getType(), waterPlace.getMetadata());
+
+        OrderSpecifier<Double> ratingOrder = pathBuilder.getNumber("rating", Double.class).desc();
+        OrderSpecifier<Long> reviewCountOrder = pathBuilder.getNumber("reviewCount", Long.class).desc();
+        OrderSpecifier<Long> idOrder = pathBuilder.getNumber("id", Long.class).asc();
+
+        for (Sort.Order o : sort) {
+            String property = o.getProperty();
+            OrderSpecifier<?> orderSpecifier;
+            if ("reviewCount".equals(property)) {
+                orderSpecifier = new OrderSpecifier<>(o.isAscending() ? Order.ASC : Order.DESC, pathBuilder.getNumber(property, Long.class));
+                query.orderBy(orderSpecifier, ratingOrder, idOrder);
+            } else if ("rating".equals(property)) {
+                orderSpecifier = new OrderSpecifier<>(o.isAscending() ? Order.ASC : Order.DESC, pathBuilder.getNumber(property, Double.class));
+                query.orderBy(orderSpecifier, reviewCountOrder, idOrder);
+            } else {
+                continue;
+            }
+        }
     }
 }
