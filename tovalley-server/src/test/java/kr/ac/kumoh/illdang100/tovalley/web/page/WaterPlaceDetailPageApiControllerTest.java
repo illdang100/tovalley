@@ -6,16 +6,14 @@ import kr.ac.kumoh.illdang100.tovalley.domain.accident.AccidentEnum;
 import kr.ac.kumoh.illdang100.tovalley.domain.accident.AccidentRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberRepository;
-import kr.ac.kumoh.illdang100.tovalley.domain.review.Review;
-import kr.ac.kumoh.illdang100.tovalley.domain.review.ReviewImage;
-import kr.ac.kumoh.illdang100.tovalley.domain.review.ReviewImageRepository;
-import kr.ac.kumoh.illdang100.tovalley.domain.review.ReviewRepository;
+import kr.ac.kumoh.illdang100.tovalley.domain.review.*;
 import kr.ac.kumoh.illdang100.tovalley.domain.trip_schedule.TripSchedule;
 import kr.ac.kumoh.illdang100.tovalley.domain.trip_schedule.TripScheduleRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.*;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.water_place_weather.WaterPlaceWeather;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.water_place_weather.WaterPlaceWeatherRepository;
 import kr.ac.kumoh.illdang100.tovalley.dummy.DummyObject;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,13 +80,21 @@ class WaterPlaceDetailPageApiControllerTest extends DummyObject {
         ResultActions resultActions =
                 mvc.perform(get("/api/auth/water-places/1?sort=createdDate,desc&page=0&size=5"));
 
+        LocalDate now = LocalDate.now();
+        int year = now.getYear();
+        int month = now.getMonthValue();
+        LocalDate firstDay = LocalDate.of(year, month, 1);
+        String string = firstDay.toString();
+
         // then
         resultActions
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.waterPlaceWeathers.size()").value(5))
                 .andExpect(jsonPath("$.data.waterPlaceDetails.waterPlaceName").value("서울계곡"))
+                .andExpect(jsonPath("$.data.waterPlaceDetails.waterQualityReviews['깨끗해요']").value(3))
                 .andExpect(jsonPath("$.data.rescueSupplies.lifeBoatNum").value(10))
                 .andExpect(jsonPath("$.data.accidents.totalDeathCnt").value(12))
+                .andExpect(jsonPath("$.data.tripPlanToWaterPlace").isMap())
                 .andExpect(jsonPath("$.data.reviewRespDto.waterPlaceRating").value(3.2))
                 .andExpect(jsonPath("$.data.reviewRespDto.reviewCnt").value(6))
                 .andExpect(jsonPath("$.data.reviewRespDto.ratingRatio['1']").value(1))
@@ -183,13 +189,12 @@ class WaterPlaceDetailPageApiControllerTest extends DummyObject {
         rescueSupplyRepository.saveAll(rescueSupplyList);
 
         List<Accident> accidentList = new ArrayList<>();
-        accidentList.add(newAccident(waterPlace, LocalDate.now().minusMonths(10), AccidentEnum.INJURY, 10));
-        accidentList.add(newAccident(waterPlace, LocalDate.now().minusMonths(12), AccidentEnum.DEATH, 6));
+        accidentList.add(newAccident(waterPlace, LocalDate.now(), AccidentEnum.INJURY, 16));
+        accidentList.add(newAccident(waterPlace, LocalDate.now(), AccidentEnum.DEATH, 6));
+        accidentList.add(newAccident(waterPlace, LocalDate.now(), AccidentEnum.DISAPPEARANCE, 6));
         accidentList.add(newAccident(waterPlace, LocalDate.now().minusYears(4), AccidentEnum.DEATH, 6));
         accidentList.add(newAccident(waterPlace, LocalDate.now().minusYears(6), AccidentEnum.DEATH, 6));
         accidentList.add(newAccident(waterPlace, LocalDate.now().minusYears(10), AccidentEnum.DEATH, 6));
-        accidentList.add(newAccident(waterPlace, LocalDate.now().minusMonths(1), AccidentEnum.DISAPPEARANCE, 6));
-        accidentList.add(newAccident(waterPlace, LocalDate.now().minusMonths(3), AccidentEnum.INJURY, 6));
         accidentRepository.saveAll(accidentList);
 
         List<WaterPlaceWeather> waterPlaceWeatherList = new ArrayList<>();
@@ -208,35 +213,37 @@ class WaterPlaceDetailPageApiControllerTest extends DummyObject {
         waterPlaceWeatherRepository.saveAll(waterPlaceWeatherList);
 
         List<TripSchedule> tripScheduleList = new ArrayList<>();
-        tripScheduleList.add(newTripSchedule(member1, waterPlace, LocalDate.now().minusDays(1), 50));
-        tripScheduleList.add(newTripSchedule(member1, waterPlace, LocalDate.now().minusDays(3), 150));
-        tripScheduleList.add(newTripSchedule(member1, waterPlace, LocalDate.now().minusDays(5), 60));
-        tripScheduleList.add(newTripSchedule(member1, waterPlace, LocalDate.now().minusDays(7), 34));
-        tripScheduleList.add(newTripSchedule(member1, waterPlace, LocalDate.now().minusDays(9), 11));
-        tripScheduleList.add(newTripSchedule(member1, waterPlace, LocalDate.now().minusDays(11), 94));
-        tripScheduleList.add(newTripSchedule(member1, waterPlace, LocalDate.now().minusDays(15), 11));
-        tripScheduleList.add(newTripSchedule(member1, waterPlace, LocalDate.now().plusDays(1), 51));
-        tripScheduleList.add(newTripSchedule(member1, waterPlace, LocalDate.now().plusDays(3), 111));
-        tripScheduleList.add(newTripSchedule(member1, waterPlace, LocalDate.now().plusDays(5), 61));
-        tripScheduleList.add(newTripSchedule(member1, waterPlace, LocalDate.now().plusDays(7), 22));
-        tripScheduleList.add(newTripSchedule(member1, waterPlace, LocalDate.now().plusDays(9), 26));
-        tripScheduleList.add(newTripSchedule(member1, waterPlace, LocalDate.now().plusDays(11), 98));
+        int year = now.getYear();
+        int month = now.getMonthValue();
+        tripScheduleList.add(newTripSchedule(member1, waterPlace, LocalDate.of(year, month, 1), 50));
+        tripScheduleList.add(newTripSchedule(member1, waterPlace, LocalDate.of(year, month, 3), 150));
+        tripScheduleList.add(newTripSchedule(member1, waterPlace, LocalDate.of(year, month, 5), 60));
+        tripScheduleList.add(newTripSchedule(member1, waterPlace, LocalDate.of(year, month, 7), 34));
+        tripScheduleList.add(newTripSchedule(member1, waterPlace, LocalDate.of(year, month, 9), 11));
+        tripScheduleList.add(newTripSchedule(member1, waterPlace, LocalDate.of(year, month, 11), 94));
+        tripScheduleList.add(newTripSchedule(member1, waterPlace, LocalDate.of(year, month, 15), 11));
+        tripScheduleList.add(newTripSchedule(member1, waterPlace, LocalDate.of(year, month, 16), 51));
+        tripScheduleList.add(newTripSchedule(member1, waterPlace, LocalDate.of(year, month, 18), 111));
+        tripScheduleList.add(newTripSchedule(member1, waterPlace, LocalDate.of(year, month, 20), 61));
+        tripScheduleList.add(newTripSchedule(member1, waterPlace, LocalDate.of(year, month, 22), 22));
+        tripScheduleList.add(newTripSchedule(member1, waterPlace, LocalDate.of(year, month, 24), 26));
+        tripScheduleList.add(newTripSchedule(member1, waterPlace, LocalDate.of(year, month, 27), 98));
         tripScheduleRepository.saveAll(tripScheduleList);
 
         List<Review> reviewList = new ArrayList<>();
-        reviewList.add(newReview(waterPlace, member2, "content2", 2, waterPlaceRepository));
-        reviewList.add(newReview(waterPlace, member3, "content3", 3, waterPlaceRepository));
-        reviewList.add(newReview(waterPlace, member4, "content4", 4, waterPlaceRepository));
-        reviewList.add(newReview(waterPlace, member6, "content6", 4, waterPlaceRepository));
-        reviewList.add(newReview(waterPlace, member1, "content1", 1, waterPlaceRepository));
-        Review review6 = newReview(waterPlace, member5, "content5", 5, waterPlaceRepository);
+        reviewList.add(newReview(waterPlace, member2, "content2", 2, WaterQualityReviewEnum.CLEAN, waterPlaceRepository));
+        reviewList.add(newReview(waterPlace, member3, "content3", 3, WaterQualityReviewEnum.FINE, waterPlaceRepository));
+        reviewList.add(newReview(waterPlace, member4, "content4", 4, WaterQualityReviewEnum.DIRTY, waterPlaceRepository));
+        reviewList.add(newReview(waterPlace, member6, "content6", 4, WaterQualityReviewEnum.CLEAN, waterPlaceRepository));
+        reviewList.add(newReview(waterPlace, member1, "content1", 1, WaterQualityReviewEnum.CLEAN, waterPlaceRepository));
+        Review review6 = newReview(waterPlace, member5, "content5", 5, WaterQualityReviewEnum.DIRTY, waterPlaceRepository);
         reviewList.add(review6);
-        reviewList.add(newReview(waterPlace2, member2, "content2", 2, waterPlaceRepository));
-        reviewList.add(newReview(waterPlace2, member3, "content3", 3, waterPlaceRepository));
-        reviewList.add(newReview(waterPlace2, member4, "content4", 4, waterPlaceRepository));
-        reviewList.add(newReview(waterPlace2, member6, "content6", 4, waterPlaceRepository));
-        reviewList.add(newReview(waterPlace2, member1, "content1", 1, waterPlaceRepository));
-        reviewList.add(newReview(waterPlace2, member5, "content5", 5, waterPlaceRepository));
+        reviewList.add(newReview(waterPlace2, member2, "content2", 2, WaterQualityReviewEnum.CLEAN, waterPlaceRepository));
+        reviewList.add(newReview(waterPlace2, member3, "content3", 3, WaterQualityReviewEnum.CLEAN, waterPlaceRepository));
+        reviewList.add(newReview(waterPlace2, member4, "content4", 4, WaterQualityReviewEnum.FINE, waterPlaceRepository));
+        reviewList.add(newReview(waterPlace2, member6, "content6", 4, WaterQualityReviewEnum.FINE, waterPlaceRepository));
+        reviewList.add(newReview(waterPlace2, member1, "content1", 1, WaterQualityReviewEnum.DIRTY, waterPlaceRepository));
+        reviewList.add(newReview(waterPlace2, member5, "content5", 5, WaterQualityReviewEnum.DIRTY, waterPlaceRepository));
         reviewRepository.saveAll(reviewList);
 
         List<ReviewImage> reviewImageList = new ArrayList<>();

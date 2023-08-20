@@ -39,7 +39,8 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
                         member.nickname,
                         review.rating,
                         review.createdDate,
-                        review.reviewContent
+                        review.reviewContent,
+                        review.waterQualityReview
                         ))
                 .from(review)
                 .join(review.waterPlace, waterPlace)

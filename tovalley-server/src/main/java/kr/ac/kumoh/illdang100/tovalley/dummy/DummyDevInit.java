@@ -8,6 +8,7 @@ import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.review.Review;
 import kr.ac.kumoh.illdang100.tovalley.domain.review.ReviewImageRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.review.ReviewRepository;
+import kr.ac.kumoh.illdang100.tovalley.domain.review.WaterQualityReviewEnum;
 import kr.ac.kumoh.illdang100.tovalley.domain.trip_schedule.TripSchedule;
 import kr.ac.kumoh.illdang100.tovalley.domain.trip_schedule.TripScheduleRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlace;
@@ -100,12 +101,12 @@ public class DummyDevInit extends DummyObject {
             Member member5 = memberRepository.save(newMember("kakao_3141", "member5"));
             Member member6 = memberRepository.save(newMember("kakao_4231", "member6"));
 
-            reviewRepository.save(newReview(a, member2, "content2", 2, waterPlaceRepository));
-            reviewRepository.save(newReview(a, member3, "content3", 3, waterPlaceRepository));
-            reviewRepository.save(newReview(a, member4, "content4", 4, waterPlaceRepository));
-            reviewRepository.save(newReview(a, member6, "content6", 4, waterPlaceRepository));
-            reviewRepository.save(newReview(a, member1, "content1", 1, waterPlaceRepository));
-            Review review6 = reviewRepository.save(newReview(a, member5, "content5", 5, waterPlaceRepository));
+            reviewRepository.save(newReview(a, member2, "content2", 2, WaterQualityReviewEnum.CLEAN, waterPlaceRepository));
+            reviewRepository.save(newReview(a, member3, "content3", 3, WaterQualityReviewEnum.FINE, waterPlaceRepository));
+            reviewRepository.save(newReview(a, member4, "content4", 4, WaterQualityReviewEnum.DIRTY, waterPlaceRepository));
+            reviewRepository.save(newReview(a, member6, "content6", 4,WaterQualityReviewEnum.DIRTY , waterPlaceRepository));
+            reviewRepository.save(newReview(a, member1, "content1", 1, WaterQualityReviewEnum.CLEAN, waterPlaceRepository));
+            Review review6 = reviewRepository.save(newReview(a, member5, "content5", 5, WaterQualityReviewEnum.CLEAN, waterPlaceRepository));
 
             reviewImageRepository.save(newReviewImage(review6, "storeFileUrl1"));
             reviewImageRepository.save(newReviewImage(review6, "storeFileUrl2"));
@@ -114,12 +115,12 @@ public class DummyDevInit extends DummyObject {
             reviewImageRepository.save(newReviewImage(review6, "storeFileUrl5"));
             reviewImageRepository.save(newReviewImage(review6, "storeFileUrl6"));
 
-            reviewRepository.save(newReview(b, member2, "content2", 3, waterPlaceRepository));
-            reviewRepository.save(newReview(b, member3, "content3", 5, waterPlaceRepository));
-            reviewRepository.save(newReview(b, member4, "content4", 5, waterPlaceRepository));
-            reviewRepository.save(newReview(b, member6, "content6", 4, waterPlaceRepository));
-            reviewRepository.save(newReview(b, member1, "content1", 1, waterPlaceRepository));
-            reviewRepository.save(newReview(b, member5, "content5", 5, waterPlaceRepository));
+            reviewRepository.save(newReview(b, member2, "content2", 3, WaterQualityReviewEnum.FINE, waterPlaceRepository));
+            reviewRepository.save(newReview(b, member3, "content3", 5, WaterQualityReviewEnum.CLEAN, waterPlaceRepository));
+            reviewRepository.save(newReview(b, member4, "content4", 5, WaterQualityReviewEnum.CLEAN, waterPlaceRepository));
+            reviewRepository.save(newReview(b, member6, "content6", 4, WaterQualityReviewEnum.DIRTY, waterPlaceRepository));
+            reviewRepository.save(newReview(b, member1, "content1", 1, WaterQualityReviewEnum.DIRTY, waterPlaceRepository));
+            reviewRepository.save(newReview(b, member5, "content5", 5, WaterQualityReviewEnum.FINE, waterPlaceRepository));
 
             tripScheduleRepository.save(TripSchedule.builder()
                     .member(member1)

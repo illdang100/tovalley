@@ -3,7 +3,7 @@ package kr.ac.kumoh.illdang100.tovalley.web;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.ac.kumoh.illdang100.tovalley.dto.ResponseDto;
-import kr.ac.kumoh.illdang100.tovalley.service.domain.review.ReviewService;
+import kr.ac.kumoh.illdang100.tovalley.service.review.ReviewService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static kr.ac.kumoh.illdang100.tovalley.dto.page.WaterPlaceDetailPageRespDto.*;
+import static kr.ac.kumoh.illdang100.tovalley.dto.page.PageRespDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.review.ReviewRespDto.*;
 
 @RestController

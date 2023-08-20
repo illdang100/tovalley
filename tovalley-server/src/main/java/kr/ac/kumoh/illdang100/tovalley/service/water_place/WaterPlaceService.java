@@ -1,12 +1,11 @@
-package kr.ac.kumoh.illdang100.tovalley.service.domain.water_place;
+package kr.ac.kumoh.illdang100.tovalley.service.water_place;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
-import static kr.ac.kumoh.illdang100.tovalley.dto.page.MainPageRespDto.*;
-import static kr.ac.kumoh.illdang100.tovalley.dto.page.WaterPlaceDetailPageRespDto.*;
+import static kr.ac.kumoh.illdang100.tovalley.dto.rescue_supply.RescueSupplyRespDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.water_place.WaterPlaceReqDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.water_place.WaterPlaceRespDto.*;
 
@@ -20,5 +19,5 @@ public interface WaterPlaceService {
 
     WaterPlaceDetailRespDto getWaterPlaceDetailByWaterPlace(Long waterPlaceId);
 
-    RescueSupplyRespDto getRescueSuppliesByWaterPlace(Long waterPlaceId);
+    RescueSupplyByWaterPlaceRespDto getRescueSuppliesByWaterPlace(Long waterPlaceId);
 }
