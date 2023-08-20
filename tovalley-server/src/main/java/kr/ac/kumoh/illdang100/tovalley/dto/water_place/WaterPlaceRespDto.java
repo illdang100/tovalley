@@ -37,6 +37,8 @@ public class WaterPlaceRespDto {
         private String waterPlaceSegment; // 물놀이구간(m)
         private String dangerSegments; // 위험구역구간(null)
         private String dangerSignboardsNum; // 위험구역 설정 안내표지판(합계)
+        private String deepestDepth; // 수심(깊은곳)
+        private String avgDepth; // 평균 수심
         private Double waterTemperature; // 계곡 수온(°C)
         private Double bod; // BOD(mg/L)
         private Double turbidity; // 탁도(NTU)
