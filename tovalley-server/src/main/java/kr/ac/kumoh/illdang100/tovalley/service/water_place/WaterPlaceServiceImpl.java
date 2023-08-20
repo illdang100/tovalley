@@ -135,6 +135,8 @@ public class WaterPlaceServiceImpl implements WaterPlaceService {
                 .waterPlaceSegment(waterPlaceDetail.getWaterPlaceSegment())
                 .dangerSegments(waterPlaceDetail.getDangerSegments())
                 .dangerSignboardsNum(waterPlaceDetail.getDangerSignboardsNum())
+                .deepestDepth(waterPlaceDetail.getDeepestDepth())
+                .avgDepth(waterPlaceDetail.getAvgDepth())
                 .waterTemperature(waterPlaceDetail.getWaterTemperature())
                 .bod(waterPlaceDetail.getBod())
                 .turbidity(waterPlaceDetail.getTurbidity())
