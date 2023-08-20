@@ -1,5 +1,6 @@
 package kr.ac.kumoh.illdang100.tovalley.domain.water_place;
 
+import kr.ac.kumoh.illdang100.tovalley.domain.CityEnum;
 import kr.ac.kumoh.illdang100.tovalley.dto.water_place.WaterPlaceRespDto;
 import kr.ac.kumoh.illdang100.tovalley.dummy.DummyObject;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,14 +40,16 @@ class WaterPlaceRepositoryImplTest extends DummyObject {
     {
         // given
         PageRequest pageRequest = PageRequest.of(0, 5, Sort.by(Sort.Direction.DESC, "rating"));
-        RetrieveWaterPlacesCondition reqDto1 = new RetrieveWaterPlacesCondition("경상남도", null);
-        RetrieveWaterPlacesCondition reqDto2 = new RetrieveWaterPlacesCondition("경상북도", null);
-        RetrieveWaterPlacesCondition reqDto3 = new RetrieveWaterPlacesCondition("전국", null);
+        RetrieveWaterPlacesCondition reqDto1 = new RetrieveWaterPlacesCondition("경상남도", null, null);
+        RetrieveWaterPlacesCondition reqDto2 = new RetrieveWaterPlacesCondition("경상북도", null, null);
+        RetrieveWaterPlacesCondition reqDto3 = new RetrieveWaterPlacesCondition("전국", null, null);
+        RetrieveWaterPlacesCondition reqDto4 = new RetrieveWaterPlacesCondition("경상북도", CityEnum.청도군, null);
 
         // when
         List<WaterPlaceRespDto.RetrieveWaterPlacesDto> content1 = waterPlaceRepository.findWaterPlaceList(reqDto1, pageRequest).getContent();
         List<WaterPlaceRespDto.RetrieveWaterPlacesDto> content2 = waterPlaceRepository.findWaterPlaceList(reqDto2, pageRequest).getContent();
         List<WaterPlaceRespDto.RetrieveWaterPlacesDto> content3 = waterPlaceRepository.findWaterPlaceList(reqDto3, pageRequest).getContent();
+        List<WaterPlaceRespDto.RetrieveWaterPlacesDto> content4 = waterPlaceRepository.findWaterPlaceList(reqDto4, pageRequest).getContent();
 
         // then
         assertThat(content1.size()).isEqualTo(4);
@@ -67,6 +70,9 @@ class WaterPlaceRepositoryImplTest extends DummyObject {
         assertThat(content3.get(2).getWaterPlaceName()).isEqualTo("진주계곡");
         assertThat(content3.get(3).getWaterPlaceName()).isEqualTo("가평계곡");
         assertThat(content3.get(4).getWaterPlaceName()).isEqualTo("제주계곡");
+
+        assertThat(content4.size()).isEqualTo(1);
+        assertThat(content4.get(0).getWaterPlaceName()).isEqualTo("청도계곡");
     }
 
     @Test
@@ -75,9 +81,9 @@ class WaterPlaceRepositoryImplTest extends DummyObject {
     {
         // given
         PageRequest pageRequest = PageRequest.of(0, 5, Sort.by(Sort.Direction.ASC, "rating"));
-        RetrieveWaterPlacesCondition reqDto1 = new RetrieveWaterPlacesCondition("경상남도", null);
-        RetrieveWaterPlacesCondition reqDto2 = new RetrieveWaterPlacesCondition("경상북도", null);
-        RetrieveWaterPlacesCondition reqDto3 = new RetrieveWaterPlacesCondition("전국", null);
+        RetrieveWaterPlacesCondition reqDto1 = new RetrieveWaterPlacesCondition("경상남도", null, null);
+        RetrieveWaterPlacesCondition reqDto2 = new RetrieveWaterPlacesCondition("경상북도", null, null);
+        RetrieveWaterPlacesCondition reqDto3 = new RetrieveWaterPlacesCondition("전국", null, null);
 
         // when
         List<WaterPlaceRespDto.RetrieveWaterPlacesDto> content1 = waterPlaceRepository.findWaterPlaceList(reqDto1, pageRequest).getContent();
@@ -111,9 +117,9 @@ class WaterPlaceRepositoryImplTest extends DummyObject {
     {
         // give
         PageRequest pageRequest = PageRequest.of(0, 7, Sort.by(Sort.Direction.DESC, "reviewCount"));
-        RetrieveWaterPlacesCondition reqDto1 = new RetrieveWaterPlacesCondition("경상남도", null);
-        RetrieveWaterPlacesCondition reqDto2 = new RetrieveWaterPlacesCondition("경상북도", null);
-        RetrieveWaterPlacesCondition reqDto3 = new RetrieveWaterPlacesCondition("전국", null);
+        RetrieveWaterPlacesCondition reqDto1 = new RetrieveWaterPlacesCondition("경상남도", null, null);
+        RetrieveWaterPlacesCondition reqDto2 = new RetrieveWaterPlacesCondition("경상북도", null, null);
+        RetrieveWaterPlacesCondition reqDto3 = new RetrieveWaterPlacesCondition("전국", null, null);
 
         // when
         List<WaterPlaceRespDto.RetrieveWaterPlacesDto> content1 = waterPlaceRepository.findWaterPlaceList(reqDto1, pageRequest).getContent();
@@ -148,9 +154,9 @@ class WaterPlaceRepositoryImplTest extends DummyObject {
     public void findWaterPlaceList_평점높은순_검색어_test() {
         // given
         PageRequest pageRequest = PageRequest.of(0, 5, Sort.by(Sort.Direction.DESC, "rating"));
-        RetrieveWaterPlacesCondition reqDto1 = new RetrieveWaterPlacesCondition("경기도", "!");
-        RetrieveWaterPlacesCondition reqDto2 = new RetrieveWaterPlacesCondition("부산광역시", "?");
-        RetrieveWaterPlacesCondition reqDto3 = new RetrieveWaterPlacesCondition("전국", "3");
+        RetrieveWaterPlacesCondition reqDto1 = new RetrieveWaterPlacesCondition("경기도", null, "!");
+        RetrieveWaterPlacesCondition reqDto2 = new RetrieveWaterPlacesCondition("부산광역시", null, "?");
+        RetrieveWaterPlacesCondition reqDto3 = new RetrieveWaterPlacesCondition("전국", null, "3");
 
         // when
         List<WaterPlaceRespDto.RetrieveWaterPlacesDto> content1 = waterPlaceRepository.findWaterPlaceList(reqDto1, pageRequest).getContent();
@@ -178,9 +184,9 @@ class WaterPlaceRepositoryImplTest extends DummyObject {
     public void findWaterPlaceList_평점낮은순_검색어_test() {
         // given
         PageRequest pageRequest = PageRequest.of(0, 5, Sort.by(Sort.Direction.ASC, "rating"));
-        RetrieveWaterPlacesCondition reqDto1 = new RetrieveWaterPlacesCondition("경기도", "!");
-        RetrieveWaterPlacesCondition reqDto2 = new RetrieveWaterPlacesCondition("부산광역시", "?");
-        RetrieveWaterPlacesCondition reqDto3 = new RetrieveWaterPlacesCondition("전국", "3");
+        RetrieveWaterPlacesCondition reqDto1 = new RetrieveWaterPlacesCondition("경기도", null, "!");
+        RetrieveWaterPlacesCondition reqDto2 = new RetrieveWaterPlacesCondition("부산광역시", null, "?");
+        RetrieveWaterPlacesCondition reqDto3 = new RetrieveWaterPlacesCondition("전국", null, "3");
 
         // when
         List<WaterPlaceRespDto.RetrieveWaterPlacesDto> content1 = waterPlaceRepository.findWaterPlaceList(reqDto1, pageRequest).getContent();
@@ -210,9 +216,9 @@ class WaterPlaceRepositoryImplTest extends DummyObject {
     {
         // given
         PageRequest pageRequest = PageRequest.of(0, 5, Sort.by(Sort.Direction.DESC, "reviewCount"));
-        RetrieveWaterPlacesCondition reqDto1 = new RetrieveWaterPlacesCondition("경기도", "!");
-        RetrieveWaterPlacesCondition reqDto2 = new RetrieveWaterPlacesCondition("부산광역시", "?");
-        RetrieveWaterPlacesCondition reqDto3 = new RetrieveWaterPlacesCondition("전국", "2");
+        RetrieveWaterPlacesCondition reqDto1 = new RetrieveWaterPlacesCondition("경기도", null, "!");
+        RetrieveWaterPlacesCondition reqDto2 = new RetrieveWaterPlacesCondition("부산광역시", null, "?");
+        RetrieveWaterPlacesCondition reqDto3 = new RetrieveWaterPlacesCondition("전국", null, "2");
 
         // when
         List<WaterPlaceRespDto.RetrieveWaterPlacesDto> content1 = waterPlaceRepository.findWaterPlaceList(reqDto1, pageRequest).getContent();
@@ -244,14 +250,14 @@ class WaterPlaceRepositoryImplTest extends DummyObject {
 
         waterPlaceRepository.save(newWaterPlace("서울계곡", "서울특별시", 4.0, 10));
         waterPlaceRepository.save(newWaterPlace("부산계곡", "부산광역시", 4.1, 9));
-        waterPlaceRepository.save(newWaterPlace("구미계곡", "경상북도", 4.2, 8));
-        waterPlaceRepository.save(newWaterPlace("안동계곡", "경상북도", 4.3, 7));
+        waterPlaceRepository.save(newWaterPlaceWithCity("구미계곡", "경상북도", "구미시",4.2, 8));
+        waterPlaceRepository.save(newWaterPlaceWithCity("안동계곡", "경상북도", "안동시", 4.3, 7));
         waterPlaceRepository.save(newWaterPlace("여수계곡", "전라남도", 4.4, 6));
         waterPlaceRepository.save(newWaterPlace("제주계곡", "제주특별시", 4.5, 5));
         waterPlaceRepository.save(newWaterPlace("가평계곡", "경기도", 4.6, 4));
         waterPlaceRepository.save(newWaterPlace("진주계곡", "경상남도", 4.7, 3));
         waterPlaceRepository.save(newWaterPlace("양산계곡", "경상남도", 4.8, 2));
-        waterPlaceRepository.save(newWaterPlace("청도계곡", "경상북도", 4.9, 1));
+        waterPlaceRepository.save(newWaterPlaceWithCity("청도계곡", "경상북도", "청도군",  4.9, 1));
         waterPlaceRepository.save(newWaterPlace("제천계곡", "충청북도", 3.9, 15));
         waterPlaceRepository.save(newWaterPlace("밀양계곡", "경상남도", 3.8, 14));
         waterPlaceRepository.save(newWaterPlace("광주계곡", "전라남도", 3.7, 13));
