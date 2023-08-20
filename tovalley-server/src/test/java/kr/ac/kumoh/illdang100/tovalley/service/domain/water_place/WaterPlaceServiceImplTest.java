@@ -15,6 +15,7 @@ import org.springframework.data.domain.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static kr.ac.kumoh.illdang100.tovalley.dto.water_place.WaterPlaceReqDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.water_place.WaterPlaceRespDto.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -101,7 +102,7 @@ class WaterPlaceServiceImplTest extends DummyObject {
         waterPlaceDtoList.add(retrieveWaterPlacesDto4);
         waterPlaceDtoList.add(retrieveWaterPlacesDto5);
 
-        RetrieveWaterPlacesCondition condition = new RetrieveWaterPlacesCondition("경상북도", null);
+        RetrieveWaterPlacesCondition condition = new RetrieveWaterPlacesCondition("경상북도", null, null);
         Pageable pageable = PageRequest.of(0, 5, Sort.by(Sort.Direction.DESC, "rating"));
         Page<RetrieveWaterPlacesDto> page = new PageImpl<>(waterPlaceDtoList, pageable, waterPlaceDtoList.size());
 
