@@ -18,7 +18,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 import static kr.ac.kumoh.illdang100.tovalley.dto.page.PageReqDto.*;
-import static kr.ac.kumoh.illdang100.tovalley.dto.page.PageRespDto.*;
+import static kr.ac.kumoh.illdang100.tovalley.dto.water_place.WaterPlaceRespDto.*;
 
 @RestController
 @RequiredArgsConstructor

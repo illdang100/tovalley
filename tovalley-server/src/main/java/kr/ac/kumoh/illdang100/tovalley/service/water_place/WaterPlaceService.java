@@ -5,7 +5,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
-import static kr.ac.kumoh.illdang100.tovalley.dto.page.PageRespDto.*;
+import static kr.ac.kumoh.illdang100.tovalley.dto.rescue_supply.RescueSupplyRespDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.water_place.WaterPlaceReqDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.water_place.WaterPlaceRespDto.*;
 
@@ -19,5 +19,5 @@ public interface WaterPlaceService {
 
     WaterPlaceDetailRespDto getWaterPlaceDetailByWaterPlace(Long waterPlaceId);
 
-    RescueSupplyRespDto getRescueSuppliesByWaterPlace(Long waterPlaceId);
+    RescueSupplyByWaterPlaceRespDto getRescueSuppliesByWaterPlace(Long waterPlaceId);
 }

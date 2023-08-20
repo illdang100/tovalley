@@ -17,7 +17,12 @@ import java.time.YearMonth;
 import java.util.List;
 import java.util.Map;
 
+import static kr.ac.kumoh.illdang100.tovalley.dto.accident.AccidentRespDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.page.PageRespDto.*;
+import static kr.ac.kumoh.illdang100.tovalley.dto.rescue_supply.RescueSupplyRespDto.*;
+import static kr.ac.kumoh.illdang100.tovalley.dto.review.ReviewRespDto.*;
+import static kr.ac.kumoh.illdang100.tovalley.dto.water_place.WaterPlaceRespDto.*;
+import static kr.ac.kumoh.illdang100.tovalley.dto.weather.WeatherRespDto.*;
 
 @Slf4j
 @Service
@@ -56,15 +61,15 @@ public class PageServiceImpl implements PageService{
      */
     @Override
     @Transactional
-    public WaterPlaceDetailAllRespDto getWaterPlaceDetailPageAllData(Long waterPlaceId, Pageable pageable) {
+    public WaterPlaceDetailPageAllRespDto getWaterPlaceDetailPageAllData(Long waterPlaceId, Pageable pageable) {
         List<DailyWaterPlaceWeatherDto> waterPlaceWeathers = getWaterPlaceWeathers(waterPlaceId);
         WaterPlaceDetailRespDto waterPlaceDetail = getWaterPlaceDetail(waterPlaceId);
-        RescueSupplyRespDto rescueSupplies = getRescueSupplies(waterPlaceId);
+        RescueSupplyByWaterPlaceRespDto rescueSupplies = getRescueSupplies(waterPlaceId);
         WaterPlaceAccidentFor5YearsDto accidentsFor5Years = getAccidentsFor5Years(waterPlaceId);
         Map<LocalDate, Integer> travelPlans = getTravelPlans(waterPlaceId);
         WaterPlaceReviewDetailRespDto reviewDetailRespDto = getReviews(waterPlaceId, pageable);
 
-        return new WaterPlaceDetailAllRespDto(waterPlaceWeathers, waterPlaceDetail, rescueSupplies,
+        return new WaterPlaceDetailPageAllRespDto(waterPlaceWeathers, waterPlaceDetail, rescueSupplies,
                 accidentsFor5Years, travelPlans, reviewDetailRespDto);
     }
 
@@ -76,7 +81,7 @@ public class PageServiceImpl implements PageService{
         return waterPlaceService.getWaterPlaceDetailByWaterPlace(waterPlaceId);
     }
 
-    private RescueSupplyRespDto getRescueSupplies(Long waterPlaceId) {
+    private RescueSupplyByWaterPlaceRespDto getRescueSupplies(Long waterPlaceId) {
         return waterPlaceService.getRescueSuppliesByWaterPlace(waterPlaceId);
     }
 

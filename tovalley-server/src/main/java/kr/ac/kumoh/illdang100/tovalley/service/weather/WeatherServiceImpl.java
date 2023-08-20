@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static kr.ac.kumoh.illdang100.tovalley.dto.page.PageRespDto.*;
+import static kr.ac.kumoh.illdang100.tovalley.dto.weather.WeatherRespDto.*;
 
 @Slf4j
 @Service

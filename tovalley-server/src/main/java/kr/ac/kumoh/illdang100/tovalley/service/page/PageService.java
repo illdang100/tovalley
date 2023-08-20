@@ -8,7 +8,7 @@ public interface PageService {
 
     MainPageAllRespDto getMainPageAllData();
 
-    WaterPlaceDetailAllRespDto getWaterPlaceDetailPageAllData(Long waterPlaceId, Pageable pageable);
+    WaterPlaceDetailPageAllRespDto getWaterPlaceDetailPageAllData(Long waterPlaceId, Pageable pageable);
 
     MyPageAllRespDto getMyPageAllData();
 }

@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.ToIntFunction;
 
-import static kr.ac.kumoh.illdang100.tovalley.dto.page.PageRespDto.*;
+import static kr.ac.kumoh.illdang100.tovalley.dto.accident.AccidentRespDto.*;
 
 @Slf4j
 @Service

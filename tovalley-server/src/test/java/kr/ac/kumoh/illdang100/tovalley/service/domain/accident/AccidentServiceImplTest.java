@@ -17,7 +17,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static kr.ac.kumoh.illdang100.tovalley.dto.page.PageRespDto.*;
+import static kr.ac.kumoh.illdang100.tovalley.dto.accident.AccidentRespDto.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)

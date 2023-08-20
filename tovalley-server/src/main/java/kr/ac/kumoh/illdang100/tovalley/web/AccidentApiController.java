@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
+import static kr.ac.kumoh.illdang100.tovalley.dto.accident.AccidentRespDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.page.PageReqDto.*;
-import static kr.ac.kumoh.illdang100.tovalley.dto.page.PageRespDto.*;
 
 @RestController
 @RequiredArgsConstructor

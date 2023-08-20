@@ -15,7 +15,7 @@ import java.text.DecimalFormat;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static kr.ac.kumoh.illdang100.tovalley.dto.page.PageRespDto.*;
+import static kr.ac.kumoh.illdang100.tovalley.dto.rescue_supply.RescueSupplyRespDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.water_place.WaterPlaceReqDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.water_place.WaterPlaceRespDto.*;
 
@@ -128,15 +128,15 @@ public class WaterPlaceServiceImpl implements WaterPlaceService {
      * @return: 구조용품 수량
      */
     @Override
-    public RescueSupplyRespDto getRescueSuppliesByWaterPlace(Long waterPlaceId) {
+    public RescueSupplyByWaterPlaceRespDto getRescueSuppliesByWaterPlace(Long waterPlaceId) {
 
         RescueSupply findRescueSupply = findRescueSupplyByWaterPlaceIdOrElseThrowEx(waterPlaceId);
 
         return createRescueSupplyRespDto(findRescueSupply);
     }
 
-    private RescueSupplyRespDto createRescueSupplyRespDto(RescueSupply findRescueSupply) {
-        return RescueSupplyRespDto.builder()
+    private RescueSupplyByWaterPlaceRespDto createRescueSupplyRespDto(RescueSupply findRescueSupply) {
+        return RescueSupplyByWaterPlaceRespDto.builder()
                 .lifeBoatNum(findRescueSupply.getLifeBoatNum())
                 .portableStandNum(findRescueSupply.getPortableStandNum())
                 .lifeJacketNum(findRescueSupply.getLifeJacketNum())
