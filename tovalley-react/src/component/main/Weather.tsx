@@ -3,8 +3,8 @@ import styles from "../../css/main/Weather.module.css";
 import KakaoMap from "./KakaoMap";
 
 const Weather = () => {
-  const day: string[] = ["토", "일", "월", "화", "수", "목", "금"];
-  const date: string[] = ["7.29", "7.30", "7.31", "8.1", "8.2", "8.3", "8.4"];
+  const day: string[] = ["토", "일", "월", "화", "수"];
+  const date: string[] = ["7.29", "7.30", "7.31", "8.1", "8.2"];
   const [clicked, setClicked] = useState(day[0]);
 
   return (

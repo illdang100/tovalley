@@ -1,34 +1,45 @@
-import React, { useState } from "react";
+import React, { FC, useState } from "react";
 import styles from "../../css/main/PopularValley.module.css";
+
+interface Props {
+  place: {
+    waterPlaceId: number;
+    waterPlaceName: string;
+    waterPlaceImage: string;
+    location: string;
+    rating: number;
+    reviewCnt: number;
+  }[];
+}
 
 const valleyList = [
   {
-    name: "금오계곡",
-    region: "경상북도 구미시",
+    waterPlaceName: "금오계곡",
+    location: "경상북도 구미시",
     rating: 4.3,
-    review: 214,
+    reviewCnt: 214,
   },
   {
-    name: "구미계곡",
-    region: "경상북도 구미시",
+    waterPlaceName: "구미계곡",
+    location: "경상북도 구미시",
     rating: 4.2,
-    review: 197,
+    reviewCnt: 197,
   },
   {
-    name: "우왕계곡",
-    region: "대구광역시",
+    waterPlaceName: "우왕계곡",
+    location: "대구광역시",
     rating: 4.1,
-    review: 100,
+    reviewCnt: 100,
   },
   {
-    name: "김천계곡",
-    region: "경상북도 김천시",
+    waterPlaceName: "김천계곡",
+    location: "경상북도 김천시",
     rating: 3.8,
-    review: 195,
+    reviewCnt: 195,
   },
 ];
 
-const PopularValley = () => {
+const PopularValley: FC<Props> = ({ place }) => {
   const [clicked, setClicked] = useState("평점");
 
   return (
@@ -57,7 +68,7 @@ const PopularValley = () => {
         </span>
       </div>
       <div className={styles.popularList}>
-        {valleyList.map((item) => {
+        {place.map((item) => {
           return (
             <div className={styles.popularItem}>
               <img
@@ -68,12 +79,12 @@ const PopularValley = () => {
               />
               <div className={styles.valleyInfo}>
                 <div className={styles.valleyTitle}>
-                  <span>{item.name}</span>
-                  <span>{item.region}</span>
+                  <span>{item.waterPlaceName}</span>
+                  <span>{item.location}</span>
                 </div>
                 <div className={styles.valleyReview}>
                   <span>{`${item.rating}/5`}</span>
-                  <span>{`리뷰 ${item.review}개`}</span>
+                  <span>{`리뷰 ${item.reviewCnt}개`}</span>
                 </div>
               </div>
             </div>

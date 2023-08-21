@@ -1,11 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import styles from "../../css/header/Header.module.css";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const Header = () => {
-  const menu: string[] = ["전국 계곡", "안전가이드"];
-  const [clicked, setClicked] = useState("");
   const navigation = useNavigate();
+  const location = useLocation();
 
   return (
     <div className={styles.header}>
@@ -19,29 +18,51 @@ const Header = () => {
           <img
             src={process.env.PUBLIC_URL + "/img/투계곡-logo.png"}
             alt="tovalley logo"
-            width="130px"
+            width="120px"
           />
         </div>
         <div className={styles.signup}>
-          <span>회원가입</span>
-          <span>로그인</span>
+          <span
+            onClick={() => {
+              navigation("/signup");
+            }}
+          >
+            회원가입
+          </span>
+          <span
+            onClick={() => {
+              navigation("/login");
+            }}
+          >
+            로그인
+          </span>
         </div>
       </div>
       <div className={styles.nav}>
-        {menu.map((item) => {
-          return (
-            <span
-              onClick={() => {
-                setClicked(`${item}`);
-              }}
-              className={
-                clicked === item ? styles.navMenuClicked : styles.navMenu
-              }
-            >
-              {item}
-            </span>
-          );
-        })}
+        <span
+          onClick={() => {
+            navigation("/valleylist");
+          }}
+          className={
+            location.pathname === "/valleylist"
+              ? styles.navMenuClicked
+              : styles.navMenu
+          }
+        >
+          전국 계곡
+        </span>
+        <span
+          onClick={() => {
+            navigation("/guide");
+          }}
+          className={
+            location.pathname === "/guide"
+              ? styles.navMenuClicked
+              : styles.navMenu
+          }
+        >
+          안전 가이드
+        </span>
       </div>
     </div>
   );

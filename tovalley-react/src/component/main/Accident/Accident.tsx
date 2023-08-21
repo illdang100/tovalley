@@ -1,9 +1,24 @@
 import styles from "../../../css/main/Accident.module.css";
 import { MdNavigateNext, MdNavigateBefore } from "react-icons/md";
 import AccidentChart from "./AccidentChart";
-import React, { useRef, useState } from "react";
+import React, { FC, useRef, useState } from "react";
 
-const Accident = () => {
+interface Props {
+  accident: {
+    accidentCountPerMonth: {
+      month: number;
+      deathCnt: number;
+      disappearanceCnt: number;
+      injuryCnt: number;
+    }[];
+    province: string;
+    totalDeathCnt: number;
+    totalDisappearanceCnt: number;
+    totalInjuryCnt: number;
+  };
+}
+
+const Accident: FC<Props> = ({ accident }) => {
   const region: string[] = [
     "전국",
     "서울",
@@ -16,7 +31,7 @@ const Accident = () => {
     "충청",
     "대구",
   ];
-  const [clicked, setClicked] = useState("전국");
+  const [clicked, setClicked] = useState(accident.province);
   const [next, setNext] = useState(false);
 
   const scroll = useRef<HTMLDivElement>(null);
@@ -79,7 +94,7 @@ const Accident = () => {
         </div>
       </div>
       <div className={styles.lineGraph}>
-        <AccidentChart />
+        <AccidentChart accidentCnt={accident.accidentCountPerMonth} />
       </div>
       <div className={styles.graph}>
         <div className={styles.graphTitle}>
@@ -88,9 +103,9 @@ const Accident = () => {
           <span>부상</span>
         </div>
         <div className={styles.graphContent}>
-          <span>19</span>
-          <span>19</span>
-          <span>19</span>
+          <span>{accident.totalDeathCnt}</span>
+          <span>{accident.totalDisappearanceCnt}</span>
+          <span>{accident.totalInjuryCnt}</span>
         </div>
       </div>
     </div>

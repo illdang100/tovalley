@@ -1,0 +1,136 @@
+/* 헤더와 푸터 사이 바디 */
+.body {
+  margin: auto;
+  margin-top: 4em;
+  width: 30%;
+  max-width: 25em;
+  min-width: 18em;
+}
+
+/* 회원가입 창 */
+.signupContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 0.5em;
+}
+
+/* 회원가입 타이틀 */
+.signupContainer > span {
+  color: #66a5fc;
+  font-weight: bold;
+  font-size: 1.4em;
+}
+
+/* 각 인풋 창 마진 */
+.signupInput > div {
+  margin-top: 0.8em;
+  position: relative;
+}
+
+.signupInput > div:nth-child(5) {
+  margin-top: 0.5em;
+  position: relative;
+}
+
+/* 회원가입 인풋 설명 */
+.signupInput > div > span:first-child {
+  color: #555555;
+  font-size: small;
+}
+
+/* 회원가입 인풋 */
+.signupInput input {
+  border: 1px solid #b8b8b8;
+  padding: 0.9em 1em;
+  border-radius: 5px;
+  color: #555555;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0.2em 0;
+}
+
+.signupInput input:focus {
+  border: none;
+  outline: 1px solid #66a5fc;
+}
+
+/* 확인, 중복체크 버튼 */
+.confirmBtn {
+  color: #66a5fc;
+  border: 1px solid #66a5fc;
+  font-size: 0.9rem;
+  padding: 0.3em 0.5em;
+  border-radius: 5px;
+  cursor: pointer;
+  position: absolute;
+  margin: 0.6em 0 0 1em;
+  white-space: nowrap;
+}
+
+/* 비밀번호 확인 */
+.alertNone {
+  font-size: 0.7rem;
+  color: transparent;
+}
+
+.alert {
+  color: #ff5454;
+  font-size: 0.7rem;
+}
+
+/* 가입하기 버튼 */
+.signupBtn {
+  width: 100%;
+}
+
+.signupBtn button {
+  background-color: #66a5fc;
+  border: none;
+  color: white;
+  padding: 0.9em;
+  font-size: 0.9rem;
+  font-weight: bold;
+  border-radius: 7px;
+  cursor: pointer;
+  margin-top: 2.5em;
+  width: 100%;
+}
+
+/* 소셜 회원가입 */
+.socialSignup {
+  margin: 2.5em 0 5em 0;
+  padding: 0 0.5em;
+}
+
+.socialSignupTitle {
+  display: flex;
+}
+
+.socialSignupTitle hr {
+  width: 100%;
+  height: 1px;
+  border: 0;
+  background-color: #cccccc;
+}
+
+.socialSignupTitle span {
+  color: #afafaf;
+  font-size: 0.9rem;
+  min-width: 80px;
+  margin: 0 0.7em;
+}
+
+/* 소셜 회원가입 로고 */
+.socialSignupLogo {
+  margin-top: 1.2em;
+  display: flex;
+  justify-content: center;
+}
+
+.socialSignupLogo img {
+  cursor: pointer;
+  border-radius: 5px;
+  box-shadow: 0 2px 2px rgb(208, 208, 208);
+  margin: 0 0.3em;
+}
