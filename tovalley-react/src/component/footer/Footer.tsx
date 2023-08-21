@@ -7,7 +7,7 @@ const Footer = () => {
       <img
         src={process.env.PUBLIC_URL + "/img/투계곡-logo.png"}
         alt="tovalley logo"
-        width="130px"
+        width="110px"
       />
       <div className={styles.terms}>
         <span>이용약관</span>

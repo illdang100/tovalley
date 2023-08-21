@@ -1,0 +1,41 @@
+.valleyQuality {
+  margin-top: 5em;
+}
+
+.valleyQuality > span {
+  font-weight: bold;
+  font-size: 1.6em;
+}
+
+.qualityDetail {
+  background: linear-gradient(#eafaff, #ffffff);
+  height: 400px;
+  margin: 1em 0 2em 0;
+  border-radius: 10px;
+  box-shadow: 0 2px 2px rgb(189, 189, 189);
+  overflow: hidden;
+  padding-top: 1.5em;
+}
+
+.valleyWater {
+  background: linear-gradient(to right, #95d2ff, #cbe2cb);
+  transform: skewY(-1.5deg) translate(0, 40px);
+  height: 240px;
+  border-radius: 0 0 10px 10px;
+}
+
+.qualityGauge {
+  margin-left: 1em;
+}
+
+.qualityGauge > span {
+  font-size: small;
+  color: #707070;
+}
+
+.gaugeBar {
+  background: linear-gradient(to top, #95d2ff, #cbe2cb);
+  width: 14px;
+  height: 120px;
+  margin: 0.3em 0 0 0.2em;
+}
