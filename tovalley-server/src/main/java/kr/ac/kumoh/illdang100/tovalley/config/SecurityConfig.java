@@ -1,13 +1,11 @@
 package kr.ac.kumoh.illdang100.tovalley.config;
 
+import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -42,7 +40,6 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-
         http.headers().frameOptions().disable(); // iframe 허용안함
         http.csrf().disable(); // csrf 허용안함
 
@@ -50,13 +47,11 @@ public class SecurityConfig {
 
         // 인증 실패 처리
         http.exceptionHandling().authenticationEntryPoint((request, response, authException) -> {
-            // CustomResponseUtil.fail() 메서드 호출하기 -> 리액트에서 자동 로그인 페이지로 이동
 //            CustomResponseUtil.fail(response, "로그인이 필요합니다", HttpStatus.UNAUTHORIZED);
         });
-
         // 권한 실패
         http.exceptionHandling().accessDeniedHandler((request, response, e) -> {
-//            CustomResponseUtil.fail(response, "권한이 없습니다", HttpStatus.FORBIDDEN);
+//            CustomResponseUtil.fail(response, "권한이 없습니다.", HttpStatus.FORBIDDEN);
         });
 
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
@@ -66,13 +61,14 @@ public class SecurityConfig {
         // 필터 적용
 //        http.apply(new CustomSecurityFilterManager());
 
-        http.authorizeHttpRequests()
+        http
+                .authorizeHttpRequests()
                 .antMatchers("/api/auth/**").authenticated()
-//                .antMatchers("/api/admin/**").hasRole("" + AccountEnum.ADMIN)
+                .antMatchers("/api/admin/**").hasRole("" + MemberEnum.ADMIN)
                 .anyRequest().permitAll();
 
-        http
-                .oauth2Login().loginPage("/token/expired");
+//        http
+//                .oauth2Login().loginPage("/token/expired")
 //                .successHandler(oAuth2SuccessHandler)
 //                .failureHandler(oAuth2FailureHandler)
 //                .userInfoEndpoint().userService(oAuth2UserService);
@@ -80,20 +76,18 @@ public class SecurityConfig {
         return http.build();
     }
 
+    /**
+     * CORS
+     */
     public CorsConfigurationSource configurationSource() {
-
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedHeader("*");
-        configuration.addAllowedMethod("*"); // GET, POST, PUT, DELETE (Javascript 요청 허용)
+        configuration.addAllowedMethod("*"); // GET, POST, DELETE, PUT
         configuration.addAllowedOriginPattern("*"); // 모든 IP 주소 허용 (프론트 엔드 ip만 허용하도록 할 수도 있다.)
-        configuration.setAllowCredentials(true); // 클라이언트에서 쿠키 요청 허용
-
-//        configuration.addExposedHeader(JwtVO.ACCESS_TOKEN_HEADER);
-//        configuration.addExposedHeader(JwtVO.REFRESH_TOKEN_HEADER);
-//        configuration.addExposedHeader(JwtVO.PK_HEADER);
+        configuration.setAllowCredentials(true); // 쿠키 요청 허용
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration); // 모든 주소요청에 위 설정을 적용
+        source.registerCorsConfiguration("/**", configuration);
 
         return source;
     }
