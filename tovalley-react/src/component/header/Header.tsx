@@ -1,10 +1,23 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styles from "../../css/header/Header.module.css";
 import { useLocation, useNavigate } from "react-router-dom";
+import { Cookies } from "react-cookie";
+
+const cookies = new Cookies();
 
 const Header = () => {
   const navigation = useNavigate();
   const location = useLocation();
+  const [login, setLogin] = useState(false);
+
+  useEffect(() => {
+    const loginStatus = cookies.get("isLogIn");
+    console.log("loginStatus : ", loginStatus);
+
+    if (loginStatus === true) {
+      setLogin(true);
+    }
+  }, []);
 
   return (
     <div className={styles.header}>
@@ -21,22 +34,35 @@ const Header = () => {
             width="120px"
           />
         </div>
-        <div className={styles.signup}>
-          <span
-            onClick={() => {
-              navigation("/signup");
-            }}
-          >
-            회원가입
-          </span>
-          <span
-            onClick={() => {
-              navigation("/login");
-            }}
-          >
-            로그인
-          </span>
-        </div>
+        {login ? (
+          <div className={styles.login}>
+            <span>마이페이지</span>
+            <span
+              onClick={() => {
+                console.log("logout");
+              }}
+            >
+              로그아웃
+            </span>
+          </div>
+        ) : (
+          <div className={styles.signup}>
+            <span
+              onClick={() => {
+                navigation("/signup");
+              }}
+            >
+              회원가입
+            </span>
+            <span
+              onClick={() => {
+                navigation("/login");
+              }}
+            >
+              로그인
+            </span>
+          </div>
+        )}
       </div>
       <div className={styles.nav}>
         <span
