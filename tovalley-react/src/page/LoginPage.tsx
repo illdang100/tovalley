@@ -4,6 +4,17 @@ import Header from "../component/header/Header";
 import Footer from "../component/footer/Footer";
 
 const LoginPage = () => {
+  const KAKAO_AUTH_URL = `http://localhost:8080/oauth2/authorization/kakao`;
+  const GOOGLE_AUTH_URL = `http://localhost:8080/oauth2/authorization/google`;
+
+  const kakaoLogin = () => {
+    window.location.href = KAKAO_AUTH_URL;
+  };
+
+  const googleLogin = () => {
+    window.location.href = GOOGLE_AUTH_URL;
+  };
+
   return (
     <>
       <Header />
@@ -35,6 +46,7 @@ const LoginPage = () => {
                 src={process.env.PUBLIC_URL + "/img/login/kakao-logo.png"}
                 alt="kakao logo"
                 width="50px"
+                onClick={kakaoLogin}
               />
               <img
                 src={process.env.PUBLIC_URL + "/img/login/naver-logo.png"}
@@ -45,6 +57,7 @@ const LoginPage = () => {
                 src={process.env.PUBLIC_URL + "/img/login/google-logo.png"}
                 alt="google logo"
                 width="50px"
+                onClick={googleLogin}
               />
             </div>
           </div>
