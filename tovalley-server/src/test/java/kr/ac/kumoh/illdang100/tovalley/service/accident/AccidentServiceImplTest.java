@@ -1,4 +1,4 @@
-package kr.ac.kumoh.illdang100.tovalley.service.domain.accident;
+package kr.ac.kumoh.illdang100.tovalley.service.accident;
 
 import kr.ac.kumoh.illdang100.tovalley.domain.accident.Accident;
 import kr.ac.kumoh.illdang100.tovalley.domain.accident.AccidentEnum;
