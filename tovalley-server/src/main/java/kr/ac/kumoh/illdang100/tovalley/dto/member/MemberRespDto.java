@@ -7,7 +7,10 @@ public class MemberRespDto {
 
     @AllArgsConstructor
     @Data
-    public static class MemberDetailRespDto{
+    public static class MemberProfileRespDto {
 
+        private String memberProfileImg;
+        private String memberName;
+        private String memberNick;
     }
 }

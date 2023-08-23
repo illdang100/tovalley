@@ -39,6 +39,7 @@
 
 .popularItem {
   width: 100%;
+  cursor: pointer;
 }
 
 .popularItem:not(:last-of-type) {
@@ -66,12 +67,17 @@
 
 .valleyTitle > span:first-child {
   font-weight: bold;
-  font-size: 1.2em;
+  font-size: 1em;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 8em;
 }
 
 .valleyTitle > span:last-child {
   color: #7d7d7d;
-  font-size: 0.9em;
+  font-size: 0.7em;
 }
 
 .valleyReview {

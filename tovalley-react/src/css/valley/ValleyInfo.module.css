@@ -1,0 +1,189 @@
+.title {
+  background-color: rgb(197, 197, 197);
+  padding: 0 10%;
+  height: 150px;
+  display: flex;
+  align-items: end;
+}
+
+.title span {
+  color: white;
+  font-weight: bold;
+  font-size: 1.9rem;
+  margin-bottom: 0.5em;
+}
+
+.valleyInfo {
+  padding: 0 10%;
+  display: flex;
+  margin-top: 2.5em;
+}
+
+.valleyMap {
+  width: 100%;
+  margin-right: 5em;
+  min-width: 300px;
+}
+
+.valleyPlaceMenu span {
+  border: 1px solid #66a5fc;
+  color: #66a5fc;
+  padding: 0.5em 0.7em;
+  border-radius: 8px;
+  margin-right: 0.5em;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.valleyPlace {
+  background-color: rgb(179, 179, 179);
+  margin-top: 1.5em;
+  border-radius: 8px;
+  height: 70vh;
+}
+
+.valleyDetail {
+  width: 100%;
+  margin-top: 0.5em;
+}
+
+.valleyWeather > span {
+  font-weight: bold;
+  font-size: 1.3rem;
+}
+
+.weatherList {
+  margin-top: 0.5em;
+  display: flex;
+  border: 1px solid #cccccc;
+  border-radius: 8px;
+  padding: 1em 0.5em;
+  width: 400px;
+}
+
+.weatherItem:not(:last-of-type) {
+  border-right: 1px solid #cccccc;
+}
+
+.weatherItem {
+  flex-grow: 1;
+}
+
+.weatherItem > span,
+.weatherItem > div {
+  display: block;
+  text-align: center;
+}
+
+.temperature {
+  position: relative;
+  margin-bottom: 0.6em;
+}
+
+.temperature > span {
+  font-weight: bold;
+}
+
+.temperature > span:first-child {
+  color: #3378fc;
+  font-size: small;
+  position: absolute;
+  left: 1.4em;
+}
+
+.temperature > span:nth-child(2) {
+  color: #c7c7c7;
+}
+
+.temperature > span:last-child {
+  color: #fd4848;
+  position: absolute;
+  position: absolute;
+  top: 0.1em;
+  right: 1em;
+}
+
+.weatherItem > span:nth-child(3) {
+  font-weight: bold;
+}
+
+.weatherItem > span:last-child {
+  font-size: 0.9rem;
+}
+
+.valleyAccident {
+  margin-top: 1.5em;
+}
+
+.valleyAccident > span,
+.rescueSupplies > span {
+  color: #8b8b8b;
+  font-size: small;
+}
+
+.graph {
+  margin-top: 0.5em;
+  margin-bottom: 1.5em;
+}
+
+.graphTitle {
+  background: linear-gradient(to right, #66a5fc, #95ae94);
+  border-radius: 10px 10px 0 0;
+  display: flex;
+}
+
+.graphTitle span {
+  color: white;
+  font-weight: bold;
+  display: block;
+  padding: 1em;
+  flex-grow: 1;
+  text-align: center;
+  font-size: 1.3rem;
+}
+
+.graphTitle > span:not(:last-of-type),
+.graphContent > span:not(:last-of-type) {
+  border-right: 1px solid #efefef;
+}
+
+.graphContent {
+  border-radius: 0 0 10px 10px;
+  box-shadow: 0 2px 2px rgb(201, 201, 201);
+  display: flex;
+}
+
+.graphContent span {
+  font-weight: bold;
+  display: block;
+  padding: 0.8em 0;
+  flex-grow: 1;
+  text-align: center;
+  font-size: 2em;
+}
+
+.rescueList {
+  display: flex;
+  border: 1px solid #66a5fc;
+  padding: 1em 0.5em;
+  border-radius: 8px;
+  justify-content: space-around;
+  margin-top: 0.5em;
+}
+
+.rescueItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.rescueItem > span:nth-child(2) {
+  color: #cccccc;
+  font-size: small;
+}
+
+.rescueItem > span:nth-child(3) {
+  color: #717171;
+  font-weight: bold;
+  font-size: 1.4em;
+}

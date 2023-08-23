@@ -1,6 +1,6 @@
 .header {
   border-bottom: 1px solid #dadada;
-  padding: 0.5em 10% 0;
+  padding: 1em 10% 0;
 }
 
 .headertop {
@@ -11,6 +11,20 @@
 
 .logo {
   cursor: pointer;
+}
+
+.login span {
+  border: 1px solid #dadada;
+  padding: 0.8em 1.5em;
+  border-radius: 30px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  margin-right: 1em;
+}
+
+.login > span:first-child {
+  border: 1px solid #66a5fc;
+  color: #66a5fc;
 }
 
 .signup span {

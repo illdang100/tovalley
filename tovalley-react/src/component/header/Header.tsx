@@ -1,11 +1,23 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "../../css/header/Header.module.css";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { Cookies } from "react-cookie";
+
+const cookies = new Cookies();
 
 const Header = () => {
-  const menu: string[] = ["전국 계곡", "안전가이드"];
-  const [clicked, setClicked] = useState("");
   const navigation = useNavigate();
+  const location = useLocation();
+  const [login, setLogin] = useState(false);
+
+  useEffect(() => {
+    const loginStatus = cookies.get("isLogIn");
+    console.log("loginStatus : ", loginStatus);
+
+    if (loginStatus === true) {
+      setLogin(true);
+    }
+  }, []);
 
   return (
     <div className={styles.header}>
@@ -19,29 +31,64 @@ const Header = () => {
           <img
             src={process.env.PUBLIC_URL + "/img/투계곡-logo.png"}
             alt="tovalley logo"
-            width="130px"
+            width="120px"
           />
         </div>
-        <div className={styles.signup}>
-          <span>회원가입</span>
-          <span>로그인</span>
-        </div>
-      </div>
-      <div className={styles.nav}>
-        {menu.map((item) => {
-          return (
+        {login ? (
+          <div className={styles.login}>
+            <span>마이페이지</span>
             <span
               onClick={() => {
-                setClicked(`${item}`);
+                console.log("logout");
               }}
-              className={
-                clicked === item ? styles.navMenuClicked : styles.navMenu
-              }
             >
-              {item}
+              로그아웃
             </span>
-          );
-        })}
+          </div>
+        ) : (
+          <div className={styles.signup}>
+            <span
+              onClick={() => {
+                navigation("/signup");
+              }}
+            >
+              회원가입
+            </span>
+            <span
+              onClick={() => {
+                navigation("/login");
+              }}
+            >
+              로그인
+            </span>
+          </div>
+        )}
+      </div>
+      <div className={styles.nav}>
+        <span
+          onClick={() => {
+            navigation("/valleylist");
+          }}
+          className={
+            location.pathname === "/valleylist"
+              ? styles.navMenuClicked
+              : styles.navMenu
+          }
+        >
+          전국 계곡
+        </span>
+        <span
+          onClick={() => {
+            navigation("/guide");
+          }}
+          className={
+            location.pathname === "/guide"
+              ? styles.navMenuClicked
+              : styles.navMenu
+          }
+        >
+          안전 가이드
+        </span>
       </div>
     </div>
   );

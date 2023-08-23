@@ -1,0 +1,106 @@
+/* 헤더와 푸터 사이 바디 */
+.body {
+  padding: 0 33%;
+  margin-top: 5em;
+}
+
+/* 로그인 컨테이너 */
+.loginContainer {
+  text-align: center;
+  border: 1px solid #cccccc;
+  border-radius: 10px;
+  padding: 1.8em 2.5em;
+}
+
+.tovalleyLogo img {
+  cursor: pointer;
+}
+
+/* 로그인 입력창 */
+.loginInput {
+  display: flex;
+  flex-direction: column;
+  margin-top: 0.5em;
+}
+
+/* 로그인 입력창 인풋 */
+.loginInput input {
+  border: 1px solid #b8b8b8;
+  border-radius: 7px;
+  padding: 0.8em 1.5em;
+  font-size: 1rem;
+  margin-top: 0.8em;
+}
+
+/* 로그인 입력창 인풋 클릭했을 때 */
+.loginInput input:focus {
+  border: none;
+  outline: 1px solid #66a5fc;
+}
+
+/* 로그인 입력창 인풋 안내 내용 */
+.loginInput input::placeholder {
+  color: #b8b8b8;
+}
+
+/* 로그인 버튼 */
+.loginInput button {
+  background-color: #66a5fc;
+  border: none;
+  color: white;
+  padding: 0.8em;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 7px;
+  cursor: pointer;
+  margin-top: 2.5em;
+}
+
+/* 소셜 로그인 */
+.socialLogin {
+  margin-top: 2.5em;
+}
+
+.socialLoginTitle {
+  display: flex;
+}
+
+.socialLoginTitle hr {
+  width: 100%;
+  height: 1px;
+  border: 0;
+  background-color: #cccccc;
+}
+
+.socialLoginTitle span {
+  color: #afafaf;
+  font-size: 0.9rem;
+  width: 160px;
+  margin: 0 0.7em;
+}
+
+/* 소셜 로그인 로고 */
+.socialLoginLogo {
+  margin-top: 1.2em;
+}
+
+.socialLoginLogo img {
+  cursor: pointer;
+  border-radius: 5px;
+  box-shadow: 0 2px 2px rgb(208, 208, 208);
+  margin: 0 0.3em;
+}
+
+/* 아이디 비밀번호 찾기 */
+.loginFind {
+  margin-top: 1.5em;
+  margin-bottom: 6em;
+  text-align: center;
+}
+
+.loginFind span {
+  color: #787878;
+  cursor: pointer;
+  border-bottom: 1px solid #787878;
+  margin: 0 1em;
+}
