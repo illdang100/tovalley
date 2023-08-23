@@ -128,6 +128,7 @@ public class WaterPlaceServiceImpl implements WaterPlaceService {
                 .waterPlaceName(waterPlace.getWaterPlaceName())
                 .latitude(coordinate.getLatitude())
                 .longitude(coordinate.getLongitude())
+                .managementType(waterPlace.getManagementType())
                 .detailAddress(waterPlace.getAddress() + " " + waterPlace.getSubLocation())
                 .town(waterPlace.getTown())
                 .annualVisitors(waterPlaceDetail.getAnnualVisitors())
@@ -156,18 +157,7 @@ public class WaterPlaceServiceImpl implements WaterPlaceService {
 
         RescueSupply findRescueSupply = findRescueSupplyByWaterPlaceIdOrElseThrowEx(waterPlaceId);
 
-        return createRescueSupplyRespDto(findRescueSupply);
-    }
-
-    private RescueSupplyByWaterPlaceRespDto createRescueSupplyRespDto(RescueSupply findRescueSupply) {
-        return RescueSupplyByWaterPlaceRespDto.builder()
-                .lifeBoatNum(findRescueSupply.getLifeBoatNum())
-                .portableStandNum(findRescueSupply.getPortableStandNum())
-                .lifeJacketNum(findRescueSupply.getLifeJacketNum())
-                .lifeRingNum(findRescueSupply.getLifeRingNum())
-                .rescueRopeNum(findRescueSupply.getRescueRopeNum())
-                .rescueRodNum(findRescueSupply.getRescueRodNum())
-                .build();
+        return RescueSupplyByWaterPlaceRespDto.createRescueSupplyRespDto(findRescueSupply);
     }
 
     private RescueSupply findRescueSupplyByWaterPlaceIdOrElseThrowEx(Long waterPlaceId) {
