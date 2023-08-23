@@ -3,12 +3,11 @@ package kr.ac.kumoh.illdang100.tovalley.domain.review;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
+import org.springframework.data.domain.SliceImpl;
 import com.querydsl.core.types.dsl.PathBuilder;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.support.PageableExecutionUtils;
 
 import javax.persistence.EntityManager;
@@ -75,5 +74,44 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
                 .where(waterPlace.id.eq(waterPlaceId));
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
+    }
+
+    @Override
+    public Slice<MyReviewRespDto> findSliceMyReviewByMemberId(Long memberId, Pageable pageable) {
+
+        JPAQuery<MyReviewRespDto> query = queryFactory
+                .select(Projections.constructor(MyReviewRespDto.class,
+                        review.id,
+                        waterPlace.id,
+                        waterPlace.waterPlaceName,
+                        review.rating,
+                        review.createdDate,
+                        review.reviewContent,
+                        review.waterQualityReview
+                ))
+                .from(review)
+                .where(member.id.eq(memberId))
+                .join(review.member, member)
+                .join(review.waterPlace, waterPlace)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize() + 1);
+
+        for (Sort.Order o : pageable.getSort()) {
+            PathBuilder pathBuilder = new PathBuilder(
+                    review.getType(), review.getMetadata()
+            );
+            query.orderBy(new OrderSpecifier(o.isAscending() ? Order.ASC : Order.DESC,
+                    pathBuilder.get(o.getProperty())));
+        }
+
+        List<MyReviewRespDto> result = query.fetch();
+
+        boolean hasNext = false;
+        if (result.size() > pageable.getPageSize()) {
+            result.remove(pageable.getPageSize());
+            hasNext = true;
+        }
+
+        return new SliceImpl<>(result, pageable, hasNext);
     }
 }

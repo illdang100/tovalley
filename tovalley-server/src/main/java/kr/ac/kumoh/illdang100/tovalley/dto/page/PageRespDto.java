@@ -1,19 +1,18 @@
 package kr.ac.kumoh.illdang100.tovalley.dto.page;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import kr.ac.kumoh.illdang100.tovalley.dto.member.MemberRespDto;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
+import org.springframework.data.domain.Slice;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
 import static kr.ac.kumoh.illdang100.tovalley.dto.accident.AccidentRespDto.*;
+import static kr.ac.kumoh.illdang100.tovalley.dto.member.MemberRespDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.rescue_supply.RescueSupplyRespDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.review.ReviewRespDto.*;
+import static kr.ac.kumoh.illdang100.tovalley.dto.trip_schedule.TripScheduleRespDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.water_place.WaterPlaceRespDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.weather.WeatherRespDto.*;
 
@@ -45,9 +44,8 @@ public class PageRespDto {
     @Data
     public static class MyPageAllRespDto {
 
-        private MemberRespDto.MemberProfileRespDto userProfile; // 개인정보
-        private List<MyReviewRespDto> myReviews;
+        private MemberProfileRespDto userProfile; // 개인정보
+        private Slice<MyReviewRespDto> myReviews; // 내 리뷰
+        private List<MyTripScheduleRespDto> myUpcomingTripSchedules; // 내 여행일정
     }
-
-
 }

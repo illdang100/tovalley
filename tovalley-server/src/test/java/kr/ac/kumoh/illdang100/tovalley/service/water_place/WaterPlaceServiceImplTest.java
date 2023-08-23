@@ -1,4 +1,4 @@
-package kr.ac.kumoh.illdang100.tovalley.service.domain.water_place;
+package kr.ac.kumoh.illdang100.tovalley.service.water_place;
 
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlace;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlaceRepository;

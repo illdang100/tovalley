@@ -33,6 +33,7 @@ public class Review extends BaseTimeEntity {
     @Column(nullable = false)
     private Integer rating;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 5)
     private WaterQualityReviewEnum waterQualityReview;
 }

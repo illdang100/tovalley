@@ -43,11 +43,25 @@ public class ReviewRespDto {
     public static class MyReviewRespDto {
 
         private Long reviewId;
+        private Long waterPlaceId;
+        private String waterPlaceName;
         private Integer rating;
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
         private LocalDateTime createdReviewDate;
         private String content;
         private List<String> reviewImages;
+        private String waterQuality;
+
+        public MyReviewRespDto(Long reviewId, Long waterPlaceId, String waterPlaceName, Integer rating, LocalDateTime createdReviewDate, String content,
+                                WaterQualityReviewEnum waterQuality) {
+            this.reviewId = reviewId;
+            this.waterPlaceId = waterPlaceId;
+            this.waterPlaceName = waterPlaceName;
+            this.rating = rating;
+            this.createdReviewDate = createdReviewDate;
+            this.content = content;
+            this.waterQuality = waterQuality.getValue();
+        }
     }
 
     @AllArgsConstructor

@@ -1,7 +1,10 @@
 package kr.ac.kumoh.illdang100.tovalley.service.page;
 
 import kr.ac.kumoh.illdang100.tovalley.domain.ProvinceEnum;
+import kr.ac.kumoh.illdang100.tovalley.dto.member.MemberRespDto;
+import kr.ac.kumoh.illdang100.tovalley.dto.trip_schedule.TripScheduleRespDto;
 import kr.ac.kumoh.illdang100.tovalley.service.accident.AccidentService;
+import kr.ac.kumoh.illdang100.tovalley.service.member.MemberService;
 import kr.ac.kumoh.illdang100.tovalley.service.review.ReviewService;
 import kr.ac.kumoh.illdang100.tovalley.service.trip_schedule.TripScheduleService;
 import kr.ac.kumoh.illdang100.tovalley.service.water_place.WaterPlaceService;
@@ -9,6 +12,7 @@ import kr.ac.kumoh.illdang100.tovalley.service.weather.WeatherService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,9 +22,11 @@ import java.util.List;
 import java.util.Map;
 
 import static kr.ac.kumoh.illdang100.tovalley.dto.accident.AccidentRespDto.*;
+import static kr.ac.kumoh.illdang100.tovalley.dto.member.MemberRespDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.page.PageRespDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.rescue_supply.RescueSupplyRespDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.review.ReviewRespDto.*;
+import static kr.ac.kumoh.illdang100.tovalley.dto.trip_schedule.TripScheduleRespDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.water_place.WaterPlaceRespDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.weather.WeatherRespDto.*;
 
@@ -34,6 +40,7 @@ public class PageServiceImpl implements PageService{
     private final WaterPlaceService waterPlaceService;
     private final ReviewService reviewService;
     private final TripScheduleService tripScheduleService;
+    private final MemberService memberService;
 
     /**
      * @methodnme: getMainPageAllData
@@ -98,7 +105,17 @@ public class PageServiceImpl implements PageService{
     }
 
     @Override
-    public MyPageAllRespDto getMyPageAllData() {
-        return null;
+    public MyPageAllRespDto getMyPageAllData(Long memberId, Pageable pageable) {
+
+        // 개인정보
+        MemberProfileRespDto memberDetail = memberService.getMemberDetail(memberId);
+
+        // 내리뷰
+        Slice<MyReviewRespDto> reviewsByMemberId = reviewService.getReviewsByMemberId(memberId, pageable);
+
+        // 앞으로의 일정
+        List<MyTripScheduleRespDto> upcomingTripSchedules = tripScheduleService.getUpcomingTripSchedules(memberId);
+
+        return new MyPageAllRespDto(memberDetail, reviewsByMemberId, upcomingTripSchedules);
     }
 }

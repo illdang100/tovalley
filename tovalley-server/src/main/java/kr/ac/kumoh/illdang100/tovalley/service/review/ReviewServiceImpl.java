@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static kr.ac.kumoh.illdang100.tovalley.dto.page.PageRespDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.review.ReviewRespDto.*;
 
 @Slf4j
@@ -49,8 +49,9 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public Page<WaterPlaceReviewRespDto> getReviewsByMemberId(Long memberId) {
-        return null;
+    public Slice<MyReviewRespDto> getReviewsByMemberId(Long memberId, Pageable pageable) {
+
+        return reviewRepository.findSliceMyReviewByMemberId(memberId, pageable);
     }
 
     /**

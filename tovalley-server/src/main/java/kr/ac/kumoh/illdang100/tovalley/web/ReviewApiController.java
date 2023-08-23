@@ -3,21 +3,22 @@ package kr.ac.kumoh.illdang100.tovalley.web;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.ac.kumoh.illdang100.tovalley.dto.ResponseDto;
+import kr.ac.kumoh.illdang100.tovalley.security.auth.PrincipalDetails;
 import kr.ac.kumoh.illdang100.tovalley.service.review.ReviewService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static kr.ac.kumoh.illdang100.tovalley.dto.page.PageRespDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.review.ReviewRespDto.*;
 
 @RestController
@@ -41,11 +42,13 @@ public class ReviewApiController {
 
     @GetMapping("/auth/members/reviews")
     @Operation(summary = "사용자별 리뷰 조회", description = "사용자가 작성한 리뷰 정보를 반환합니다.")
-    public ResponseEntity<?> getWaterPlaceReviews(/*@AuthenticationPrincipal PrincipalDetails principalDetails,*/
+    public ResponseEntity<?> getMyReviews(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                   @PageableDefault(size = 5, sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable) {
 
-        Page<WaterPlaceReviewRespDto> result =
-                reviewService.getReviewsByMemberId(0L);
+        Long memberId = principalDetails.getMember().getId();
+
+        Slice<MyReviewRespDto> result =
+                reviewService.getReviewsByMemberId(memberId, pageable);
 
         return new ResponseEntity<>(new ResponseDto<>(1, "사용자의 리뷰 조회에 성공하였습니다", result), HttpStatus.OK);
     }

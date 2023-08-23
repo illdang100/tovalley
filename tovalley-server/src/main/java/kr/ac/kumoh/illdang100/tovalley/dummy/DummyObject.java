@@ -144,6 +144,18 @@ public class DummyObject {
                 .build();
     }
 
+    protected TripSchedule newMockTripSchedule(Long tripScheduleId, Member member, WaterPlace waterPlace,
+                                           LocalDate tripDate, int tripNum) {
+
+        return TripSchedule.builder()
+                .id(tripScheduleId)
+                .member(member)
+                .waterPlace(waterPlace)
+                .tripDate(tripDate)
+                .tripNumber(tripNum)
+                .build();
+    }
+
     protected Review newReview(WaterPlace waterPlace, Member member,
                                String content, Integer rating,
                                WaterQualityReviewEnum waterQualityReviewEnum,
