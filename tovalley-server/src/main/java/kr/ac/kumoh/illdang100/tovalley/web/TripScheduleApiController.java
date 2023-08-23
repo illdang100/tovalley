@@ -7,6 +7,10 @@ import kr.ac.kumoh.illdang100.tovalley.security.auth.PrincipalDetails;
 import kr.ac.kumoh.illdang100.tovalley.service.trip_schedule.TripScheduleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -15,9 +19,11 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 
 import static kr.ac.kumoh.illdang100.tovalley.dto.trip_schedule.TripScheduleReqDto.*;
+import static kr.ac.kumoh.illdang100.tovalley.dto.trip_schedule.TripScheduleRespDto.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -49,27 +55,27 @@ public class TripScheduleApiController {
         Map<LocalDate, Integer> result =
                 tripScheduleService.addTripSchedule(principalDetails.getMember().getId(), addTripScheduleReqDto);
 
-        return new ResponseEntity<>(new ResponseDto<>(1, "여행 일정이 성공적으로 추가되었습니다", result), HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseDto<>(1, "여행 일정이 성공적으로 추가되었습니다", result), HttpStatus.CREATED);
     }
 
     @GetMapping("/auth/my-page/upcoming-schedules")
     @Operation(summary = "사용자의 앞으로의 일정 조회", description = "사용자의 앞으로의 일정 정보를 반환합니다.")
-    public ResponseEntity<?> getUpcomingTripAttendeesByMember(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                          @ModelAttribute @Valid RetrieveTripAttendeesPerMonth retrieveTripAttendeesPerMonth,
-                                                          BindingResult bindingResult) {
+    public ResponseEntity<?> getUpcomingTripAttendeesByMember(@AuthenticationPrincipal PrincipalDetails principalDetails) {
 
+        List<MyTripScheduleRespDto> result =
+                tripScheduleService.getUpcomingTripSchedules(principalDetails.getMember().getId());
 
-        return new ResponseEntity<>(new ResponseDto<>(1, "사용자의 앞으로의 일정 조회에 성공하였습니다", null), HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseDto<>(1, "사용자의 앞으로의 일정 조회에 성공하였습니다", result), HttpStatus.OK);
     }
 
     @GetMapping("/auth/my-page/pre-schedules")
     @Operation(summary = "사용자의 지난 일정 조회", description = "사용자의 지난 일정 정보를 반환합니다.")
     public ResponseEntity<?> getPreTripAttendeesByMember(@AuthenticationPrincipal PrincipalDetails principalDetails,
-            @ModelAttribute @Valid RetrieveTripAttendeesPerMonth retrieveTripAttendeesPerMonth,
-            BindingResult bindingResult) {
+                                                         @PageableDefault(size = 5, sort = "tripDate", direction = Sort.Direction.DESC) Pageable pageable) {
 
+        Slice<MyTripScheduleRespDto> result =
+                tripScheduleService.getPreTripSchedulesByMemberId(principalDetails.getMember().getId(), pageable);
 
-
-        return new ResponseEntity<>(new ResponseDto<>(1, "사용자의 지난 일정 조회에 성공하였습니다", null), HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseDto<>(1, "사용자의 지난 일정 조회에 성공하였습니다", result), HttpStatus.OK);
     }
 }
