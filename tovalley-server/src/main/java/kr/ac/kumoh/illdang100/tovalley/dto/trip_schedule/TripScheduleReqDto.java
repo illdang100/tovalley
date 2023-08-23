@@ -34,7 +34,7 @@ public class TripScheduleReqDto {
         @DateTimeFormat(pattern="yyyy-MM-dd")
         private LocalDate tripDate;
         @NotNull
-        @Min(0)
+        @Min(1)
         private Integer tripPartySize;
     }
 }
