@@ -3,6 +3,7 @@ package kr.ac.kumoh.illdang100.tovalley.web;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.ac.kumoh.illdang100.tovalley.dto.ResponseDto;
+import kr.ac.kumoh.illdang100.tovalley.security.auth.PrincipalDetails;
 import kr.ac.kumoh.illdang100.tovalley.service.page.PageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import static kr.ac.kumoh.illdang100.tovalley.dto.page.PageRespDto.*;
@@ -43,11 +44,15 @@ public class PageApiController {
         return new ResponseEntity<>(new ResponseDto<>(1, "물놀이 장소 상세보기 페이지 조회에 성공하였습니다", result), HttpStatus.OK);
     }
 
-    @GetMapping
+    @GetMapping("/auth/my-page")
     @Operation(summary = "마이 페이지", description = "마이 페이지를 출력합니다.")
-    public ResponseEntity<?> getMyPage(Model model) {
+    public ResponseEntity<?> getMyPage(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                       @PageableDefault(size = 5, sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable) {
 
+        Long memberId = principalDetails.getMember().getId();
 
-        return new ResponseEntity<>(new ResponseDto<>(1, "마이 페이지 조회에 성공하였습니다", null), HttpStatus.OK);
+        MyPageAllRespDto result = pageService.getMyPageAllData(memberId, pageable);
+
+        return new ResponseEntity<>(new ResponseDto<>(1, "마이 페이지 조회에 성공하였습니다", result), HttpStatus.OK);
     }
 }
