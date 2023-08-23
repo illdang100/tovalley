@@ -32,6 +32,7 @@ public class WaterPlaceRespDto {
         private String waterPlaceName; // 물놀이 장소 명칭
         private String latitude; // 위도
         private String longitude; // 경도
+        private String managementType; // 관리유형(일반지역, 중점관리지역)
         private String detailAddress; // 주소 + 세부지명(null)
         private String town; // 읍면(null)
         private String annualVisitors; // 연평균 총 이용객수(천명)
