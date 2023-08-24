@@ -2,6 +2,7 @@ package kr.ac.kumoh.illdang100.tovalley.service.trip_schedule;
 
 import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberRepository;
+import kr.ac.kumoh.illdang100.tovalley.domain.review.ReviewRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.trip_schedule.TripSchedule;
 import kr.ac.kumoh.illdang100.tovalley.domain.trip_schedule.TripScheduleRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.RescueSupply;
@@ -36,6 +37,7 @@ public class TripScheduleServiceImpl implements TripScheduleService {
     private final TripScheduleRepository tripScheduleRepository;
     private final WaterPlaceRepository waterPlaceRepository;
     private final RescueSupplyRepository rescueSupplyRepository;
+    private final ReviewRepository reviewRepository;
 
     private static final int MAX_TRIP_SCHEDULES = 5;
 
@@ -152,7 +154,8 @@ public class TripScheduleServiceImpl implements TripScheduleService {
                     waterPlaceTraffic,
                     tripDate,
                     rescueSupplyRespDto,
-                    t.getTripNumber()
+                    t.getTripNumber(),
+                    null
             );
         }).collect(Collectors.toList());
     }
@@ -178,9 +181,11 @@ public class TripScheduleServiceImpl implements TripScheduleService {
                     .getOrDefault(tripDate, 0);
 
             RescueSupplyByWaterPlaceRespDto rescueSupplyRespDto = rescueSupplyMap.get(waterPlaceId);
+            boolean hasReview = reviewRepository.existsByTripScheduleId(mt.getTripScheduleId());
 
             mt.changeWaterPlaceTraffic(waterPlaceTraffic);
             mt.changeRescueSupplies(rescueSupplyRespDto);
+            mt.changeHasReview(hasReview);
         });
 
         return sliceMyTripSchedules;

@@ -111,7 +111,7 @@ public class DummyDevInit extends DummyObject {
             TripSchedule tripSchedule2 = newTripSchedule(member3, a, now, 10);
             TripSchedule tripSchedule3 = newTripSchedule(member4, a, now, 10);
             TripSchedule tripSchedule4 = newTripSchedule(member6, a, now, 10);
-            TripSchedule tripSchedule5 = newTripSchedule(member1, a, now, 10);
+            TripSchedule tripSchedule5 = newTripSchedule(member1, a, now.minusDays(5), 10);
             TripSchedule tripSchedule6 = newTripSchedule(member5, a, now, 10);
 
             TripSchedule tripSchedule7 = newTripSchedule(member2, b, now, 10);
