@@ -111,6 +111,24 @@ class ReviewRepositoryImplTest extends DummyObject {
         assertThat(content.get(4).getNickname()).isEqualTo("member4");
     }
 
+    @Test
+    public void findSliceMyReviewByMemberId_test() {
+
+        // given
+        Long memberId = 1L;
+        PageRequest pageable =
+                PageRequest.of(0, 5, Sort.by(Sort.Direction.ASC, "createdDate"));
+
+        // when
+        List<MyReviewRespDto> content = reviewRepository.findSliceMyReviewByMemberId(memberId, pageable)
+                .getContent();
+
+        // then
+        assertThat(content.size()).isEqualTo(2);
+        assertThat(content.get(0).getWaterPlaceName()).isEqualTo("서울계곡");
+        assertThat(content.get(1).getWaterPlaceName()).isEqualTo("금오계곡");
+    }
+
     private void dataSetting() {
 
         Member member1 = memberRepository.save(newMember("kakao_1234", "member1"));
@@ -120,7 +138,7 @@ class ReviewRepositoryImplTest extends DummyObject {
         Member member5 = memberRepository.save(newMember("kakao_3141", "member5"));
         Member member6 = memberRepository.save(newMember("kakao_4231", "member6"));
         WaterPlace waterPlace1 = waterPlaceRepository.save(newWaterPlace("서울계곡", "서울특별시", 4.9, 2010));
-        WaterPlace waterPlace2 = waterPlaceRepository.save(newWaterPlace("서울계곡", "서울특별시", 4.9, 2010));
+        WaterPlace waterPlace2 = waterPlaceRepository.save(newWaterPlace("금오계곡", "서울특별시", 4.9, 2010));
 
         LocalDate now = LocalDate.now();
 
