@@ -83,7 +83,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     private void saveReviewImages(Review review, List<MultipartFile> reviewImages) {
-        reviewImages.stream().forEach(profileImage -> {
+        reviewImages.forEach(profileImage -> {
             try {
                 ImageFile reviewImgFile = s3Service.upload(profileImage, FileRootPathVO.REVIEW_PATH);
                 reviewImageRepository.save(ReviewImage.builder()

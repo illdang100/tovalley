@@ -45,7 +45,7 @@ public class TripScheduleServiceImpl implements TripScheduleService {
     public Map<LocalDate, Integer> addTripSchedule(Long memberId, AddTripScheduleReqDto addTripScheduleReqDto) {
         Member findMember = findMemberOrElseThrowEx(memberId);
         Long waterPlaceId = addTripScheduleReqDto.getWaterPlaceId();
-        WaterPlace findWaterPlace = findWaterPlaceByWaterPlaceIdOrElseThrowEx(waterPlaceId);
+        WaterPlace findWaterPlace = findWaterPlaceByIdOrElseThrowEx(waterPlaceId);
 
         LocalDate now = LocalDate.now();
         LocalDate tripDate = addTripScheduleReqDto.getTripDate();
@@ -102,7 +102,7 @@ public class TripScheduleServiceImpl implements TripScheduleService {
     @Override
     public Map<LocalDate, Integer> getTripAttendeesByWaterPlace(Long waterPlaceId, YearMonth yearMonth) {
 
-        findWaterPlaceByWaterPlaceIdOrElseThrowEx(waterPlaceId);
+        findWaterPlaceByIdOrElseThrowEx(waterPlaceId);
 
         LocalDate firstDayOfMonth = yearMonth.atDay(1);
         LocalDate lastDayOfMonth = yearMonth.atEndOfMonth();
@@ -243,7 +243,7 @@ public class TripScheduleServiceImpl implements TripScheduleService {
                 .orElseThrow(() -> new CustomApiException("존재하지 않는 사용자입니다"));
     }
 
-    private WaterPlace findWaterPlaceByWaterPlaceIdOrElseThrowEx(Long waterPlaceId) {
+    private WaterPlace findWaterPlaceByIdOrElseThrowEx(Long waterPlaceId) {
         return waterPlaceRepository.findById(waterPlaceId)
                 .orElseThrow(() -> new CustomApiException("물놀이 장소[" + waterPlaceId + "]가 존재하지 않습니다"));
     }
