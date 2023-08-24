@@ -1,17 +1,11 @@
 package kr.ac.kumoh.illdang100.tovalley.web;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import kr.ac.kumoh.illdang100.tovalley.domain.accident.Accident;
-import kr.ac.kumoh.illdang100.tovalley.domain.accident.AccidentEnum;
-import kr.ac.kumoh.illdang100.tovalley.domain.accident.AccidentRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.review.*;
 import kr.ac.kumoh.illdang100.tovalley.domain.trip_schedule.TripSchedule;
 import kr.ac.kumoh.illdang100.tovalley.domain.trip_schedule.TripScheduleRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.*;
-import kr.ac.kumoh.illdang100.tovalley.domain.weather.water_place_weather.WaterPlaceWeather;
-import kr.ac.kumoh.illdang100.tovalley.domain.weather.water_place_weather.WaterPlaceWeatherRepository;
 import kr.ac.kumoh.illdang100.tovalley.dummy.DummyObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -47,6 +41,8 @@ class ReviewApiControllerTest extends DummyObject {
     private MemberRepository memberRepository;
     @Autowired
     private ReviewRepository reviewRepository;
+    @Autowired
+    private TripScheduleRepository tripScheduleRepository;
     @Autowired
     private ReviewImageRepository reviewImageRepository;
     @Autowired
@@ -121,13 +117,30 @@ class ReviewApiControllerTest extends DummyObject {
         waterPlaceList.add(waterPlace);
         waterPlaceRepository.saveAll(waterPlaceList);
 
+        LocalDate now = LocalDate.now();
+
+        List<TripSchedule> tripScheduleList = new ArrayList<>();
+        TripSchedule tripSchedule1 = newTripSchedule(member2, waterPlace, now, 10);
+        TripSchedule tripSchedule2 = newTripSchedule(member3, waterPlace, now, 10);
+        TripSchedule tripSchedule3 = newTripSchedule(member4, waterPlace, now, 10);
+        TripSchedule tripSchedule4 = newTripSchedule(member6, waterPlace, now, 10);
+        TripSchedule tripSchedule5 = newTripSchedule(member1, waterPlace, now, 10);
+        TripSchedule tripSchedule6 = newTripSchedule(member5, waterPlace, now, 10);
+        tripScheduleList.add(tripSchedule1);
+        tripScheduleList.add(tripSchedule2);
+        tripScheduleList.add(tripSchedule3);
+        tripScheduleList.add(tripSchedule4);
+        tripScheduleList.add(tripSchedule5);
+        tripScheduleList.add(tripSchedule6);
+        tripScheduleRepository.saveAll(tripScheduleList);
+
         List<Review> reviewList = new ArrayList<>();
-        reviewList.add(newReview(waterPlace, member2, "content2", 2, WaterQualityReviewEnum.DIRTY, waterPlaceRepository));
-        reviewList.add(newReview(waterPlace, member3, "content3", 3, WaterQualityReviewEnum.CLEAN, waterPlaceRepository));
-        reviewList.add(newReview(waterPlace, member4, "content4", 4, WaterQualityReviewEnum.FINE, waterPlaceRepository));
-        reviewList.add(newReview(waterPlace, member6, "content6", 4, WaterQualityReviewEnum.CLEAN, waterPlaceRepository));
-        reviewList.add(newReview(waterPlace, member1, "content1", 1, WaterQualityReviewEnum.CLEAN, waterPlaceRepository));
-        Review review6 = newReview(waterPlace, member5, "content5", 5, WaterQualityReviewEnum.DIRTY, waterPlaceRepository);
+        reviewList.add(newReview(waterPlace, tripSchedule1, "content2", 2, WaterQualityReviewEnum.DIRTY, waterPlaceRepository));
+        reviewList.add(newReview(waterPlace, tripSchedule2, "content3", 3, WaterQualityReviewEnum.CLEAN, waterPlaceRepository));
+        reviewList.add(newReview(waterPlace, tripSchedule3, "content4", 4, WaterQualityReviewEnum.FINE, waterPlaceRepository));
+        reviewList.add(newReview(waterPlace, tripSchedule4, "content6", 4, WaterQualityReviewEnum.CLEAN, waterPlaceRepository));
+        reviewList.add(newReview(waterPlace, tripSchedule5, "content1", 1, WaterQualityReviewEnum.CLEAN, waterPlaceRepository));
+        Review review6 = newReview(waterPlace, tripSchedule6, "content5", 5, WaterQualityReviewEnum.DIRTY, waterPlaceRepository);
         reviewList.add(review6);
         reviewRepository.saveAll(reviewList);
 

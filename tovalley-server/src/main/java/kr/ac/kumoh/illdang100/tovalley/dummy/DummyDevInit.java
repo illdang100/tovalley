@@ -21,6 +21,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Configuration
@@ -40,7 +42,10 @@ public class DummyDevInit extends DummyObject {
             openApiService.fetchAndSaveSpecialWeatherData();
             openApiService.fetchAndSaveNationalWeatherData();
 
-            /*WaterPlace a = waterPlaceRepository.findById(1000L).get();
+            /* 더미 데이터(주석 해제 후 서버 실행하고 반드시 다시 주석처리하기!!)  */
+            /*LocalDate now = LocalDate.now();
+
+            WaterPlace a = waterPlaceRepository.findById(1000L).get();
             WaterPlace b = waterPlaceRepository.findById(1001L).get();
             WaterPlace c = waterPlaceRepository.findById(1002L).get();
             WaterPlace d = waterPlaceRepository.findById(1003L).get();
@@ -101,12 +106,41 @@ public class DummyDevInit extends DummyObject {
             Member member5 = memberRepository.save(newMember("kakao_3141", "member5"));
             Member member6 = memberRepository.save(newMember("kakao_4231", "member6"));
 
-            reviewRepository.save(newReview(a, member2, "content2", 2, WaterQualityReviewEnum.CLEAN, waterPlaceRepository));
-            reviewRepository.save(newReview(a, member3, "content3", 3, WaterQualityReviewEnum.FINE, waterPlaceRepository));
-            reviewRepository.save(newReview(a, member4, "content4", 4, WaterQualityReviewEnum.DIRTY, waterPlaceRepository));
-            reviewRepository.save(newReview(a, member6, "content6", 4,WaterQualityReviewEnum.DIRTY , waterPlaceRepository));
-            reviewRepository.save(newReview(a, member1, "content1", 1, WaterQualityReviewEnum.CLEAN, waterPlaceRepository));
-            Review review6 = reviewRepository.save(newReview(a, member5, "content5", 5, WaterQualityReviewEnum.CLEAN, waterPlaceRepository));
+            List<TripSchedule> tripScheduleList = new ArrayList<>();
+            TripSchedule tripSchedule1 = newTripSchedule(member2, a, now, 10);
+            TripSchedule tripSchedule2 = newTripSchedule(member3, a, now, 10);
+            TripSchedule tripSchedule3 = newTripSchedule(member4, a, now, 10);
+            TripSchedule tripSchedule4 = newTripSchedule(member6, a, now, 10);
+            TripSchedule tripSchedule5 = newTripSchedule(member1, a, now, 10);
+            TripSchedule tripSchedule6 = newTripSchedule(member5, a, now, 10);
+
+            TripSchedule tripSchedule7 = newTripSchedule(member2, b, now, 10);
+            TripSchedule tripSchedule8 = newTripSchedule(member3, b, now, 10);
+            TripSchedule tripSchedule9 = newTripSchedule(member4, b, now, 10);
+            TripSchedule tripSchedule10 = newTripSchedule(member6, b, now, 10);
+            TripSchedule tripSchedule11 = newTripSchedule(member1, b, now, 10);
+            TripSchedule tripSchedule12 = newTripSchedule(member5, b, now, 10);
+
+            tripScheduleList.add(tripSchedule1);
+            tripScheduleList.add(tripSchedule2);
+            tripScheduleList.add(tripSchedule3);
+            tripScheduleList.add(tripSchedule4);
+            tripScheduleList.add(tripSchedule5);
+            tripScheduleList.add(tripSchedule6);
+            tripScheduleList.add(tripSchedule7);
+            tripScheduleList.add(tripSchedule8);
+            tripScheduleList.add(tripSchedule9);
+            tripScheduleList.add(tripSchedule10);
+            tripScheduleList.add(tripSchedule11);
+            tripScheduleList.add(tripSchedule12);
+            tripScheduleRepository.saveAll(tripScheduleList);
+
+            reviewRepository.save(newReview(a, tripSchedule1, "content2", 2, WaterQualityReviewEnum.CLEAN, waterPlaceRepository));
+            reviewRepository.save(newReview(a, tripSchedule2, "content3", 3, WaterQualityReviewEnum.FINE, waterPlaceRepository));
+            reviewRepository.save(newReview(a, tripSchedule3, "content4", 4, WaterQualityReviewEnum.DIRTY, waterPlaceRepository));
+            reviewRepository.save(newReview(a, tripSchedule4, "content6", 4,WaterQualityReviewEnum.DIRTY , waterPlaceRepository));
+            reviewRepository.save(newReview(a, tripSchedule5, "content1", 1, WaterQualityReviewEnum.CLEAN, waterPlaceRepository));
+            Review review6 = reviewRepository.save(newReview(a, tripSchedule6, "content5", 5, WaterQualityReviewEnum.CLEAN, waterPlaceRepository));
 
             reviewImageRepository.save(newReviewImage(review6, "storeFileUrl1"));
             reviewImageRepository.save(newReviewImage(review6, "storeFileUrl2"));
@@ -115,42 +149,12 @@ public class DummyDevInit extends DummyObject {
             reviewImageRepository.save(newReviewImage(review6, "storeFileUrl5"));
             reviewImageRepository.save(newReviewImage(review6, "storeFileUrl6"));
 
-            reviewRepository.save(newReview(b, member2, "content2", 3, WaterQualityReviewEnum.FINE, waterPlaceRepository));
-            reviewRepository.save(newReview(b, member3, "content3", 5, WaterQualityReviewEnum.CLEAN, waterPlaceRepository));
-            reviewRepository.save(newReview(b, member4, "content4", 5, WaterQualityReviewEnum.CLEAN, waterPlaceRepository));
-            reviewRepository.save(newReview(b, member6, "content6", 4, WaterQualityReviewEnum.DIRTY, waterPlaceRepository));
-            reviewRepository.save(newReview(b, member1, "content1", 1, WaterQualityReviewEnum.DIRTY, waterPlaceRepository));
-            reviewRepository.save(newReview(b, member5, "content5", 5, WaterQualityReviewEnum.FINE, waterPlaceRepository));
-
-            tripScheduleRepository.save(TripSchedule.builder()
-                    .member(member1)
-                    .waterPlace(a)
-                    .tripDate(LocalDate.now().minusDays(15))
-                    .tripNumber(16)
-                    .build());
-
-            tripScheduleRepository.save(TripSchedule.builder()
-                    .member(member1)
-                    .waterPlace(a)
-                    .tripDate(LocalDate.now().minusDays(12))
-                    .tripNumber(5)
-                    .build());
-
-            tripScheduleRepository.save(TripSchedule.builder()
-                    .member(member1)
-                    .waterPlace(a)
-                    .tripDate(LocalDate.now().minusDays(9))
-                    .tripNumber(11)
-                    .build());
-
-            tripScheduleRepository.save(TripSchedule.builder()
-                    .member(member1)
-                    .waterPlace(a)
-                    .tripDate(LocalDate.now().minusDays(3))
-                    .tripNumber(10)
-                    .build());
-
-            tripScheduleRepository.save(newTripSchedule(member1, a, LocalDate.now().minusMonths(1), 50));*/
+            reviewRepository.save(newReview(b, tripSchedule7, "content2", 3, WaterQualityReviewEnum.FINE, waterPlaceRepository));
+            reviewRepository.save(newReview(b, tripSchedule8, "content3", 5, WaterQualityReviewEnum.CLEAN, waterPlaceRepository));
+            reviewRepository.save(newReview(b, tripSchedule9, "content4", 5, WaterQualityReviewEnum.CLEAN, waterPlaceRepository));
+            reviewRepository.save(newReview(b, tripSchedule10, "content6", 4, WaterQualityReviewEnum.DIRTY, waterPlaceRepository));
+            reviewRepository.save(newReview(b, tripSchedule11, "content1", 1, WaterQualityReviewEnum.DIRTY, waterPlaceRepository));
+            reviewRepository.save(newReview(b, tripSchedule12, "content5", 5, WaterQualityReviewEnum.FINE, waterPlaceRepository));*/
         };
     }
 
