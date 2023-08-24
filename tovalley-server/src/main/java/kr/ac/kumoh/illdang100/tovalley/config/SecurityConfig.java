@@ -1,11 +1,22 @@
 package kr.ac.kumoh.illdang100.tovalley.config;
 
 import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberEnum;
+import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtProcess;
+import kr.ac.kumoh.illdang100.tovalley.security.jwt.RefreshTokenRedisRepository;
+import kr.ac.kumoh.illdang100.tovalley.security.jwt.filter.JwtAuthenticationFilter;
+import kr.ac.kumoh.illdang100.tovalley.security.jwt.filter.JwtAuthorizationFilter;
+import kr.ac.kumoh.illdang100.tovalley.security.oauth.CustomOAuth2UserService;
+import kr.ac.kumoh.illdang100.tovalley.security.oauth.OAuth2FailureHandler;
+import kr.ac.kumoh.illdang100.tovalley.security.oauth.OAuth2SuccessHandler;
+import kr.ac.kumoh.illdang100.tovalley.util.CustomResponseUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -18,25 +29,25 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    /*private final CustomOAuth2UserService oAuth2UserService;
+    private final CustomOAuth2UserService oAuth2UserService;
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
     private final OAuth2FailureHandler oAuth2FailureHandler;
     private final JwtProcess jwtProcess;
-    private final RefreshTokenRedisRepository refreshTokenRedisRepository;*/
+    private final RefreshTokenRedisRepository refreshTokenRedisRepository;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    /*public class CustomSecurityFilterManager extends AbstractHttpConfigurer<CustomSecurityFilterManager, HttpSecurity> {
+    public class CustomSecurityFilterManager extends AbstractHttpConfigurer<CustomSecurityFilterManager, HttpSecurity> {
         @Override
         public void configure(HttpSecurity http) throws Exception {
             AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
             http.addFilter(new JwtAuthenticationFilter(authenticationManager, jwtProcess, refreshTokenRedisRepository));
             http.addFilter(new JwtAuthorizationFilter(authenticationManager, jwtProcess));
         }
-    }*/
+    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -47,11 +58,11 @@ public class SecurityConfig {
 
         // 인증 실패 처리
         http.exceptionHandling().authenticationEntryPoint((request, response, authException) -> {
-//            CustomResponseUtil.fail(response, "로그인이 필요합니다", HttpStatus.UNAUTHORIZED);
+            CustomResponseUtil.fail(response, "로그인이 필요합니다", HttpStatus.UNAUTHORIZED);
         });
         // 권한 실패
         http.exceptionHandling().accessDeniedHandler((request, response, e) -> {
-//            CustomResponseUtil.fail(response, "권한이 없습니다.", HttpStatus.FORBIDDEN);
+            CustomResponseUtil.fail(response, "권한이 없습니다.", HttpStatus.FORBIDDEN);
         });
 
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
@@ -59,19 +70,20 @@ public class SecurityConfig {
         http.httpBasic().disable();
 
         // 필터 적용
-//        http.apply(new CustomSecurityFilterManager());
+        http.apply(new CustomSecurityFilterManager());
 
         http
                 .authorizeHttpRequests()
                 .antMatchers("/api/auth/**").authenticated()
-                .antMatchers("/api/admin/**").hasRole("" + MemberEnum.ADMIN)
+                .antMatchers("/admin/**").hasRole("" + MemberEnum.ADMIN)
                 .anyRequest().permitAll();
 
-//        http
-//                .oauth2Login().loginPage("/token/expired")
-//                .successHandler(oAuth2SuccessHandler)
-//                .failureHandler(oAuth2FailureHandler)
-//                .userInfoEndpoint().userService(oAuth2UserService);
+        log.debug("");
+        http
+                .oauth2Login().loginPage("/token/expired")
+                .successHandler(oAuth2SuccessHandler)
+                .failureHandler(oAuth2FailureHandler)
+                .userInfoEndpoint().userService(oAuth2UserService);
 
         return http.build();
     }
