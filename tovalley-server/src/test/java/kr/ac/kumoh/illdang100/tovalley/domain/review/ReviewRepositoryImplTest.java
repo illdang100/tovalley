@@ -2,6 +2,8 @@ package kr.ac.kumoh.illdang100.tovalley.domain.review;
 
 import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberRepository;
+import kr.ac.kumoh.illdang100.tovalley.domain.trip_schedule.TripSchedule;
+import kr.ac.kumoh.illdang100.tovalley.domain.trip_schedule.TripScheduleRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlace;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlaceRepository;
 import kr.ac.kumoh.illdang100.tovalley.dummy.DummyObject;
@@ -14,6 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ActiveProfiles;
 
 import javax.persistence.EntityManager;
+import java.time.LocalDate;
 import java.util.List;
 
 import static kr.ac.kumoh.illdang100.tovalley.dto.review.ReviewRespDto.*;
@@ -27,6 +30,8 @@ class ReviewRepositoryImplTest extends DummyObject {
     private ReviewRepository reviewRepository;
     @Autowired
     private WaterPlaceRepository waterPlaceRepository;
+    @Autowired
+    private TripScheduleRepository tripScheduleRepository;
     @Autowired
     private MemberRepository memberRepository;
     @Autowired
@@ -117,19 +122,35 @@ class ReviewRepositoryImplTest extends DummyObject {
         WaterPlace waterPlace1 = waterPlaceRepository.save(newWaterPlace("서울계곡", "서울특별시", 4.9, 2010));
         WaterPlace waterPlace2 = waterPlaceRepository.save(newWaterPlace("서울계곡", "서울특별시", 4.9, 2010));
 
-        reviewRepository.save(newReview(waterPlace1, member2, "content2", 2, WaterQualityReviewEnum.CLEAN, waterPlaceRepository));
-        reviewRepository.save(newReview(waterPlace1, member3, "content3", 3, WaterQualityReviewEnum.FINE, waterPlaceRepository));
-        reviewRepository.save(newReview(waterPlace1, member4, "content4", 4, WaterQualityReviewEnum.DIRTY, waterPlaceRepository));
-        reviewRepository.save(newReview(waterPlace1, member6, "content6", 4, WaterQualityReviewEnum.FINE, waterPlaceRepository));
-        reviewRepository.save(newReview(waterPlace1, member1, "content1", 1, WaterQualityReviewEnum.DIRTY, waterPlaceRepository));
-        reviewRepository.save(newReview(waterPlace1, member5, "content5", 5, WaterQualityReviewEnum.CLEAN, waterPlaceRepository));
+        LocalDate now = LocalDate.now();
 
-        reviewRepository.save(newReview(waterPlace2, member2, "content2", 2, WaterQualityReviewEnum.CLEAN, waterPlaceRepository));
-        reviewRepository.save(newReview(waterPlace2, member3, "content3", 3, WaterQualityReviewEnum.DIRTY, waterPlaceRepository));
-        reviewRepository.save(newReview(waterPlace2, member4, "content4", 4, WaterQualityReviewEnum.FINE, waterPlaceRepository));
-        reviewRepository.save(newReview(waterPlace2, member6, "content6", 4, WaterQualityReviewEnum.FINE, waterPlaceRepository));
-        reviewRepository.save(newReview(waterPlace2, member1, "content1", 1, WaterQualityReviewEnum.DIRTY, waterPlaceRepository));
-        reviewRepository.save(newReview(waterPlace2, member5, "content5", 5, WaterQualityReviewEnum.DIRTY, waterPlaceRepository));
+        TripSchedule tripSchedule1 = tripScheduleRepository.save(newTripSchedule(member2, waterPlace1, now, 3));
+        TripSchedule tripSchedule2 = tripScheduleRepository.save(newTripSchedule(member3, waterPlace1, now, 3));
+        TripSchedule tripSchedule3 = tripScheduleRepository.save(newTripSchedule(member4, waterPlace1, now, 3));
+        TripSchedule tripSchedule4 = tripScheduleRepository.save(newTripSchedule(member6, waterPlace1, now, 3));
+        TripSchedule tripSchedule5 = tripScheduleRepository.save(newTripSchedule(member1, waterPlace1, now, 3));
+        TripSchedule tripSchedule6 = tripScheduleRepository.save(newTripSchedule(member5, waterPlace1, now, 3));
+
+        TripSchedule tripSchedule7 = tripScheduleRepository.save(newTripSchedule(member2, waterPlace2, now, 3));
+        TripSchedule tripSchedule8 = tripScheduleRepository.save(newTripSchedule(member3, waterPlace2, now, 3));
+        TripSchedule tripSchedule9 = tripScheduleRepository.save(newTripSchedule(member4, waterPlace2, now, 3));
+        TripSchedule tripSchedule10 = tripScheduleRepository.save(newTripSchedule(member6, waterPlace2, now, 3));
+        TripSchedule tripSchedule11 = tripScheduleRepository.save(newTripSchedule(member1, waterPlace2, now, 3));
+        TripSchedule tripSchedule12 = tripScheduleRepository.save(newTripSchedule(member5, waterPlace2, now, 3));
+
+        reviewRepository.save(newReview(waterPlace1, tripSchedule1, "content2", 2, WaterQualityReviewEnum.CLEAN, waterPlaceRepository));
+        reviewRepository.save(newReview(waterPlace1, tripSchedule2, "content3", 3, WaterQualityReviewEnum.FINE, waterPlaceRepository));
+        reviewRepository.save(newReview(waterPlace1, tripSchedule3, "content4", 4, WaterQualityReviewEnum.DIRTY, waterPlaceRepository));
+        reviewRepository.save(newReview(waterPlace1, tripSchedule4, "content6", 4, WaterQualityReviewEnum.FINE, waterPlaceRepository));
+        reviewRepository.save(newReview(waterPlace1, tripSchedule5, "content1", 1, WaterQualityReviewEnum.DIRTY, waterPlaceRepository));
+        reviewRepository.save(newReview(waterPlace1, tripSchedule6, "content5", 5, WaterQualityReviewEnum.CLEAN, waterPlaceRepository));
+
+        reviewRepository.save(newReview(waterPlace2, tripSchedule7, "content2", 2, WaterQualityReviewEnum.CLEAN, waterPlaceRepository));
+        reviewRepository.save(newReview(waterPlace2, tripSchedule8, "content3", 3, WaterQualityReviewEnum.DIRTY, waterPlaceRepository));
+        reviewRepository.save(newReview(waterPlace2, tripSchedule9, "content4", 4, WaterQualityReviewEnum.FINE, waterPlaceRepository));
+        reviewRepository.save(newReview(waterPlace2, tripSchedule10, "content6", 4, WaterQualityReviewEnum.FINE, waterPlaceRepository));
+        reviewRepository.save(newReview(waterPlace2, tripSchedule11, "content1", 1, WaterQualityReviewEnum.DIRTY, waterPlaceRepository));
+        reviewRepository.save(newReview(waterPlace2, tripSchedule12, "content5", 5, WaterQualityReviewEnum.DIRTY, waterPlaceRepository));
     }
 
     private void autoIncrementReset() {

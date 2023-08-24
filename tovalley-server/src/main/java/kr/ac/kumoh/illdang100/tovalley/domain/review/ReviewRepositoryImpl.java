@@ -16,6 +16,7 @@ import java.util.List;
 
 import static kr.ac.kumoh.illdang100.tovalley.domain.member.QMember.member;
 import static kr.ac.kumoh.illdang100.tovalley.domain.review.QReview.review;
+import static kr.ac.kumoh.illdang100.tovalley.domain.trip_schedule.QTripSchedule.tripSchedule;
 import static kr.ac.kumoh.illdang100.tovalley.domain.water_place.QWaterPlace.waterPlace;
 import static kr.ac.kumoh.illdang100.tovalley.dto.review.ReviewRespDto.*;
 
@@ -40,11 +41,11 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
                         review.createdDate,
                         review.reviewContent,
                         review.waterQualityReview
-                        ))
+                ))
                 .from(review)
-                .join(review.waterPlace, waterPlace)
-                .join(review.member, member)
-                .where(waterPlace.id.eq(waterPlaceId))
+                .join(review.tripSchedule, tripSchedule)
+                .join(tripSchedule.member, member)
+                .where(tripSchedule.waterPlace.id.eq(waterPlaceId))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize());
 
@@ -70,8 +71,9 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
         JPAQuery<Long> countQuery = queryFactory
                 .select(review.count())
                 .from(review)
-                .join(review.waterPlace, waterPlace)
-                .where(waterPlace.id.eq(waterPlaceId));
+                .join(review.tripSchedule, tripSchedule)
+                .join(tripSchedule.member, member)
+                .where(tripSchedule.waterPlace.id.eq(waterPlaceId));
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
@@ -91,8 +93,9 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
                 ))
                 .from(review)
                 .where(member.id.eq(memberId))
-                .join(review.member, member)
-                .join(review.waterPlace, waterPlace)
+                .join(review.tripSchedule, tripSchedule)
+                .join(tripSchedule.member, member)
+                .join(tripSchedule.waterPlace, waterPlace)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize() + 1);
 

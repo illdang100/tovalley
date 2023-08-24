@@ -21,6 +21,7 @@ import kr.ac.kumoh.illdang100.tovalley.domain.weather.special_weather.SpecialWea
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.special_weather.SpecialWeatherEnum;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.special_weather.WeatherAlertType;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.water_place_weather.WaterPlaceWeather;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -29,13 +30,13 @@ public class DummyObject {
 
     protected Member newMember(String username, String nickname) {
 
-//        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-//        String encPassword = passwordEncoder.encode("1234");
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String encPassword = passwordEncoder.encode("1234");
 
         return Member.builder()
                 .username(username)
                 .memberName("name")
-                .password("임시 비밀번호")
+                .password(encPassword)
                 .email(username + "@naver.com")
                 .nickname(nickname)
                 .imageFile(null)
@@ -45,13 +46,14 @@ public class DummyObject {
 
     protected Member newMockMember(Long id, String username, String nickname, MemberEnum memberEnum) {
 
-//        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-//        String encPassword = passwordEncoder.encode("1234");
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String encPassword = passwordEncoder.encode("1234");
+
         return Member.builder()
                 .id(id)
                 .username(username)
                 .memberName("name")
-                .password("임시 비밀번호")
+                .password(encPassword)
                 .email(username + "@naver.com")
                 .nickname(nickname)
                 .role(memberEnum)
@@ -111,7 +113,7 @@ public class DummyObject {
     }
 
     protected Accident newAccident(WaterPlace waterPlace, LocalDate accidentDate,
-                                       AccidentEnum accidentCondition, Integer peopleNum) {
+                                   AccidentEnum accidentCondition, Integer peopleNum) {
 
         return Accident.builder()
                 .waterPlace(waterPlace)
@@ -145,7 +147,7 @@ public class DummyObject {
     }
 
     protected TripSchedule newMockTripSchedule(Long tripScheduleId, Member member, WaterPlace waterPlace,
-                                           LocalDate tripDate, int tripNum) {
+                                               LocalDate tripDate, int tripNum) {
 
         return TripSchedule.builder()
                 .id(tripScheduleId)
@@ -156,7 +158,7 @@ public class DummyObject {
                 .build();
     }
 
-    protected Review newReview(WaterPlace waterPlace, Member member,
+    protected Review newReview(WaterPlace waterPlace, TripSchedule tripSchedule,
                                String content, Integer rating,
                                WaterQualityReviewEnum waterQualityReviewEnum,
                                WaterPlaceRepository waterPlaceRepository) {
@@ -165,8 +167,7 @@ public class DummyObject {
         waterPlaceRepository.save(waterPlace);
 
         return Review.builder()
-                .waterPlace(waterPlace)
-                .member(member)
+                .tripSchedule(tripSchedule)
                 .reviewContent(content)
                 .rating(rating)
                 .waterQualityReview(waterQualityReviewEnum)
@@ -183,13 +184,16 @@ public class DummyObject {
                 .build();
     }
 
-    protected Review newMockReview(Long id, WaterPlace waterPlace, Member member,
-                               String content, Integer rating) {
+    protected Review newMockReview(Long id, WaterPlace waterPlace, TripSchedule tripSchedule,
+                                   String content, Integer rating,
+                                   WaterPlaceRepository waterPlaceRepository) {
+
+        waterPlace.calculateRating(rating);
+        waterPlaceRepository.save(waterPlace);
 
         return Review.builder()
                 .id(id)
-                .waterPlace(waterPlace)
-                .member(member)
+                .tripSchedule(tripSchedule)
                 .reviewContent(content)
                 .rating(rating)
                 .build();
@@ -213,7 +217,7 @@ public class DummyObject {
     }
 
     protected NationalWeather newNationalWeather(NationalRegion nationalRegion, String climate,
-                                                     LocalDate weatherDate) {
+                                                 LocalDate weatherDate) {
 
         return NationalWeather.builder()
                 .nationalRegion(nationalRegion)

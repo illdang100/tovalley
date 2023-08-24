@@ -33,8 +33,7 @@ CREATE TABLE IF NOT EXISTS `water_place` (
 
 CREATE TABLE IF NOT EXISTS `review` (
                           `review_id`	BIGINT	NOT NULL AUTO_INCREMENT,
-                          `water_place_id`	BIGINT	NOT NULL,
-                          `member_id`	BIGINT	NOT NULL	COMMENT 'member 테이블',
+                          `trip_schedule_id`	BIGINT	NOT NULL,
                           `review_content`	VARCHAR(256)	NOT NULL,
                           `created_date`	DATETIME(6)	NOT NULL,
                           `last_modified_date`	DATETIME(6)	NOT NULL,
@@ -186,14 +185,9 @@ alter table rescue_supply
             references water_place (water_place_id);
 
 alter table review
-    add constraint FKk0ccx5i4ci2wd70vegug074w1
-        foreign key (member_id)
-            references member (member_id);
-
-alter table review
-    add constraint FK5xdmjxbd2a7hexr33eefspsph
-        foreign key (water_place_id)
-            references water_place (water_place_id);
+    add constraint FKayy598ogf3wajw1eyweu3js23
+        foreign key (trip_schedule_id)
+            references trip_schedule (trip_schedule_id)
 
 alter table review_image
     add constraint FK16wp089tx9nm0obc217gvdd6l

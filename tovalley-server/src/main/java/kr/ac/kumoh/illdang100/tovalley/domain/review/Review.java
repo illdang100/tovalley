@@ -1,8 +1,7 @@
 package kr.ac.kumoh.illdang100.tovalley.domain.review;
 
 import kr.ac.kumoh.illdang100.tovalley.domain.BaseTimeEntity;
-import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
-import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlace;
+import kr.ac.kumoh.illdang100.tovalley.domain.trip_schedule.TripSchedule;
 import lombok.*;
 
 import javax.persistence.*;
@@ -19,13 +18,9 @@ public class Review extends BaseTimeEntity {
     @Column(name = "review_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "water_place_id", nullable = false)
-    private WaterPlace waterPlace;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = false)
-    private Member member;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "trip_schedule_id", nullable = false)
+    private TripSchedule tripSchedule;
 
     @Column(nullable = false, length = 256)
     private String reviewContent;
