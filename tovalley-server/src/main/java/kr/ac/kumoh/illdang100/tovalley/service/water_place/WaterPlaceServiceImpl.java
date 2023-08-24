@@ -155,12 +155,12 @@ public class WaterPlaceServiceImpl implements WaterPlaceService {
     @Override
     public RescueSupplyByWaterPlaceRespDto getRescueSuppliesByWaterPlace(Long waterPlaceId) {
 
-        RescueSupply findRescueSupply = findRescueSupplyByWaterPlaceIdOrElseThrowEx(waterPlaceId);
+        RescueSupply findRescueSupply = findRescueSupplyByIdOrElseThrowEx(waterPlaceId);
 
         return RescueSupplyByWaterPlaceRespDto.createRescueSupplyRespDto(findRescueSupply);
     }
 
-    private RescueSupply findRescueSupplyByWaterPlaceIdOrElseThrowEx(Long waterPlaceId) {
+    private RescueSupply findRescueSupplyByIdOrElseThrowEx(Long waterPlaceId) {
         return rescueSupplyRepository.findByWaterPlace_Id(waterPlaceId)
         .orElseThrow(() -> new CustomApiException("물놀이 장소[" + waterPlaceId + "]: 구급용품이 존재하지 않습니다"));
     }

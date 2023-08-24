@@ -2,6 +2,7 @@ package kr.ac.kumoh.illdang100.tovalley.service.trip_schedule;
 
 import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberRepository;
+import kr.ac.kumoh.illdang100.tovalley.domain.review.ReviewRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.trip_schedule.TripSchedule;
 import kr.ac.kumoh.illdang100.tovalley.domain.trip_schedule.TripScheduleRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.RescueSupply;
@@ -16,7 +17,6 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.*;
@@ -36,6 +36,7 @@ public class TripScheduleServiceImpl implements TripScheduleService {
     private final TripScheduleRepository tripScheduleRepository;
     private final WaterPlaceRepository waterPlaceRepository;
     private final RescueSupplyRepository rescueSupplyRepository;
+    private final ReviewRepository reviewRepository;
 
     private static final int MAX_TRIP_SCHEDULES = 5;
 
@@ -44,7 +45,7 @@ public class TripScheduleServiceImpl implements TripScheduleService {
     public Map<LocalDate, Integer> addTripSchedule(Long memberId, AddTripScheduleReqDto addTripScheduleReqDto) {
         Member findMember = findMemberOrElseThrowEx(memberId);
         Long waterPlaceId = addTripScheduleReqDto.getWaterPlaceId();
-        WaterPlace findWaterPlace = findWaterPlaceByWaterPlaceIdOrElseThrowEx(waterPlaceId);
+        WaterPlace findWaterPlace = findWaterPlaceByIdOrElseThrowEx(waterPlaceId);
 
         LocalDate now = LocalDate.now();
         LocalDate tripDate = addTripScheduleReqDto.getTripDate();
@@ -85,10 +86,29 @@ public class TripScheduleServiceImpl implements TripScheduleService {
     }
 
     @Override
-    public void deleteTripSchedule(Long memberId, Long scheduleId) {
+    @Transactional
+    public void deleteTripSchedules(Long memberId, List<Long> tripScheduleIds) {
+        LocalDate now = LocalDate.now();
 
+        tripScheduleIds.forEach(tripScheduleId -> {
+            TripSchedule findTripSchedule = validatePerMissionForTripScheduleDelete(memberId, tripScheduleId);
+
+            validateTripDateForTripScheduleDelete(findTripSchedule.getTripDate(), now);
+
+            tripScheduleRepository.delete(findTripSchedule);
+        });
     }
 
+    private static void validateTripDateForTripScheduleDelete(LocalDate tripDate, LocalDate now) {
+        if (tripDate.isBefore(now)) {
+            throw new CustomApiException("지난 일정은 삭제할 수 없습니다");
+        }
+    }
+
+    private TripSchedule validatePerMissionForTripScheduleDelete(Long memberId, Long tripScheduleId) {
+        return tripScheduleRepository.findTripScheduleByIdAndMemberId(tripScheduleId, memberId)
+                .orElseThrow(() -> new CustomApiException("해당 일정을 삭제할 권한이 없습니다"));
+    }
 
     /**
      * @param waterPlaceId: 물놀이 장소 pk
@@ -101,7 +121,7 @@ public class TripScheduleServiceImpl implements TripScheduleService {
     @Override
     public Map<LocalDate, Integer> getTripAttendeesByWaterPlace(Long waterPlaceId, YearMonth yearMonth) {
 
-        findWaterPlaceByWaterPlaceIdOrElseThrowEx(waterPlaceId);
+        findWaterPlaceByIdOrElseThrowEx(waterPlaceId);
 
         LocalDate firstDayOfMonth = yearMonth.atDay(1);
         LocalDate lastDayOfMonth = yearMonth.atEndOfMonth();
@@ -152,7 +172,8 @@ public class TripScheduleServiceImpl implements TripScheduleService {
                     waterPlaceTraffic,
                     tripDate,
                     rescueSupplyRespDto,
-                    t.getTripNumber()
+                    t.getTripNumber(),
+                    null
             );
         }).collect(Collectors.toList());
     }
@@ -178,9 +199,11 @@ public class TripScheduleServiceImpl implements TripScheduleService {
                     .getOrDefault(tripDate, 0);
 
             RescueSupplyByWaterPlaceRespDto rescueSupplyRespDto = rescueSupplyMap.get(waterPlaceId);
+            boolean hasReview = reviewRepository.existsByTripScheduleId(mt.getTripScheduleId());
 
             mt.changeWaterPlaceTraffic(waterPlaceTraffic);
             mt.changeRescueSupplies(rescueSupplyRespDto);
+            mt.changeHasReview(hasReview);
         });
 
         return sliceMyTripSchedules;
@@ -239,7 +262,7 @@ public class TripScheduleServiceImpl implements TripScheduleService {
                 .orElseThrow(() -> new CustomApiException("존재하지 않는 사용자입니다"));
     }
 
-    private WaterPlace findWaterPlaceByWaterPlaceIdOrElseThrowEx(Long waterPlaceId) {
+    private WaterPlace findWaterPlaceByIdOrElseThrowEx(Long waterPlaceId) {
         return waterPlaceRepository.findById(waterPlaceId)
                 .orElseThrow(() -> new CustomApiException("물놀이 장소[" + waterPlaceId + "]가 존재하지 않습니다"));
     }
