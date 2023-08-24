@@ -34,6 +34,28 @@ public class TripScheduleApiController {
 
     private final TripScheduleService tripScheduleService;
 
+    @PostMapping("/trip-schedules")
+    @Operation(summary = "여행 일정 추가", description = "사용자의 여행 일정을 추가합니다.")
+    public ResponseEntity<?> addTripSchedule(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                             @RequestBody @Valid AddTripScheduleReqDto addTripScheduleReqDto,
+                                             BindingResult bindingResult) {
+
+        Map<LocalDate, Integer> result =
+                tripScheduleService.addTripSchedule(principalDetails.getMember().getId(), addTripScheduleReqDto);
+
+        return new ResponseEntity<>(new ResponseDto<>(1, "여행 일정이 성공적으로 추가되었습니다", result), HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/trip-schedules")
+    @Operation(summary = "사용자의 앞으로의 일정 삭제", description = "사용자의 앞으로의 일정 정보를 삭제합니다.")
+    public ResponseEntity<?> deleteTripSchedules(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                 @RequestParam List<Long> tripScheduleIds) {
+
+        tripScheduleService.deleteTripSchedules(1L, tripScheduleIds);
+
+        return new ResponseEntity<>(new ResponseDto<>(1, "일정 삭제가 성공적으로 완료되었습니다", null), HttpStatus.OK);
+    }
+
     @GetMapping("/water-places/{id}/trip-schedules")
     @Operation(summary = "물놀이 장소 날짜별 여행객 수 조회", description = "물놀이 장소 날짜별 여행객 수를 반환합니다.")
     public ResponseEntity<?> getTripAttendeesByWaterPlace(@PathVariable("id") Long waterPlaceId,
@@ -44,18 +66,6 @@ public class TripScheduleApiController {
                 tripScheduleService.getTripAttendeesByWaterPlace(waterPlaceId, retrieveTripAttendeesPerMonth.getYearMonth());
 
         return new ResponseEntity<>(new ResponseDto<>(1, "날짜별 여행객 수 조회에 성공하였습니다", result), HttpStatus.OK);
-    }
-
-    @PostMapping("/trip-schedules")
-    @Operation(summary = "여행 일정 추가", description = "사용자의 여행 일정을 추가합니다.")
-    public ResponseEntity<?> addTripSchedule(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                          @RequestBody @Valid AddTripScheduleReqDto addTripScheduleReqDto,
-                                                          BindingResult bindingResult) {
-
-        Map<LocalDate, Integer> result =
-                tripScheduleService.addTripSchedule(principalDetails.getMember().getId(), addTripScheduleReqDto);
-
-        return new ResponseEntity<>(new ResponseDto<>(1, "여행 일정이 성공적으로 추가되었습니다", result), HttpStatus.CREATED);
     }
 
     @GetMapping("/my-page/upcoming-schedules")

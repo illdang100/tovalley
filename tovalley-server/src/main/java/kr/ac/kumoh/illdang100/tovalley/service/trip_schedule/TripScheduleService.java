@@ -20,7 +20,7 @@ public interface TripScheduleService {
     Map<LocalDate, Integer> addTripSchedule(Long memberId, AddTripScheduleReqDto addTripScheduleReqDto);
 
     // 여행 일정 삭제
-    void deleteTripSchedule(Long memberId, Long scheduleId);
+    void deleteTripSchedules(Long memberId, List<Long> tripScheduleIds);
 
     // 특정 회원의 앞으로의 일정 조회
     List<MyTripScheduleRespDto> getUpcomingTripSchedules(Long memberId);

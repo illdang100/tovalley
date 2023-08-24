@@ -86,10 +86,29 @@ public class TripScheduleServiceImpl implements TripScheduleService {
     }
 
     @Override
-    public void deleteTripSchedule(Long memberId, Long scheduleId) {
+    @Transactional
+    public void deleteTripSchedules(Long memberId, List<Long> tripScheduleIds) {
+        LocalDate now = LocalDate.now();
 
+        tripScheduleIds.forEach(tripScheduleId -> {
+            TripSchedule findTripSchedule = validatePerMissionForTripScheduleDelete(memberId, tripScheduleId);
+
+            validateTripDateForTripScheduleDelete(findTripSchedule.getTripDate(), now);
+
+            tripScheduleRepository.delete(findTripSchedule);
+        });
     }
 
+    private static void validateTripDateForTripScheduleDelete(LocalDate tripDate, LocalDate now) {
+        if (tripDate.isBefore(now)) {
+            throw new CustomApiException("지난 일정은 삭제할 수 없습니다");
+        }
+    }
+
+    private TripSchedule validatePerMissionForTripScheduleDelete(Long memberId, Long tripScheduleId) {
+        return tripScheduleRepository.findTripScheduleByIdAndMemberId(tripScheduleId, memberId)
+                .orElseThrow(() -> new CustomApiException("해당 일정을 삭제할 권한이 없습니다"));
+    }
 
     /**
      * @param waterPlaceId: 물놀이 장소 pk
