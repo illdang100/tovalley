@@ -11,6 +11,7 @@ public class MemberReqDto {
 
     @Data
     public static class LoginReqDto {
-
+        private String username;
+        private String password;
     }
 }
