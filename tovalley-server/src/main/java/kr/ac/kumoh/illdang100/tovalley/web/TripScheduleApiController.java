@@ -27,14 +27,14 @@ import static kr.ac.kumoh.illdang100.tovalley.dto.trip_schedule.TripScheduleResp
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/api/auth")
 @Slf4j
 @Tag(name = "TripSchedule", description = "여행계획 API Document")
 public class TripScheduleApiController {
 
     private final TripScheduleService tripScheduleService;
 
-    @GetMapping("/auth/water-places/{id}/trip-schedules")
+    @GetMapping("/water-places/{id}/trip-schedules")
     @Operation(summary = "물놀이 장소 날짜별 여행객 수 조회", description = "물놀이 장소 날짜별 여행객 수를 반환합니다.")
     public ResponseEntity<?> getTripAttendeesByWaterPlace(@PathVariable("id") Long waterPlaceId,
                                                           @ModelAttribute @Valid RetrieveTripAttendeesPerMonth retrieveTripAttendeesPerMonth,
@@ -46,7 +46,7 @@ public class TripScheduleApiController {
         return new ResponseEntity<>(new ResponseDto<>(1, "날짜별 여행객 수 조회에 성공하였습니다", result), HttpStatus.OK);
     }
 
-    @PostMapping("/auth/trip-schedules")
+    @PostMapping("/trip-schedules")
     @Operation(summary = "여행 일정 추가", description = "사용자의 여행 일정을 추가합니다.")
     public ResponseEntity<?> addTripSchedule(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                           @RequestBody @Valid AddTripScheduleReqDto addTripScheduleReqDto,
@@ -58,7 +58,7 @@ public class TripScheduleApiController {
         return new ResponseEntity<>(new ResponseDto<>(1, "여행 일정이 성공적으로 추가되었습니다", result), HttpStatus.CREATED);
     }
 
-    @GetMapping("/auth/my-page/upcoming-schedules")
+    @GetMapping("/my-page/upcoming-schedules")
     @Operation(summary = "사용자의 앞으로의 일정 조회", description = "사용자의 앞으로의 일정 정보를 반환합니다.")
     public ResponseEntity<?> getUpcomingTripAttendeesByMember(@AuthenticationPrincipal PrincipalDetails principalDetails) {
 
@@ -68,7 +68,7 @@ public class TripScheduleApiController {
         return new ResponseEntity<>(new ResponseDto<>(1, "사용자의 앞으로의 일정 조회에 성공하였습니다", result), HttpStatus.OK);
     }
 
-    @GetMapping("/auth/my-page/pre-schedules")
+    @GetMapping("/my-page/pre-schedules")
     @Operation(summary = "사용자의 지난 일정 조회", description = "사용자의 지난 일정 정보를 반환합니다.")
     public ResponseEntity<?> getPreTripAttendeesByMember(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                          @PageableDefault(size = 5, sort = "tripDate", direction = Sort.Direction.DESC) Pageable pageable) {
