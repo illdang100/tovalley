@@ -78,8 +78,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         String refreshToken = saveRefreshToken(principalDetails.getMember());
 
-        addCookie(response, JwtVO.ACCESS_TOKEN_HEADER, jwtToken);
-        addCookie(response, JwtVO.REFRESH_TOKEN_HEADER, refreshToken);
+        addCookie(response, JwtVO.ACCESS_TOKEN, jwtToken);
+        addCookie(response, JwtVO.REFRESH_TOKEN, refreshToken);
         addCookie(response, ISLOGIN, "true", false);
 
         CustomResponseUtil.success(response, null);
