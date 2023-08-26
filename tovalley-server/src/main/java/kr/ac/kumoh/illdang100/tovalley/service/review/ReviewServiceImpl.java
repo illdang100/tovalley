@@ -48,8 +48,10 @@ public class ReviewServiceImpl implements ReviewService {
     public void writeReview(Long memberId, AddNewReviewReqDto addNewReviewReqDto) {
 
         Long tripScheduleId = addNewReviewReqDto.getTripScheduleId();
-        TripSchedule findTripSchedule = findTripScheduleByIdOrElseThrowEx(tripScheduleId);
-        WaterPlace findWaterPlace = findWaterPlaceByIdOrElseThrowEx(findTripSchedule.getWaterPlace().getId());
+        TripSchedule findTripSchedule =
+                findTripScheduleByIdOrElseThrowEx(tripScheduleRepository, tripScheduleId);
+        WaterPlace findWaterPlace =
+                findWaterPlaceByIdOrElseThrowEx(waterPlaceRepository, findTripSchedule.getWaterPlace().getId());
 
         validateTripDate(findTripSchedule.getTripDate());
 
