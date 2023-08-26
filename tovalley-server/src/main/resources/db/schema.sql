@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS `member` (
                           `created_date`	DATETIME(6)	NOT NULL,
                           `last_modified_date`	DATETIME(6)	NOT NULL,
                           `email`	VARCHAR(25)	NOT NULL,
-                          `member_name`	VARCHAR(5)	NOT NULL,
+                          `member_name`	VARCHAR(30)	NOT NULL,
                           `nickname`	VARCHAR(20)	NULL,
                           `username`	VARCHAR(30)	NOT NULL,
                           `password`	VARCHAR(60)	NULL,
