@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="kr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>관리자 로그인 페이지</title>
+</head>
+<body>
+
+<div class="container">
+    <form role="form" action="/api/login" th:object="${loginForm}" method="post">
+        <div>
+            <input type="email" th:field="*{email}" class="form-control" placeholder="이메일을 입력하세요"
+            th:class="${#fields.hasErrors('email')}? 'form-control fieldError' :'form-control'">
+            <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}">잘못된 이메일입니다</p>
+        </div>
+        <div>
+            <input type="password" th:field="*{password}" class="form-control" placeholder="패스워드를 입력하세요"
+                   th:class="${#fields.hasErrors('password')}? 'form-control fieldError' :'form-control'">
+            <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}">잘못된 패스워드입니다</p>
+        </div>
+        <button type="submit" id="submitBtn">로그인</button>
+    </form>
+</div>
+
+</body>
+</html>
+
+<script>
+    const submitBtn = document.querySelector("#submitBtn");
+
+    submitBtn.addEventListener('click', function() {
+        const loginReqDto = {
+            loginId : document.querySelector('#email').value,
+            password : document.querySelector('#password').value
+        }
+
+        const url = '/api/login';
+        fetch(url, {
+            method: "POST",
+            body: JSON.stringify(loginReqDto),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }).then(response => {
+            if (!response.ok) {
+                alert("아이디 또는 비밀번호를 확인해주세요.");
+            } else {
+                window.location.href = "/admin/home"
+            }
+        })
+    })
+</script>
