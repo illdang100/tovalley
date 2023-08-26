@@ -1,8 +1,12 @@
 package kr.ac.kumoh.illdang100.tovalley.dto.accident;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import kr.ac.kumoh.illdang100.tovalley.domain.accident.AccidentEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.springframework.data.domain.Page;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class AccidentRespDto {
@@ -24,9 +28,9 @@ public class AccidentRespDto {
 
         private String province;
 
-        private Integer totalDeathCnt;
-        private Integer totalDisappearanceCnt;
-        private Integer totalInjuryCnt;
+        private int totalDeathCnt;
+        private int totalDisappearanceCnt;
+        private int totalInjuryCnt;
     }
 
     @AllArgsConstructor
@@ -48,6 +52,35 @@ public class AccidentRespDto {
 
         public void incrementInjuryCnt(int cnt) {
             this.injuryCnt = injuryCnt + cnt;
+        }
+    }
+
+    @AllArgsConstructor
+    @Data
+    public static class AccidentForAdminByWaterPlace {
+
+        private Page<AccidentDetailRespDto> accidentDetail;
+
+        private int totalDeathCnt;
+        private int totalDisappearanceCnt;
+        private int totalInjuryCnt;
+    }
+
+    @AllArgsConstructor
+    @Data
+    public static class AccidentDetailRespDto {
+
+        private Long accidentId;
+        @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
+        private LocalDate accidentDate;
+        private String accidentCondition;
+        private Integer peopleNum;
+
+        public AccidentDetailRespDto(Long accidentId, LocalDate accidentDate, AccidentEnum accidentCondition, Integer peopleNum) {
+            this.accidentId = accidentId;
+            this.accidentDate = accidentDate;
+            this.accidentCondition = accidentCondition.getValue();
+            this.peopleNum = peopleNum;
         }
     }
 }

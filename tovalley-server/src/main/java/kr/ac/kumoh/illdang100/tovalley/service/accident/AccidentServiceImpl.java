@@ -1,9 +1,13 @@
 package kr.ac.kumoh.illdang100.tovalley.service.accident;
 
 import kr.ac.kumoh.illdang100.tovalley.domain.accident.Accident;
+import kr.ac.kumoh.illdang100.tovalley.domain.accident.AccidentEnum;
 import kr.ac.kumoh.illdang100.tovalley.domain.accident.AccidentRepository;
+import kr.ac.kumoh.illdang100.tovalley.dto.accident.AccidentReqDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,7 +17,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.ToIntFunction;
+import java.util.stream.Collectors;
 
+import static kr.ac.kumoh.illdang100.tovalley.dto.accident.AccidentReqDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.accident.AccidentRespDto.*;
 
 @Slf4j
@@ -23,6 +29,11 @@ import static kr.ac.kumoh.illdang100.tovalley.dto.accident.AccidentRespDto.*;
 public class AccidentServiceImpl implements AccidentService {
 
     private final AccidentRepository accidentRepository;
+
+    @Override
+    public Accident addAccident(Long waterPlaceId) {
+        return null;
+    }
 
     @Override
     public void deleteAccident(Long accidentId) {
@@ -47,9 +58,12 @@ public class AccidentServiceImpl implements AccidentService {
 
         List<AccidentCountPerMonthDto> accidentCountPerMonthList = new ArrayList<>(accidentCountMap.values());
 
-        Integer totalDeathCnt = calculateTotal(accidentCountPerMonthList, AccidentCountPerMonthDto::getDeathCnt);
-        Integer totalDisappearanceCnt = calculateTotal(accidentCountPerMonthList, AccidentCountPerMonthDto::getDisappearanceCnt);
-        Integer totalInjuryCnt = calculateTotal(accidentCountPerMonthList, AccidentCountPerMonthDto::getInjuryCnt);
+        Integer totalDeathCnt =
+                calculateTotalFromAccidentCountPerMonthDto(accidentCountPerMonthList, AccidentCountPerMonthDto::getDeathCnt);
+        Integer totalDisappearanceCnt =
+                calculateTotalFromAccidentCountPerMonthDto(accidentCountPerMonthList, AccidentCountPerMonthDto::getDisappearanceCnt);
+        Integer totalInjuryCnt =
+                calculateTotalFromAccidentCountPerMonthDto(accidentCountPerMonthList, AccidentCountPerMonthDto::getInjuryCnt);
 
         return new AccidentCountDto(accidentCountPerMonthList, province, totalDeathCnt, totalDisappearanceCnt, totalInjuryCnt);
     }
@@ -91,7 +105,7 @@ public class AccidentServiceImpl implements AccidentService {
         return accidentCountMap;
     }
 
-    private Integer calculateTotal(List<AccidentCountPerMonthDto> list, ToIntFunction<AccidentCountPerMonthDto> mapper) {
+    private Integer calculateTotalFromAccidentCountPerMonthDto(List<AccidentCountPerMonthDto> list, ToIntFunction<AccidentCountPerMonthDto> mapper) {
         return list.stream().mapToInt(mapper).sum();
     }
 
@@ -128,5 +142,29 @@ public class AccidentServiceImpl implements AccidentService {
         }
 
         return new WaterPlaceAccidentFor5YearsDto(totalDeathCnt, totalDisappearanceCnt, totalInjuryCnt);
+    }
+
+    @Override
+    public AccidentForAdminByWaterPlace getAccidentDetailByWaterPlace(Long waterPlaceId,
+                                                                      RetrieveAccidentCondition retrieveAccidentCondition,
+                                                                      Pageable pageable) {
+
+        Page<AccidentDetailRespDto> accidentDetail =
+                accidentRepository.findAccidentDetailRespDtoByWaterPlaceId(waterPlaceId, retrieveAccidentCondition, pageable);
+
+        List<Accident> accidentsByWaterPlace = accidentRepository.findByWaterPlaceId(waterPlaceId);
+
+        int totalDeathCnt = calculateTotalFromAccident(accidentsByWaterPlace, AccidentEnum.DEATH);
+        int totalDisappearanceCnt = calculateTotalFromAccident(accidentsByWaterPlace, AccidentEnum.DISAPPEARANCE);
+        int totalInjuryCnt = calculateTotalFromAccident(accidentsByWaterPlace, AccidentEnum.INJURY);
+
+        return new AccidentForAdminByWaterPlace(accidentDetail, totalDeathCnt, totalDisappearanceCnt, totalInjuryCnt);
+    }
+
+    private int calculateTotalFromAccident(List<Accident> accidents, AccidentEnum condition) {
+        return accidents.stream()
+                .filter(accident -> accident.getAccidentCondition() == condition)
+                .mapToInt(Accident::getPeopleNum)
+                .sum();
     }
 }

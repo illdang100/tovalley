@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 
 import static kr.ac.kumoh.illdang100.tovalley.dto.review.ReviewReqDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.review.ReviewRespDto.*;
+import static kr.ac.kumoh.illdang100.tovalley.util.EntityFinder.*;
 
 @Slf4j
 @Service
@@ -47,8 +48,10 @@ public class ReviewServiceImpl implements ReviewService {
     public void writeReview(Long memberId, AddNewReviewReqDto addNewReviewReqDto) {
 
         Long tripScheduleId = addNewReviewReqDto.getTripScheduleId();
-        TripSchedule findTripSchedule = findTripScheduleByIdOrElseThrowEx(tripScheduleId);
-        WaterPlace findWaterPlace = findWaterPlaceByIdOrElseThrowEx(findTripSchedule.getWaterPlace().getId());
+        TripSchedule findTripSchedule =
+                findTripScheduleByIdOrElseThrowEx(tripScheduleRepository, tripScheduleId);
+        WaterPlace findWaterPlace =
+                findWaterPlaceByIdOrElseThrowEx(waterPlaceRepository, findTripSchedule.getWaterPlace().getId());
 
         validateTripDate(findTripSchedule.getTripDate());
 
@@ -112,7 +115,7 @@ public class ReviewServiceImpl implements ReviewService {
      */
     @Override
     public WaterPlaceReviewDetailRespDto getReviewsByWaterPlaceId(Long waterPlaceId, Pageable pageable) {
-        WaterPlace findWaterPlace = findWaterPlaceByIdOrElseThrowEx(waterPlaceId);
+        WaterPlace findWaterPlace = findWaterPlaceByIdOrElseThrowEx(waterPlaceRepository, waterPlaceId);
 
         List<Review> allReviews = reviewRepository.findAllByWaterPlace_Id(waterPlaceId);
 
@@ -150,16 +153,6 @@ public class ReviewServiceImpl implements ReviewService {
                     .collect(Collectors.toList());
             review.setReviewImages(reviewStoreFileUrls);
         }
-    }
-
-    private TripSchedule findTripScheduleByIdOrElseThrowEx(Long tripScheduleId) {
-        return tripScheduleRepository.findById(tripScheduleId)
-                .orElseThrow(() -> new CustomApiException("여행 일정[" + tripScheduleId + "]이 존재하지 않습니다"));
-    }
-
-    private WaterPlace findWaterPlaceByIdOrElseThrowEx(Long waterPlaceId) {
-        return waterPlaceRepository.findById(waterPlaceId)
-                .orElseThrow(() -> new CustomApiException("물놀이 장소[" + waterPlaceId + "]가 존재하지 않습니다"));
     }
 
     private double formatRating(double rating) {

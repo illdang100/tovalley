@@ -1,4 +1,4 @@
-package kr.ac.kumoh.illdang100.tovalley.web;
+package kr.ac.kumoh.illdang100.tovalley.web.api;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
