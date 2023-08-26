@@ -27,6 +27,7 @@ public class TripScheduleRespDto {
         private LocalDate tripDate; // 여행 날짜
         private int tripPartySize; // 여행 인원수
         private RescueSupplyByWaterPlaceRespDto rescueSupplies; // 구급용품 현황
+        private Boolean hasReview; // 리뷰 작성 여부
 
         public MyTripScheduleRespDto(Long tripScheduleId, Long waterPlaceId, String waterPlaceName,
                                      String waterPlaceImg, String waterPlaceAddr, Double waterPlaceRating,
@@ -45,7 +46,8 @@ public class TripScheduleRespDto {
         public MyTripScheduleRespDto(Long tripScheduleId, Long waterPlaceId, String waterPlaceName, String waterPlaceImg,
                                      String waterPlaceAddr, Double waterPlaceRating, int waterPlaceReviewCnt,
                                      int waterPlaceTraffic, LocalDate tripDate,
-                                     RescueSupplyByWaterPlaceRespDto rescueSupplies, int tripPartySize) {
+                                     RescueSupplyByWaterPlaceRespDto rescueSupplies, int tripPartySize,
+                                     Boolean hasReview) {
             this.tripScheduleId = tripScheduleId;
             this.waterPlaceId = waterPlaceId;
             this.waterPlaceName = waterPlaceName;
@@ -57,6 +59,7 @@ public class TripScheduleRespDto {
             this.tripDate = tripDate;
             this.rescueSupplies = rescueSupplies;
             this.tripPartySize = tripPartySize;
+            this.hasReview = hasReview;
         }
 
         private String getFormattedRating(Double rating) {
@@ -70,6 +73,10 @@ public class TripScheduleRespDto {
 
         public void changeRescueSupplies(RescueSupplyByWaterPlaceRespDto rescueSupplies) {
             this.rescueSupplies = rescueSupplies;
+        }
+
+        public void changeHasReview(Boolean hasReview) {
+            this.hasReview = hasReview;
         }
     }
 }

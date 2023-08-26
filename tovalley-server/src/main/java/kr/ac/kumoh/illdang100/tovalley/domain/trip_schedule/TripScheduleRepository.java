@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public interface TripScheduleRepository extends JpaRepository<TripSchedule, Long>, TripScheduleRepositoryCustom {
 
@@ -18,4 +19,6 @@ public interface TripScheduleRepository extends JpaRepository<TripSchedule, Long
     int countByMemberIdAndTripDateGreaterThanEqual(Long memberId, LocalDate today);
 
     boolean existsByMember_IdAndWaterPlace_IdAndTripDate(Long memberId, Long waterPlaceId, LocalDate tripDate);
+
+    Optional<TripSchedule> findTripScheduleByIdAndMemberId(Long tripScheduleId, Long memberId);
 }

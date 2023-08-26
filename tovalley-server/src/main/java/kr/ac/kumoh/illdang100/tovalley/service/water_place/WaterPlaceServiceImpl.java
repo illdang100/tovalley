@@ -133,4 +133,9 @@ public class WaterPlaceServiceImpl implements WaterPlaceService {
 
         return RescueSupplyByWaterPlaceRespDto.createRescueSupplyRespDto(findRescueSupply);
     }
+
+    @Override
+    public AdminWaterPlaceDetailRespDto getAdminWaterPlaceDetailByWaterPlace(Long waterPlaceId) {
+        return null;
+    }
 }
