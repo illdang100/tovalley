@@ -19,9 +19,6 @@ public interface MemberService {
     // 닉네임 중복 검사
     void isNicknameAvailable(String nickname);
 
-    // 서비스 자체 로그인
-    Member login(LoginReqDto loginReqDto);
-
     // 아이디 찾기
     String findIdByEmail(String email);
 

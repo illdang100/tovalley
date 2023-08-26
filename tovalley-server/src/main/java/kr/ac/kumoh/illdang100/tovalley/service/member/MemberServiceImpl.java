@@ -3,6 +3,8 @@ package kr.ac.kumoh.illdang100.tovalley.service.member;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberRepository;
 import kr.ac.kumoh.illdang100.tovalley.dto.member.MemberReqDto;
+import kr.ac.kumoh.illdang100.tovalley.handler.ex.CustomApiException;
+import kr.ac.kumoh.illdang100.tovalley.util.EntityFinder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -11,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+
+import java.util.Optional;
 
 import static kr.ac.kumoh.illdang100.tovalley.dto.member.MemberRespDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.util.EntityFinder.*;
@@ -32,11 +36,11 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public void isNicknameAvailable(String nickname) {
 
-    }
+        Optional<Member> memberOptional = memberRepository.findByNickname(nickname);
 
-    @Override
-    public Member login(MemberReqDto.LoginReqDto loginReqDto) {
-        return null;
+        memberOptional.ifPresent((findMember) -> {
+            throw new CustomApiException("사용 불가능한 닉네임입니다.");
+        });
     }
 
     @Override
@@ -78,6 +82,8 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public void updateMemberNick(Long memberId, String newNickname) {
 
+        Member findMember = findMemberByIdOrElseThrowEx(memberRepository, memberId);
+        findMember.changeNickname(newNickname);
     }
 
     @Override

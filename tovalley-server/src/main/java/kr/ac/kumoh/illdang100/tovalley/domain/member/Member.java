@@ -39,4 +39,8 @@ public class Member extends BaseTimeEntity {
 
     @Embedded
     private ImageFile imageFile;
+
+    public void changeNickname(String nickname) {
+        this.nickname = nickname;
+    }
 }
