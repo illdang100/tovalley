@@ -7,6 +7,7 @@ import kr.ac.kumoh.illdang100.tovalley.security.auth.PrincipalDetails;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtProcess;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtVO;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -36,9 +37,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         if (isCookieVerify(request)) {
-            String accessToken = findCookieValue(request);
-            String token = accessToken.replace(COOKIE_TOKEN_PREFIX, "");
-
+            String token = findCookieValue(request);
             log.debug("token={}", token);
 
             try {
@@ -63,8 +62,6 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                log.debug("cookie name={}", cookie.getName());
-                log.debug("cookie value={}", cookie.getValue());
                 if (cookie.getName().equals(JwtVO.ACCESS_TOKEN) && cookie.getValue().startsWith(COOKIE_TOKEN_PREFIX)) {
                     return true;
                 }
@@ -88,8 +85,8 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         ObjectMapper objectMapper = new ObjectMapper();
         ResponseDto<Object> responseDto = new ResponseDto<>(-1, "만료된 토큰입니다.", null);
         String responseBody = objectMapper.writeValueAsString(responseDto);
-
         response.setContentType("application/json;charset=UTF-8");
+        response.setStatus(HttpStatus.BAD_REQUEST.value());
         response.getWriter().write(responseBody);
         response.getWriter().flush();
         response.getWriter().close();

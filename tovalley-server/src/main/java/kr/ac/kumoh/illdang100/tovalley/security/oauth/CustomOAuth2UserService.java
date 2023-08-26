@@ -34,7 +34,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private OAuth2User processOAuth2User(OAuth2UserRequest userRequest, OAuth2User oAuth2User) {
         Map<String, Object> attributes = oAuth2User.getAttributes();
-        log.info(attributes.toString());
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
 
         String username = getUsername(oAuth2User, registrationId, attributes);

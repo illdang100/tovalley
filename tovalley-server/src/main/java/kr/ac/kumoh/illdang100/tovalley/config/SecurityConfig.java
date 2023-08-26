@@ -78,7 +78,6 @@ public class SecurityConfig {
                 .antMatchers("/admin/**").hasRole("" + MemberEnum.ADMIN)
                 .anyRequest().permitAll();
 
-        log.debug("");
         http
                 .oauth2Login().loginPage("/token/expired")
                 .successHandler(oAuth2SuccessHandler)
