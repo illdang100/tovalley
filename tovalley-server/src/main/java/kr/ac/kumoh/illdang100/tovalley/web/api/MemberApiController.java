@@ -46,7 +46,7 @@ public class MemberApiController {
         return new ResponseEntity<>(new ResponseDto<>(1, "닉네임 변경에 성공하였습니다", null), HttpStatus.OK);
     }
 
-    @PostMapping(value = "/members/profile-image")
+    @PostMapping(value = "/auth/members/profile-image")
     @Operation(summary = "사용자 프로필 이미지 설정", description = "사용자의 프로필 이미지를 설정합니다.")
     public ResponseEntity<?> changeProfileImage(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                         @RequestPart(value = "image", required = false) MultipartFile memberImage) { // input 태그의 name 속성과 값이 동일해야 한다.
