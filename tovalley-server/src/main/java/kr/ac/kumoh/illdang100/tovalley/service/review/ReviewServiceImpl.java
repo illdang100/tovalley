@@ -6,7 +6,6 @@ import kr.ac.kumoh.illdang100.tovalley.domain.review.ReviewImageRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.review.ReviewRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlace;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlaceRepository;
-import kr.ac.kumoh.illdang100.tovalley.handler.ex.CustomApiException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -22,6 +21,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static kr.ac.kumoh.illdang100.tovalley.dto.review.ReviewRespDto.*;
+import static kr.ac.kumoh.illdang100.tovalley.util.EntityFinder.*;
 
 @Slf4j
 @Service
@@ -64,7 +64,7 @@ public class ReviewServiceImpl implements ReviewService {
      */
     @Override
     public WaterPlaceReviewDetailRespDto getReviewsByWaterPlaceId(Long waterPlaceId, Pageable pageable) {
-        WaterPlace findWaterPlace = findWaterPlaceByWaterPlaceIdOrElseThrowEx(waterPlaceId);
+        WaterPlace findWaterPlace = findWaterPlaceByIdOrElseThrowEx(waterPlaceRepository, waterPlaceId);
 
         List<Review> allReviews = reviewRepository.findAllByWaterPlace_Id(waterPlaceId);
 
@@ -102,13 +102,6 @@ public class ReviewServiceImpl implements ReviewService {
                     .collect(Collectors.toList());
             review.setReviewImages(reviewStoreFileUrls);
         }
-    }
-
-
-    private WaterPlace findWaterPlaceByWaterPlaceIdOrElseThrowEx(Long waterPlaceId) {
-        WaterPlace findWaterPlace = waterPlaceRepository.findById(waterPlaceId)
-                .orElseThrow(() -> new CustomApiException("물놀이 장소[" + waterPlaceId + "]가 존재하지 않습니다"));
-        return findWaterPlace;
     }
 
     private double formatRating(double rating) {

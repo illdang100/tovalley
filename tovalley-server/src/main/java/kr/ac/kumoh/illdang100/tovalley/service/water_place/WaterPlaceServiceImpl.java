@@ -5,7 +5,6 @@ import kr.ac.kumoh.illdang100.tovalley.domain.review.Review;
 import kr.ac.kumoh.illdang100.tovalley.domain.review.ReviewRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.review.WaterQualityReviewEnum;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.*;
-import kr.ac.kumoh.illdang100.tovalley.handler.ex.CustomApiException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -23,6 +22,8 @@ import java.util.stream.Collectors;
 import static kr.ac.kumoh.illdang100.tovalley.dto.rescue_supply.RescueSupplyRespDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.water_place.WaterPlaceReqDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.water_place.WaterPlaceRespDto.*;
+import static kr.ac.kumoh.illdang100.tovalley.dto.water_place.WaterPlaceRespDto.WaterPlaceDetailRespDto.*;
+import static kr.ac.kumoh.illdang100.tovalley.util.EntityFinder.*;
 
 @Slf4j
 @Service
@@ -94,7 +95,8 @@ public class WaterPlaceServiceImpl implements WaterPlaceService {
      */
     @Override
     public WaterPlaceDetailRespDto getWaterPlaceDetailByWaterPlace(Long waterPlaceId) {
-        WaterPlaceDetail findWaterPlaceDetail = findWaterPlaceDetailByWaterPlaceIdOrElseThrowEx(waterPlaceId);
+        WaterPlaceDetail findWaterPlaceDetail =
+                findWaterPlaceDetailByWaterPlaceIdOrElseThrowEx(waterPlaceDetailRepository, waterPlaceId);
 
         List<Review> findReviews = reviewRepository.findAllByWaterPlace_Id(waterPlaceId);
         Map<String, Integer> reviewCounts = countReviewOccurrences(findReviews);
@@ -117,34 +119,6 @@ public class WaterPlaceServiceImpl implements WaterPlaceService {
         return reviewCounts;
     }
 
-    private WaterPlaceDetail findWaterPlaceDetailByWaterPlaceIdOrElseThrowEx(Long waterPlaceId) {
-        return waterPlaceDetailRepository.findWaterPlaceDetailWithWaterPlaceById(waterPlaceId)
-                .orElseThrow(() -> new CustomApiException("물놀이 장소[" + waterPlaceId + "]가 존재하지 않습니다"));
-    }
-
-    private WaterPlaceDetailRespDto createWaterPlaceDetailRespDto(WaterPlace waterPlace, Coordinate coordinate, WaterPlaceDetail waterPlaceDetail, Map<String, Integer> reviewCounts) {
-        return WaterPlaceDetailRespDto.builder()
-                .waterPlaceImage(waterPlace.getWaterPlaceImageUrl())
-                .waterPlaceName(waterPlace.getWaterPlaceName())
-                .latitude(coordinate.getLatitude())
-                .longitude(coordinate.getLongitude())
-                .managementType(waterPlace.getManagementType())
-                .detailAddress(waterPlace.getAddress() + " " + waterPlace.getSubLocation())
-                .town(waterPlace.getTown())
-                .annualVisitors(waterPlaceDetail.getAnnualVisitors())
-                .safetyMeasures(waterPlaceDetail.getSafetyMeasures())
-                .waterPlaceSegment(waterPlaceDetail.getWaterPlaceSegment())
-                .dangerSegments(waterPlaceDetail.getDangerSegments())
-                .dangerSignboardsNum(waterPlaceDetail.getDangerSignboardsNum())
-                .deepestDepth(waterPlaceDetail.getDeepestDepth())
-                .avgDepth(waterPlaceDetail.getAvgDepth())
-                .waterTemperature(waterPlaceDetail.getWaterTemperature())
-                .bod(waterPlaceDetail.getBod())
-                .turbidity(waterPlaceDetail.getTurbidity())
-                .waterQualityReviews(reviewCounts)
-                .build();
-    }
-
     /**
      * @methodnme: getRescueSuppliesByWaterPlace
      * @author: JYeonJun
@@ -155,13 +129,8 @@ public class WaterPlaceServiceImpl implements WaterPlaceService {
     @Override
     public RescueSupplyByWaterPlaceRespDto getRescueSuppliesByWaterPlace(Long waterPlaceId) {
 
-        RescueSupply findRescueSupply = findRescueSupplyByWaterPlaceIdOrElseThrowEx(waterPlaceId);
+        RescueSupply findRescueSupply = findRescueSupplyByWaterPlaceIdOrElseThrowEx(rescueSupplyRepository, waterPlaceId);
 
         return RescueSupplyByWaterPlaceRespDto.createRescueSupplyRespDto(findRescueSupply);
-    }
-
-    private RescueSupply findRescueSupplyByWaterPlaceIdOrElseThrowEx(Long waterPlaceId) {
-        return rescueSupplyRepository.findByWaterPlace_Id(waterPlaceId)
-        .orElseThrow(() -> new CustomApiException("물놀이 장소[" + waterPlaceId + "]: 구급용품이 존재하지 않습니다"));
     }
 }
