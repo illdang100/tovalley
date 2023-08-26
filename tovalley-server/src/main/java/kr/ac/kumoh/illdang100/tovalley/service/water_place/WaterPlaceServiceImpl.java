@@ -20,8 +20,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static kr.ac.kumoh.illdang100.tovalley.dto.rescue_supply.RescueSupplyRespDto.*;
+import static kr.ac.kumoh.illdang100.tovalley.dto.rescue_supply.RescueSupplyRespDto.RescueSupplyByWaterPlaceRespDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.water_place.WaterPlaceReqDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.water_place.WaterPlaceRespDto.*;
+import static kr.ac.kumoh.illdang100.tovalley.dto.water_place.WaterPlaceRespDto.AdminWaterPlaceDetailRespDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.water_place.WaterPlaceRespDto.WaterPlaceDetailRespDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.util.EntityFinder.*;
 
@@ -131,11 +133,18 @@ public class WaterPlaceServiceImpl implements WaterPlaceService {
 
         RescueSupply findRescueSupply = findRescueSupplyByWaterPlaceIdOrElseThrowEx(rescueSupplyRepository, waterPlaceId);
 
-        return RescueSupplyByWaterPlaceRespDto.createRescueSupplyRespDto(findRescueSupply);
+        return createRescueSupplyRespDto(findRescueSupply);
     }
 
     @Override
     public AdminWaterPlaceDetailRespDto getAdminWaterPlaceDetailByWaterPlace(Long waterPlaceId) {
-        return null;
+
+        WaterPlaceDetail findWaterPlaceDetail =
+                findWaterPlaceDetailByWaterPlaceIdOrElseThrowEx(waterPlaceDetailRepository, waterPlaceId);
+
+        WaterPlace findWaterPlace = findWaterPlaceDetail.getWaterPlace();
+        Coordinate coordinate = findWaterPlace.getCoordinate();
+
+        return createAdminWaterPlaceDetailRespDto(findWaterPlace, coordinate, findWaterPlaceDetail);
     }
 }

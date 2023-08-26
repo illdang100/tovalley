@@ -1,13 +1,25 @@
 package kr.ac.kumoh.illdang100.tovalley.web.controller.admin;
 
-import kr.ac.kumoh.illdang100.tovalley.service.page.PageService;
+import kr.ac.kumoh.illdang100.tovalley.service.accident.AccidentService;
+import kr.ac.kumoh.illdang100.tovalley.service.water_place.WaterPlaceService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.validation.Valid;
+
+import static kr.ac.kumoh.illdang100.tovalley.dto.accident.AccidentReqDto.*;
+import static kr.ac.kumoh.illdang100.tovalley.dto.accident.AccidentRespDto.*;
+import static kr.ac.kumoh.illdang100.tovalley.dto.rescue_supply.RescueSupplyRespDto.*;
+import static kr.ac.kumoh.illdang100.tovalley.dto.water_place.WaterPlaceRespDto.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -15,7 +27,8 @@ import org.springframework.web.multipart.MultipartFile;
 @Slf4j
 public class WaterPlaceController {
 
-    private final PageService pageService;
+    private final WaterPlaceService waterPlaceService;
+    private final AccidentService accidentService;
 
     /**
      * @param model
@@ -34,7 +47,23 @@ public class WaterPlaceController {
      */
     @GetMapping("/review/{id}")
     public String adminWaterPlaceDetail(@PathVariable("id") Long waterPlaceId,
-                                  Model model) {
+                                        @ModelAttribute @Valid RetrieveAccidentCondition retrieveAccidentCondition,
+                                        BindingResult bindingResult,
+                                        @PageableDefault(size = 5, sort = "accidentDate", direction = Sort.Direction.DESC) Pageable pageable,
+                                        Model model) {
+
+        AdminWaterPlaceDetailRespDto waterPlaceDetail =
+                waterPlaceService.getAdminWaterPlaceDetailByWaterPlace(waterPlaceId);
+
+        RescueSupplyByWaterPlaceRespDto rescueSupply =
+                waterPlaceService.getRescueSuppliesByWaterPlace(waterPlaceId);
+
+        AccidentForAdminByWaterPlace accidents =
+                accidentService.getAccidentDetailByWaterPlace(waterPlaceId, retrieveAccidentCondition, pageable);
+
+        model.addAttribute("waterPlace", waterPlaceDetail);
+        model.addAttribute("rescueSupply", rescueSupply);
+        model.addAttribute("accidents", accidents);
 
         return "admin/water_place/waterPlaceDetail";
     }
@@ -46,20 +75,21 @@ public class WaterPlaceController {
      */
     @GetMapping("/review/{id}/edit")
     public String updateWaterPlaceForm(@PathVariable("id") Long waterPlaceId,
-                                        Model model) {
+                                       Model model) {
 
         return "admin/water_place/updateWaterPlaceForm";
     }
 
     /**
      * 물놀이 장소 정보 수정 후 상세보기 페이지로 리다이렉트
+     *
      * @param waterPlaceId
      * @param model
      * @return 관리자용 물놀이 상세보기 페이지
      */
     @PostMapping("/review/{id}/edit")
     public String updateWaterPlace(@PathVariable("id") Long waterPlaceId,
-                                        Model model) {
+                                   Model model) {
 
         return "redirect:/admin/review/" + waterPlaceId;
     }
@@ -78,6 +108,7 @@ public class WaterPlaceController {
 
     /**
      * 물놀이 장소 등록 후 리스트 페이지로 리다이렉트
+     *
      * @param waterPlaceImage
      * @param form
      * @return 관리자용 물놀이 장소 리스트 페이지
