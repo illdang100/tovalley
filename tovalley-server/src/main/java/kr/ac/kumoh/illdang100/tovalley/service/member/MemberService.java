@@ -19,9 +19,6 @@ public interface MemberService {
     // 닉네임 중복 검사
     void isNicknameAvailable(String nickname);
 
-    // 서비스 자체 로그인
-    Member login(LoginReqDto loginReqDto);
-
     // 아이디 찾기
     String findIdByEmail(String email);
 
@@ -44,8 +41,5 @@ public interface MemberService {
     void updateMemberNick(Long memberId, String newNickname);
 
     // 사용자 프로필 이미지 업데이트
-    void updateMemberImage(Long memberId, MultipartFile memberImage);
-
-    // 기본 프로필 이미지로 변경
-    void setDefaultProfileImage(Long memberId);
+    void updateProfileImage(Long memberId, MultipartFile memberImage);
 }
