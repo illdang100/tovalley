@@ -36,6 +36,8 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
+import static kr.ac.kumoh.illdang100.tovalley.util.EntityFinder.*;
+
 @Slf4j
 @Service
 @EnableAsync
@@ -327,7 +329,7 @@ public class OpenApiServiceImpl implements OpenApiService {
     public List<WaterPlaceWeather> fetchAndSaveWaterPlaceWeatherData(Long waterPlaceId) {
         log.info("물놀이 장소 날씨 정보 업데이트 중!!");
 
-        WaterPlace findWaterPlace = findWaterPlaceByIdOrElseThrowEx(waterPlaceId);
+        WaterPlace findWaterPlace = findWaterPlaceByIdOrElseThrowEx(waterPlaceRepository, waterPlaceId);
         JSONArray weatherDataList = fetchWeatherApiResponseArray(findWaterPlace);
         List<WaterPlaceWeather> waterPlaceWeatherList = extractWaterPlaceWeatherData(weatherDataList, findWaterPlace);
 
@@ -339,12 +341,6 @@ public class OpenApiServiceImpl implements OpenApiService {
         Coordinate coordinate = findWaterPlace.getCoordinate();
         JSONObject response = fetchWeatherData(coordinate.getLatitude(), coordinate.getLongitude());
         return response.getJSONArray("list");
-    }
-
-    private WaterPlace findWaterPlaceByIdOrElseThrowEx(Long waterPlaceId) {
-        WaterPlace findWaterPlace = waterPlaceRepository.findById(waterPlaceId)
-                .orElseThrow(() -> new CustomApiException("물놀이 장소가 존재하지 않습니다"));
-        return findWaterPlace;
     }
 
     private List<WaterPlaceWeather> extractWaterPlaceWeatherData(JSONArray weatherDataList, WaterPlace waterPlace) {

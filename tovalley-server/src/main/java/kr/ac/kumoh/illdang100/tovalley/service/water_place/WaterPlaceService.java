@@ -20,4 +20,6 @@ public interface WaterPlaceService {
     WaterPlaceDetailRespDto getWaterPlaceDetailByWaterPlace(Long waterPlaceId);
 
     RescueSupplyByWaterPlaceRespDto getRescueSuppliesByWaterPlace(Long waterPlaceId);
+
+    AdminWaterPlaceDetailRespDto getAdminWaterPlaceDetailByWaterPlace(Long waterPlaceId);
 }
