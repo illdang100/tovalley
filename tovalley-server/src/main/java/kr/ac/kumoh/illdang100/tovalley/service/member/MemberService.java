@@ -41,8 +41,5 @@ public interface MemberService {
     void updateMemberNick(Long memberId, String newNickname);
 
     // 사용자 프로필 이미지 업데이트
-    void updateMemberImage(Long memberId, MultipartFile memberImage);
-
-    // 기본 프로필 이미지로 변경
-    void setDefaultProfileImage(Long memberId);
+    void updateProfileImage(Long memberId, MultipartFile memberImage);
 }

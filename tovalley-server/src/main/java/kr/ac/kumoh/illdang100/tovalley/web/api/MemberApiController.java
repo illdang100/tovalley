@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 
@@ -43,5 +44,16 @@ public class MemberApiController {
 
         memberService.updateMemberNick(principalDetails.getMember().getId(), validateNicknameRequest.getNickname());
         return new ResponseEntity<>(new ResponseDto<>(1, "닉네임 변경에 성공하였습니다", null), HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/members/profile-image")
+    @Operation(summary = "사용자 프로필 이미지 설정", description = "사용자의 프로필 이미지를 설정합니다.")
+    public ResponseEntity<?> changeProfileImage(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                        @RequestPart(value = "image", required = false) MultipartFile memberImage) { // input 태그의 name 속성과 값이 동일해야 한다.
+
+        // 만약 memberImage가 null이라면 기본 이미지로 변경, 아니라면 해당 이미지로 변경
+        memberService.updateProfileImage(principalDetails.getMember().getId(), memberImage);
+
+        return new ResponseEntity<>(new ResponseDto<>(1, "이미지가 성공적으로 변경되었습니다", null), HttpStatus.OK);
     }
 }
