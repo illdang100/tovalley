@@ -3,6 +3,7 @@ package kr.ac.kumoh.illdang100.tovalley.security.oauth;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.security.auth.PrincipalDetails;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtProcess;
+import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtVO;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.RefreshToken;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.RefreshTokenRedisRepository;
 import lombok.RequiredArgsConstructor;
@@ -41,8 +42,8 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         String refreshToken = saveRefreshToken(member);
 
-        addCookie(response, "accessToken", accessToken);
-        addCookie(response, "refreshToken", refreshToken);
+        addCookie(response, JwtVO.ACCESS_TOKEN, accessToken);
+        addCookie(response, JwtVO.REFRESH_TOKEN, refreshToken);
         addCookie(response, "ISLOGIN", "true", false);
 
         getRedirectStrategy().sendRedirect(request, response, REDIRECT_URL);
