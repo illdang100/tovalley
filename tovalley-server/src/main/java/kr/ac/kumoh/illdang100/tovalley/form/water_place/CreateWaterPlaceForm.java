@@ -1,4 +1,4 @@
-package kr.ac.kumoh.illdang100.tovalley.web.controller.admin;
+package kr.ac.kumoh.illdang100.tovalley.form.water_place;
 
 import lombok.Data;
 
