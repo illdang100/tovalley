@@ -6,6 +6,7 @@ import Footer from "../component/footer/Footer";
 const LoginPage = () => {
   const KAKAO_AUTH_URL = `http://localhost:8081/oauth2/authorization/kakao`;
   const GOOGLE_AUTH_URL = `http://localhost:8081/oauth2/authorization/google`;
+  const NAVER_AUTH_URL = `http://localhost:8081/oauth2/authorization/naver`;
 
   const kakaoLogin = () => {
     window.location.href = KAKAO_AUTH_URL;
@@ -13,6 +14,10 @@ const LoginPage = () => {
 
   const googleLogin = () => {
     window.location.href = GOOGLE_AUTH_URL;
+  };
+
+  const naverLogin = () => {
+    window.location.href = NAVER_AUTH_URL;
   };
 
   return (
@@ -52,6 +57,7 @@ const LoginPage = () => {
                 src={process.env.PUBLIC_URL + "/img/login/naver-logo.png"}
                 alt="naver logo"
                 width="50px"
+                onClick={naverLogin}
               />
               <img
                 src={process.env.PUBLIC_URL + "/img/login/google-logo.png"}
