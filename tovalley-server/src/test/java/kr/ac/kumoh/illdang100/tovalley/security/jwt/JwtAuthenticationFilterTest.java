@@ -43,7 +43,7 @@ public class JwtAuthenticationFilterTest extends DummyObject {
 
     @BeforeEach
     public void setUp() throws Exception {
-        memberRepository.save(newMember("username", "nickname"));
+        memberRepository.save(newMember("username@naver.com", "nickname"));
     }
 
     @Test
