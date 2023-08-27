@@ -16,6 +16,9 @@ public interface MemberService {
     // 회원가입
     Member signUp(SignUpReqDto signUpReqDto);
 
+    // 로그인
+    void login(HttpServletResponse response, LoginReqDto loginReqDto);
+
     // 닉네임 중복 검사
     void isNicknameAvailable(String nickname);
 
@@ -35,7 +38,7 @@ public interface MemberService {
     MemberProfileRespDto getMemberDetail(Long memberId);
 
     // 사용자 로그아웃 - 리프래시 토큰 삭제
-    void logout();
+    void logout(HttpServletResponse response, String refreshToken);
 
     // 사용자 닉네임 업데이트
     void updateMemberNick(Long memberId, String newNickname);

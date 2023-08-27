@@ -2,8 +2,10 @@ package kr.ac.kumoh.illdang100.tovalley.web.api;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.dto.ResponseDto;
 import kr.ac.kumoh.illdang100.tovalley.security.auth.PrincipalDetails;
+import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtVO;
 import kr.ac.kumoh.illdang100.tovalley.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +16,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import static kr.ac.kumoh.illdang100.tovalley.dto.member.MemberReqDto.*;
@@ -55,5 +59,30 @@ public class MemberApiController {
         memberService.updateProfileImage(principalDetails.getMember().getId(), memberImage);
 
         return new ResponseEntity<>(new ResponseDto<>(1, "이미지가 성공적으로 변경되었습니다", null), HttpStatus.OK);
+    }
+
+
+    @PostMapping(value = "/members")
+    public ResponseEntity<?> signup(@RequestBody @Valid SignUpReqDto signUpReqDto,
+                                    BindingResult bindingResult) {
+        Member signUpMember = memberService.signUp(signUpReqDto);
+
+        return new ResponseEntity<>(new ResponseDto<>(1, "회원가입을 성공했습니다", null), HttpStatus.CREATED);
+    }
+
+    @PostMapping(value = "/login")
+    public ResponseEntity<?> login(HttpServletResponse response, @RequestBody LoginReqDto loginReqDto) {
+        memberService.login(response, loginReqDto);
+
+        return new ResponseEntity<>(new ResponseDto<>(1, "로그인을 성공했습니다", null), HttpStatus.OK);
+    }
+
+
+    @DeleteMapping(value = "/auth/logout")
+    public ResponseEntity<?> logout(@CookieValue(JwtVO.REFRESH_TOKEN) String refreshToken,
+                                    HttpServletResponse response) {
+        memberService.logout(response, refreshToken);
+
+        return new ResponseEntity<>(new ResponseDto<>(1, "로그아웃을 성공했습니다.", null), HttpStatus.OK);
     }
 }
