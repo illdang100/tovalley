@@ -1,4 +1,4 @@
-import React from "react";
+import React, { FC } from "react";
 import styles from "../../css/valley/ValleyReview.module.css";
 import {
   MdOutlineStar,
@@ -7,28 +7,57 @@ import {
 } from "react-icons/md";
 import { FaUserCircle } from "react-icons/fa";
 
-const review = [
-  {
-    userId: "abcd123",
-    rating: 5,
-    content: "넓고 좋아요",
-    createAt: "2023.07.30",
-  },
-  {
-    userId: "abcd123",
-    rating: 5,
-    content: "넓고 좋아요",
-    createAt: "2023.07.30",
-  },
-  {
-    userId: "abcd123",
-    rating: 5,
-    content: "넓고 좋아요",
-    createAt: "2023.07.30",
-  },
-];
+interface Props {
+  reviewRespDto: {
+    waterPlaceRating: number;
+    reviewCnt: number;
+    ratingRatio: {
+      "1": number;
+      "2": number;
+      "3": number;
+      "4": number;
+      "5": number;
+    };
+    reviews: {
+      content: {
+        reviewId: number;
+        memberProfileImg: string | null;
+        nickname: string;
+        rating: number;
+        createdReviewDate: string;
+        content: string;
+        reviewImages: string[];
+      }[];
+      pageable: {
+        sort: {
+          empty: boolean;
+          unsorted: boolean;
+          sorted: boolean;
+        };
+        offset: number;
+        pageNumber: number;
+        pageSize: number;
+        paged: boolean;
+        unpaged: boolean;
+      };
+      last: boolean;
+      totalPages: number;
+      totalElements: number;
+      first: boolean;
+      sort: {
+        empty: boolean;
+        unsorted: boolean;
+        sorted: boolean;
+      };
+      number: number;
+      size: number;
+      numberOfElements: number;
+      empty: boolean;
+    };
+  };
+}
 
-const ValleyReview = () => {
+const ValleyReview: FC<Props> = ({ reviewRespDto }) => {
   return (
     <div className={styles.valleyReview}>
       <span>계곡 평점 및 리뷰</span>
@@ -53,7 +82,7 @@ const ValleyReview = () => {
             </span>
           </div>
           <div className={styles.ratingNum}>
-            <span>4.7</span>
+            <span>{reviewRespDto.waterPlaceRating}</span>
             <span> / </span>
             <span>5</span>
           </div>
@@ -63,7 +92,7 @@ const ValleyReview = () => {
           <span>
             <MdOutlineChatBubble size="70px" color="#999999" />
           </span>
-          <span>195개</span>
+          <span>{reviewRespDto.reviewCnt}개</span>
         </div>
         <div className={styles.totalRatio}>
           <span>평점 비율</span>
@@ -129,7 +158,7 @@ const ValleyReview = () => {
           </div>
         </div>
         <div className={styles.reviewContainer}>
-          {review.map((item) => {
+          {reviewRespDto.reviews.content.map((item) => {
             return (
               <div className={styles.reviewItem}>
                 <div className={styles.valleyImg}>
@@ -145,9 +174,9 @@ const ValleyReview = () => {
                       <span>
                         <FaUserCircle size="30px" color="#B7B7B7" />
                       </span>
-                      <span>{item.userId}</span>
+                      <span>{item.nickname}</span>
                     </div>
-                    <span>{item.createAt}</span>
+                    <span>{item.createdReviewDate}</span>
                   </div>
                   <div className={styles.reviewItemRating}>
                     {[0, 0, 0, 0, 0].map(() => (

@@ -1,79 +1,190 @@
-import React from "react";
+import React, { FC, useState } from "react";
 import styles from "../../../css/valley/ValleyInfo.module.css";
 import { TbChartDonut4, TbJumpRope } from "react-icons/tb";
 import { MdEmojiPeople, MdHomeRepairService } from "react-icons/md";
 import { FaVest } from "react-icons/fa";
 import { LuUtilityPole } from "react-icons/lu";
+import ValleyMap from "./ValleyMap";
 
-const ValleyInfo = () => {
+interface Props {
+  waterPlaceDetails: {
+    waterPlaceImage: string | null;
+    waterPlaceName: string;
+    latitude: number;
+    longitude: number;
+    managementType: string;
+    detailAddress: string;
+    town: string;
+    annualVisitors: number;
+    safetyMeasures: number | string;
+    waterPlaceSegment: number;
+    dangerSegments: number | string;
+    dangerSignboardsNum: number | string;
+    deepestDepth: number;
+    avgDepth: number;
+    waterTemperature: number;
+    bod: number;
+    turbidity: number;
+    waterQualityReviews: {
+      깨끗해요: number;
+      괜찮아요: number;
+      더러워요: number;
+    };
+  };
+  weatherList: {
+    weatherDate: string;
+    climateIcon: string;
+    climateDescription: string;
+    lowestTemperature: number;
+    highestTemperature: number;
+    humidity: number;
+    windSpeed: number;
+    rainPrecipitation: number;
+    clouds: number;
+    dayFeelsLike: number;
+  }[];
+  accidents: {
+    totalDeathCnt: number;
+    totalDisappearanceCnt: number;
+    totalInjuryCnt: number;
+  };
+  rescueSupplies: {
+    lifeBoatNum: number;
+    portableStandNum: number;
+    lifeJacketNum: number;
+    lifeRingNum: number;
+    rescueRopeNum: number;
+    rescueRodNum: number;
+  };
+}
+
+const dateFormat = (date: string) => {
+  let createDate = new Date(date);
+  const nowDate = new Date();
+
+  let formatedDate =
+    nowDate.getMonth() + 1 === createDate.getMonth() + 1 &&
+    nowDate.getDate() === createDate.getDate()
+      ? "오늘"
+      : `${createDate.getMonth() + 1}.${createDate.getDate()}`;
+
+  return formatedDate;
+};
+
+const getDayOfWeek = (day: string) => {
+  const week = ["일", "월", "화", "수", "목", "금", "토"];
+  const dayOfWeek = week[new Date(day).getDay()];
+
+  return dayOfWeek;
+};
+
+const ValleyInfo: FC<Props> = ({
+  waterPlaceDetails,
+  weatherList,
+  accidents,
+  rescueSupplies,
+}) => {
+  const weatherDetail = weatherList.map((item) => [
+    { name: "습도", value: item.humidity },
+    {
+      name: "풍속",
+      value: item.windSpeed,
+    },
+    { name: "강수량", value: item.rainPrecipitation },
+    {
+      name: "흐림정도",
+      value: item.clouds,
+    },
+    { name: "체감온도", value: item.dayFeelsLike },
+  ]);
+
+  const [mapMenu, setMapMenu] = useState("계곡위치");
+  const menu = ["계곡위치", "병원", "약국"];
+
   return (
     <div>
-      <div className={styles.title}>
-        <span>금오계곡</span>
+      <div
+        className={styles.title}
+        style={{
+          backgroundImage:
+            "url(https://i.namu.wiki/i/Jfan6XhewqCg_goiK0JQuHfLMhvlZeRShTkXigf8BvNXIFyPzLvta1jeXRXL7mnfGGPDos76v5Hc5o89ieG-B9PRJOUkiQMsQva-zjBaopwzQXL3Nue5Z4vuxsxdtBOXBnFqwj2kicGXkA-52BNQEQ.webp)",
+        }}
+      >
+        <div className={styles.valleyName}>
+          <span>{waterPlaceDetails.waterPlaceName}</span>
+          <span>{waterPlaceDetails.managementType}</span>
+        </div>
+        <div className={styles.valleyAddress}>
+          <span>{waterPlaceDetails.detailAddress}</span>
+        </div>
       </div>
       <div className={styles.valleyInfo}>
         <div className={styles.valleyMap}>
           <div className={styles.valleyPlaceMenu}>
-            <span>계곡위치</span>
-            <span>병원</span>
-            <span>약국</span>
+            {menu.map((item) => {
+              return (
+                <span
+                  onClick={() => setMapMenu(item)}
+                  className={
+                    item === mapMenu ? styles.clickedMenu : styles.placeMenu
+                  }
+                >
+                  {item}
+                </span>
+              );
+            })}
           </div>
-          <div className={styles.valleyPlace}>google Map</div>
+          <div className={styles.valleyPlace}>
+            <ValleyMap
+              latitude={waterPlaceDetails.latitude}
+              longitude={waterPlaceDetails.longitude}
+            />
+          </div>
         </div>
         <div className={styles.valleyDetail}>
           <div className={styles.valleyWeather}>
             <span>경상북도 구미시 날씨 ☁️</span>
             <div className={styles.weatherList}>
-              <div className={styles.weatherItem}>
-                <span>☀️</span>
-                <div className={styles.temperature}>
-                  <span>35</span>
-                  <span> / </span>
-                  <span>37</span>
-                </div>
-                <span>토</span>
-                <span>오늘</span>
-              </div>
-              <div className={styles.weatherItem}>
-                <span>☀️</span>
-                <div className={styles.temperature}>
-                  <span>35</span>
-                  <span> / </span>
-                  <span>37</span>
-                </div>
-                <span>토</span>
-                <span>오늘</span>
-              </div>
-              <div className={styles.weatherItem}>
-                <span>☀️</span>
-                <div className={styles.temperature}>
-                  <span>35</span>
-                  <span> / </span>
-                  <span>37</span>
-                </div>
-                <span>토</span>
-                <span>오늘</span>
-              </div>
-              <div className={styles.weatherItem}>
-                <span>☀️</span>
-                <div className={styles.temperature}>
-                  <span>35</span>
-                  <span> / </span>
-                  <span>37</span>
-                </div>
-                <span>토</span>
-                <span>오늘</span>
-              </div>
-              <div className={styles.weatherItem}>
-                <span>☀️</span>
-                <div className={styles.temperature}>
-                  <span>35</span>
-                  <span> / </span>
-                  <span>37</span>
-                </div>
-                <span>토</span>
-                <span>오늘</span>
-              </div>
+              {weatherList.map((item, index) => {
+                return (
+                  <div className={styles.weatherItem}>
+                    <div>
+                      <span>☀️</span>
+                      <span>{item.climateDescription}</span>
+                      <div className={styles.temperature}>
+                        <span>{item.lowestTemperature.toFixed()}°</span>
+                        <span> / </span>
+                        <span>{item.highestTemperature.toFixed()}°</span>
+                      </div>
+                      {weatherDetail[index].map((detail) => {
+                        return (
+                          <div className={styles.weatherItemDetail}>
+                            <span>{detail.name}</span>
+                            <span>{detail.value}</span>
+                          </div>
+                        );
+                      })}
+                      <div className={styles.dayInfo}>
+                        {dateFormat(item.weatherDate) === "오늘" ? (
+                          <>
+                            <span style={{ color: "#66A5FC" }}>
+                              {getDayOfWeek(item.weatherDate)}
+                            </span>
+                            <span style={{ color: "#66A5FC" }}>
+                              {dateFormat(item.weatherDate)}
+                            </span>
+                          </>
+                        ) : (
+                          <>
+                            <span>{getDayOfWeek(item.weatherDate)}</span>
+                            <span>{dateFormat(item.weatherDate)}</span>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
           <div className={styles.valleyAccident}>
@@ -85,9 +196,9 @@ const ValleyInfo = () => {
                 <span>부상</span>
               </div>
               <div className={styles.graphContent}>
-                <span>19</span>
-                <span>27</span>
-                <span>80</span>
+                <span>{accidents.totalDeathCnt}</span>
+                <span>{accidents.totalDisappearanceCnt}</span>
+                <span>{accidents.totalInjuryCnt}</span>
               </div>
             </div>
           </div>
@@ -99,42 +210,42 @@ const ValleyInfo = () => {
                   <TbChartDonut4 size="40px" color="#66A5FC" />
                 </span>
                 <span>구명환</span>
-                <span>10</span>
+                <span>{rescueSupplies.lifeRingNum}</span>
               </div>
               <div className={styles.rescueItem}>
                 <span>
                   <TbJumpRope size="40px" color="#66A5FC" />
                 </span>
                 <span>구명로프</span>
-                <span>10</span>
+                <span>{rescueSupplies.rescueRopeNum}</span>
               </div>
               <div className={styles.rescueItem}>
                 <span>
                   <MdEmojiPeople size="40px" color="#66A5FC" />
                 </span>
                 <span>인명구조함</span>
-                <span>10</span>
+                <span>{rescueSupplies.lifeBoatNum}</span>
               </div>
               <div className={styles.rescueItem}>
                 <span>
                   <FaVest size="40px" color="#66A5FC" />
                 </span>
                 <span>구명조끼</span>
-                <span>10</span>
+                <span>{rescueSupplies.lifeJacketNum}</span>
               </div>
               <div className={styles.rescueItem}>
                 <span>
                   <MdHomeRepairService size="40px" color="#66A5FC" />
                 </span>
                 <span>이동식 거치대</span>
-                <span>10</span>
+                <span>{rescueSupplies.portableStandNum}</span>
               </div>
               <div className={styles.rescueItem}>
                 <span>
                   <LuUtilityPole size="40px" color="#66A5FC" />
                 </span>
                 <span>구명봉</span>
-                <span>10</span>
+                <span>{rescueSupplies.rescueRodNum}</span>
               </div>
             </div>
           </div>

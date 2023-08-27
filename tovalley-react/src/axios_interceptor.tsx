@@ -25,10 +25,10 @@ axiosInstance.interceptors.response.use(
             console.log("토큰 재발급 실패");
             if (e.response.status === 401) {
               alert(e.response.data.msg);
-              window.location.replace("/");
+              window.location.replace("/login");
             } else if (e.response.status === 403) {
               alert(e.response.data.msg);
-              axios.delete(`http://localhost:8081/api/account/logout`);
+              axios.delete(`http://localhost:8081/api/auth/logout`);
               window.location.replace("/");
             }
           });
