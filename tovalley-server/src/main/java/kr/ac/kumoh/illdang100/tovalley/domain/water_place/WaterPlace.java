@@ -52,7 +52,7 @@ public class WaterPlace {
     private int reviewCount; // 리뷰 개수
 
     @Column(length = 250)
-    private String waterPlaceImageUrl;
+    private ImageFile waterPlaceImage;
 
     public void calculateRating(Integer rating) {
         double sum = this.rating * reviewCount + rating;

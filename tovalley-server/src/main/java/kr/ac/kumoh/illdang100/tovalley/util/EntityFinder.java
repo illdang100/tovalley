@@ -1,5 +1,7 @@
 package kr.ac.kumoh.illdang100.tovalley.util;
 
+import kr.ac.kumoh.illdang100.tovalley.domain.email_code.EmailCode;
+import kr.ac.kumoh.illdang100.tovalley.domain.email_code.EmailCodeRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.trip_schedule.TripSchedule;
@@ -32,5 +34,10 @@ public class EntityFinder {
     public static TripSchedule findTripScheduleByIdOrElseThrowEx(TripScheduleRepository tripScheduleRepository, Long tripScheduleId) {
         return tripScheduleRepository.findById(tripScheduleId)
                 .orElseThrow(() -> new CustomApiException("여행 일정[" + tripScheduleId + "]이 존재하지 않습니다"));
+    }
+
+    public static Member findMemberByEmailOrElsThrowEx(MemberRepository memberRepository, String email) {
+        return memberRepository.findByEmail(email)
+                .orElseThrow(() -> new CustomApiException("사용자[" + email + "]가 존재하지 않습니다"));
     }
 }

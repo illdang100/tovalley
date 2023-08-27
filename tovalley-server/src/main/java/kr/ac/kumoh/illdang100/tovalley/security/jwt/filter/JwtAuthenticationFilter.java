@@ -1,12 +1,10 @@
 package kr.ac.kumoh.illdang100.tovalley.security.jwt.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.dto.member.MemberReqDto.LoginReqDto;
 import kr.ac.kumoh.illdang100.tovalley.security.auth.PrincipalDetails;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtProcess;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtVO;
-import kr.ac.kumoh.illdang100.tovalley.security.jwt.RefreshToken;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.RefreshTokenRedisRepository;
 import kr.ac.kumoh.illdang100.tovalley.util.CustomResponseUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static kr.ac.kumoh.illdang100.tovalley.security.oauth.OAuth2SuccessHandler.*;
+import static kr.ac.kumoh.illdang100.tovalley.util.CustomResponseUtil.*;
 
 @Slf4j
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
@@ -34,9 +32,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     private JwtProcess jwtProcess;
 
     private RefreshTokenRedisRepository refreshTokenRedisRepository;
-
-    private static final String ISLOGIN = "isLogIn";
-
 
     public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtProcess jwtProcess, RefreshTokenRedisRepository refreshTokenRedisRepository) {
         super(authenticationManager);
@@ -76,27 +71,12 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         String jwtToken = jwtProcess.createAccessToken(principalDetails);
 
-        String refreshToken = saveRefreshToken(principalDetails.getMember());
+        String refreshToken = saveRefreshToken(jwtProcess, refreshTokenRedisRepository, principalDetails.getMember());
 
         addCookie(response, JwtVO.ACCESS_TOKEN, jwtToken);
         addCookie(response, JwtVO.REFRESH_TOKEN, refreshToken);
         addCookie(response, ISLOGIN, "true", false);
 
         CustomResponseUtil.success(response, null);
-    }
-
-    private String saveRefreshToken(Member member) {
-        String memberId = member.getId().toString();
-        String role = member.getRole().toString();
-
-        String refreshToken = jwtProcess.createRefreshToken(memberId, role);
-
-        refreshTokenRedisRepository.save(RefreshToken.builder()
-                .id(memberId)
-                .role(role)
-                .refreshToken(refreshToken)
-                .build());
-
-        return refreshToken;
     }
 }
