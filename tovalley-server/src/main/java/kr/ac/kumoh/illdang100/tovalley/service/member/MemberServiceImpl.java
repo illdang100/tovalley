@@ -119,6 +119,10 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    public void resetPassword(String email, String newPassword) {
+    }
+
+    @Override
     public void reIssueToken(HttpServletResponse response, String refreshToken) {
         // 리프레시 토큰 추출
         String extractedToken = refreshToken.replace(JwtVO.TOKEN_PREFIX, "");
@@ -161,8 +165,26 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void logout() {
+    public void logout(HttpServletResponse response, String refreshToken) {
+        deleteRefreshToken(refreshToken);
+        expireCookie(response, JwtVO.ACCESS_TOKEN);
+        expireCookie(response, JwtVO.REFRESH_TOKEN);
+        addCookie(response, ISLOGIN, "false");
+    }
 
+    private void expireCookie(HttpServletResponse response, String cookieName) {
+        Cookie cookie = new Cookie(cookieName, "");
+        cookie.setMaxAge(0);
+        cookie.setPath("/");
+        response.addCookie(cookie);
+    }
+
+    private void deleteRefreshToken(String refreshToken) {
+        Optional<RefreshToken> refreshTokenOpt = refreshTokenRedisRepository.findByRefreshToken(refreshToken);
+        if (refreshTokenOpt.isPresent()) {
+            RefreshToken findRefreshToken = refreshTokenOpt.get();
+            refreshTokenRedisRepository.delete(findRefreshToken);
+        }
     }
 
     @Override
