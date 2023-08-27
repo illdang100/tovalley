@@ -1,21 +1,21 @@
 package kr.ac.kumoh.illdang100.tovalley.dto.member;
 
+import lombok.Builder;
 import lombok.Data;
+import org.hibernate.validator.constraints.Length;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Pattern;
+import javax.validation.constraints.*;
 
 public class MemberReqDto {
     @Data
     public static class SignUpReqDto {
 
         @NotEmpty
-        @Pattern(regexp = "^[ㄱ-ㅎ가-힣a-zA-Z]{1,30}$", message = "한글/영문 1~30자 이내로 작성해주세요")
+        @Pattern(regexp = "^[가-힣a-zA-Z]{1,10}$", message = "한글/영문 1~10자 이내로 작성해주세요")
         private String name;
 
         @NotEmpty
+        @Length(max=30)
         @Email(message = "잘못된 이메일 형식입니다.")
         private String email;
 
@@ -39,6 +39,20 @@ public class MemberReqDto {
         @NotBlank
         @Pattern(regexp = "^[ㄱ-ㅎ가-힣a-zA-Z0-9]{1,20}$", message = "한글/영문/숫자(0~9) 1~20자 이내로 작성해주세요")
         private String nickname;
+    }
+
+    @Data
+    @Builder
+    public static class EmailMessageDto {
+        @NotEmpty
+        @Email
+        private String to;
+
+        @NotNull
+        @Builder.Default
+        private String subject = "제목 없음";
+
+        private String message;
     }
 }
 
