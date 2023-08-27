@@ -27,8 +27,6 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
     private JwtProcess jwtProcess;
 
-    private static final String COOKIE_TOKEN_PREFIX="Bearer+";
-
     public JwtAuthorizationFilter(AuthenticationManager authenticationManager, JwtProcess jwtProcess) {
         super(authenticationManager);
         this.jwtProcess = jwtProcess;
@@ -62,7 +60,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                if (cookie.getName().equals(JwtVO.ACCESS_TOKEN) && cookie.getValue().startsWith(COOKIE_TOKEN_PREFIX)) {
+                if (cookie.getName().equals(JwtVO.ACCESS_TOKEN) && cookie.getValue().startsWith(JwtVO.TOKEN_PREFIX)) {
                     return true;
                 }
             }
@@ -74,8 +72,8 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         String token = "";
         Cookie[] cookies = request.getCookies();
         for (Cookie cookie : cookies) {
-            if (cookie.getName().equals(JwtVO.ACCESS_TOKEN) && cookie.getValue().startsWith(COOKIE_TOKEN_PREFIX)) {
-                token = cookie.getValue().replace(COOKIE_TOKEN_PREFIX, "");
+            if (cookie.getName().equals(JwtVO.ACCESS_TOKEN) && cookie.getValue().startsWith(JwtVO.TOKEN_PREFIX)) {
+                token = cookie.getValue().replace(JwtVO.TOKEN_PREFIX, "");
             }
         }
         return token;
