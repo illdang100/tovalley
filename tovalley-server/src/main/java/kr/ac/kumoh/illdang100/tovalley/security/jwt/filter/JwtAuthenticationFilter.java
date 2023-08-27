@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static kr.ac.kumoh.illdang100.tovalley.security.oauth.OAuth2SuccessHandler.*;
+import static kr.ac.kumoh.illdang100.tovalley.util.CustomResponseUtil.addCookie;
 
 @Slf4j
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {

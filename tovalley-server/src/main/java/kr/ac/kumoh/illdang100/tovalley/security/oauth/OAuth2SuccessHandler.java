@@ -12,12 +12,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
+
+import static kr.ac.kumoh.illdang100.tovalley.util.CustomResponseUtil.addCookie;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -48,23 +47,6 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         getRedirectStrategy().sendRedirect(request, response, REDIRECT_URL);
     }
-
-    public static void addCookie(HttpServletResponse response, String name, String value, boolean httpOnly) {
-        value = URLEncoder.encode(value, StandardCharsets.UTF_8);
-        Cookie cookie = new Cookie(name, value);
-        cookie.setHttpOnly(httpOnly);
-        cookie.setPath("/");
-        response.addCookie(cookie);
-    }
-
-    public static void addCookie(HttpServletResponse response, String name, String value) {
-        addCookie(response, name, value, true);
-    }
-
-    public static void addCookie(HttpServletResponse response, String name, Long value) {
-        addCookie(response, name, String.valueOf(value), true);
-    }
-
 
     private String saveRefreshToken(Member member) {
         String memberId = member.getId().toString();

@@ -1,12 +1,19 @@
 package kr.ac.kumoh.illdang100.tovalley.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.dto.ResponseDto;
+import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtProcess;
+import kr.ac.kumoh.illdang100.tovalley.security.jwt.RefreshToken;
+import kr.ac.kumoh.illdang100.tovalley.security.jwt.RefreshTokenRedisRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 public class CustomResponseUtil {
 
@@ -36,6 +43,18 @@ public class CustomResponseUtil {
         } catch (Exception e) {
             log.error("서버 파싱 에러");
         }
+    }
+
+    public static void addCookie(HttpServletResponse response, String name, String value, boolean httpOnly) {
+        value = URLEncoder.encode(value, StandardCharsets.UTF_8);
+        Cookie cookie = new Cookie(name, value);
+        cookie.setHttpOnly(httpOnly);
+        cookie.setPath("/");
+        response.addCookie(cookie);
+    }
+
+    public static void addCookie(HttpServletResponse response, String name, String value) {
+        addCookie(response, name, value, true);
     }
 }
 
