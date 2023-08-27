@@ -119,13 +119,34 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void resetPassword(String email, String newPassword) {
-
-    }
-
-    @Override
     public void reIssueToken(HttpServletResponse response, String refreshToken) {
+        // 리프레시 토큰 추출
+        String extractedToken = refreshToken.replace(JwtVO.TOKEN_PREFIX, "");
 
+        // 리프레시 토큰 유효성 검사
+        try {
+            jwtProcess.isSatisfiedToken(extractedToken);
+        } catch (Exception e) {
+            throw new CustomApiException("유효하지 않은 토큰입니다");
+        }
+
+        RefreshToken findRefreshToken
+                = refreshTokenRedisRepository.findByRefreshToken(refreshToken)
+                .orElseThrow(() -> new CustomApiException("토큰 갱신에 실패했습니다"));
+
+        // 토큰 재발급
+        String memberId = findRefreshToken.getId();
+        String memberRole = findRefreshToken.getRole();
+
+        String newAccessToken = jwtProcess.createNewAccessToken(Long.valueOf(memberId), memberRole);
+        String newRefreshToken = jwtProcess.createRefreshToken(memberId, memberRole);
+
+        findRefreshToken.changeRefreshToken(newRefreshToken);
+        refreshTokenRedisRepository.save(findRefreshToken);
+
+        // 토큰을 쿠키에 추가
+        addCookie(response, JwtVO.ACCESS_TOKEN, newAccessToken);
+        addCookie(response, JwtVO.REFRESH_TOKEN, newRefreshToken);
     }
 
     @Override
