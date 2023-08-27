@@ -2,14 +2,10 @@ package kr.ac.kumoh.illdang100.tovalley.service.member;
 
 import kr.ac.kumoh.illdang100.tovalley.domain.FileRootPathVO;
 import kr.ac.kumoh.illdang100.tovalley.domain.ImageFile;
-import kr.ac.kumoh.illdang100.tovalley.domain.email_code.EmailCode;
 import kr.ac.kumoh.illdang100.tovalley.domain.email_code.EmailCodeRepository;
-import kr.ac.kumoh.illdang100.tovalley.domain.email_code.EmailCodeStatusEnum;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberEnum;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberRepository;
-import kr.ac.kumoh.illdang100.tovalley.dto.member.MemberReqDto;
-import kr.ac.kumoh.illdang100.tovalley.dto.member.MemberReqDto.EmailMessageDto;
 import kr.ac.kumoh.illdang100.tovalley.dto.member.MemberReqDto.LoginReqDto;
 import kr.ac.kumoh.illdang100.tovalley.dto.member.MemberReqDto.SignUpReqDto;
 import kr.ac.kumoh.illdang100.tovalley.handler.ex.CustomApiException;
@@ -32,7 +28,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 import java.util.Optional;
-import java.util.UUID;
 
 import static kr.ac.kumoh.illdang100.tovalley.dto.member.MemberRespDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.util.CustomResponseUtil.ISLOGIN;
@@ -83,7 +78,7 @@ public class MemberServiceImpl implements MemberService {
     public void login(HttpServletResponse response, LoginReqDto loginReqDto) {
         String email = loginReqDto.getUsername();
         String password = loginReqDto.getPassword();
-        Member findMember = findMemberByEmailOrElsThrowEx(memberRepository, email);
+        Member findMember = findMemberByEmailOrElseThrowEx(memberRepository, email);
 
         if(!passwordEncoder.matches(password, findMember.getPassword())) {
             throw new CustomApiException("잘못된 비밀번호입니다.");
@@ -115,7 +110,6 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public void sendPasswordResetEmail(String email) {
-
     }
 
     @Override
@@ -135,8 +129,7 @@ public class MemberServiceImpl implements MemberService {
         }
 
         RefreshToken findRefreshToken
-                = refreshTokenRedisRepository.findByRefreshToken(refreshToken)
-                .orElseThrow(() -> new CustomApiException("토큰 갱신에 실패했습니다"));
+                = findRefreshTokenOrElseThrowEx(refreshTokenRedisRepository, refreshToken);
 
         // 토큰 재발급
         String memberId = findRefreshToken.getId();
