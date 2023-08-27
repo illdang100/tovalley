@@ -10,6 +10,7 @@ import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberEnum;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberRepository;
 import kr.ac.kumoh.illdang100.tovalley.dto.member.MemberReqDto;
 import kr.ac.kumoh.illdang100.tovalley.dto.member.MemberReqDto.EmailMessageDto;
+import kr.ac.kumoh.illdang100.tovalley.dto.member.MemberReqDto.LoginReqDto;
 import kr.ac.kumoh.illdang100.tovalley.dto.member.MemberReqDto.SignUpReqDto;
 import kr.ac.kumoh.illdang100.tovalley.handler.ex.CustomApiException;
 import kr.ac.kumoh.illdang100.tovalley.security.auth.PrincipalDetails;
@@ -75,6 +76,26 @@ public class MemberServiceImpl implements MemberService {
                 .build();
 
         return memberRepository.save(signUpMember);
+    }
+
+
+    @Override
+    public void login(HttpServletResponse response, LoginReqDto loginReqDto) {
+        String email = loginReqDto.getUsername();
+        String password = loginReqDto.getPassword();
+        Member findMember = findMemberByEmailOrElsThrowEx(memberRepository, email);
+
+        if(!passwordEncoder.matches(password, findMember.getPassword())) {
+            throw new CustomApiException("잘못된 비밀번호입니다.");
+        }
+
+        PrincipalDetails loginUser = new PrincipalDetails(findMember);
+        String accessToken = jwtProcess.createAccessToken(loginUser);
+        String refreshToken = jwtProcess.createRefreshToken(findMember.getId().toString(), findMember.getRole().toString());
+
+        addCookie(response, JwtVO.ACCESS_TOKEN, accessToken);
+        addCookie(response, JwtVO.REFRESH_TOKEN, refreshToken);
+        addCookie(response, ISLOGIN, "true", false);
     }
 
     @Override
