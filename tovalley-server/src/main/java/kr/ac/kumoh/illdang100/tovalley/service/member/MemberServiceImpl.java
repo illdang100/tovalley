@@ -2,23 +2,40 @@ package kr.ac.kumoh.illdang100.tovalley.service.member;
 
 import kr.ac.kumoh.illdang100.tovalley.domain.FileRootPathVO;
 import kr.ac.kumoh.illdang100.tovalley.domain.ImageFile;
+import kr.ac.kumoh.illdang100.tovalley.domain.email_code.EmailCode;
+import kr.ac.kumoh.illdang100.tovalley.domain.email_code.EmailCodeRepository;
+import kr.ac.kumoh.illdang100.tovalley.domain.email_code.EmailCodeStatusEnum;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
+import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberEnum;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberRepository;
 import kr.ac.kumoh.illdang100.tovalley.dto.member.MemberReqDto;
+import kr.ac.kumoh.illdang100.tovalley.dto.member.MemberReqDto.EmailMessageDto;
+import kr.ac.kumoh.illdang100.tovalley.dto.member.MemberReqDto.SignUpReqDto;
 import kr.ac.kumoh.illdang100.tovalley.handler.ex.CustomApiException;
+import kr.ac.kumoh.illdang100.tovalley.security.auth.PrincipalDetails;
+import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtProcess;
+import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtVO;
+import kr.ac.kumoh.illdang100.tovalley.security.jwt.RefreshToken;
+import kr.ac.kumoh.illdang100.tovalley.security.jwt.RefreshTokenRedisRepository;
 import kr.ac.kumoh.illdang100.tovalley.service.S3Service;
+import kr.ac.kumoh.illdang100.tovalley.service.email_code.EmailCodeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import static kr.ac.kumoh.illdang100.tovalley.dto.member.MemberRespDto.*;
+import static kr.ac.kumoh.illdang100.tovalley.util.CustomResponseUtil.ISLOGIN;
+import static kr.ac.kumoh.illdang100.tovalley.util.CustomResponseUtil.addCookie;
 import static kr.ac.kumoh.illdang100.tovalley.util.EntityFinder.*;
 
 @Slf4j
@@ -30,10 +47,34 @@ public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
     private final S3Service s3Service;
+    private final JwtProcess jwtProcess;
+    private final EmailCodeService emailCodeService;
+    private final EmailCodeRepository emailCodeRepository;
+    private final RefreshTokenRedisRepository refreshTokenRedisRepository;
+    private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Override
-    public Member signUp(MemberReqDto.SignUpReqDto signUpReqDto) {
-        return null;
+    public Member signUp(SignUpReqDto signUpReqDto) {
+        // 이메일 중복 검사
+        String email = signUpReqDto.getEmail();
+        memberRepository.findByEmail(email).ifPresent(m -> {
+            throw new CustomApiException("이미 가입된 회원입니다.");
+        });
+
+        // 닉네임 중복 검사
+        String nickname = signUpReqDto.getNickname();
+        isNicknameAvailable(nickname);
+
+        String password = passwordEncoder.encode(signUpReqDto.getPassword());
+        Member signUpMember = Member.builder()
+                .memberName(signUpReqDto.getName())
+                .username(email)
+                .email(email)
+                .password(password)
+                .role(MemberEnum.CUSTOMER)
+                .build();
+
+        return memberRepository.save(signUpMember);
     }
 
     @Override
