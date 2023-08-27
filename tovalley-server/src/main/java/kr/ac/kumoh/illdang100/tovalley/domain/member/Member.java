@@ -27,7 +27,7 @@ public class Member extends BaseTimeEntity {
     @Column(unique = true, length = 20)
     private String nickname;
 
-    @Column(unique = true, nullable = false, length = 30)
+    @Column(unique = true, nullable = false, length = 50)
     private String username;
 
     @Column(length = 60) // 패스워드 인코딩(BCrypt)
