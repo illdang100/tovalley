@@ -4,8 +4,8 @@ import Header from "../component/header/Header";
 import Footer from "../component/footer/Footer";
 
 const LoginPage = () => {
-  const KAKAO_AUTH_URL = `http://localhost:8080/oauth2/authorization/kakao`;
-  const GOOGLE_AUTH_URL = `http://localhost:8080/oauth2/authorization/google`;
+  const KAKAO_AUTH_URL = `http://localhost:8081/oauth2/authorization/kakao`;
+  const GOOGLE_AUTH_URL = `http://localhost:8081/oauth2/authorization/google`;
 
   const kakaoLogin = () => {
     window.location.href = KAKAO_AUTH_URL;

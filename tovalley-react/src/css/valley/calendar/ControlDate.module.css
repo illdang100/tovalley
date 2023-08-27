@@ -1,0 +1,65 @@
+.container {
+  width: 100%;
+  height: 15%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1em;
+  box-sizing: border-box;
+}
+
+/* 월 선택 */
+.controlCalendar {
+  display: flex;
+  align-items: center;
+  margin: 0 2em;
+}
+
+.controlYear {
+  display: flex;
+  align-items: center;
+  margin-right: 2em;
+}
+
+.controlMonth {
+  display: flex;
+  align-items: center;
+}
+
+.controlYear span,
+.controlMonth span {
+  cursor: pointer;
+}
+
+.controlYear h1 {
+  font-size: 1.6rem;
+}
+
+.controlMonth h1 {
+  font-size: 2.3rem;
+  margin-left: 0.5em;
+}
+
+.controlMonth h2 {
+  font-size: 2rem;
+  margin: 0 0.5em 0 0.1em;
+}
+
+/* 일정추가 */
+.addSchedule {
+  margin-left: 2.5em;
+}
+
+.addSchedule span {
+  background-color: #3378fc;
+  color: white;
+  font-weight: bold;
+  padding: 0.6em 1.6em;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.congestionInfo {
+  width: 100px;
+}
