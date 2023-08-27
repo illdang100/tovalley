@@ -1,10 +1,32 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../component/header/Header";
 import styles from "../css/valleyList/ValleyList.module.css";
 import Footer from "../component/footer/Footer";
 import { BiSearchAlt2 } from "react-icons/bi";
+import axios from "axios";
+
+const localhost = "http://localhost:8081";
 
 const ValleyListPage = () => {
+  useEffect(() => {
+    const config = {
+      params: {
+        province: "경상북도",
+        city: "김천시",
+        sort: "rating,desc",
+        page: 0,
+        size: 3,
+      },
+    };
+
+    axios
+      .get(`${localhost}/api/valleys/list`, config)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
   const category = [
     {
       name: "전국",

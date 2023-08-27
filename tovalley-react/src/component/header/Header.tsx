@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 import styles from "../../css/header/Header.module.css";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Cookies } from "react-cookie";
+import axios from "axios";
 
 const cookies = new Cookies();
+const localhost = "http://localhost:8081";
 
 const Header = () => {
   const navigation = useNavigate();
@@ -11,13 +13,20 @@ const Header = () => {
   const [login, setLogin] = useState(false);
 
   useEffect(() => {
-    const loginStatus = cookies.get("isLogIn");
+    const loginStatus = cookies.get("ISLOGIN");
     console.log("loginStatus : ", loginStatus);
 
     if (loginStatus === true) {
       setLogin(true);
     }
-  }, []);
+  }, [login]);
+
+  const handleLogout = () => {
+    axios
+      .delete(`${localhost}/api/auth/logout`)
+      .then((res) => console.log(res));
+    setLogin(false);
+  };
 
   return (
     <div className={styles.header}>
@@ -37,13 +46,7 @@ const Header = () => {
         {login ? (
           <div className={styles.login}>
             <span>마이페이지</span>
-            <span
-              onClick={() => {
-                console.log("logout");
-              }}
-            >
-              로그아웃
-            </span>
+            <span onClick={handleLogout}>로그아웃</span>
           </div>
         ) : (
           <div className={styles.signup}>

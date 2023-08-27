@@ -2,15 +2,24 @@ import React, { useState } from "react";
 import Header from "../component/header/Header";
 import Footer from "../component/footer/Footer";
 import styles from "../css/user/SignupPage.module.css";
+import axios from "axios";
+
+const localhost = "http://localhost:8081";
 
 const SignupPage = () => {
+  const [inputInfo, setInputInfo] = useState({
+    name: "",
+    email: "",
+    nickName: "",
+  });
   const [password, setPassword] = useState({
     password: "",
     confirmPassword: "",
   });
 
-  const KAKAO_AUTH_URL = `http://localhost:8080/oauth2/authorization/kakao`;
-  const GOOGLE_AUTH_URL = `http://localhost:8080/oauth2/authorization/google`;
+  const KAKAO_AUTH_URL = `http://localhost:8081/oauth2/authorization/kakao`;
+  const GOOGLE_AUTH_URL = `http://localhost:8081/oauth2/authorization/google`;
+  const NAVER_AUTH_URL = `http://localhost:8081/oauth2/authorization/naver`;
 
   const kakaoLogin = () => {
     window.location.href = KAKAO_AUTH_URL;
@@ -18,6 +27,23 @@ const SignupPage = () => {
 
   const googleLogin = () => {
     window.location.href = GOOGLE_AUTH_URL;
+  };
+
+  const naverLogin = () => {
+    window.location.href = NAVER_AUTH_URL;
+  };
+
+  const checkDuplication = () => {
+    const config = {
+      params: {
+        nickname: inputInfo.nickName,
+      },
+    };
+
+    axios
+      .post(`${localhost}/api/members/check-nickname`, null, config)
+      .then((res) => console.log(res))
+      .catch((err) => console.log(err));
   };
 
   return (
@@ -30,17 +56,34 @@ const SignupPage = () => {
           <div className={styles.signupInput}>
             <div>
               <span>이름</span>
-              <input />
+              <input
+                value={inputInfo.name}
+                onChange={(e) => {
+                  setInputInfo({ ...inputInfo, name: e.target.value });
+                }}
+              />
             </div>
             <div>
               <span>이메일</span>
-              <input />
+              <input
+                value={inputInfo.email}
+                onChange={(e) => {
+                  setInputInfo({ ...inputInfo, email: e.target.value });
+                }}
+              />
               <span className={styles.confirmBtn}>확인</span>
             </div>
             <div>
               <span>닉네임</span>
-              <input />
-              <span className={styles.confirmBtn}>중복체크</span>
+              <input
+                value={inputInfo.nickName}
+                onChange={(e) => {
+                  setInputInfo({ ...inputInfo, nickName: e.target.value });
+                }}
+              />
+              <span className={styles.confirmBtn} onClick={checkDuplication}>
+                중복체크
+              </span>
             </div>
             <span className={styles.alertNone}>중복된 닉네임입니다.</span>
             <div>
@@ -94,6 +137,7 @@ const SignupPage = () => {
               src={process.env.PUBLIC_URL + "/img/login/naver-logo.png"}
               alt="naver logo"
               width="40px"
+              onClick={naverLogin}
             />
             <img
               src={process.env.PUBLIC_URL + "/img/login/google-logo.png"}

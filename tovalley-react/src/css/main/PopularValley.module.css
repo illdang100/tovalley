@@ -35,11 +35,14 @@
   display: flex;
   margin-top: 1.5em;
   width: 100%;
+  overflow: hidden;
 }
 
 .popularItem {
   width: 100%;
   cursor: pointer;
+  max-width: 280px;
+  min-width: 260px;
 }
 
 .popularItem:not(:last-of-type) {

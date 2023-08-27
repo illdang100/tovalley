@@ -1,16 +1,39 @@
 .title {
-  background-color: rgb(197, 197, 197);
+  background-repeat: no-repeat;
+  background-size: cover;
   padding: 0 10%;
-  height: 150px;
+  height: 170px;
   display: flex;
-  align-items: end;
+  flex-direction: column;
+  justify-content: end;
 }
 
-.title span {
+.valleyName {
+  display: flex;
+  align-items: center;
+}
+
+.valleyName > span:first-child {
   color: white;
   font-weight: bold;
   font-size: 1.9rem;
-  margin-bottom: 0.5em;
+  margin-right: 0.5em;
+}
+
+.valleyName > span:last-child {
+  font-size: 0.9rem;
+  color: white;
+  border: 1px solid white;
+  border-radius: 20px;
+  padding: 0.3em 0.5em;
+}
+
+.valleyAddress {
+  margin: 0.8em 0 1em 0;
+}
+
+.valleyAddress > span {
+  color: white;
 }
 
 .valleyInfo {
@@ -21,11 +44,11 @@
 
 .valleyMap {
   width: 100%;
-  margin-right: 5em;
-  min-width: 300px;
+  margin-right: 2.5em;
+  min-width: 400px;
 }
 
-.valleyPlaceMenu span {
+.placeMenu {
   border: 1px solid #66a5fc;
   color: #66a5fc;
   padding: 0.5em 0.7em;
@@ -35,11 +58,19 @@
   cursor: pointer;
 }
 
-.valleyPlace {
-  background-color: rgb(179, 179, 179);
-  margin-top: 1.5em;
+.clickedMenu {
+  border: 1px solid #66a5fc;
+  background-color: #66a5fc;
+  color: white;
+  padding: 0.5em 0.7em;
   border-radius: 8px;
-  height: 70vh;
+  margin-right: 0.5em;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.valleyPlace {
+  margin-top: 1.5em;
 }
 
 .valleyDetail {
@@ -52,32 +83,47 @@
   font-size: 1.3rem;
 }
 
+/* 날씨 리스트 */
 .weatherList {
   margin-top: 0.5em;
   display: flex;
   border: 1px solid #cccccc;
   border-radius: 8px;
-  padding: 1em 0.5em;
-  width: 400px;
+  padding: 1em 0;
+  min-width: 400px;
+  overflow: hidden;
 }
 
 .weatherItem:not(:last-of-type) {
   border-right: 1px solid #cccccc;
 }
 
+/* 각 날씨 */
 .weatherItem {
   flex-grow: 1;
+  padding: 0 0.6em;
 }
 
-.weatherItem > span,
 .weatherItem > div {
+  width: 95px;
+}
+
+.weatherItem > div > span {
   display: block;
   text-align: center;
 }
 
+.weatherItem > div > span:nth-child(2) {
+  font-weight: bold;
+  color: #5a5a5a;
+  margin: 0.5em 0;
+}
+
+/* 온도 */
 .temperature {
   position: relative;
   margin-bottom: 0.6em;
+  text-align: center;
 }
 
 .temperature > span {
@@ -86,9 +132,6 @@
 
 .temperature > span:first-child {
   color: #3378fc;
-  font-size: small;
-  position: absolute;
-  left: 1.4em;
 }
 
 .temperature > span:nth-child(2) {
@@ -97,20 +140,46 @@
 
 .temperature > span:last-child {
   color: #fd4848;
-  position: absolute;
-  position: absolute;
-  top: 0.1em;
-  right: 1em;
+  font-size: 1.4rem;
 }
 
-.weatherItem > span:nth-child(3) {
+/* 날씨 자세한 정보 */
+.weatherItemDetail {
+  display: flex;
+  justify-content: space-between;
+  margin: 0.5em 0;
+  align-items: center;
+}
+
+.weatherItemDetail > span:first-child {
+  color: #656565;
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+
+.weatherItemDetail > span:last-child {
+  color: #727272;
+  font-size: 0.6rem;
+  border: 1px solid #a5a5a5;
+  padding: 0.2em 0.6em;
+  border-radius: 20px;
+}
+
+/* 날씨 날짜 */
+.dayInfo {
+  margin-top: 1.3em;
+}
+.dayInfo span {
+  display: block;
+  text-align: center;
+}
+
+.dayInfo > span:first-child {
   font-weight: bold;
+  font-size: 1.4rem;
 }
 
-.weatherItem > span:last-child {
-  font-size: 0.9rem;
-}
-
+/* 계곡 상세보기 사고 수 */
 .valleyAccident {
   margin-top: 1.5em;
 }
@@ -142,10 +211,10 @@
   font-size: 1.3rem;
 }
 
-.graphTitle > span:not(:last-of-type),
+/* .graphTitle > span:not(:last-of-type),
 .graphContent > span:not(:last-of-type) {
   border-right: 1px solid #efefef;
-}
+} */
 
 .graphContent {
   border-radius: 0 0 10px 10px;
