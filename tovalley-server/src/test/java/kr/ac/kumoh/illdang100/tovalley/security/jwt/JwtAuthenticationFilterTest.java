@@ -51,7 +51,7 @@ public class JwtAuthenticationFilterTest extends DummyObject {
     void successfulAuthentication_test() throws Exception {
         //given
         MemberReqDto.LoginReqDto loginReqDto = new MemberReqDto.LoginReqDto();
-        loginReqDto.setUsername("username");
+        loginReqDto.setUsername("username@naver.com");
         loginReqDto.setPassword("1234");
 
         String requestBody = om.writeValueAsString(loginReqDto);
@@ -96,7 +96,7 @@ public class JwtAuthenticationFilterTest extends DummyObject {
     void unSuccessfulAuthentication_test() throws Exception {
         //given
         MemberReqDto.LoginReqDto loginReqDto = new MemberReqDto.LoginReqDto();
-        loginReqDto.setUsername("test");
+        loginReqDto.setUsername("test@naver.com");
         loginReqDto.setPassword("1234");
 
         String requestBody = om.writeValueAsString(loginReqDto);
