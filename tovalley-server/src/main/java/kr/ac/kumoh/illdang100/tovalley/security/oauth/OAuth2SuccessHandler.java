@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static kr.ac.kumoh.illdang100.tovalley.util.CustomResponseUtil.ISLOGIN;
 import static kr.ac.kumoh.illdang100.tovalley.util.CustomResponseUtil.addCookie;
 import static kr.ac.kumoh.illdang100.tovalley.util.CustomResponseUtil.saveRefreshToken;
 
@@ -43,7 +44,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         addCookie(response, JwtVO.ACCESS_TOKEN, accessToken);
         addCookie(response, JwtVO.REFRESH_TOKEN, refreshToken);
-        addCookie(response, "ISLOGIN", "true", false);
+        addCookie(response, ISLOGIN, "true", false);
 
         getRedirectStrategy().sendRedirect(request, response, REDIRECT_URL);
     }

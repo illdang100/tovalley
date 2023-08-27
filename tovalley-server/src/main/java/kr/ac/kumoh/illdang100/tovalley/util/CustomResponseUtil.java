@@ -18,6 +18,7 @@ import java.nio.charset.StandardCharsets;
 public class CustomResponseUtil {
 
     private static final Logger log = LoggerFactory.getLogger(CustomResponseUtil.class);
+    public static final String ISLOGIN = "ISLOGIN";
 
     public static void success(HttpServletResponse response, Object dto) {
         try {

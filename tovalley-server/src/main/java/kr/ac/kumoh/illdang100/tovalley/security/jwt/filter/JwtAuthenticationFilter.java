@@ -22,8 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static kr.ac.kumoh.illdang100.tovalley.util.CustomResponseUtil.addCookie;
-import static kr.ac.kumoh.illdang100.tovalley.util.CustomResponseUtil.saveRefreshToken;
+import static kr.ac.kumoh.illdang100.tovalley.util.CustomResponseUtil.*;
 
 @Slf4j
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
@@ -33,9 +32,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     private JwtProcess jwtProcess;
 
     private RefreshTokenRedisRepository refreshTokenRedisRepository;
-
-    private static final String ISLOGIN = "isLogIn";
-
 
     public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtProcess jwtProcess, RefreshTokenRedisRepository refreshTokenRedisRepository) {
         super(authenticationManager);
