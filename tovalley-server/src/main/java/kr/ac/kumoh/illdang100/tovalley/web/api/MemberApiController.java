@@ -70,4 +70,11 @@ public class MemberApiController {
         return new ResponseEntity<>(new ResponseDto<>(1, "회원가입을 성공했습니다", null), HttpStatus.CREATED);
     }
 
+    @PostMapping(value = "/login")
+    public ResponseEntity<?> login(HttpServletResponse response, @RequestBody LoginReqDto loginReqDto) {
+        memberService.login(response, loginReqDto);
+
+        return new ResponseEntity<>(new ResponseDto<>(1, "로그인을 성공했습니다", null), HttpStatus.OK);
+    }
+
 }
