@@ -56,5 +56,20 @@ public class CustomResponseUtil {
     public static void addCookie(HttpServletResponse response, String name, String value) {
         addCookie(response, name, value, true);
     }
+
+    public static String saveRefreshToken(JwtProcess jwtProcess, RefreshTokenRedisRepository refreshTokenRedisRepository, Member member) {
+        String memberId = member.getId().toString();
+        String role = member.getRole().toString();
+
+        String refreshToken = jwtProcess.createRefreshToken(memberId, role);
+
+        refreshTokenRedisRepository.save(RefreshToken.builder()
+                .id(memberId)
+                .role(role)
+                .refreshToken(refreshToken)
+                .build());
+
+        return refreshToken;
+    }
 }
 
