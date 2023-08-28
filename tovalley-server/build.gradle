@@ -68,6 +68,9 @@ dependencies {
 
 	// MockMultipart
 	implementation 'org.springframework.boot:spring-boot-starter-test'
+
+	// email
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
 }
 
 tasks.named('test') {
