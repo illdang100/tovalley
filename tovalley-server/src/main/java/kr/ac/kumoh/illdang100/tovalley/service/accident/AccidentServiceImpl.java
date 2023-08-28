@@ -67,10 +67,11 @@ public class AccidentServiceImpl implements AccidentService {
     }
 
     private List<Accident> getAllAccidentsByProvince(String province) {
+        int year = LocalDate.now().getYear();
         if ("전국".equals(province)) {
-            return accidentRepository.findAll();
+            return accidentRepository.findByYear(year);
         } else {
-            return accidentRepository.findByProvinceStartingWithProvince(province);
+            return accidentRepository.findByProvinceStartingWithProvinceAndYear(province, year);
         }
     }
 

@@ -9,8 +9,11 @@ import java.util.List;
 
 public interface AccidentRepository extends JpaRepository<Accident, Long>, AccidentRepositoryCustom {
 
-    @Query("select a from Accident a join a.waterPlace wp where wp.province like :province%")
-    List<Accident> findByProvinceStartingWithProvince(@Param("province") String province);
+    @Query("SELECT a FROM Accident a WHERE YEAR(a.accidentDate) = :year")
+    List<Accident> findByYear(@Param("year") int year);
+
+    @Query("select a from Accident a join a.waterPlace wp where wp.province like :province% and YEAR(a.accidentDate) = :year")
+    List<Accident> findByProvinceStartingWithProvinceAndYear(@Param("province") String province, @Param("year") int year);
 
     List<Accident> findByWaterPlaceIdAndAccidentDateAfter(Long waterPlaceId, LocalDate date);
 
