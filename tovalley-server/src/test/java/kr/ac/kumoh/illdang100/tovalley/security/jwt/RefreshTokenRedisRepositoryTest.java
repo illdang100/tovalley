@@ -17,7 +17,7 @@ public class RefreshTokenRedisRepositoryTest {
     private RefreshTokenRedisRepository refreshTokenRedisRepository;
 
     @Test
-    @DisplayName("Redis - 리프레시 토큰 repository 테ㅡ트")
+    @DisplayName("Redis - 리프레시 토큰 repository 테스트")
     void redis_test() throws Exception {
         //given
         RefreshToken refreshToken = RefreshToken.builder()
