@@ -50,15 +50,10 @@ public class WaterPlaceRespDto {
 
         public static WaterPlaceDetailRespDto createWaterPlaceDetailRespDto(WaterPlace waterPlace, Coordinate coordinate, WaterPlaceDetail waterPlaceDetail, Map<String, Integer> reviewCounts) {
 
-            String waterPlaceImageUrl = null;
-
             ImageFile waterPlaceImage = waterPlace.getWaterPlaceImage();
-            if (waterPlaceImage != null) {
-                waterPlaceImageUrl = waterPlaceImage.getStoreFileUrl();
-            }
 
             return WaterPlaceDetailRespDto.builder()
-                    .waterPlaceImage(waterPlaceImageUrl)
+                    .waterPlaceImage((waterPlaceImage != null) ? waterPlaceImage.getStoreFileUrl() : null)
                     .waterPlaceName(waterPlace.getWaterPlaceName())
                     .latitude(coordinate.getLatitude())
                     .longitude(coordinate.getLongitude())

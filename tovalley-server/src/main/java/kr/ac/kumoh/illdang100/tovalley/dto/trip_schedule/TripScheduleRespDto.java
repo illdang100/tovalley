@@ -33,10 +33,11 @@ public class TripScheduleRespDto {
         public MyTripScheduleRespDto(Long tripScheduleId, Long waterPlaceId, String waterPlaceName,
                                      ImageFile waterPlaceImg, String waterPlaceAddr, Double waterPlaceRating,
                                      int waterPlaceReviewCnt, LocalDate tripDate, int tripPartySize) {
+
             this.tripScheduleId = tripScheduleId;
             this.waterPlaceId = waterPlaceId;
             this.waterPlaceName = waterPlaceName;
-            this.waterPlaceImg = waterPlaceImg.getStoreFileUrl();
+            this.waterPlaceImg = (waterPlaceImg != null) ? waterPlaceImg.getStoreFileUrl() : null;
             this.waterPlaceAddr = waterPlaceAddr;
             this.waterPlaceRating = getFormattedRating(waterPlaceRating);
             this.waterPlaceReviewCnt = waterPlaceReviewCnt;
@@ -49,10 +50,11 @@ public class TripScheduleRespDto {
                                      int waterPlaceTraffic, LocalDate tripDate,
                                      RescueSupplyByWaterPlaceRespDto rescueSupplies, int tripPartySize,
                                      Boolean hasReview) {
+
             this.tripScheduleId = tripScheduleId;
             this.waterPlaceId = waterPlaceId;
             this.waterPlaceName = waterPlaceName;
-            this.waterPlaceImg = waterPlaceImg.getStoreFileUrl();
+            this.waterPlaceImg = (waterPlaceImg != null) ? waterPlaceImg.getStoreFileUrl() : null;
             this.waterPlaceAddr = waterPlaceAddr;
             this.waterPlaceRating = getFormattedRating(waterPlaceRating);
             this.waterPlaceReviewCnt = waterPlaceReviewCnt;
