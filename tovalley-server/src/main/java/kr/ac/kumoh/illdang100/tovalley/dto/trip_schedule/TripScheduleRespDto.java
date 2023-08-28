@@ -1,6 +1,7 @@
 package kr.ac.kumoh.illdang100.tovalley.dto.trip_schedule;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import kr.ac.kumoh.illdang100.tovalley.domain.ImageFile;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -30,12 +31,12 @@ public class TripScheduleRespDto {
         private Boolean hasReview; // 리뷰 작성 여부
 
         public MyTripScheduleRespDto(Long tripScheduleId, Long waterPlaceId, String waterPlaceName,
-                                     String waterPlaceImg, String waterPlaceAddr, Double waterPlaceRating,
+                                     ImageFile waterPlaceImg, String waterPlaceAddr, Double waterPlaceRating,
                                      int waterPlaceReviewCnt, LocalDate tripDate, int tripPartySize) {
             this.tripScheduleId = tripScheduleId;
             this.waterPlaceId = waterPlaceId;
             this.waterPlaceName = waterPlaceName;
-            this.waterPlaceImg = waterPlaceImg;
+            this.waterPlaceImg = waterPlaceImg.getStoreFileUrl();
             this.waterPlaceAddr = waterPlaceAddr;
             this.waterPlaceRating = getFormattedRating(waterPlaceRating);
             this.waterPlaceReviewCnt = waterPlaceReviewCnt;
@@ -43,7 +44,7 @@ public class TripScheduleRespDto {
             this.tripPartySize = tripPartySize;
         }
 
-        public MyTripScheduleRespDto(Long tripScheduleId, Long waterPlaceId, String waterPlaceName, String waterPlaceImg,
+        public MyTripScheduleRespDto(Long tripScheduleId, Long waterPlaceId, String waterPlaceName, ImageFile waterPlaceImg,
                                      String waterPlaceAddr, Double waterPlaceRating, int waterPlaceReviewCnt,
                                      int waterPlaceTraffic, LocalDate tripDate,
                                      RescueSupplyByWaterPlaceRespDto rescueSupplies, int tripPartySize,
@@ -51,7 +52,7 @@ public class TripScheduleRespDto {
             this.tripScheduleId = tripScheduleId;
             this.waterPlaceId = waterPlaceId;
             this.waterPlaceName = waterPlaceName;
-            this.waterPlaceImg = waterPlaceImg;
+            this.waterPlaceImg = waterPlaceImg.getStoreFileUrl();
             this.waterPlaceAddr = waterPlaceAddr;
             this.waterPlaceRating = getFormattedRating(waterPlaceRating);
             this.waterPlaceReviewCnt = waterPlaceReviewCnt;

@@ -165,7 +165,7 @@ public class TripScheduleServiceImpl implements TripScheduleService {
                     t.getId(),
                     waterPlaceId,
                     waterPlace.getWaterPlaceName(),
-                    waterPlace.getWaterPlaceImageUrl(),
+                    waterPlace.getWaterPlaceImage(),
                     waterPlace.getAddress(),
                     waterPlace.getRating(),
                     waterPlace.getReviewCount(),

@@ -37,7 +37,7 @@ public class TripScheduleRepositoryImpl implements TripScheduleRepositoryCustom 
                         tripSchedule.id,
                         waterPlace.id,
                         waterPlace.waterPlaceName,
-                        waterPlace.waterPlaceImageUrl,
+                        waterPlace.waterPlaceImage,
                         waterPlace.address,
                         waterPlace.rating,
                         waterPlace.reviewCount,

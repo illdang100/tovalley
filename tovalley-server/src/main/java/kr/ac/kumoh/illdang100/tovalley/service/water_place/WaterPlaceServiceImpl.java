@@ -86,7 +86,13 @@ public class WaterPlaceServiceImpl implements WaterPlaceService {
         int reviewCount = wp.getReviewCount();
         Double rating = wp.getRating();
         String formattedRating = getFormattedRating(rating);
-        String waterPlaceImageUrl = wp.getWaterPlaceImage().getStoreFileUrl();
+
+        String waterPlaceImageUrl = null;
+
+        ImageFile waterPlaceImage = wp.getWaterPlaceImage();
+        if (waterPlaceImage != null) {
+            waterPlaceImageUrl = waterPlaceImage.getStoreFileUrl();
+        }
 
         return new NationalPopularWaterPlacesDto(wp.getId(), wp.getWaterPlaceName(), location, formattedRating, reviewCount, waterPlaceImageUrl);
     }
