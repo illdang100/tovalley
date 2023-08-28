@@ -3,7 +3,6 @@ package kr.ac.kumoh.illdang100.tovalley.service.accident;
 import kr.ac.kumoh.illdang100.tovalley.domain.accident.Accident;
 import kr.ac.kumoh.illdang100.tovalley.domain.accident.AccidentEnum;
 import kr.ac.kumoh.illdang100.tovalley.domain.accident.AccidentRepository;
-import kr.ac.kumoh.illdang100.tovalley.dto.accident.AccidentReqDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -17,7 +16,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.ToIntFunction;
-import java.util.stream.Collectors;
 
 import static kr.ac.kumoh.illdang100.tovalley.dto.accident.AccidentReqDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.accident.AccidentRespDto.*;
@@ -144,6 +142,15 @@ public class AccidentServiceImpl implements AccidentService {
         return new WaterPlaceAccidentFor5YearsDto(totalDeathCnt, totalDisappearanceCnt, totalInjuryCnt);
     }
 
+    /**
+     * @param waterPlaceId: 물놀이 장소 pk
+     * @param retrieveAccidentCondition: 사건/사고 검색 조건
+     * @param pageable: 페이징 정보
+     * @methodnme: getAccidentDetailByWaterPlace
+     * @author: JYeonJun
+     * @description: 물놀이 장소에 대한 사건/사고 조회
+     * @return: 물놀이 장소에 대한 사고 정보
+     */
     @Override
     public AccidentForAdminByWaterPlace getAccidentDetailByWaterPlace(Long waterPlaceId,
                                                                       RetrieveAccidentCondition retrieveAccidentCondition,
