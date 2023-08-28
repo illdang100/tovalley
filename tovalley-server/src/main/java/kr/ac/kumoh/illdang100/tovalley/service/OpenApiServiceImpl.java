@@ -32,10 +32,12 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
+import static java.nio.charset.StandardCharsets.*;
 import static kr.ac.kumoh.illdang100.tovalley.util.EntityFinder.*;
 
 @Slf4j
@@ -462,8 +464,8 @@ public class OpenApiServiceImpl implements OpenApiService {
             String wpName = waterPlaceName.replaceAll("\\s", "");
 
             if (!isWaterPlaceExist(waterPlaceName)) {
-                String waterPlaceImageUrl = saveWaterPlaceImage(wpName);
-                WaterPlace waterPlace = createWaterPlace(item, waterPlaceImageUrl);
+                ImageFile waterPlaceImage = saveWaterPlaceImage(wpName);
+                WaterPlace waterPlace = createWaterPlace(item, waterPlaceImage);
 
                 WaterPlaceDetail waterPlaceDetail = createWaterPlaceDetail(item, waterPlace);
                 RescueSupply rescueSupply = createRescueSupply(item, waterPlace);
@@ -491,7 +493,7 @@ public class OpenApiServiceImpl implements OpenApiService {
         rescueSupplyRepository.saveAll(rescueSupplyList);
     }
 
-    private WaterPlace createWaterPlace(JSONObject item, String waterPlaceImageUrl) {
+    private WaterPlace createWaterPlace(JSONObject item, ImageFile waterPlaceImage) {
         double x = item.getDouble("X");
         double y = item.getDouble("Y");
         double[] latLng = convertToLatLon(x, y);
@@ -513,7 +515,7 @@ public class OpenApiServiceImpl implements OpenApiService {
                 .coordinate(coordinate)
                 .managementType(item.getString("MANAGEMENT_TYPE"))
                 .rating(0.0)
-                .waterPlaceImageUrl(waterPlaceImageUrl)
+                .waterPlaceImage(waterPlaceImage)
                 .build();
     }
 
@@ -619,7 +621,7 @@ public class OpenApiServiceImpl implements OpenApiService {
      * @param waterPlaceName
      * @return
      */
-    private String saveWaterPlaceImage(String waterPlaceName) {
+    private ImageFile saveWaterPlaceImage(String waterPlaceName) {
         try {
             String placeId = findPlaceId(waterPlaceName);
             if (placeId == null || placeId.trim().isEmpty())
@@ -629,16 +631,16 @@ public class OpenApiServiceImpl implements OpenApiService {
             if (photoAttributions == null || photoAttributions.isEmpty())
                 return null;
 
-            String imageUrl = findPlaceImage(photoAttributions, FileRootPathVO.WATER_PLACE_PATH, waterPlaceName);
-            log.debug("waterPlace={} url={}", waterPlaceName, imageUrl);
+            ImageFile placeImageFile = findPlaceImage(photoAttributions, FileRootPathVO.WATER_PLACE_PATH, waterPlaceName);
+            log.debug("waterPlace={} url={}", waterPlaceName, placeImageFile.getStoreFileUrl());
 
-            return imageUrl;
+            return placeImageFile;
         } catch (IOException e) {
             throw new CustomApiException("사진 저장을 실패했습니다.\n" + e.getMessage());
         }
     }
 
-    private String findPlaceImage(List<String> photoAttributions, String fileRootPath, String waterPlaceName) throws IOException {
+    private ImageFile findPlaceImage(List<String> photoAttributions, String fileRootPath, String waterPlaceName) throws IOException {
         String apiUrl = "https://maps.googleapis.com/maps/api/place/photo";
         Map<String, String> params = new HashMap<>();
         params.put("photo_reference", photoAttributions.get(1));
@@ -656,7 +658,7 @@ public class OpenApiServiceImpl implements OpenApiService {
         MultipartFile multipartFile = new MockMultipartFile(filaName, filaName, "image/jpeg", imageBytes);
         ImageFile uploadFile = s3Service.upload(multipartFile, fileRootPath);
 
-        return uploadFile.getStoreFileUrl();
+        return uploadFile;
     }
 
     private List<String> findPhotoAttributions(String placeId) throws IOException {
