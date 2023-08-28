@@ -16,6 +16,11 @@ const SignupPage = () => {
     password: "",
     confirmPassword: "",
   });
+  const [available, setAvailable] = useState({
+    check: false,
+    available: 0,
+    alert: "한글, 영어, 숫자 포함 20자 이내",
+  });
 
   const KAKAO_AUTH_URL = `http://localhost:8081/oauth2/authorization/kakao`;
   const GOOGLE_AUTH_URL = `http://localhost:8081/oauth2/authorization/google`;
@@ -33,17 +38,61 @@ const SignupPage = () => {
     window.location.href = NAVER_AUTH_URL;
   };
 
+  const checkNickname = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const regExp = /^[가-힣a-zA-Z0-9]{1,10}$/;
+    if (regExp.test(e.target.value) === true) {
+      setAvailable({ ...available, check: true });
+    } else {
+      setAvailable({ ...available, check: false });
+    }
+  };
+
   const checkDuplication = () => {
-    const config = {
-      params: {
-        nickname: inputInfo.nickName,
-      },
+    const data = {
+      nickname: inputInfo.nickName,
     };
 
     axios
-      .post(`${localhost}/api/members/check-nickname`, null, config)
-      .then((res) => console.log(res))
-      .catch((err) => console.log(err));
+      .post(`${localhost}/api/members/check-nickname`, data)
+      .then((res) => {
+        console.log(res);
+        if (res.status === 200) {
+          setAvailable({
+            ...available,
+            available: 1,
+            alert: res.data.msg,
+          });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        if (err.response.status === 400) {
+          setAvailable({
+            ...available,
+            available: 2,
+            alert: err.response.data.msg,
+          });
+        }
+      });
+  };
+
+  const handleSignUp = () => {
+    const data = {
+      name: inputInfo.name,
+      email: inputInfo.email,
+      nickname: inputInfo.nickName,
+      password: password.password,
+    };
+
+    if (
+      password.password === password.confirmPassword &&
+      available.available === 1
+    ) {
+      axios
+        .post(`${localhost}/api/members`, data)
+        .then((res) => console.log(res))
+        .catch((err) => console.log(err));
+    }
   };
 
   return (
@@ -51,12 +100,13 @@ const SignupPage = () => {
       <Header />
       {/* 회원가입 컨테이너 */}
       <div className={styles.body}>
-        <div className={styles.signupContainer}>
+        <form className={styles.signupContainer}>
           <span>회원가입</span>
           <div className={styles.signupInput}>
             <div>
               <span>이름</span>
               <input
+                required
                 value={inputInfo.name}
                 onChange={(e) => {
                   setInputInfo({ ...inputInfo, name: e.target.value });
@@ -66,6 +116,8 @@ const SignupPage = () => {
             <div>
               <span>이메일</span>
               <input
+                type="email"
+                required
                 value={inputInfo.email}
                 onChange={(e) => {
                   setInputInfo({ ...inputInfo, email: e.target.value });
@@ -76,19 +128,43 @@ const SignupPage = () => {
             <div>
               <span>닉네임</span>
               <input
+                required
                 value={inputInfo.nickName}
                 onChange={(e) => {
                   setInputInfo({ ...inputInfo, nickName: e.target.value });
                 }}
+                onBlur={checkNickname}
+                maxLength={20}
               />
-              <span className={styles.confirmBtn} onClick={checkDuplication}>
+              <span
+                className={
+                  available.check ? styles.confirmBtn : styles.disableBtn
+                }
+                onClick={() => {
+                  available.check && checkDuplication();
+                }}
+              >
                 중복체크
               </span>
+              <span className={styles.charCnt}>
+                {inputInfo.nickName.length}/20
+              </span>
             </div>
-            <span className={styles.alertNone}>중복된 닉네임입니다.</span>
+            <span
+              className={
+                available.available === 0
+                  ? styles.alertDefault
+                  : available.available === 1
+                  ? styles.availAlert
+                  : styles.alert
+              }
+            >
+              {available.alert}
+            </span>
             <div>
               <span>비밀번호</span>
               <input
+                required
                 type="password"
                 value={password.password}
                 onChange={(e) => {
@@ -99,6 +175,7 @@ const SignupPage = () => {
             <div>
               <span>비밀번호 확인</span>
               <input
+                required
                 type="password"
                 value={password.confirmPassword}
                 onChange={(e) => {
@@ -117,9 +194,9 @@ const SignupPage = () => {
             </div>
           </div>
           <div className={styles.signupBtn}>
-            <button>가입하기</button>
+            <button onClick={handleSignUp}>가입하기</button>
           </div>
-        </div>
+        </form>
         <div className={styles.socialSignup}>
           <div className={styles.socialSignupTitle}>
             <hr />
