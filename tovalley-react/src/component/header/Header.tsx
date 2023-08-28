@@ -2,10 +2,9 @@ import React, { useEffect, useState } from "react";
 import styles from "../../css/header/Header.module.css";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Cookies } from "react-cookie";
-import axios from "axios";
+import axiosInstance from "../../axios_interceptor";
 
 const cookies = new Cookies();
-const localhost = "http://localhost:8081";
 
 const Header = () => {
   const navigation = useNavigate();
@@ -22,10 +21,15 @@ const Header = () => {
   }, [login]);
 
   const handleLogout = () => {
-    axios
-      .delete(`${localhost}/api/auth/logout`)
-      .then((res) => console.log(res));
-    setLogin(false);
+    axiosInstance
+      .delete(`/api/auth/logout`)
+      .then((res) => {
+        console.log(res);
+        if (res.status === 200) {
+          setLogin(false);
+        }
+      })
+      .catch((err) => console.log(err));
   };
 
   return (

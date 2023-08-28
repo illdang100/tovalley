@@ -4,10 +4,58 @@ import styles from "../css/valleyList/ValleyList.module.css";
 import Footer from "../component/footer/Footer";
 import { BiSearchAlt2 } from "react-icons/bi";
 import axios from "axios";
+import PagingBtn from "../component/common/PagingBtn";
 
 const localhost = "http://localhost:8081";
 
 const ValleyListPage = () => {
+  const [list, setList] = useState({
+    content: [
+      {
+        waterPlaceId: 1,
+        waterPlaceName: "대천천계곡",
+        waterPlaceAddr: "부산광역시 북구 화명동 2102번지",
+        rating: 4.7,
+        reviewNum: 195,
+        category: "하천",
+      },
+
+      {
+        waterPlaceId: 40,
+        waterPlaceName: "대천천계곡",
+        waterPlaceAddr: "부산광역시 북구 화명동 2102번지",
+        rating: 4.7,
+        reviewNum: 195,
+        category: "계곡",
+      },
+    ],
+    pageable: {
+      sort: {
+        unsorted: false,
+        sorted: true,
+        empty: false,
+      },
+      pageSize: 0,
+      pageNumber: 0,
+      offset: 0,
+      paged: true,
+      unpaged: false,
+    },
+    last: false,
+    totalPages: 13,
+    totalElements: 50,
+    first: false,
+    numberOfElements: 4,
+    size: 4,
+    number: 0,
+    sort: {
+      unsorted: false,
+      sorted: true,
+      empty: false,
+    },
+    empty: false,
+  });
+
   useEffect(() => {
     const config = {
       params: {
@@ -198,51 +246,6 @@ const ValleyListPage = () => {
     },
   ];
 
-  const valleyList = [
-    {
-      name: "금오계곡",
-      region: "원평동",
-      rating: 4.7,
-      review: 195,
-    },
-    {
-      name: "금오계곡",
-      region: "원평동",
-      rating: 4.7,
-      review: 195,
-    },
-    {
-      name: "금오계곡",
-      region: "원평동",
-      rating: 4.7,
-      review: 195,
-    },
-    {
-      name: "금오계곡",
-      region: "원평동",
-      rating: 4.7,
-      review: 195,
-    },
-    {
-      name: "금오계곡",
-      region: "원평동",
-      rating: 4.7,
-      review: 195,
-    },
-    {
-      name: "금오계곡",
-      region: "원평동",
-      rating: 4.7,
-      review: 195,
-    },
-    {
-      name: "금오계곡",
-      region: "원평동",
-      rating: 4.7,
-      review: 195,
-    },
-  ];
-
   const [click, setClick] = useState("전국");
   const [regionClick, setRegionClick] = useState("");
   const [sort, setSort] = useState("평점");
@@ -311,7 +314,7 @@ const ValleyListPage = () => {
             </div>
           </div>
           <div className={styles.valleyList}>
-            {valleyList.map((item) => {
+            {list.content.map((item) => {
               return (
                 <div className={styles.valleyItem}>
                   <img
@@ -320,25 +323,30 @@ const ValleyListPage = () => {
                     width="140px"
                   />
                   <div className={styles.valleyInfo}>
-                    <span className={styles.valleyName}>{item.name}</span>
-                    <span className={styles.valleyRegion}>{item.region}</span>
+                    <span className={styles.valleyName}>
+                      {item.waterPlaceName}
+                    </span>
+                    <span className={styles.valleyRegion}>
+                      {item.waterPlaceAddr}
+                    </span>
+                    <span>하천</span>
                     <span className={styles.valleyRating}>
                       <span>{item.rating}</span>
                       <span>/5</span>
                     </span>
                     <span className={styles.valleyReview}>
-                      리뷰 {item.review}개
+                      리뷰 {item.reviewNum}개
                     </span>
                   </div>
                 </div>
               );
             })}
-            {valleyList.length % 3 === 1 ? (
+            {list.content.length % 3 === 1 ? (
               <>
                 <div className={styles.valleyBlank} />
                 <div className={styles.valleyBlank} />
               </>
-            ) : valleyList.length % 3 === 2 ? (
+            ) : list.content.length % 3 === 2 ? (
               <div className={styles.valleyBlank} />
             ) : (
               <></>
@@ -346,6 +354,7 @@ const ValleyListPage = () => {
           </div>
         </div>
       </div>
+      <PagingBtn totalPages={list.totalPages} />
       <Footer />
     </div>
   );

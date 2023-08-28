@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import styles from "../../css/valley/ValleyReview.module.css";
 import {
   MdOutlineStar,
@@ -6,6 +6,7 @@ import {
   MdOutlineChatBubble,
 } from "react-icons/md";
 import { FaUserCircle } from "react-icons/fa";
+import PagingBtn from "../common/PagingBtn";
 
 interface Props {
   reviewRespDto: {
@@ -58,6 +59,9 @@ interface Props {
 }
 
 const ValleyReview: FC<Props> = ({ reviewRespDto }) => {
+  const [sort, setSort] = useState("최신순");
+  const sortMenu = ["최신순", "평점 높은 순", "평점 낮은 순"];
+
   return (
     <div className={styles.valleyReview}>
       <span>계곡 평점 및 리뷰</span>
@@ -147,15 +151,22 @@ const ValleyReview: FC<Props> = ({ reviewRespDto }) => {
       </div>
       <div className={styles.reviewList}>
         <div className={styles.reviewSort}>
-          <div>
-            <span>최신순</span>
-          </div>
-          <div>
-            <span>평점 높은 순</span>
-          </div>
-          <div>
-            <span>평점 낮은 순</span>
-          </div>
+          {sortMenu.map((item) => {
+            return (
+              <div>
+                <span
+                  onClick={() => setSort(item)}
+                  style={
+                    sort === item
+                      ? { fontWeight: "bold", color: "#353535" }
+                      : {}
+                  }
+                >
+                  {item}
+                </span>
+              </div>
+            );
+          })}
         </div>
         <div className={styles.reviewContainer}>
           {reviewRespDto.reviews.content.map((item) => {
@@ -193,6 +204,7 @@ const ValleyReview: FC<Props> = ({ reviewRespDto }) => {
           })}
         </div>
       </div>
+      <PagingBtn totalPages={reviewRespDto.reviews.totalPages} />
     </div>
   );
 };
