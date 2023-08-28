@@ -8,6 +8,8 @@ import kr.ac.kumoh.illdang100.tovalley.domain.trip_schedule.TripSchedule;
 import kr.ac.kumoh.illdang100.tovalley.domain.trip_schedule.TripScheduleRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.*;
 import kr.ac.kumoh.illdang100.tovalley.handler.ex.CustomApiException;
+import kr.ac.kumoh.illdang100.tovalley.security.jwt.RefreshToken;
+import kr.ac.kumoh.illdang100.tovalley.security.jwt.RefreshTokenRedisRepository;
 
 public class EntityFinder {
 
@@ -36,8 +38,18 @@ public class EntityFinder {
                 .orElseThrow(() -> new CustomApiException("여행 일정[" + tripScheduleId + "]이 존재하지 않습니다"));
     }
 
-    public static Member findMemberByEmailOrElsThrowEx(MemberRepository memberRepository, String email) {
+    public static Member findMemberByEmailOrElseThrowEx(MemberRepository memberRepository, String email) {
         return memberRepository.findByEmail(email)
                 .orElseThrow(() -> new CustomApiException("사용자[" + email + "]가 존재하지 않습니다"));
+    }
+
+    public static RefreshToken findRefreshTokenOrElseThrowEx(RefreshTokenRedisRepository refreshTokenRedisRepository, String refreshToken) {
+        return refreshTokenRedisRepository.findByRefreshToken(refreshToken)
+                .orElseThrow(() -> new CustomApiException("토큰 갱신에 실패했습니다"));
+    }
+
+    public static EmailCode findEmailCodeByEmailOrElseThrowEx(EmailCodeRepository emailCodeRepository, String email) {
+        return emailCodeRepository.findByEmail(email)
+                .orElseThrow(() -> new CustomApiException("잘못된 인증 코드입니다."));
     }
 }

@@ -2,7 +2,6 @@ package kr.ac.kumoh.illdang100.tovalley.security.jwt.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.ac.kumoh.illdang100.tovalley.dto.ResponseDto;
-import kr.ac.kumoh.illdang100.tovalley.handler.ex.CustomApiException;
 import kr.ac.kumoh.illdang100.tovalley.security.auth.PrincipalDetails;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtProcess;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtVO;
@@ -16,11 +15,12 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Optional;
+
+import static kr.ac.kumoh.illdang100.tovalley.util.CustomResponseUtil.findCookieValue;
+import static kr.ac.kumoh.illdang100.tovalley.util.CustomResponseUtil.isCookieVerify;
 
 @Slf4j
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
@@ -35,7 +35,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         if (isCookieVerify(request)) {
-            String token = findCookieValue(request);
+            String token = findCookieValue(request, JwtVO.ACCESS_TOKEN).replace(JwtVO.TOKEN_PREFIX, "");
             log.debug("token={}", token);
 
             try {
@@ -54,29 +54,6 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         }
 
         chain.doFilter(request, response);
-    }
-
-    private boolean isCookieVerify(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals(JwtVO.ACCESS_TOKEN) && cookie.getValue().startsWith(JwtVO.TOKEN_PREFIX)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    private String findCookieValue(HttpServletRequest request) {
-        String token = "";
-        Cookie[] cookies = request.getCookies();
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equals(JwtVO.ACCESS_TOKEN) && cookie.getValue().startsWith(JwtVO.TOKEN_PREFIX)) {
-                token = cookie.getValue().replace(JwtVO.TOKEN_PREFIX, "");
-            }
-        }
-        return token;
     }
 
     private void handleTokenVerificationFailure(HttpServletResponse response) throws IOException {
