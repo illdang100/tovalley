@@ -3,6 +3,7 @@ package kr.ac.kumoh.illdang100.tovalley.service.member;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import static kr.ac.kumoh.illdang100.tovalley.dto.member.MemberReqDto.*;
@@ -32,7 +33,7 @@ public interface MemberService {
     void resetPassword(String email, String newPassword);
 
     // 토큰 재발급
-    void reIssueToken(HttpServletResponse response, String refreshToken);
+    void reIssueToken(HttpServletRequest request, HttpServletResponse response);
 
     // 사용자 정보 조회
     MemberProfileRespDto getMemberDetail(Long memberId);
