@@ -1,7 +1,12 @@
 package kr.ac.kumoh.illdang100.tovalley.web.controller.admin;
 
+import kr.ac.kumoh.illdang100.tovalley.domain.water_place.*;
+import kr.ac.kumoh.illdang100.tovalley.form.water_place.CreateWaterPlaceForm;
+import kr.ac.kumoh.illdang100.tovalley.form.water_place.WaterPlaceEditForm;
+import kr.ac.kumoh.illdang100.tovalley.form.water_place.WaterPlaceForm;
 import kr.ac.kumoh.illdang100.tovalley.service.accident.AccidentService;
 import kr.ac.kumoh.illdang100.tovalley.service.water_place.WaterPlaceService;
+import kr.ac.kumoh.illdang100.tovalley.util.EntityFinder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -9,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +35,10 @@ public class WaterPlaceController {
 
     private final WaterPlaceService waterPlaceService;
     private final AccidentService accidentService;
+
+    private final WaterPlaceRepository waterPlaceRepository;
+    private final WaterPlaceDetailRepository waterPlaceDetailRepository;
+    private final RescueSupplyRepository rescueSupplyRepository;
 
     /**
      * @param model
@@ -74,8 +84,22 @@ public class WaterPlaceController {
      * @return 물놀이 장소 수정 페이지
      */
     @GetMapping("/review/{id}/edit")
+    @Transactional(readOnly = true)
     public String updateWaterPlaceForm(@PathVariable("id") Long waterPlaceId,
                                        Model model) {
+
+        WaterPlace waterPlace =
+                EntityFinder.findWaterPlaceByIdOrElseThrowEx(waterPlaceRepository, waterPlaceId);
+
+        WaterPlaceDetail waterPlaceDetail =
+                EntityFinder.findWaterPlaceDetailByWaterPlaceIdOrElseThrowEx(waterPlaceDetailRepository, waterPlaceId);
+
+        RescueSupply rescueSupply =
+                EntityFinder.findRescueSupplyByWaterPlaceIdOrElseThrowEx(rescueSupplyRepository, waterPlaceId);
+
+        WaterPlaceForm form = new WaterPlaceForm(waterPlace, waterPlaceDetail, rescueSupply);
+
+        model.addAttribute("form", form);
 
         return "admin/water_place/updateWaterPlaceForm";
     }
@@ -84,12 +108,14 @@ public class WaterPlaceController {
      * 물놀이 장소 정보 수정 후 상세보기 페이지로 리다이렉트
      *
      * @param waterPlaceId
-     * @param model
+     * @param form
      * @return 관리자용 물놀이 상세보기 페이지
      */
     @PostMapping("/review/{id}/edit")
     public String updateWaterPlace(@PathVariable("id") Long waterPlaceId,
-                                   Model model) {
+                                   @ModelAttribute("form") @Valid WaterPlaceEditForm form) {
+
+        waterPlaceService.updateWaterPlace(form);
 
         return "redirect:/admin/review/" + waterPlaceId;
     }
@@ -115,7 +141,9 @@ public class WaterPlaceController {
      */
     @PostMapping(value = "/water-places/new", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public String createWaterPlace(@RequestPart(value = "image", required = false) MultipartFile waterPlaceImage,
-                                   CreateWaterPlaceForm form) {
+                                   @ModelAttribute @Valid CreateWaterPlaceForm form) {
+
+        waterPlaceService.saveNewWaterPlace(form);
 
         return "redirect:/admin/review-list";
     }

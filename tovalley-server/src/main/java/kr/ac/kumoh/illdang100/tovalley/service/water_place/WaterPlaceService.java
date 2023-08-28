@@ -1,5 +1,7 @@
 package kr.ac.kumoh.illdang100.tovalley.service.water_place;
 
+import kr.ac.kumoh.illdang100.tovalley.form.water_place.CreateWaterPlaceForm;
+import kr.ac.kumoh.illdang100.tovalley.form.water_place.WaterPlaceEditForm;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -22,4 +24,8 @@ public interface WaterPlaceService {
     RescueSupplyByWaterPlaceRespDto getRescueSuppliesByWaterPlace(Long waterPlaceId);
 
     AdminWaterPlaceDetailRespDto getAdminWaterPlaceDetailByWaterPlace(Long waterPlaceId);
+
+    void updateWaterPlace(WaterPlaceEditForm form);
+
+    void saveNewWaterPlace(CreateWaterPlaceForm form);
 }

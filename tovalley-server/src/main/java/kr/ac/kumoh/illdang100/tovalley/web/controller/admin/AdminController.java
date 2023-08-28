@@ -1,5 +1,6 @@
 package kr.ac.kumoh.illdang100.tovalley.web.controller.admin;
 
+import kr.ac.kumoh.illdang100.tovalley.form.admin.LoginForm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;

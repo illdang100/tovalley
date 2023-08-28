@@ -2,6 +2,9 @@ package kr.ac.kumoh.illdang100.tovalley.domain.water_place;
 
 import kr.ac.kumoh.illdang100.tovalley.domain.Coordinate;
 import kr.ac.kumoh.illdang100.tovalley.domain.ImageFile;
+import kr.ac.kumoh.illdang100.tovalley.form.water_place.CreateWaterPlaceForm;
+import kr.ac.kumoh.illdang100.tovalley.form.water_place.WaterPlaceEditForm;
+import kr.ac.kumoh.illdang100.tovalley.form.water_place.WaterPlaceForm;
 import lombok.*;
 
 import javax.persistence.*;
@@ -58,5 +61,38 @@ public class WaterPlace {
         double sum = this.rating * reviewCount + rating;
         this.reviewCount++;
         this.rating = sum / reviewCount;
+    }
+
+    public void update(WaterPlaceEditForm form) {
+        this.waterPlaceName = form.getWaterPlaceName();
+        this.province = form.getProvince();
+        this.city = form.getCity();
+        this.town = form.getTown();
+        this.subLocation = form.getSubLocation();
+        this.address = form.getAddress();
+        this.waterPlaceCategory = form.getWaterPlaceCategory();
+        this.managementType = form.getManagementType();
+    }
+
+    public static WaterPlace createNewWaterPlace(CreateWaterPlaceForm form, Coordinate coordinate) {
+
+        return WaterPlace.builder()
+                .waterPlaceName(form.getWaterPlaceName())
+                .province(form.getProvince())
+                .city(form.getCity())
+                .town(form.getTown())
+                .subLocation(form.getSubLocation())
+                .address(form.getAddress())
+                .waterPlaceCategory(form.getWaterPlaceCategory())
+                .coordinate(coordinate)
+                .managementType(form.getManagementType())
+                .rating(0.0)
+                .reviewCount(0)
+                .waterPlaceImage(null)
+                .build();
+    }
+
+    public void changeWaterPlaceImage(ImageFile waterPlaceImage) {
+        this.waterPlaceImage = waterPlaceImage;
     }
 }

@@ -1,5 +1,8 @@
 package kr.ac.kumoh.illdang100.tovalley.domain.water_place;
 
+import kr.ac.kumoh.illdang100.tovalley.form.water_place.CreateWaterPlaceForm;
+import kr.ac.kumoh.illdang100.tovalley.form.water_place.WaterPlaceEditForm;
+import kr.ac.kumoh.illdang100.tovalley.form.water_place.WaterPlaceForm;
 import lombok.*;
 
 import javax.persistence.*;
@@ -26,4 +29,26 @@ public class RescueSupply {
     private Integer lifeRingNum; // 구명환
     private Integer rescueRopeNum; // 구명로프
     private Integer rescueRodNum; // 구조봉
+
+    public void update(WaterPlaceEditForm form) {
+        this.lifeBoatNum = form.getLifeBoatNum();
+        this.portableStandNum = form.getPortableStandNum();
+        this.lifeJacketNum = form.getLifeJacketNum();
+        this.lifeRingNum = form.getLifeRingNum();
+        this.rescueRopeNum = form.getRescueRopeNum();
+        this.rescueRodNum = form.getRescueRodNum();
+    }
+
+    public static RescueSupply createNewRescueSupply(WaterPlace waterPlace, CreateWaterPlaceForm form) {
+
+        return RescueSupply.builder()
+                .waterPlace(waterPlace)
+                .lifeBoatNum(form.getLifeBoatNum())
+                .portableStandNum(form.getPortableStandNum())
+                .lifeJacketNum(form.getLifeJacketNum())
+                .lifeRingNum(form.getLifeRingNum())
+                .rescueRopeNum(form.getRescueRopeNum())
+                .rescueRodNum(form.getRescueRodNum())
+                .build();
+    }
 }
