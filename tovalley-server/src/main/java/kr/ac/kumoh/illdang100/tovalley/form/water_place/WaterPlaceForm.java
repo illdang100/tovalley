@@ -17,7 +17,6 @@ public class WaterPlaceForm {
 
     private Long id; // waterPlace PK
     private String waterPlaceName; // 물놀이 지역 명칭
-    private String waterPlaceImage;
     private String province; // 시도
     private String city; // 시군구
     private String town; // 읍면

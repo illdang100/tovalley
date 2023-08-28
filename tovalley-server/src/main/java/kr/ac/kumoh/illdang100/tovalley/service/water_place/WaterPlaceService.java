@@ -4,6 +4,7 @@ import kr.ac.kumoh.illdang100.tovalley.form.water_place.CreateWaterPlaceForm;
 import kr.ac.kumoh.illdang100.tovalley.form.water_place.WaterPlaceEditForm;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -26,6 +27,8 @@ public interface WaterPlaceService {
     AdminWaterPlaceDetailRespDto getAdminWaterPlaceDetailByWaterPlace(Long waterPlaceId);
 
     void updateWaterPlace(WaterPlaceEditForm form);
+
+    void updateWaterPlaceImage(Long waterPlaceId, MultipartFile waterPlaceImage);
 
     void saveNewWaterPlace(CreateWaterPlaceForm form);
 }
