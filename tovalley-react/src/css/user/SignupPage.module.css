@@ -68,15 +68,44 @@
   white-space: nowrap;
 }
 
+.disableBtn {
+  color: #b8b8b8;
+  border: 1px solid #b8b8b8;
+  font-size: 0.9rem;
+  padding: 0.3em 0.5em;
+  border-radius: 5px;
+  position: absolute;
+  margin: 0.6em 0 0 1em;
+  white-space: nowrap;
+}
+
 /* 비밀번호 확인 */
 .alertNone {
   font-size: 0.7rem;
   color: transparent;
 }
 
+.alertDefault {
+  font-size: 0.7rem;
+  color: #b8b8b8;
+}
+
 .alert {
   color: #ff5454;
   font-size: 0.7rem;
+}
+
+.availAlert {
+  color: #049501;
+  font-size: 0.7rem;
+}
+
+.charCnt {
+  color: #b8b8b8;
+  font-size: 0.7rem;
+  position: absolute;
+  right: 5px;
+  bottom: -17px;
 }
 
 /* 가입하기 버튼 */

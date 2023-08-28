@@ -276,7 +276,7 @@ const ValleyPage = () => {
           unpaged: false,
         },
         last: false,
-        totalPages: 2,
+        totalPages: 10,
         totalElements: 6,
         first: true,
         sort: {

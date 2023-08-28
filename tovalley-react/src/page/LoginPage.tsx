@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "../css/user/LoginPage.module.css";
 import Header from "../component/header/Header";
 import Footer from "../component/footer/Footer";
+import axios from "axios";
+
+const localhost = "http://localhost:8081";
 
 const LoginPage = () => {
   const KAKAO_AUTH_URL = `http://localhost:8081/oauth2/authorization/kakao`;
@@ -20,6 +23,25 @@ const LoginPage = () => {
     window.location.href = NAVER_AUTH_URL;
   };
 
+  const [login, setLogin] = useState({
+    email: "",
+    password: "",
+  });
+
+  const handleLogin = () => {
+    const data = {
+      email: login.email,
+      password: login.password,
+    };
+
+    axios
+      .post(`${localhost}/api/login`, data)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => console.log(err));
+  };
+
   return (
     <>
       <Header />
@@ -34,11 +56,23 @@ const LoginPage = () => {
             />
           </div>
           {/* 로그인 입력창 */}
-          <div className={styles.loginInput}>
-            <input placeholder="이메일" />
-            <input placeholder="비밀번호" />
-            <button>로그인</button>
-          </div>
+          <form className={styles.loginInput}>
+            <input
+              type="email"
+              required
+              placeholder="이메일"
+              value={login.email}
+              onChange={(e) => setLogin({ ...login, email: e.target.value })}
+            />
+            <input
+              type="password"
+              required
+              placeholder="비밀번호"
+              value={login.password}
+              onChange={(e) => setLogin({ ...login, password: e.target.value })}
+            />
+            <button onClick={handleLogin}>로그인</button>
+          </form>
           {/* 소셜로그인 */}
           <div className={styles.socialLogin}>
             <div className={styles.socialLoginTitle}>
