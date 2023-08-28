@@ -10,7 +10,6 @@ import kr.ac.kumoh.illdang100.tovalley.domain.water_place.RescueSupplyRepository
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlace;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlaceRepository;
 import kr.ac.kumoh.illdang100.tovalley.handler.ex.CustomApiException;
-import kr.ac.kumoh.illdang100.tovalley.util.EntityFinder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -172,7 +171,7 @@ public class TripScheduleServiceImpl implements TripScheduleService {
     @Override
     public List<MyTripScheduleRespDto> getUpcomingTripSchedules(Long memberId) {
         LocalDate today = LocalDate.now();
-        List<TripSchedule> tripSchedules = tripScheduleRepository.findUpcomingWithWaterPlaceByMember(memberId, today);
+        List<TripSchedule> tripSchedules = tripScheduleRepository.findUpcomingWithWaterPlaceByMemberOrderByTripDateASC(memberId, today);
 
         Map<Long, Map<LocalDate, Integer>> waterPlaceTrafficMap = calculateWaterPlaceTraffic(tripSchedules);
         Map<Long, RescueSupplyByWaterPlaceRespDto> rescueSupplyMap = getRescueSupplies(tripSchedules);
