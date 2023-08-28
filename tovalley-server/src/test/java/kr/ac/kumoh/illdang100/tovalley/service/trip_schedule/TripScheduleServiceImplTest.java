@@ -16,6 +16,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static kr.ac.kumoh.illdang100.tovalley.dto.trip_schedule.TripScheduleReqDto.*;
@@ -127,5 +130,65 @@ class TripScheduleServiceImplTest extends DummyObject {
         assertThatThrownBy(() -> tripScheduleService.addTripSchedule(memberId, addTripScheduleReqDto))
                 .isInstanceOf(CustomApiException.class)
                 .hasMessageContaining("이미 존재하는 여행 일정입니다");
+    }
+
+    @Test
+    public void deleteTripSchedules_validate_permission_test() {
+
+        // given
+        Long memberId = 1L;
+        Long testMemberId = 2L;
+        Member member = newMockMember(memberId, "test_1234", "testNick", MemberEnum.CUSTOMER);
+        Long waterPlaceId = 1L;
+        WaterPlace waterPlace = newMockWaterPlace(waterPlaceId, "금오계곡", "경상북도", 1.1, 5);
+        LocalDate tripDate = LocalDate.now().plusDays(10);
+        Integer tripPartySize = 10;
+
+        List<Long> tripScheduleList = Arrays.asList(1L, 2L, 3L);
+
+        TripSchedule tripSchedule1 = newMockTripSchedule(tripScheduleList.get(0), member, waterPlace, tripDate, tripPartySize);
+        TripSchedule tripSchedule2 = newMockTripSchedule(tripScheduleList.get(1), member, waterPlace, tripDate, tripPartySize);
+        TripSchedule tripSchedule3 = newMockTripSchedule(tripScheduleList.get(2), member, waterPlace, tripDate, tripPartySize);
+
+        // stub1
+        when(tripScheduleRepository.findById(any())).thenReturn(Optional.of(tripSchedule1));
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> tripScheduleService.deleteTripSchedules(testMemberId, tripScheduleList))
+                .isInstanceOf(CustomApiException.class)
+                .hasMessageContaining("해당 일정을 삭제할 권한이 없습니다");
+    }
+
+    @Test
+    public void deleteTripSchedules_validate_tripDate_test() {
+
+        // given
+        Long memberId = 1L;
+        Member member = newMockMember(memberId, "test_1234", "testNick", MemberEnum.CUSTOMER);
+        Long waterPlaceId = 1L;
+        WaterPlace waterPlace = newMockWaterPlace(waterPlaceId, "금오계곡", "경상북도", 1.1, 5);
+        LocalDate tripDate = LocalDate.now().minusDays(10);
+        Integer tripPartySize = 10;
+
+        List<Long> tripScheduleList = Arrays.asList(1L, 2L, 3L);
+
+        TripSchedule tripSchedule1 = newMockTripSchedule(tripScheduleList.get(0), member, waterPlace, tripDate, tripPartySize);
+        TripSchedule tripSchedule2 = newMockTripSchedule(tripScheduleList.get(1), member, waterPlace, tripDate, tripPartySize);
+        TripSchedule tripSchedule3 = newMockTripSchedule(tripScheduleList.get(2), member, waterPlace, tripDate, tripPartySize);
+
+        // stub1
+        when(tripScheduleRepository.findById(any())).thenReturn(Optional.of(tripSchedule1));
+
+        // stub2
+        when(tripScheduleRepository.findTripScheduleByIdAndMemberId(any(), any())).thenReturn(Optional.of(tripSchedule1));
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> tripScheduleService.deleteTripSchedules(memberId, tripScheduleList))
+                .isInstanceOf(CustomApiException.class)
+                .hasMessageContaining("지난 일정은 삭제할 수 없습니다");
     }
 }
