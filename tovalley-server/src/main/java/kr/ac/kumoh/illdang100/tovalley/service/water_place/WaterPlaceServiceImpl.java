@@ -1,10 +1,16 @@
 package kr.ac.kumoh.illdang100.tovalley.service.water_place;
 
 import kr.ac.kumoh.illdang100.tovalley.domain.Coordinate;
+import kr.ac.kumoh.illdang100.tovalley.domain.FileRootPathVO;
+import kr.ac.kumoh.illdang100.tovalley.domain.ImageFile;
 import kr.ac.kumoh.illdang100.tovalley.domain.review.Review;
 import kr.ac.kumoh.illdang100.tovalley.domain.review.ReviewRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.review.WaterQualityReviewEnum;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.*;
+import kr.ac.kumoh.illdang100.tovalley.form.water_place.CreateWaterPlaceForm;
+import kr.ac.kumoh.illdang100.tovalley.form.water_place.WaterPlaceEditForm;
+import kr.ac.kumoh.illdang100.tovalley.handler.ex.CustomApiException;
+import kr.ac.kumoh.illdang100.tovalley.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -12,6 +18,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.text.DecimalFormat;
 import java.util.HashMap;
@@ -37,6 +44,7 @@ public class WaterPlaceServiceImpl implements WaterPlaceService {
     private final WaterPlaceDetailRepository waterPlaceDetailRepository;
     private final RescueSupplyRepository rescueSupplyRepository;
     private final ReviewRepository reviewRepository;
+    private final S3Service s3Service;
 
     /**
      * // 물놀이 장소 리스트 조회 페이지
@@ -146,5 +154,78 @@ public class WaterPlaceServiceImpl implements WaterPlaceService {
         Coordinate coordinate = findWaterPlace.getCoordinate();
 
         return createAdminWaterPlaceDetailRespDto(findWaterPlace, coordinate, findWaterPlaceDetail);
+    }
+
+    @Override
+    @Transactional
+    public void updateWaterPlace(WaterPlaceEditForm form) {
+
+        Long waterPlaceId = form.getId();
+
+        WaterPlace findWaterPlace =
+                findWaterPlaceByIdOrElseThrowEx(waterPlaceRepository, waterPlaceId);
+
+
+        WaterPlaceDetail findWaterPlaceDetail =
+                findWaterPlaceDetailByWaterPlaceIdOrElseThrowEx(waterPlaceDetailRepository, waterPlaceId);
+
+
+        RescueSupply findRescueSupply =
+                findRescueSupplyByWaterPlaceIdOrElseThrowEx(rescueSupplyRepository, waterPlaceId);
+
+        findWaterPlace.update(form);
+        processImageUpdate(findWaterPlace, form.getWaterPlaceImage());
+        findWaterPlaceDetail.update(form);
+        findRescueSupply.update(form);
+    }
+
+    @Override
+    @Transactional
+    public void saveNewWaterPlace(CreateWaterPlaceForm form) {
+
+        // TODO: 주소를 좌표로 변환하는 코드 필요!!
+        Coordinate coordinate = new Coordinate("임시", "임시");
+
+        WaterPlace newWaterPlace =
+                WaterPlace.createNewWaterPlace(form, coordinate);
+        WaterPlaceDetail newWaterPlaceDetail =
+                WaterPlaceDetail.createNewWaterPlaceDetail(newWaterPlace, form);
+        RescueSupply newRescueSupply =
+                RescueSupply.createNewRescueSupply(newWaterPlace, form);
+
+        processImageUpdate(newWaterPlace, form.getWaterPlaceImage());
+
+        waterPlaceRepository.save(newWaterPlace);
+        waterPlaceDetailRepository.save(newWaterPlaceDetail);
+        rescueSupplyRepository.save(newRescueSupply);
+    }
+
+    private void processImageUpdate(WaterPlace waterPlace, MultipartFile waterPlaceImage) {
+        try {
+            if (waterPlaceImage != null) {
+                ImageFile createdImageFile = s3Service.upload(waterPlaceImage, FileRootPathVO.WATER_PLACE_PATH);
+                deleteWaterPlaceImage(waterPlace);
+                waterPlace.changeWaterPlaceImage(createdImageFile);
+            } else {
+                deleteWaterPlaceImage(waterPlace);
+            }
+        } catch (Exception e) {
+            throw new CustomApiException(e.getMessage());
+        }
+    }
+
+    private void deleteWaterPlaceImage(WaterPlace waterPlace) {
+        if (hasAccountProfileImage(waterPlace)) {
+            try {
+                s3Service.delete(waterPlace.getWaterPlaceImage().getStoreFileName());
+                waterPlace.changeWaterPlaceImage(null);
+            } catch (Exception e) {
+                throw new CustomApiException(e.getMessage());
+            }
+        }
+    }
+
+    private boolean hasAccountProfileImage(WaterPlace waterPlace) {
+        return waterPlace.getWaterPlaceImage() != null;
     }
 }

@@ -1,5 +1,8 @@
 package kr.ac.kumoh.illdang100.tovalley.domain.water_place;
 
+import kr.ac.kumoh.illdang100.tovalley.form.water_place.CreateWaterPlaceForm;
+import kr.ac.kumoh.illdang100.tovalley.form.water_place.WaterPlaceEditForm;
+import kr.ac.kumoh.illdang100.tovalley.form.water_place.WaterPlaceForm;
 import lombok.*;
 
 import javax.persistence.*;
@@ -49,4 +52,34 @@ public class WaterPlaceDetail {
 
     @Column(precision = 3, scale = 1)
     private Double turbidity; // 탁도(NTU)
+
+    public void update(WaterPlaceEditForm form) {
+        this.waterPlaceSegment = form.getWaterPlaceSegment();
+        this.deepestDepth = form.getDeepestDepth();
+        this.avgDepth = form.getAvgDepth();
+        this.annualVisitors = form.getAnnualVisitors();
+        this.dangerSegments = form.getDangerSegments();
+        this.dangerSignboardsNum = form.getDangerSignboardsNum();
+        this.safetyMeasures = form.getSafetyMeasures();
+        this.waterTemperature = form.getWaterTemperature();
+        this.bod = form.getBod();
+        this.turbidity = form.getTurbidity();
+    }
+
+    public static WaterPlaceDetail createNewWaterPlaceDetail(WaterPlace waterPlace, CreateWaterPlaceForm form) {
+
+        return WaterPlaceDetail.builder()
+                .waterPlace(waterPlace)
+                .waterPlaceSegment(form.getWaterPlaceSegment())
+                .deepestDepth(form.getDeepestDepth())
+                .avgDepth(form.getAvgDepth())
+                .annualVisitors(form.getAnnualVisitors())
+                .dangerSegments(form.getDangerSegments())
+                .dangerSignboardsNum(form.getDangerSignboardsNum())
+                .safetyMeasures(form.getSafetyMeasures())
+                .waterTemperature(form.getWaterTemperature())
+                .bod(form.getBod())
+                .turbidity(form.getTurbidity())
+                .build();
+    }
 }
