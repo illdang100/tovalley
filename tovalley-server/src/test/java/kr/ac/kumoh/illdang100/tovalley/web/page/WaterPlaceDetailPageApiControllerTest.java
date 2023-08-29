@@ -18,6 +18,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.TestExecutionEvent;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
@@ -70,6 +72,7 @@ class WaterPlaceDetailPageApiControllerTest extends DummyObject {
     }
 
     @Test
+    @WithUserDetails(value = "kakao_1234", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     public void getWaterPlaceDetailPage_test() throws Exception {
 
         // given
@@ -103,6 +106,7 @@ class WaterPlaceDetailPageApiControllerTest extends DummyObject {
     }
 
     @Test
+    @WithUserDetails(value = "kakao_1234", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     public void getWaterPlaceDetailPage_빈리스트_test() throws Exception {
 
         // given
@@ -127,6 +131,7 @@ class WaterPlaceDetailPageApiControllerTest extends DummyObject {
     }
 
     @Test
+    @WithUserDetails(value = "kakao_1234", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     public void getWaterPlaceDetailPage_날짜_갱신_test() throws Exception {
 
         // given
