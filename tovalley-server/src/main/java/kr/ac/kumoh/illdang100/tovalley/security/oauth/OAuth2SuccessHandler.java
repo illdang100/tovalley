@@ -14,6 +14,8 @@ import org.springframework.stereotype.Component;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 import static kr.ac.kumoh.illdang100.tovalley.util.CustomResponseUtil.ISLOGIN;
 import static kr.ac.kumoh.illdang100.tovalley.util.CustomResponseUtil.addCookie;
@@ -42,8 +44,8 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         String refreshToken = saveRefreshToken(jwtProcess, refreshTokenRedisRepository, member);
 
-        addCookie(response, JwtVO.ACCESS_TOKEN, accessToken);
-        addCookie(response, JwtVO.REFRESH_TOKEN, refreshToken);
+        addCookie(response, JwtVO.ACCESS_TOKEN, URLEncoder.encode(accessToken, StandardCharsets.UTF_8));
+        addCookie(response, JwtVO.REFRESH_TOKEN, URLEncoder.encode(refreshToken, StandardCharsets.UTF_8));
         addCookie(response, ISLOGIN, "true", false);
 
         getRedirectStrategy().sendRedirect(request, response, REDIRECT_URL);
