@@ -1,6 +1,7 @@
 package kr.ac.kumoh.illdang100.tovalley.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberRepository;
 import kr.ac.kumoh.illdang100.tovalley.dummy.DummyObject;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtVO;
@@ -18,16 +19,16 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import javax.persistence.EntityManager;
 import javax.servlet.http.Cookie;
 
 import static kr.ac.kumoh.illdang100.tovalley.dto.member.MemberReqDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.util.CustomResponseUtil.ISLOGIN;
-import static org.mockito.ArgumentMatchers.any;
+import static org.assertj.core.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static reactor.core.publisher.Mono.when;
 
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
@@ -95,6 +96,30 @@ class MemberApiControllerTest extends DummyObject {
     }
 
     @Test
+    @WithUserDetails(value = "user123@naver.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    public void updateNickname_test() throws Exception {
+
+        // given
+        Long memberId = 1L;
+        ValidateNicknameRequest validateNicknameRequest = new ValidateNicknameRequest();
+        validateNicknameRequest.setNickname("변경후닉네임");
+
+        String requestBody = om.writeValueAsString(validateNicknameRequest);
+
+        // when
+        ResultActions resultActions = mvc.perform(post("/api/auth/members/set-nickname")
+                .content(requestBody)
+                .contentType(MediaType.APPLICATION_JSON));
+
+        resultActions.andReturn().getResponse().getContentAsString();
+
+        Member findMember = memberRepository.findById(memberId).get();
+
+        // then
+        assertThat(findMember.getNickname()).isEqualTo("변경후닉네임");
+    }
+
+    @Test
     @DisplayName("회원가입 테스트")
     void signUp_test() throws Exception {
         //given
@@ -111,8 +136,9 @@ class MemberApiControllerTest extends DummyObject {
                 .content(requestBody)
                 .contentType(MediaType.APPLICATION_JSON));
 
-        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
-        System.out.println(responseBody);
+        resultActions
+                .andExpect(status().isCreated())
+                .andDo(MockMvcResultHandlers.print());
 
         //then
         resultActions.andExpect(status().isCreated());
