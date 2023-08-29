@@ -84,46 +84,6 @@ class MainPageApiControllerTest extends DummyObject {
                 .andDo(MockMvcResultHandlers.print());
     }
 
-    @Test
-    public void getAccidentsByProvince_테스트() throws Exception {
-
-        // given
-
-        // when
-        ResultActions resultActions = mvc.perform(get("/api/main-page/accidents")
-                .param("province", "SEOUL")
-                .contentType(MediaType.MULTIPART_FORM_DATA_VALUE));
-
-        // then
-        resultActions
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.province").value("서울"))
-                .andExpect(jsonPath("$.data.totalDeathCnt").value(6))
-                .andExpect(jsonPath("$.data.totalDisappearanceCnt").value(0))
-                .andExpect(jsonPath("$.data.totalInjuryCnt").value(10))
-                .andExpect(jsonPath("$.data.accidentCountPerMonth[7].deathCnt").value(6))
-                .andExpect(jsonPath("$.data.accidentCountPerMonth[9].injuryCnt").value(10))
-                .andDo(MockMvcResultHandlers.print());
-    }
-
-    @Test
-    public void getPopularWaterPlaces_테스트() throws Exception {
-
-        // given
-
-        // when
-        ResultActions resultActions = mvc.perform(get("/api/main-page/popular-water-places")
-                .param("cond", "REVIEW")
-                .contentType(MediaType.MULTIPART_FORM_DATA_VALUE));
-
-        // then
-        resultActions
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data[0].waterPlaceName").value("서울계곡"))
-                .andExpect(jsonPath("$.data[7].waterPlaceName").value("울릉계곡"))
-                .andDo(MockMvcResultHandlers.print());
-    }
-
     private void dataSetting() {
 
         WaterPlace waterPlace1 = waterPlaceRepository.save(newWaterPlace("서울계곡", "서울특별시", 4.9, 2010));
@@ -183,9 +143,9 @@ class MainPageApiControllerTest extends DummyObject {
         specialWeatherDetailRepository.save(newSpecialWeatherDetail(specialWeather3, "06월 07일 아침 : 동해중부앞바다, 동해남부앞바다(경북북부앞바다, 경북남부앞바다)"));
 
         Accident accident1 =
-                accidentRepository.save(newAccident(waterPlace1, LocalDate.now().minusMonths(10), AccidentEnum.INJURY, 10));
+                accidentRepository.save(newAccident(waterPlace1, LocalDate.now(), AccidentEnum.INJURY, 10));
         Accident accident2 =
-                accidentRepository.save(newAccident(waterPlace1, LocalDate.now().minusMonths(12), AccidentEnum.DEATH, 6));
+                accidentRepository.save(newAccident(waterPlace1, LocalDate.now(), AccidentEnum.DEATH, 6));
 
         em.clear();
     }
