@@ -44,8 +44,8 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         String refreshToken = saveRefreshToken(jwtProcess, refreshTokenRedisRepository, member);
 
-        addCookie(response, JwtVO.ACCESS_TOKEN, URLEncoder.encode(accessToken, StandardCharsets.UTF_8));
-        addCookie(response, JwtVO.REFRESH_TOKEN, URLEncoder.encode(refreshToken, StandardCharsets.UTF_8));
+        addCookie(response, JwtVO.ACCESS_TOKEN, accessToken);
+        addCookie(response, JwtVO.REFRESH_TOKEN, refreshToken);
         addCookie(response, ISLOGIN, "true", false);
 
         getRedirectStrategy().sendRedirect(request, response, REDIRECT_URL);

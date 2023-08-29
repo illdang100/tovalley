@@ -70,18 +70,14 @@ public class JwtAuthenticationFilterTest extends DummyObject {
         String refreshToken = null;
         if (cookies != null) {
             for (Cookie cookie : cookies) {
+                String cookieValue = cookie.getValue();
                 if (cookie.getName().equals("accessToken")) {
-                    accessToken = URLDecoder.decode(cookie.getValue(), StandardCharsets.UTF_8);
+                    accessToken = URLDecoder.decode(cookieValue, StandardCharsets.UTF_8);
                 } else if (cookie.getName().equals("refreshToken")) {
-                    refreshToken = URLDecoder.decode(cookie.getValue(), StandardCharsets.UTF_8);
+                    refreshToken = URLDecoder.decode(cookieValue, StandardCharsets.UTF_8);
                 }
             }
         }
-
-        System.out.println("responseBody = " + responseBody);
-        System.out.println("accessToken = " + accessToken);
-        System.out.println("refreshToken = " + refreshToken);
-
         //then
         resultActions.andExpect(status().isOk());
         assertThat(accessToken).isNotNull();
