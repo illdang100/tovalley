@@ -27,7 +27,8 @@ CREATE TABLE IF NOT EXISTS `water_place` (
                                `management_type`	VARCHAR(8)	NOT NULL,
                                `rating`	DOUBLE	NOT NULL,
                                `review_count` INT NOT NULL,
-                               `water_place_image_url`	VARCHAR(250) NULL,
+                               `store_file_name`	VARCHAR(100)	NULL,
+                               `store_file_url`	VARCHAR(250)	NULL,
     primary key (water_place_id)
 ) engine=InnoDB;
 
