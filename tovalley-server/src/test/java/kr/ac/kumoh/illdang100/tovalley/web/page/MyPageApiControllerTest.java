@@ -10,6 +10,9 @@ import kr.ac.kumoh.illdang100.tovalley.domain.review.*;
 import kr.ac.kumoh.illdang100.tovalley.domain.trip_schedule.TripSchedule;
 import kr.ac.kumoh.illdang100.tovalley.domain.trip_schedule.TripScheduleRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.*;
+import kr.ac.kumoh.illdang100.tovalley.domain.weather.national_weather.NationalRegionRepository;
+import kr.ac.kumoh.illdang100.tovalley.domain.weather.national_weather.NationalWeatherRepository;
+import kr.ac.kumoh.illdang100.tovalley.domain.weather.special_weather.*;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.water_place_weather.WaterPlaceWeather;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.water_place_weather.WaterPlaceWeatherRepository;
 import kr.ac.kumoh.illdang100.tovalley.dummy.DummyObject;
@@ -39,7 +42,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @Sql("classpath:db/teardown.sql")
-class WaterPlaceDetailPageApiControllerTest extends DummyObject {
+public class MyPageApiControllerTest extends DummyObject {
 
     @Autowired
     private MockMvc mvc;
@@ -73,84 +76,24 @@ class WaterPlaceDetailPageApiControllerTest extends DummyObject {
 
     @Test
     @WithUserDetails(value = "kakao_1234", setupBefore = TestExecutionEvent.TEST_EXECUTION)
-    public void getWaterPlaceDetailPage_test() throws Exception {
+    public void getMyPage_test() throws Exception {
 
         // given
-
+//        PageRequest pageable = PageRequest.of(0, 5, Sort.by(Sort.Direction.DESC, "createdDate"));
 
         // when
-        ResultActions resultActions =
-                mvc.perform(get("/api/auth/water-places/1?sort=createdDate,desc&page=0&size=5"));
-
-        LocalDate now = LocalDate.now();
-        int year = now.getYear();
-        int month = now.getMonthValue();
-        LocalDate firstDay = LocalDate.of(year, month, 1);
-        String string = firstDay.toString();
+        ResultActions resultActions = mvc.perform(get("/api/auth/my-page"));
 
         // then
         resultActions
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.waterPlaceWeathers.size()").value(5))
-                .andExpect(jsonPath("$.data.waterPlaceDetails.waterPlaceName").value("서울계곡"))
-                .andExpect(jsonPath("$.data.waterPlaceDetails.waterQualityReviews['깨끗해요']").value(3))
-                .andExpect(jsonPath("$.data.rescueSupplies.lifeBoatNum").value(10))
-                .andExpect(jsonPath("$.data.accidents.totalDeathCnt").value(12))
-                .andExpect(jsonPath("$.data.tripPlanToWaterPlace").isMap())
-                .andExpect(jsonPath("$.data.reviewRespDto.waterPlaceRating").value(3.2))
-                .andExpect(jsonPath("$.data.reviewRespDto.reviewCnt").value(6))
-                .andExpect(jsonPath("$.data.reviewRespDto.ratingRatio['1']").value(1))
-                .andExpect(jsonPath("$.data.reviewRespDto.reviews.content[0].reviewId").value(6))
-                .andExpect(jsonPath("$.data.reviewRespDto.reviews.content[4].reviewId").value(2))
-                .andDo(MockMvcResultHandlers.print());
-    }
-
-    @Test
-    @WithUserDetails(value = "kakao_1234", setupBefore = TestExecutionEvent.TEST_EXECUTION)
-    public void getWaterPlaceDetailPage_빈리스트_test() throws Exception {
-
-        // given
-
-        // when
-        ResultActions resultActions =
-                mvc.perform(get("/api/auth/water-places/2?sort=rating,desc&page=0&size=5"));
-
-        // then
-        resultActions
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.waterPlaceWeathers.size()").value(5))
-                .andExpect(jsonPath("$.data.waterPlaceDetails.waterPlaceName").value("금오계곡"))
-                .andExpect(jsonPath("$.data.rescueSupplies.lifeBoatNum").value(10))
-                .andExpect(jsonPath("$.data.accidents.totalDeathCnt").value(0))
-                .andExpect(jsonPath("$.data.reviewRespDto.waterPlaceRating").value(3.2))
-                .andExpect(jsonPath("$.data.reviewRespDto.reviewCnt").value(6))
-                .andExpect(jsonPath("$.data.reviewRespDto.ratingRatio['1']").value(1))
-                .andExpect(jsonPath("$.data.reviewRespDto.reviews.content[0].reviewId").value(12))
-                .andExpect(jsonPath("$.data.reviewRespDto.reviews.content[4].reviewId").value(7))
-                .andDo(MockMvcResultHandlers.print());
-    }
-
-    @Test
-    @WithUserDetails(value = "kakao_1234", setupBefore = TestExecutionEvent.TEST_EXECUTION)
-    public void getWaterPlaceDetailPage_날짜_갱신_test() throws Exception {
-
-        // given
-
-        // when
-        ResultActions resultActions =
-                mvc.perform(get("/api/auth/water-places/3?sort=createdDate,desc&page=0&size=5"));
-
-        // then
-        resultActions
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.waterPlaceWeathers.size()").value(5))
-                .andExpect(jsonPath("$.data.waterPlaceWeathers[0].weatherDate").value(LocalDate.now().toString()))
-                .andExpect(jsonPath("$.data.waterPlaceDetails.waterPlaceName").value("울릉계곡"))
-                .andExpect(jsonPath("$.data.rescueSupplies.lifeBoatNum").value(10))
-                .andExpect(jsonPath("$.data.accidents.totalDeathCnt").value(0))
-                .andExpect(jsonPath("$.data.reviewRespDto.waterPlaceRating").value(0.0))
-                .andExpect(jsonPath("$.data.reviewRespDto.reviewCnt").value(0))
-                .andExpect(jsonPath("$.data.reviewRespDto.ratingRatio['1']").value(0))
+                .andExpect(jsonPath("$.data.userProfile.memberNick").value("member1"))
+                .andExpect(jsonPath("$.data.myReviews.content.size()").value(2))
+                .andExpect(jsonPath("$.data.myReviews.content[0].reviewId").value(11))
+                .andExpect(jsonPath("$.data.myUpcomingTripSchedules.size()").value(3))
+                .andExpect(jsonPath("$.data.myUpcomingTripSchedules[0].tripScheduleId").value(13))
+                .andExpect(jsonPath("$.data.myUpcomingTripSchedules[1].tripScheduleId").value(14))
+                .andExpect(jsonPath("$.data.myUpcomingTripSchedules[2].tripScheduleId").value(15))
                 .andDo(MockMvcResultHandlers.print());
     }
 
@@ -172,59 +115,37 @@ class WaterPlaceDetailPageApiControllerTest extends DummyObject {
         memberRepository.saveAll(memberList);
 
         List<WaterPlace> waterPlaceList = new ArrayList<>();
-        WaterPlace waterPlace = newWaterPlace("서울계곡", "서울특별시", 0.0, 0);
+        WaterPlace waterPlace1 = newWaterPlace("서울계곡", "서울특별시", 0.0, 0);
         WaterPlace waterPlace2 = newWaterPlace("금오계곡", "경상북도", 0.0, 0);
         WaterPlace waterPlace3 = newWaterPlace("울릉계곡", "경상북도", 0.0, 0);
-        waterPlaceList.add(waterPlace);
+        waterPlaceList.add(waterPlace1);
         waterPlaceList.add(waterPlace2);
         waterPlaceList.add(waterPlace3);
         waterPlaceRepository.saveAll(waterPlaceList);
 
         List<WaterPlaceDetail> waterPlaceDetailList = new ArrayList<>();
-        waterPlaceDetailList.add(newWaterPlaceDetail(waterPlace));
+        waterPlaceDetailList.add(newWaterPlaceDetail(waterPlace1));
         waterPlaceDetailList.add(newWaterPlaceDetail(waterPlace2));
         waterPlaceDetailList.add(newWaterPlaceDetail(waterPlace3));
         waterPlaceDetailRepository.saveAll(waterPlaceDetailList);
 
         List<RescueSupply> rescueSupplyList = new ArrayList<>();
-        rescueSupplyList.add(newRescueSupply(waterPlace));
+        rescueSupplyList.add(newRescueSupply(waterPlace1));
         rescueSupplyList.add(newRescueSupply(waterPlace2));
         rescueSupplyList.add(newRescueSupply(waterPlace3));
         rescueSupplyRepository.saveAll(rescueSupplyList);
 
-        List<Accident> accidentList = new ArrayList<>();
-        accidentList.add(newAccident(waterPlace, LocalDate.now(), AccidentEnum.INJURY, 16));
-        accidentList.add(newAccident(waterPlace, LocalDate.now(), AccidentEnum.DEATH, 6));
-        accidentList.add(newAccident(waterPlace, LocalDate.now(), AccidentEnum.DISAPPEARANCE, 6));
-        accidentList.add(newAccident(waterPlace, LocalDate.now().minusYears(4), AccidentEnum.DEATH, 6));
-        accidentList.add(newAccident(waterPlace, LocalDate.now().minusYears(6), AccidentEnum.DEATH, 6));
-        accidentList.add(newAccident(waterPlace, LocalDate.now().minusYears(10), AccidentEnum.DEATH, 6));
-        accidentRepository.saveAll(accidentList);
-
-        List<WaterPlaceWeather> waterPlaceWeatherList = new ArrayList<>();
         LocalDate now = LocalDate.now();
-        waterPlaceWeatherList.add(newWaterPlaceWeather(waterPlace, now));
-        waterPlaceWeatherList.add(newWaterPlaceWeather(waterPlace, now.plusDays(1)));
-        waterPlaceWeatherList.add(newWaterPlaceWeather(waterPlace, now.plusDays(2)));
-        waterPlaceWeatherList.add(newWaterPlaceWeather(waterPlace, now.plusDays(3)));
-        waterPlaceWeatherList.add(newWaterPlaceWeather(waterPlace, now.plusDays(4)));
-
-        waterPlaceWeatherList.add(newWaterPlaceWeather(waterPlace3, now.minusDays(1)));
-        waterPlaceWeatherList.add(newWaterPlaceWeather(waterPlace3, now));
-        waterPlaceWeatherList.add(newWaterPlaceWeather(waterPlace3, now.plusDays(1)));
-        waterPlaceWeatherList.add(newWaterPlaceWeather(waterPlace3, now.plusDays(2)));
-        waterPlaceWeatherList.add(newWaterPlaceWeather(waterPlace3, now.plusDays(3)));
-        waterPlaceWeatherRepository.saveAll(waterPlaceWeatherList);
 
         List<TripSchedule> tripScheduleList = new ArrayList<>();
         int year = now.getYear();
         int month = now.getMonthValue();
-        TripSchedule tripSchedule1 = newTripSchedule(member2, waterPlace, LocalDate.of(year, month, 1), 50);
-        TripSchedule tripSchedule2 = newTripSchedule(member3, waterPlace, LocalDate.of(year, month, 3), 150);
-        TripSchedule tripSchedule3 = newTripSchedule(member4, waterPlace, LocalDate.of(year, month, 5), 60);
-        TripSchedule tripSchedule4 = newTripSchedule(member6, waterPlace, LocalDate.of(year, month, 7), 34);
-        TripSchedule tripSchedule5 = newTripSchedule(member1, waterPlace, LocalDate.of(year, month, 9), 11);
-        TripSchedule tripSchedule6 = newTripSchedule(member5, waterPlace, LocalDate.of(year, month, 11), 94);
+        TripSchedule tripSchedule1 = newTripSchedule(member2, waterPlace1, LocalDate.of(year, month, 1), 50);
+        TripSchedule tripSchedule2 = newTripSchedule(member3, waterPlace1, LocalDate.of(year, month, 3), 150);
+        TripSchedule tripSchedule3 = newTripSchedule(member4, waterPlace1, LocalDate.of(year, month, 5), 60);
+        TripSchedule tripSchedule4 = newTripSchedule(member6, waterPlace1, LocalDate.of(year, month, 7), 34);
+        TripSchedule tripSchedule5 = newTripSchedule(member1, waterPlace1, LocalDate.of(year, month, 9), 11);
+        TripSchedule tripSchedule6 = newTripSchedule(member5, waterPlace1, LocalDate.of(year, month, 11), 94);
 
         TripSchedule tripSchedule7 = newTripSchedule(member2, waterPlace2, LocalDate.of(year, month, 15), 11);
         TripSchedule tripSchedule8 = newTripSchedule(member3, waterPlace2, LocalDate.of(year, month, 16), 51);
@@ -232,6 +153,10 @@ class WaterPlaceDetailPageApiControllerTest extends DummyObject {
         TripSchedule tripSchedule10 = newTripSchedule(member6, waterPlace2, LocalDate.of(year, month, 20), 61);
         TripSchedule tripSchedule11 = newTripSchedule(member1, waterPlace2, LocalDate.of(year, month, 22), 22);
         TripSchedule tripSchedule12 = newTripSchedule(member6, waterPlace2, LocalDate.of(year, month, 24), 26);
+
+        TripSchedule tripSchedule13 = newTripSchedule(member1, waterPlace1, now.plusDays(10), 61);
+        TripSchedule tripSchedule14 = newTripSchedule(member1, waterPlace2, now.plusMonths(1), 22);
+        TripSchedule tripSchedule15 = newTripSchedule(member1, waterPlace3, now.plusYears(1), 26);
         tripScheduleList.add(tripSchedule1);
         tripScheduleList.add(tripSchedule2);
         tripScheduleList.add(tripSchedule3);
@@ -244,15 +169,19 @@ class WaterPlaceDetailPageApiControllerTest extends DummyObject {
         tripScheduleList.add(tripSchedule10);
         tripScheduleList.add(tripSchedule11);
         tripScheduleList.add(tripSchedule12);
+
+        tripScheduleList.add(tripSchedule13);
+        tripScheduleList.add(tripSchedule14);
+        tripScheduleList.add(tripSchedule15);
         tripScheduleRepository.saveAll(tripScheduleList);
 
         List<Review> reviewList = new ArrayList<>();
-        reviewList.add(newReview(waterPlace, tripSchedule1, "content2", 2, WaterQualityReviewEnum.CLEAN, waterPlaceRepository));
-        reviewList.add(newReview(waterPlace, tripSchedule2, "content3", 3, WaterQualityReviewEnum.FINE, waterPlaceRepository));
-        reviewList.add(newReview(waterPlace, tripSchedule3, "content4", 4, WaterQualityReviewEnum.DIRTY, waterPlaceRepository));
-        reviewList.add(newReview(waterPlace, tripSchedule4, "content6", 4, WaterQualityReviewEnum.CLEAN, waterPlaceRepository));
-        reviewList.add(newReview(waterPlace, tripSchedule5, "content1", 1, WaterQualityReviewEnum.CLEAN, waterPlaceRepository));
-        Review review6 = newReview(waterPlace, tripSchedule6, "content5", 5, WaterQualityReviewEnum.DIRTY, waterPlaceRepository);
+        reviewList.add(newReview(waterPlace1, tripSchedule1, "content2", 2, WaterQualityReviewEnum.CLEAN, waterPlaceRepository));
+        reviewList.add(newReview(waterPlace1, tripSchedule2, "content3", 3, WaterQualityReviewEnum.FINE, waterPlaceRepository));
+        reviewList.add(newReview(waterPlace1, tripSchedule3, "content4", 4, WaterQualityReviewEnum.DIRTY, waterPlaceRepository));
+        reviewList.add(newReview(waterPlace1, tripSchedule4, "content6", 4, WaterQualityReviewEnum.CLEAN, waterPlaceRepository));
+        reviewList.add(newReview(waterPlace1, tripSchedule5, "content1", 1, WaterQualityReviewEnum.CLEAN, waterPlaceRepository));
+        Review review6 = newReview(waterPlace1, tripSchedule6, "content5", 5, WaterQualityReviewEnum.DIRTY, waterPlaceRepository);
         reviewList.add(review6);
         reviewList.add(newReview(waterPlace2, tripSchedule7, "content2", 2, WaterQualityReviewEnum.CLEAN, waterPlaceRepository));
         reviewList.add(newReview(waterPlace2, tripSchedule8, "content3", 3, WaterQualityReviewEnum.CLEAN, waterPlaceRepository));

@@ -1,14 +1,12 @@
 package kr.ac.kumoh.illdang100.tovalley.dto.water_place;
 
 import kr.ac.kumoh.illdang100.tovalley.domain.Coordinate;
+import kr.ac.kumoh.illdang100.tovalley.domain.ImageFile;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlace;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlaceDetail;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import javax.validation.constraints.NotNull;
 
 import java.util.Map;
 
@@ -51,8 +49,11 @@ public class WaterPlaceRespDto {
         private Map<String, Integer> waterQualityReviews;
 
         public static WaterPlaceDetailRespDto createWaterPlaceDetailRespDto(WaterPlace waterPlace, Coordinate coordinate, WaterPlaceDetail waterPlaceDetail, Map<String, Integer> reviewCounts) {
+
+            ImageFile waterPlaceImage = waterPlace.getWaterPlaceImage();
+
             return WaterPlaceDetailRespDto.builder()
-                    .waterPlaceImage(waterPlace.getWaterPlaceImageUrl())
+                    .waterPlaceImage((waterPlaceImage != null) ? waterPlaceImage.getStoreFileUrl() : null)
                     .waterPlaceName(waterPlace.getWaterPlaceName())
                     .latitude(coordinate.getLatitude())
                     .longitude(coordinate.getLongitude())
@@ -100,7 +101,7 @@ public class WaterPlaceRespDto {
         public static AdminWaterPlaceDetailRespDto createAdminWaterPlaceDetailRespDto(WaterPlace waterPlace, Coordinate coordinate, WaterPlaceDetail waterPlaceDetail) {
 
             return AdminWaterPlaceDetailRespDto.builder()
-                    .waterPlaceImage(waterPlace.getWaterPlaceImageUrl())
+                    .waterPlaceImage(waterPlace.getWaterPlaceImage().getStoreFileUrl())
                     .waterPlaceName(waterPlace.getWaterPlaceName())
                     .latitude(coordinate.getLatitude())
                     .longitude(coordinate.getLongitude())

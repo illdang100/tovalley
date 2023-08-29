@@ -3,6 +3,7 @@ package kr.ac.kumoh.illdang100.tovalley.service.water_place;
 import kr.ac.kumoh.illdang100.tovalley.domain.Coordinate;
 import kr.ac.kumoh.illdang100.tovalley.domain.FileRootPathVO;
 import kr.ac.kumoh.illdang100.tovalley.domain.ImageFile;
+import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.domain.review.Review;
 import kr.ac.kumoh.illdang100.tovalley.domain.review.ReviewRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.review.WaterQualityReviewEnum;
@@ -86,9 +87,9 @@ public class WaterPlaceServiceImpl implements WaterPlaceService {
         int reviewCount = wp.getReviewCount();
         Double rating = wp.getRating();
         String formattedRating = getFormattedRating(rating);
-        String waterPlaceImageUrl = wp.getWaterPlaceImage().getStoreFileUrl();
 
-        return new NationalPopularWaterPlacesDto(wp.getId(), wp.getWaterPlaceName(), location, formattedRating, reviewCount, waterPlaceImageUrl);
+        ImageFile waterPlaceImage = wp.getWaterPlaceImage();
+        return new NationalPopularWaterPlacesDto(wp.getId(), wp.getWaterPlaceName(), location, formattedRating, reviewCount, (waterPlaceImage != null) ? waterPlaceImage.getStoreFileUrl() : null);
     }
 
     private String getFormattedRating(Double rating) {
@@ -144,6 +145,13 @@ public class WaterPlaceServiceImpl implements WaterPlaceService {
         return createRescueSupplyRespDto(findRescueSupply);
     }
 
+    /**
+     * @param waterPlaceId: 물놀이 장소 pk
+     * @methodnme: getAdminWaterPlaceDetailByWaterPlace
+     * @author: JYeonJun
+     * @description: 관리자용 물놀이 장소 상세보기 페이지 정보 조회
+     * @return: 관리자용 물놀이 장소 상세정보
+     */
     @Override
     public AdminWaterPlaceDetailRespDto getAdminWaterPlaceDetailByWaterPlace(Long waterPlaceId) {
 
@@ -156,6 +164,13 @@ public class WaterPlaceServiceImpl implements WaterPlaceService {
         return createAdminWaterPlaceDetailRespDto(findWaterPlace, coordinate, findWaterPlaceDetail);
     }
 
+    /**
+     * @param form: 수정된 물놀이 장소 정보
+     * @methodnme: updateWaterPlace
+     * @author: JYeonJun
+     * @description: 물놀이 장소 정보 업데이트
+     * @return:
+     */
     @Override
     @Transactional
     public void updateWaterPlace(WaterPlaceEditForm form) {
@@ -174,11 +189,24 @@ public class WaterPlaceServiceImpl implements WaterPlaceService {
                 findRescueSupplyByWaterPlaceIdOrElseThrowEx(rescueSupplyRepository, waterPlaceId);
 
         findWaterPlace.update(form);
-        processImageUpdate(findWaterPlace, form.getWaterPlaceImage());
         findWaterPlaceDetail.update(form);
         findRescueSupply.update(form);
     }
 
+    @Override
+    @Transactional
+    public void updateWaterPlaceImage(Long waterPlaceId, MultipartFile waterPlaceImage) {
+        WaterPlace findWaterPlace = findWaterPlaceByIdOrElseThrowEx(waterPlaceRepository, waterPlaceId);
+        processImageUpdate(findWaterPlace, waterPlaceImage);
+    }
+
+    /**
+     * @param form: 새로운 물놀이 장소 정보
+     * @methodnme: saveNewWaterPlace
+     * @author: JYeonJun
+     * @description: 새로운 물놀이 장소 데이터베이스에 등록
+     * @return:
+     */
     @Override
     @Transactional
     public void saveNewWaterPlace(CreateWaterPlaceForm form) {

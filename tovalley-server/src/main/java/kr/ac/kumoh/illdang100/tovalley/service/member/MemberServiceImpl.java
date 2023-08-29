@@ -93,6 +93,13 @@ public class MemberServiceImpl implements MemberService {
         addCookie(response, ISLOGIN, "true", false);
     }
 
+    /**
+     * @param nickname: 변경하고 싶은 닉네임
+     * @methodnme: isNicknameAvailable
+     * @author: JYeonJun
+     * @description: 닉네임 사용 가능 여부 확인
+     * @return:
+     */
     @Override
     public void isNicknameAvailable(String nickname) {
 
@@ -154,6 +161,13 @@ public class MemberServiceImpl implements MemberService {
 
     }
 
+    /**
+     * @param memberId: 사용자 pk
+     * @methodnme: getMemberDetail
+     * @author: JYeonJun
+     * @description: 사용자 개인정보 조회
+     * @return: 개인정보 dto
+     */
     @Override
     public MemberProfileRespDto getMemberDetail(Long memberId) {
 
@@ -188,6 +202,14 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 
+    /**
+     * @param memberId: 사용자 pk
+     * @param newNickname: 변경할 새로운 닉네임
+     * @methodnme: updateMemberNick
+     * @author: JYeonJun
+     * @description: 사용자 닉네임 변경
+     * @return:
+     */
     @Override
     @Transactional
     public void updateMemberNick(Long memberId, String newNickname) {

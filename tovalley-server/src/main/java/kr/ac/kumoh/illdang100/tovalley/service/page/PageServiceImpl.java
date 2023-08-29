@@ -61,6 +61,8 @@ public class PageServiceImpl implements PageService{
     }
 
     /**
+     * @param waterPlaceId: 물놀이 장소 pk
+     * @param pageable: 페이징 정보
      * @methodnme: getWaterPlaceDetailPageAllData
      * @author: JYeonJun
      * @description: 물놀이 장소 상세보기 페이지 정보 조회
@@ -104,6 +106,14 @@ public class PageServiceImpl implements PageService{
         return reviewService.getReviewsByWaterPlaceId(waterPlaceId, pageable);
     }
 
+    /**
+     * @param memberId: 사용자 pk
+     * @param pageable: 페이징 정보
+     * @methodnme: getMyPageAllData
+     * @author: JYeonJun
+     * @description: 마이 페이지 정보 조회
+     * @return: 개인정보, 리뷰, 앞으로의 일정
+     */
     @Override
     public MyPageAllRespDto getMyPageAllData(Long memberId, Pageable pageable) {
 

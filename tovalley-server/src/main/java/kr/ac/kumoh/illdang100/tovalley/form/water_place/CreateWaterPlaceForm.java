@@ -12,8 +12,6 @@ import javax.validation.constraints.Size;
 @Data
 public class CreateWaterPlaceForm {
 
-    // TODO: validation 어노테이션 추가
-
     @NotBlank
     @Size(max = 254, message = "물놀이 장소 명칭은 254자 이하로 작성해주세요")
     private String waterPlaceName; // 물놀이 지역 명칭

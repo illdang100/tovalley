@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.TestExecutionEvent;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
@@ -23,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ActiveProfiles("test")
@@ -62,6 +65,24 @@ public class WaterPlaceApiControllerTest extends DummyObject {
                 .andExpect(status().isOk())
                 .andDo(MockMvcResultHandlers.print());
 
+    }
+
+    @Test
+    public void getPopularWaterPlaces_테스트() throws Exception {
+
+        // given
+
+        // when
+        ResultActions resultActions = mvc.perform(get("/api/main-page/popular-water-places")
+                .param("cond", "REVIEW")
+                .contentType(MediaType.MULTIPART_FORM_DATA_VALUE));
+
+        // then
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data[0].waterPlaceName").value("서울계곡"))
+                .andExpect(jsonPath("$.data[4].waterPlaceName").value("세종계곡"))
+                .andDo(MockMvcResultHandlers.print());
     }
 
     private void dataSetting() {

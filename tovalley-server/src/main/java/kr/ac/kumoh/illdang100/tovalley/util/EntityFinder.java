@@ -1,5 +1,7 @@
 package kr.ac.kumoh.illdang100.tovalley.util;
 
+import kr.ac.kumoh.illdang100.tovalley.domain.accident.Accident;
+import kr.ac.kumoh.illdang100.tovalley.domain.accident.AccidentRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.email_code.EmailCode;
 import kr.ac.kumoh.illdang100.tovalley.domain.email_code.EmailCodeRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
@@ -51,5 +53,12 @@ public class EntityFinder {
     public static EmailCode findEmailCodeByEmailOrElseThrowEx(EmailCodeRepository emailCodeRepository, String email) {
         return emailCodeRepository.findByEmail(email)
                 .orElseThrow(() -> new CustomApiException("잘못된 인증 코드입니다."));
+    }
+
+    public static Accident findAccidentByIdAndWaterPlaceIdOrElseThrowEx(AccidentRepository accidentRepository,
+                                                                        Long accidentId, Long waterPlaceId) {
+
+        return accidentRepository.findByIdAndWaterPlaceId(accidentId, waterPlaceId)
+                .orElseThrow(() -> new CustomApiException("물놀이 장소[" + waterPlaceId + "]에 대한 사고[" + accidentId + "]가 존재하지 않습니다"));
     }
 }

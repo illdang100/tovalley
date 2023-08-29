@@ -41,6 +41,14 @@ public class TripScheduleServiceImpl implements TripScheduleService {
 
     private static final int MAX_TRIP_SCHEDULES = 5;
 
+    /**
+     * @param memberId: 사용자 pk
+     * @param addTripScheduleReqDto: 새로운 여행 일정 정보
+     * @methodnme: addTripSchedule
+     * @author: JYeonJun
+     * @description: 새로운 여행 일정 등록
+     * @return: 해당 달에 대한 사용자들 여행 일정 정보
+     */
     @Override
     @Transactional
     public Map<LocalDate, Integer> addTripSchedule(Long memberId, AddTripScheduleReqDto addTripScheduleReqDto) {
@@ -85,13 +93,24 @@ public class TripScheduleServiceImpl implements TripScheduleService {
         }
     }
 
+    /**
+     * @param memberId: 사용자 pk
+     * @param tripScheduleIds: 삭제할 여행 일정 pk 리스트
+     * @methodnme: deleteTripSchedules
+     * @author: JYeonJun
+     * @description: 기존 여행 일정 삭제
+     * @return:
+     */
     @Override
     @Transactional
     public void deleteTripSchedules(Long memberId, List<Long> tripScheduleIds) {
         LocalDate now = LocalDate.now();
 
         tripScheduleIds.forEach(tripScheduleId -> {
-            TripSchedule findTripSchedule = validatePerMissionForTripScheduleDelete(memberId, tripScheduleId);
+
+            TripSchedule findTripSchedule = findTripScheduleByIdOrElseThrowEx(tripScheduleRepository, tripScheduleId);
+
+            validatePerMissionForTripScheduleDelete(memberId, tripScheduleId);
 
             validateTripDateForTripScheduleDelete(findTripSchedule.getTripDate(), now);
 
@@ -105,8 +124,8 @@ public class TripScheduleServiceImpl implements TripScheduleService {
         }
     }
 
-    private TripSchedule validatePerMissionForTripScheduleDelete(Long memberId, Long tripScheduleId) {
-        return tripScheduleRepository.findTripScheduleByIdAndMemberId(tripScheduleId, memberId)
+    private void validatePerMissionForTripScheduleDelete(Long memberId, Long tripScheduleId) {
+        tripScheduleRepository.findTripScheduleByIdAndMemberId(tripScheduleId, memberId)
                 .orElseThrow(() -> new CustomApiException("해당 일정을 삭제할 권한이 없습니다"));
     }
 
@@ -142,10 +161,17 @@ public class TripScheduleServiceImpl implements TripScheduleService {
         return attendeesByDate;
     }
 
+    /**
+     * @param memberId: 사용자 pk
+     * @methodnme: getUpcomingTripSchedules
+     * @author: JYeonJun
+     * @description: 앞으로의 여행 일정 조회
+     * @return: 앞으로의 여행 일정 리스트
+     */
     @Override
     public List<MyTripScheduleRespDto> getUpcomingTripSchedules(Long memberId) {
         LocalDate today = LocalDate.now();
-        List<TripSchedule> tripSchedules = tripScheduleRepository.findUpcomingWithWaterPlaceByMember(memberId, today);
+        List<TripSchedule> tripSchedules = tripScheduleRepository.findUpcomingWithWaterPlaceByMemberOrderByTripDateASC(memberId, today);
 
         Map<Long, Map<LocalDate, Integer>> waterPlaceTrafficMap = calculateWaterPlaceTraffic(tripSchedules);
         Map<Long, RescueSupplyByWaterPlaceRespDto> rescueSupplyMap = getRescueSupplies(tripSchedules);
@@ -165,7 +191,7 @@ public class TripScheduleServiceImpl implements TripScheduleService {
                     t.getId(),
                     waterPlaceId,
                     waterPlace.getWaterPlaceName(),
-                    waterPlace.getWaterPlaceImageUrl(),
+                    waterPlace.getWaterPlaceImage(),
                     waterPlace.getAddress(),
                     waterPlace.getRating(),
                     waterPlace.getReviewCount(),
@@ -178,6 +204,14 @@ public class TripScheduleServiceImpl implements TripScheduleService {
         }).collect(Collectors.toList());
     }
 
+    /**
+     * @param memberId: 사용자 pk
+     * @param pageable: 페이징 조건
+     * @methodnme: getPreTripSchedulesByMemberId
+     * @author: JYeonJun
+     * @description: 지난 여행 일정 조회
+     * @return: 지난 여행 일정 Slice
+     */
     @Override
     public Slice<MyTripScheduleRespDto> getPreTripSchedulesByMemberId(Long memberId, Pageable pageable) {
 

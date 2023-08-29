@@ -4,7 +4,6 @@ import kr.ac.kumoh.illdang100.tovalley.domain.Coordinate;
 import kr.ac.kumoh.illdang100.tovalley.domain.ImageFile;
 import kr.ac.kumoh.illdang100.tovalley.form.water_place.CreateWaterPlaceForm;
 import kr.ac.kumoh.illdang100.tovalley.form.water_place.WaterPlaceEditForm;
-import kr.ac.kumoh.illdang100.tovalley.form.water_place.WaterPlaceForm;
 import lombok.*;
 
 import javax.persistence.*;

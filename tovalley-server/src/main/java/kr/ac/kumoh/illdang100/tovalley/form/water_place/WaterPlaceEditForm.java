@@ -17,8 +17,6 @@ public class WaterPlaceEditForm {
     @Size(max = 254, message = "물놀이 장소 명칭은 254자 이하로 작성해주세요")
     private String waterPlaceName; // 물놀이 지역 명칭
 
-    private MultipartFile waterPlaceImage;
-
     @NotBlank
     @Size(max = 20, message = "시도는 20자 이하로 작성해주세요")
     private String province; // 시도

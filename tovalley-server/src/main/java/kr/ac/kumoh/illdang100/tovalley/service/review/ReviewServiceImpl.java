@@ -43,6 +43,14 @@ public class ReviewServiceImpl implements ReviewService {
     private final TripScheduleRepository tripScheduleRepository;
     private final S3Service s3Service;
 
+    /**
+     * @param memberId: 사용자 pk
+     * @param addNewReviewReqDto: 사용자로부터 입력 받은 새로운 리뷰 정보
+     * @methodnme: writeReview
+     * @author: JYeonJun
+     * @description: 새로운 리뷰 생성
+     * @return:
+     */
     @Override
     @Transactional
     public void writeReview(Long memberId, AddNewReviewReqDto addNewReviewReqDto) {

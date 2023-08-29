@@ -1,6 +1,7 @@
 package kr.ac.kumoh.illdang100.tovalley.web.controller.admin;
 
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.*;
+import kr.ac.kumoh.illdang100.tovalley.form.accident.CreateAccidentForm;
 import kr.ac.kumoh.illdang100.tovalley.form.water_place.CreateWaterPlaceForm;
 import kr.ac.kumoh.illdang100.tovalley.form.water_place.WaterPlaceEditForm;
 import kr.ac.kumoh.illdang100.tovalley.form.water_place.WaterPlaceForm;
@@ -44,7 +45,7 @@ public class WaterPlaceController {
      * @param model
      * @return 관리자용 물놀이 장소 리스트 페이지
      */
-    @GetMapping("/review-list")
+    @GetMapping("/water-places-list")
     public String adminWaterPlaceList(Model model) {
 
         return "admin/water_place/waterPlaceList";
@@ -55,7 +56,7 @@ public class WaterPlaceController {
      * @param model
      * @return 관리자용 물놀이 장소 상세조회 페이지
      */
-    @GetMapping("/review/{id}")
+    @GetMapping("/water-places/{id}")
     public String adminWaterPlaceDetail(@PathVariable("id") Long waterPlaceId,
                                         @ModelAttribute @Valid RetrieveAccidentCondition retrieveAccidentCondition,
                                         BindingResult bindingResult,
@@ -75,6 +76,8 @@ public class WaterPlaceController {
         model.addAttribute("rescueSupply", rescueSupply);
         model.addAttribute("accidents", accidents);
 
+        model.addAttribute("form", new CreateAccidentForm());
+
         return "admin/water_place/waterPlaceDetail";
     }
 
@@ -83,7 +86,7 @@ public class WaterPlaceController {
      * @param model
      * @return 물놀이 장소 수정 페이지
      */
-    @GetMapping("/review/{id}/edit")
+    @GetMapping("/water-places/{id}/edit")
     @Transactional(readOnly = true)
     public String updateWaterPlaceForm(@PathVariable("id") Long waterPlaceId,
                                        Model model) {
@@ -111,13 +114,13 @@ public class WaterPlaceController {
      * @param form
      * @return 관리자용 물놀이 상세보기 페이지
      */
-    @PostMapping("/review/{id}/edit")
+    @PostMapping("/water-places/{id}/edit")
     public String updateWaterPlace(@PathVariable("id") Long waterPlaceId,
                                    @ModelAttribute("form") @Valid WaterPlaceEditForm form) {
 
         waterPlaceService.updateWaterPlace(form);
 
-        return "redirect:/admin/review/" + waterPlaceId;
+        return "redirect:/admin/water-places/" + waterPlaceId;
     }
 
     /**
@@ -145,6 +148,6 @@ public class WaterPlaceController {
 
         waterPlaceService.saveNewWaterPlace(form);
 
-        return "redirect:/admin/review-list";
+        return "redirect:/admin/water-places-list";
     }
 }
