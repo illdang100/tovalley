@@ -3,6 +3,9 @@ package kr.ac.kumoh.illdang100.tovalley.service.accident;
 import kr.ac.kumoh.illdang100.tovalley.domain.accident.Accident;
 import kr.ac.kumoh.illdang100.tovalley.domain.accident.AccidentEnum;
 import kr.ac.kumoh.illdang100.tovalley.domain.accident.AccidentRepository;
+import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlace;
+import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlaceRepository;
+import kr.ac.kumoh.illdang100.tovalley.form.accident.CreateAccidentForm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -19,6 +22,7 @@ import java.util.function.ToIntFunction;
 
 import static kr.ac.kumoh.illdang100.tovalley.dto.accident.AccidentReqDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.accident.AccidentRespDto.*;
+import static kr.ac.kumoh.illdang100.tovalley.util.EntityFinder.*;
 
 @Slf4j
 @Service
@@ -27,22 +31,35 @@ import static kr.ac.kumoh.illdang100.tovalley.dto.accident.AccidentRespDto.*;
 public class AccidentServiceImpl implements AccidentService {
 
     private final AccidentRepository accidentRepository;
+    private final WaterPlaceRepository waterPlaceRepository;
 
     @Override
-    public Accident addAccident(Long waterPlaceId) {
-        return null;
+    public void saveNewAccident(Long waterPlaceId, CreateAccidentForm form) {
+
+        WaterPlace findWaterPlace =
+                findWaterPlaceByIdOrElseThrowEx(waterPlaceRepository, waterPlaceId);
+
+        accidentRepository.save(Accident.builder()
+                .waterPlace(findWaterPlace)
+                .accidentDate(form.getAccidentDate())
+                .accidentCondition(form.getAccidentCondition())
+                .peopleNum(form.getPeopleNum())
+                .build());
     }
 
     @Override
-    public void deleteAccident(Long accidentId) {
+    public void deleteAccident(Long waterPlaceId, Long accidentId) {
 
+        Accident findAccident =
+                findAccidentByIdAndWaterPlaceIdOrElseThrowEx(accidentRepository, accidentId, waterPlaceId);
+
+        accidentRepository.delete(findAccident);
     }
 
     /**
      * @methodnme: getAccidentCntPerMonthByProvince
      * @author: JYeonJun
      * @description: 지역별(행정자치구) 사건사고 수 조회
-     *
      * @return: 달별 사망, 실종, 부상 사고수 정보 조회 및 총 사망, 실종, 부상 사고수 정보 조회
      */
     @Override
@@ -109,9 +126,9 @@ public class AccidentServiceImpl implements AccidentService {
     }
 
     /**
+     * @param waterPlaceId: 물놀이 장소 pk
      * @methodnme: getAccidentsFor5YearsByWaterPlace
      * @author: JYeonJun
-     * @param waterPlaceId: 물놀이 장소 pk
      * @description: 물놀이 장소에서 발생한 최근 5년간 사건사고 현황 정보 조회
      * @return: 사건사고 현황 정보
      */
@@ -144,9 +161,9 @@ public class AccidentServiceImpl implements AccidentService {
     }
 
     /**
-     * @param waterPlaceId: 물놀이 장소 pk
+     * @param waterPlaceId:              물놀이 장소 pk
      * @param retrieveAccidentCondition: 사건/사고 검색 조건
-     * @param pageable: 페이징 정보
+     * @param pageable:                  페이징 정보
      * @methodnme: getAccidentDetailByWaterPlace
      * @author: JYeonJun
      * @description: 물놀이 장소에 대한 사건/사고 조회

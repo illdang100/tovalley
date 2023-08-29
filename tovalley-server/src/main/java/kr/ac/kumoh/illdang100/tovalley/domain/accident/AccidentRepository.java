@@ -6,6 +6,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public interface AccidentRepository extends JpaRepository<Accident, Long>, AccidentRepositoryCustom {
 
@@ -18,4 +19,6 @@ public interface AccidentRepository extends JpaRepository<Accident, Long>, Accid
     List<Accident> findByWaterPlaceIdAndAccidentDateAfter(Long waterPlaceId, LocalDate date);
 
     List<Accident> findByWaterPlaceId(Long waterPlaceId);
+
+    Optional<Accident> findByIdAndWaterPlaceId(Long accidentId, Long waterPlaceId);
 }
