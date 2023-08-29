@@ -100,8 +100,9 @@ public class WaterPlaceRespDto {
 
         public static AdminWaterPlaceDetailRespDto createAdminWaterPlaceDetailRespDto(WaterPlace waterPlace, Coordinate coordinate, WaterPlaceDetail waterPlaceDetail) {
 
+            ImageFile waterPlaceImage = waterPlace.getWaterPlaceImage();
             return AdminWaterPlaceDetailRespDto.builder()
-                    .waterPlaceImage(waterPlace.getWaterPlaceImage().getStoreFileUrl())
+                    .waterPlaceImage((waterPlaceImage != null) ? waterPlaceImage.getStoreFileUrl() : null)
                     .waterPlaceName(waterPlace.getWaterPlaceName())
                     .latitude(coordinate.getLatitude())
                     .longitude(coordinate.getLongitude())
