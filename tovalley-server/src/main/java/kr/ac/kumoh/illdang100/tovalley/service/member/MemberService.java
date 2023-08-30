@@ -21,10 +21,7 @@ public interface MemberService {
     void isNicknameAvailable(String nickname);
 
     // 아이디 찾기
-    String findIdByEmail(String email);
-
-    // 패스워드 찾기 - 인증 이메일 발송
-    void sendPasswordResetEmail(String email);
+    String findUserId(String email, String name);
 
     // 새로운 패스워드 설정
     void resetPassword(String email, String newPassword);
