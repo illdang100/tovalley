@@ -27,13 +27,13 @@ public class EmailCodeController {
                                         BindingResult bindingResult) {
         SendEmailCodeRespDto sendEmailCodeRespDto = emailCodeService.sendEmail(sendEmailCodeReqDto.getEmail());
 
-        return new ResponseEntity<>(new ResponseDto<>(1, "사용자 이메일로 인증 코드를 전송했습니다.", sendEmailCodeRespDto), HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseDto<>(1, "사용자 이메일로 인증 코드를 전송했습니다", sendEmailCodeRespDto), HttpStatus.OK);
     }
 
     @GetMapping
     public ResponseEntity<?> getVerifyCode(@RequestParam String email, @RequestParam String verifyCode) {
         emailCodeService.checkVerifyCode(email, verifyCode);
 
-        return new ResponseEntity<>(new ResponseDto<>(1, "이메일 인증을 성공했습니다.", null), HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseDto<>(1, "이메일 인증을 성공했습니다", null), HttpStatus.OK);
     }
 }

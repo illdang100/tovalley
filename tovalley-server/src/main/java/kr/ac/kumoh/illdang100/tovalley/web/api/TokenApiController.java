@@ -26,6 +26,6 @@ public class TokenApiController {
 
         memberService.reIssueToken(request, response);
 
-        return new ResponseEntity<>(new ResponseDto<>(1, "토큰 재발급을 성공했습니다.", null), HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseDto<>(1, "토큰 재발급을 성공했습니다", null), HttpStatus.OK);
     }
 }
