@@ -15,6 +15,9 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import javax.servlet.http.Cookie;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -44,13 +47,13 @@ public class JwtAuthorizationFilterTest extends DummyObject {
         String accessToken = jwtProcess.createAccessToken(loginUser);
         String refreshToken = jwtProcess.createRefreshToken(member.getId().toString(), member.getRole().toString());
 
-        System.out.println("accessToken = " + accessToken);
-        System.out.println("refreshToken = " + refreshToken);
+        String decodedAccessToken = URLDecoder.decode(accessToken, StandardCharsets.UTF_8);
+        String decodedRefreshToken = URLDecoder.decode(refreshToken, StandardCharsets.UTF_8);
 
         //when
         ResultActions resultActions = mvc.perform(get("/api/auth/tovalley/test")
-                .cookie(new Cookie(JwtVO.ACCESS_TOKEN, accessToken),
-                        new Cookie(JwtVO.REFRESH_TOKEN, refreshToken)));
+                .cookie(new Cookie(JwtVO.ACCESS_TOKEN, decodedAccessToken),
+                        new Cookie(JwtVO.REFRESH_TOKEN, decodedRefreshToken)));
 
         //then
         resultActions.andExpect(status().isNotFound());
@@ -83,12 +86,14 @@ public class JwtAuthorizationFilterTest extends DummyObject {
         PrincipalDetails loginUser = new PrincipalDetails(member);
         String accessToken = jwtProcess.createAccessToken(loginUser);
         String refreshToken = jwtProcess.createRefreshToken(member.getId().toString(), member.getRole().toString());
-        System.out.println("accessToken = " + accessToken);
+
+        String decodedAccessToken = URLDecoder.decode(accessToken, StandardCharsets.UTF_8);
+        String decodedRefreshToken = URLDecoder.decode(refreshToken, StandardCharsets.UTF_8);
 
         //when
         ResultActions resultActions = mvc.perform(get("/admin/tovalley/test")
-                .cookie(new Cookie(JwtVO.ACCESS_TOKEN, accessToken),
-                        new Cookie(JwtVO.REFRESH_TOKEN, refreshToken)));
+                .cookie(new Cookie(JwtVO.ACCESS_TOKEN, decodedAccessToken),
+                        new Cookie(JwtVO.REFRESH_TOKEN, decodedRefreshToken)));
 
         //then
         resultActions.andExpect(status().isForbidden());

@@ -24,6 +24,9 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import javax.persistence.EntityManager;
 import javax.servlet.http.Cookie;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+
 import static kr.ac.kumoh.illdang100.tovalley.dto.member.MemberReqDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.util.CustomResponseUtil.ISLOGIN;
 import static org.assertj.core.api.Assertions.*;
@@ -78,9 +81,9 @@ class MemberApiControllerTest extends DummyObject {
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals(JwtVO.ACCESS_TOKEN)) {
-                    accessToken = cookie.getValue();
+                    accessToken = URLDecoder.decode(cookie.getValue(), StandardCharsets.UTF_8);
                 } else if (cookie.getName().equals(JwtVO.REFRESH_TOKEN)) {
-                    refreshToken = cookie.getValue();
+                    refreshToken = URLDecoder.decode(cookie.getValue(), StandardCharsets.UTF_8);
                 } else if (cookie.getName().equals(ISLOGIN)) {
                     isLogin = cookie.getValue();
                 }

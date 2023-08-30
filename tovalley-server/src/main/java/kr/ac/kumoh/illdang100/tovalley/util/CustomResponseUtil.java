@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
@@ -80,7 +81,8 @@ public class CustomResponseUtil {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                if (cookie.getName().equals(JwtVO.ACCESS_TOKEN) && cookie.getValue().startsWith(JwtVO.TOKEN_PREFIX)) {
+                String cookieValue = URLDecoder.decode(cookie.getValue(), StandardCharsets.UTF_8);
+                if (cookie.getName().equals(JwtVO.ACCESS_TOKEN) && cookieValue.startsWith(JwtVO.TOKEN_PREFIX)) {
                     return true;
                 }
             }
@@ -92,8 +94,9 @@ public class CustomResponseUtil {
         String token = "";
         Cookie[] cookies = request.getCookies();
         for (Cookie cookie : cookies) {
-            if (cookie.getName().equals(cookieName) && cookie.getValue().startsWith(JwtVO.TOKEN_PREFIX)) {
-                token = cookie.getValue();
+            String cookieValue = URLDecoder.decode(cookie.getValue(), StandardCharsets.UTF_8);
+            if (cookie.getName().equals(cookieName) && cookieValue.startsWith(JwtVO.TOKEN_PREFIX)) {
+                token = cookieValue;
             }
         }
         return token;

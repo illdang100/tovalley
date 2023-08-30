@@ -685,7 +685,7 @@ public class OpenApiServiceImpl implements OpenApiService {
         String apiUrl = "https://maps.googleapis.com/maps/api/place/findplacefromtext/json";
         String inputType = "textquery";
         Map<String, String> params = new HashMap<>();
-        params.put("input", waterPlaceName);
+        params.put("input", URLEncoder.encode(waterPlaceName, UTF_8));
         params.put("inputtype", inputType);
         String googleApiUrl = buildGoogleApiUrl(apiUrl, params);
 

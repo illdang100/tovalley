@@ -21,6 +21,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 import static kr.ac.kumoh.illdang100.tovalley.util.CustomResponseUtil.*;
 
@@ -69,11 +71,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         PrincipalDetails principalDetails = (PrincipalDetails) authResult.getPrincipal();
 
-        String jwtToken = jwtProcess.createAccessToken(principalDetails);
+        String accessToken = jwtProcess.createAccessToken(principalDetails);
 
         String refreshToken = saveRefreshToken(jwtProcess, refreshTokenRedisRepository, principalDetails.getMember());
-
-        addCookie(response, JwtVO.ACCESS_TOKEN, jwtToken);
+        addCookie(response, JwtVO.ACCESS_TOKEN, accessToken);
         addCookie(response, JwtVO.REFRESH_TOKEN, refreshToken);
         addCookie(response, ISLOGIN, "true", false);
 
