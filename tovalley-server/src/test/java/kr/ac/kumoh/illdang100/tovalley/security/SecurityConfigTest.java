@@ -29,9 +29,6 @@ public class SecurityConfigTest {
         String responseBody = resultActions.andReturn().getResponse().getContentAsString();
         int httpStatusCode = resultActions.andReturn().getResponse().getStatus();
 
-        System.out.println("responseBody = " + responseBody);
-        System.out.println("httpStatusCode = " + httpStatusCode);
-
         //then
         assertThat(httpStatusCode).isEqualTo(401);
     }
@@ -45,9 +42,6 @@ public class SecurityConfigTest {
         ResultActions resultActions = mvc.perform(get("/admin/test"));
         String responseBody = resultActions.andReturn().getResponse().getContentAsString();
         int httpStatusCode = resultActions.andReturn().getResponse().getStatus();
-
-        System.out.println("responseBody = " + responseBody);
-        System.out.println("httpStatusCode = " + httpStatusCode);
 
         //then
         assertThat(httpStatusCode).isEqualTo(401);

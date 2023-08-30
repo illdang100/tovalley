@@ -20,6 +20,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import javax.servlet.http.Cookie;
 
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
 import static org.assertj.core.api.Assertions.*;
@@ -69,26 +70,19 @@ public class JwtAuthenticationFilterTest extends DummyObject {
         String refreshToken = null;
         if (cookies != null) {
             for (Cookie cookie : cookies) {
+                String cookieValue = cookie.getValue();
                 if (cookie.getName().equals("accessToken")) {
-                    accessToken = cookie.getValue();
+                    accessToken = URLDecoder.decode(cookieValue, StandardCharsets.UTF_8);
                 } else if (cookie.getName().equals("refreshToken")) {
-                    refreshToken = cookie.getValue();
+                    refreshToken = URLDecoder.decode(cookieValue, StandardCharsets.UTF_8);
                 }
             }
         }
-
-        String decodedAccessToken = URLDecoder.decode(accessToken, StandardCharsets.UTF_8);
-        String decodedRefreshToken = URLDecoder.decode(refreshToken, StandardCharsets.UTF_8);
-
-        System.out.println("responseBody = " + responseBody);
-        System.out.println("accessToken = " + decodedAccessToken);
-        System.out.println("refreshToken = " + decodedRefreshToken);
-
         //then
         resultActions.andExpect(status().isOk());
-        assertThat(decodedAccessToken).isNotNull();
-        assertThat(decodedAccessToken.startsWith(JwtVO.TOKEN_PREFIX)).isTrue();
-        assertThat(decodedRefreshToken.startsWith(JwtVO.TOKEN_PREFIX)).isTrue();
+        assertThat(accessToken).isNotNull();
+        assertThat(accessToken.startsWith(JwtVO.TOKEN_PREFIX)).isTrue();
+        assertThat(refreshToken.startsWith(JwtVO.TOKEN_PREFIX)).isTrue();
     }
 
     @Test
@@ -114,9 +108,9 @@ public class JwtAuthenticationFilterTest extends DummyObject {
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals(JwtVO.ACCESS_TOKEN)) {
-                    accessToken = cookie.getValue();
+                    accessToken = URLDecoder.decode(cookie.getValue(), StandardCharsets.UTF_8);
                 } else if (cookie.getName().equals(JwtVO.REFRESH_TOKEN)) {
-                    refreshToken = cookie.getValue();
+                    refreshToken = URLDecoder.decode(cookie.getValue(), StandardCharsets.UTF_8);
                 }
             }
         }

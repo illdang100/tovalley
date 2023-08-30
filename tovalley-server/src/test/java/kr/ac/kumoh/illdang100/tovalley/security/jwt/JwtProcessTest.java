@@ -11,6 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -36,12 +39,12 @@ class JwtProcessTest extends DummyObject {
         String jwtToken1 = createAccessToken(1L, "username1", "nickname1", MemberEnum.CUSTOMER);
         String jwtToken2 = createAccessToken(2L, "username2", "nickname2", MemberEnum.CUSTOMER);
 
-        System.out.println("jwtToken1 = " + jwtToken1);
-        System.out.println("jwtToken2 = " + jwtToken2);
+        String decodedJwtToken1 = URLDecoder.decode(jwtToken1, StandardCharsets.UTF_8);
+        String decodedJwtToken2 = URLDecoder.decode(jwtToken2, StandardCharsets.UTF_8);
 
         //then
-        assertThat(jwtToken1.startsWith(JwtVO.TOKEN_PREFIX)).isTrue();
-        assertThat(jwtToken2.startsWith(JwtVO.TOKEN_PREFIX)).isTrue();
+        assertThat(decodedJwtToken1.startsWith(JwtVO.TOKEN_PREFIX)).isTrue();
+        assertThat(decodedJwtToken2.startsWith(JwtVO.TOKEN_PREFIX)).isTrue();
     }
 
     @Test
@@ -53,12 +56,12 @@ class JwtProcessTest extends DummyObject {
         String refreshToken1 = jwtProcess.createRefreshToken("1", MemberEnum.CUSTOMER.toString());
         String refreshToken2 = jwtProcess.createRefreshToken("2", MemberEnum.ADMIN.toString());
 
-        System.out.println("refreshToken1 = " + refreshToken1);
-        System.out.println("refreshToken2 = " + refreshToken2);
+        String decodedRefreshToken1 = URLDecoder.decode(refreshToken1, StandardCharsets.UTF_8);
+        String decodedRefreshToken2 = URLDecoder.decode(refreshToken2, StandardCharsets.UTF_8);
 
         //then
-        assertThat(refreshToken1.startsWith(JwtVO.TOKEN_PREFIX)).isTrue();
-        assertThat(refreshToken2.startsWith(JwtVO.TOKEN_PREFIX)).isTrue();
+        assertThat(decodedRefreshToken1.startsWith(JwtVO.TOKEN_PREFIX)).isTrue();
+        assertThat(decodedRefreshToken2.startsWith(JwtVO.TOKEN_PREFIX)).isTrue();
     }
 
     @Test
@@ -68,8 +71,8 @@ class JwtProcessTest extends DummyObject {
         String accessToken1 = createAccessToken(1L, "username1", "nickname1", MemberEnum.CUSTOMER);
         String accessToken2 = createAccessToken(2L, "username2", "nickname2", MemberEnum.ADMIN);
 
-        String jwtToken1 = accessToken1.replace(JwtVO.TOKEN_PREFIX, "");
-        String jwtToken2 = accessToken2.replace(JwtVO.TOKEN_PREFIX, "");
+        String jwtToken1 = URLDecoder.decode(accessToken1, StandardCharsets.UTF_8).replace(JwtVO.TOKEN_PREFIX, "");
+        String jwtToken2 = URLDecoder.decode(accessToken2, StandardCharsets.UTF_8).replace(JwtVO.TOKEN_PREFIX, "");
 
         //when
         PrincipalDetails createdPrincipalDetails1 = jwtProcess.verify(jwtToken1);

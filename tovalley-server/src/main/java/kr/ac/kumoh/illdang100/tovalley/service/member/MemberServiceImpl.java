@@ -6,10 +6,8 @@ import kr.ac.kumoh.illdang100.tovalley.domain.email_code.EmailCodeRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberEnum;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberRepository;
-import kr.ac.kumoh.illdang100.tovalley.dto.member.MemberReqDto.LoginReqDto;
 import kr.ac.kumoh.illdang100.tovalley.dto.member.MemberReqDto.SignUpReqDto;
 import kr.ac.kumoh.illdang100.tovalley.handler.ex.CustomApiException;
-import kr.ac.kumoh.illdang100.tovalley.security.auth.PrincipalDetails;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtProcess;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtVO;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.RefreshToken;
@@ -28,6 +26,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 import static kr.ac.kumoh.illdang100.tovalley.dto.member.MemberRespDto.*;
@@ -73,26 +73,6 @@ public class MemberServiceImpl implements MemberService {
         return memberRepository.save(signUpMember);
     }
 
-
-    @Override
-    public void login(HttpServletResponse response, LoginReqDto loginReqDto) {
-        String email = loginReqDto.getUsername();
-        String password = loginReqDto.getPassword();
-        Member findMember = findMemberByEmailOrElseThrowEx(memberRepository, email);
-
-        if(!passwordEncoder.matches(password, findMember.getPassword())) {
-            throw new CustomApiException("잘못된 비밀번호입니다.");
-        }
-
-        PrincipalDetails loginUser = new PrincipalDetails(findMember);
-        String accessToken = jwtProcess.createAccessToken(loginUser);
-        String refreshToken = jwtProcess.createRefreshToken(findMember.getId().toString(), findMember.getRole().toString());
-
-        addCookie(response, JwtVO.ACCESS_TOKEN, accessToken);
-        addCookie(response, JwtVO.REFRESH_TOKEN, refreshToken);
-        addCookie(response, ISLOGIN, "true", false);
-    }
-
     /**
      * @param nickname: 변경하고 싶은 닉네임
      * @methodnme: isNicknameAvailable
@@ -123,6 +103,7 @@ public class MemberServiceImpl implements MemberService {
     public void resetPassword(String email, String newPassword) {
     }
 
+    @Transactional
     @Override
     public void reIssueToken(HttpServletRequest request, HttpServletResponse response) {
 
@@ -155,10 +136,6 @@ public class MemberServiceImpl implements MemberService {
             addCookie(response, JwtVO.ACCESS_TOKEN, newAccessToken);
             addCookie(response, JwtVO.REFRESH_TOKEN, newRefreshToken);
         }
-
-        // 리프레시 토큰 추출
-
-
     }
 
     /**
@@ -179,12 +156,13 @@ public class MemberServiceImpl implements MemberService {
                 findMember.getNickname());
     }
 
+    @Transactional
     @Override
     public void logout(HttpServletResponse response, String refreshToken) {
         deleteRefreshToken(refreshToken);
         expireCookie(response, JwtVO.ACCESS_TOKEN);
         expireCookie(response, JwtVO.REFRESH_TOKEN);
-        addCookie(response, ISLOGIN, "false");
+        addCookie(response, ISLOGIN, "false", false);
     }
 
     private void expireCookie(HttpServletResponse response, String cookieName) {

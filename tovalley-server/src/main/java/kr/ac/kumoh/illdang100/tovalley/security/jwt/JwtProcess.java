@@ -6,12 +6,16 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberEnum;
 import kr.ac.kumoh.illdang100.tovalley.security.auth.PrincipalDetails;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 @Component
+@Slf4j
 public class JwtProcess {
 
     @Value("${jwt.subject}")
@@ -34,7 +38,7 @@ public class JwtProcess {
                 .withClaim("id", memberId)
                 .withClaim("role", role)
                 .sign(Algorithm.HMAC512(secret));
-        return JwtVO.TOKEN_PREFIX + jwtToken;
+        return JwtVO.TOKEN_PREFIX + URLEncoder.encode(jwtToken, StandardCharsets.UTF_8);
     }
 
     public String createRefreshToken(String memberId, String role) {
@@ -45,8 +49,9 @@ public class JwtProcess {
                 .withClaim("role", role)
                 .sign(Algorithm.HMAC512(secret));
 
-        return JwtVO.TOKEN_PREFIX + refreshToken;
+        return JwtVO.TOKEN_PREFIX + URLEncoder.encode(refreshToken, StandardCharsets.UTF_8);
     }
+
 
     public PrincipalDetails verify (String token) {
         DecodedJWT decodedJWT = isSatisfiedToken(token);
