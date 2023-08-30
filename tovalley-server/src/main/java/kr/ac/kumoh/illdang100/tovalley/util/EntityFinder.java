@@ -52,7 +52,7 @@ public class EntityFinder {
 
     public static EmailCode findEmailCodeByEmailOrElseThrowEx(EmailCodeRepository emailCodeRepository, String email) {
         return emailCodeRepository.findByEmail(email)
-                .orElseThrow(() -> new CustomApiException("잘못된 인증 코드입니다"));
+                .orElseThrow(() -> new CustomApiException("사용자[" + email + "]에게 발급된 인증 코드가 존재하지 않습니다"));
     }
 
     public static Accident findAccidentByIdAndWaterPlaceIdOrElseThrowEx(AccidentRepository accidentRepository,
