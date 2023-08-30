@@ -80,10 +80,12 @@ public class WaterPlaceRespDto {
     @Data
     public static class AdminWaterPlaceDetailRespDto {
 
+        private Long waterPlaceId; // 물놀이 장소 pk
         private String waterPlaceImage; // 물놀이 장소 사진
         private String waterPlaceName; // 물놀이 장소 명칭
         private String latitude; // 위도
         private String longitude; // 경도
+        private String waterPlaceCategory; // 구분(계곡, 하천)
         private String managementType; // 관리유형(일반지역, 중점관리지역)
         private String detailAddress; // 주소 + 세부지명(null)
         private String town; // 읍면(null)
@@ -102,10 +104,12 @@ public class WaterPlaceRespDto {
 
             ImageFile waterPlaceImage = waterPlace.getWaterPlaceImage();
             return AdminWaterPlaceDetailRespDto.builder()
+                    .waterPlaceId(waterPlace.getId())
                     .waterPlaceImage((waterPlaceImage != null) ? waterPlaceImage.getStoreFileUrl() : null)
                     .waterPlaceName(waterPlace.getWaterPlaceName())
                     .latitude(coordinate.getLatitude())
                     .longitude(coordinate.getLongitude())
+                    .waterPlaceCategory(waterPlace.getWaterPlaceCategory())
                     .managementType(waterPlace.getManagementType())
                     .detailAddress(waterPlace.getAddress() + " " + waterPlace.getSubLocation())
                     .town(waterPlace.getTown())
