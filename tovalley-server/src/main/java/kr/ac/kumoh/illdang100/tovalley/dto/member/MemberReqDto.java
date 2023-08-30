@@ -40,19 +40,5 @@ public class MemberReqDto {
         @Pattern(regexp = "^[ㄱ-ㅎ가-힣a-zA-Z0-9]{1,20}$", message = "한글/영문/숫자(0~9) 1~20자 이내로 작성해주세요")
         private String nickname;
     }
-
-    @Data
-    @Builder
-    public static class EmailMessageDto {
-        @NotEmpty
-        @Email
-        private String to;
-
-        @NotNull
-        @Builder.Default
-        private String subject = "제목 없음";
-
-        private String message;
-    }
 }
 
