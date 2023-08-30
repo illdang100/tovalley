@@ -14,6 +14,7 @@ import kr.ac.kumoh.illdang100.tovalley.security.jwt.RefreshToken;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.RefreshTokenRedisRepository;
 import kr.ac.kumoh.illdang100.tovalley.service.S3Service;
 import kr.ac.kumoh.illdang100.tovalley.service.email_code.EmailCodeService;
+import kr.ac.kumoh.illdang100.tovalley.util.EntityFinder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -26,8 +27,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 import static kr.ac.kumoh.illdang100.tovalley.dto.member.MemberRespDto.*;
@@ -91,16 +90,15 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public String findIdByEmail(String email) {
-        return null;
+    public String findUserId(String email, String name) {
+
     }
 
     @Override
-    public void sendPasswordResetEmail(String email) {
-    }
-
-    @Override
+    @Transactional
     public void resetPassword(String email, String newPassword) {
+        Member findMember = findMemberByEmailOrElseThrowEx(memberRepository, email);
+        findMember.changePassword(newPassword);
     }
 
     @Transactional
