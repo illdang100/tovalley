@@ -1,10 +1,8 @@
 package kr.ac.kumoh.illdang100.tovalley.domain.email_code;
 
-import kr.ac.kumoh.illdang100.tovalley.domain.BaseTimeEntity;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 
 @Entity
 @Getter
@@ -24,10 +22,15 @@ public class EmailCode {
     @Column(nullable = false, length = 7)
     private String verifyCode;
 
+    @Enumerated(value = EnumType.STRING)
     @Column(nullable = false)
     private EmailCodeStatusEnum emailCodeStatus;
 
-    public void updateEmailCodeStatus(EmailCodeStatusEnum emailCodeStatus) {
+    public void changeEmailCodeStatus(EmailCodeStatusEnum emailCodeStatus) {
         this.emailCodeStatus = emailCodeStatus;
+    }
+
+    public void changeVerifyCode(String verifyCode) {
+        this.verifyCode = verifyCode;
     }
 }
