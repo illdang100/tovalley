@@ -14,7 +14,6 @@ import kr.ac.kumoh.illdang100.tovalley.security.jwt.RefreshToken;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.RefreshTokenRedisRepository;
 import kr.ac.kumoh.illdang100.tovalley.service.S3Service;
 import kr.ac.kumoh.illdang100.tovalley.service.email_code.EmailCodeService;
-import kr.ac.kumoh.illdang100.tovalley.util.EntityFinder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -29,6 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import java.util.Optional;
 
+import static kr.ac.kumoh.illdang100.tovalley.dto.member.MemberReqDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.member.MemberRespDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.util.CustomResponseUtil.*;
 import static kr.ac.kumoh.illdang100.tovalley.util.EntityFinder.*;
@@ -90,19 +90,26 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public String findUserId(String email, String name) {
-
-    }
-
-    @Override
-    @Transactional
-    public void resetPassword(String email, String newPassword) {
+    public String findSignedUpEmail(FindEmailReqDto findEmailReqDto) {
+        String email = findEmailReqDto.getEmail();
         Member findMember = findMemberByEmailOrElseThrowEx(memberRepository, email);
-        findMember.changePassword(newPassword);
+
+        return findMember.getEmail();
+}
+
+    @Override
+    @Transactional
+    public void resetPassword(ResetPasswordReqDto resetPasswordReqDto) {
+        String email = resetPasswordReqDto.getEmail();
+        String newPassword = resetPasswordReqDto.getNewPassword();
+        String encodedPw = passwordEncoder.encode(newPassword);
+
+        Member findMember = findMemberByEmailOrElseThrowEx(memberRepository, email);
+        findMember.changePassword(encodedPw);
     }
 
-    @Transactional
     @Override
+    @Transactional
     public void reIssueToken(HttpServletRequest request, HttpServletResponse response) {
 
         Cookie[] cookies = request.getCookies();
@@ -154,8 +161,8 @@ public class MemberServiceImpl implements MemberService {
                 findMember.getNickname());
     }
 
-    @Transactional
     @Override
+    @Transactional
     public void logout(HttpServletResponse response, String refreshToken) {
         deleteRefreshToken(refreshToken);
         expireCookie(response, JwtVO.ACCESS_TOKEN);
