@@ -23,4 +23,14 @@ public class AdminController {
         model.addAttribute("loginForm", new LoginForm());
         return "admin/loginForm";
     }
+
+    /**
+     * 관리자 로그아웃
+     * @return 관리자용 로그인 페이지
+     */
+    @GetMapping("/logout")
+    public String logOut() {
+
+        return "redirect:/admin/login";
+    }
 }

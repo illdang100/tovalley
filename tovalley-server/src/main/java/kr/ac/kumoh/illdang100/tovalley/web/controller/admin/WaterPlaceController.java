@@ -1,5 +1,6 @@
 package kr.ac.kumoh.illdang100.tovalley.web.controller.admin;
 
+import kr.ac.kumoh.illdang100.tovalley.domain.accident.AccidentEnum;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.*;
 import kr.ac.kumoh.illdang100.tovalley.form.accident.CreateAccidentForm;
 import kr.ac.kumoh.illdang100.tovalley.form.water_place.CreateWaterPlaceForm;
@@ -7,7 +8,6 @@ import kr.ac.kumoh.illdang100.tovalley.form.water_place.WaterPlaceEditForm;
 import kr.ac.kumoh.illdang100.tovalley.form.water_place.WaterPlaceForm;
 import kr.ac.kumoh.illdang100.tovalley.service.accident.AccidentService;
 import kr.ac.kumoh.illdang100.tovalley.service.water_place.WaterPlaceService;
-import kr.ac.kumoh.illdang100.tovalley.util.EntityFinder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -23,10 +23,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static kr.ac.kumoh.illdang100.tovalley.dto.accident.AccidentReqDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.accident.AccidentRespDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.rescue_supply.RescueSupplyRespDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.water_place.WaterPlaceRespDto.*;
+import static kr.ac.kumoh.illdang100.tovalley.util.EntityFinder.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -41,11 +45,31 @@ public class WaterPlaceController {
     private final WaterPlaceDetailRepository waterPlaceDetailRepository;
     private final RescueSupplyRepository rescueSupplyRepository;
 
+    @ModelAttribute("waterPlaceCategories")
+    public List<String> waterPlaceCategories() {
+
+        List<String> waterPlaceCategories = new ArrayList<>();
+        waterPlaceCategories.add("계곡");
+        waterPlaceCategories.add("하천");
+
+        return waterPlaceCategories;
+    }
+
+    @ModelAttribute("managementTypes")
+    public List<String> managementTypes() {
+
+        List<String> managementTypes = new ArrayList<>();
+        managementTypes.add("일반지역");
+        managementTypes.add("중점관리지역");
+
+        return managementTypes;
+    }
+
     /**
      * @param model
      * @return 관리자용 물놀이 장소 리스트 페이지
      */
-    @GetMapping("/water-places-list")
+    @GetMapping("/water-place-list")
     public String adminWaterPlaceList(Model model) {
 
         return "admin/water_place/waterPlaceList";
@@ -59,7 +83,6 @@ public class WaterPlaceController {
     @GetMapping("/water-places/{id}")
     public String adminWaterPlaceDetail(@PathVariable("id") Long waterPlaceId,
                                         @ModelAttribute @Valid RetrieveAccidentCondition retrieveAccidentCondition,
-                                        BindingResult bindingResult,
                                         @PageableDefault(size = 5, sort = "accidentDate", direction = Sort.Direction.DESC) Pageable pageable,
                                         Model model) {
 
@@ -76,7 +99,9 @@ public class WaterPlaceController {
         model.addAttribute("rescueSupply", rescueSupply);
         model.addAttribute("accidents", accidents);
 
-        model.addAttribute("form", new CreateAccidentForm());
+        model.addAttribute("addAccidentCond", new CreateAccidentForm());
+
+        model.addAttribute("accidentStatus", AccidentEnum.values());
 
         return "admin/water_place/waterPlaceDetail";
     }
@@ -92,13 +117,13 @@ public class WaterPlaceController {
                                        Model model) {
 
         WaterPlace waterPlace =
-                EntityFinder.findWaterPlaceByIdOrElseThrowEx(waterPlaceRepository, waterPlaceId);
+                findWaterPlaceByIdOrElseThrowEx(waterPlaceRepository, waterPlaceId);
 
         WaterPlaceDetail waterPlaceDetail =
-                EntityFinder.findWaterPlaceDetailByWaterPlaceIdOrElseThrowEx(waterPlaceDetailRepository, waterPlaceId);
+                findWaterPlaceDetailByWaterPlaceIdOrElseThrowEx(waterPlaceDetailRepository, waterPlaceId);
 
         RescueSupply rescueSupply =
-                EntityFinder.findRescueSupplyByWaterPlaceIdOrElseThrowEx(rescueSupplyRepository, waterPlaceId);
+                findRescueSupplyByWaterPlaceIdOrElseThrowEx(rescueSupplyRepository, waterPlaceId);
 
         WaterPlaceForm form = new WaterPlaceForm(waterPlace, waterPlaceDetail, rescueSupply);
 
@@ -116,9 +141,23 @@ public class WaterPlaceController {
      */
     @PostMapping("/water-places/{id}/edit")
     public String updateWaterPlace(@PathVariable("id") Long waterPlaceId,
-                                   @ModelAttribute("form") @Valid WaterPlaceEditForm form) {
+                                   @ModelAttribute("form") @Valid WaterPlaceEditForm form,
+                                   BindingResult result) {
+
+        /*if (result.hasErrors()) {
+            return "admin/water_place/updateWaterPlaceForm";
+        }*/
 
         waterPlaceService.updateWaterPlace(form);
+
+        return "redirect:/admin/water-places/" + waterPlaceId;
+    }
+
+    @PostMapping(value = "/water-places/{id}/change-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public String updateWaterPlaceImage(@PathVariable("id") Long waterPlaceId,
+                                   @RequestPart(value = "image", required = false) MultipartFile waterPlaceImage) {
+
+        waterPlaceService.updateWaterPlaceImage(waterPlaceId, waterPlaceImage);
 
         return "redirect:/admin/water-places/" + waterPlaceId;
     }
@@ -144,7 +183,12 @@ public class WaterPlaceController {
      */
     @PostMapping(value = "/water-places/new", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public String createWaterPlace(@RequestPart(value = "image", required = false) MultipartFile waterPlaceImage,
-                                   @ModelAttribute @Valid CreateWaterPlaceForm form) {
+                                   @ModelAttribute @Valid CreateWaterPlaceForm form,
+                                   BindingResult result) {
+
+        /*if (result.hasErrors()) {
+            return "admin/water_place/createWaterPlaceForm";
+        }*/
 
         waterPlaceService.saveNewWaterPlace(form);
 
