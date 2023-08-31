@@ -1,0 +1,16 @@
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="common_header(title, links)">
+
+    <title th:replace="${title}">레이아웃 타이틀</title>
+
+    <!-- 공통 -->
+    <meta charset="UTF-8">
+
+    <!-- 추가 -->
+    <th:block th:replace="${links}" />
+
+</head>
+<body>
+
+</body>
+</html>

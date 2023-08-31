@@ -3,7 +3,6 @@ package kr.ac.kumoh.illdang100.tovalley.service.water_place;
 import kr.ac.kumoh.illdang100.tovalley.domain.Coordinate;
 import kr.ac.kumoh.illdang100.tovalley.domain.FileRootPathVO;
 import kr.ac.kumoh.illdang100.tovalley.domain.ImageFile;
-import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.domain.review.Review;
 import kr.ac.kumoh.illdang100.tovalley.domain.review.ReviewRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.review.WaterQualityReviewEnum;
@@ -107,7 +106,7 @@ public class WaterPlaceServiceImpl implements WaterPlaceService {
     @Override
     public WaterPlaceDetailRespDto getWaterPlaceDetailByWaterPlace(Long waterPlaceId) {
         WaterPlaceDetail findWaterPlaceDetail =
-                findWaterPlaceDetailByWaterPlaceIdOrElseThrowEx(waterPlaceDetailRepository, waterPlaceId);
+                findWaterPlaceDetailWithWaterPlaceByWaterPlaceIdOrElseThrowEx(waterPlaceDetailRepository, waterPlaceId);
 
         List<Review> findReviews = reviewRepository.findAllByWaterPlace_Id(waterPlaceId);
         Map<String, Integer> reviewCounts = countReviewOccurrences(findReviews);
@@ -156,7 +155,7 @@ public class WaterPlaceServiceImpl implements WaterPlaceService {
     public AdminWaterPlaceDetailRespDto getAdminWaterPlaceDetailByWaterPlace(Long waterPlaceId) {
 
         WaterPlaceDetail findWaterPlaceDetail =
-                findWaterPlaceDetailByWaterPlaceIdOrElseThrowEx(waterPlaceDetailRepository, waterPlaceId);
+                findWaterPlaceDetailWithWaterPlaceByWaterPlaceIdOrElseThrowEx(waterPlaceDetailRepository, waterPlaceId);
 
         WaterPlace findWaterPlace = findWaterPlaceDetail.getWaterPlace();
         Coordinate coordinate = findWaterPlace.getCoordinate();

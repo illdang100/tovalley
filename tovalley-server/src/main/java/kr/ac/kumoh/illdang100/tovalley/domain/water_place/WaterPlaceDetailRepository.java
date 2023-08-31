@@ -8,5 +8,7 @@ import java.util.Optional;
 public interface WaterPlaceDetailRepository extends JpaRepository<WaterPlaceDetail, Long> {
 
     @EntityGraph(attributePaths = "waterPlace")
-    Optional<WaterPlaceDetail> findWaterPlaceDetailWithWaterPlaceById(Long waterPlaceId);
+    Optional<WaterPlaceDetail> findWaterPlaceDetailWithWaterPlaceByWaterPlaceId(Long waterPlaceId);
+
+    Optional<WaterPlaceDetail> findByWaterPlaceId(Long waterPlaceId);
 }

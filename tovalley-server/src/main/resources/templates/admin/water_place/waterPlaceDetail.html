@@ -1,10 +1,288 @@
 <!DOCTYPE html>
-<html lang="kr" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/base :: common_header(~{:: title},~{:: link})">
     <title>물놀이 장소 상세조회 페이지</title>
+    <link rel="stylesheet" th:href="@{/css/valley-info-manage.css}" />
 </head>
+<style>
+    .fieldError {
+        border-color: #bd2130;
+    }
+</style>
 <body>
-<h1>물놀이 장소 상세조회 페이지입니다.</h1>
+<div th:class="admin-valley-info">
+    <div th:class="admin-header">
+        <div th:class="admin-logo">
+            <img src="./img/투계곡-logo.png" th:src="@{/images/투계곡-logo.png}" alt="tovalley logo" width="120px" />
+            <h1>ADMIN</h1>
+        </div>
+        <div th:class="admin-category">
+            <div><a th:href="@{/admin/home}">지역별 사고 발생 현황 관리</a></div>
+            <div><a th:href="@{/admin/water-place-list}">계곡 정보 관리</a></div>
+            <div><a th:href="@{/admin/water-places/new}">계곡 등록</a></div>
+        </div>
+    </div>
+    <div class="valley-info-page">
+        <div class="admin-title">
+            <h1>계곡 정보 관리</h1>
+            <span><a th:href="@{/admin/logout}">로그아웃</a></span>
+        </div>
+        <div th:class="valley-info-page-main">
+            <div th:class="valley-info">
+                <div th:class="valley-img">
+                    <img id="preview"
+                         th:if="${not #strings.isEmpty(waterPlace.waterPlaceImage)}"
+                         th:src="${waterPlace.waterPlaceImage}"
+                         width="200px" height="200px" alt="Valley Image" />
+                    <img id="default"
+                         th:unless="${not #strings.isEmpty(waterPlace.waterPlaceImage)}"
+                         th:src="@{/images/default-img.png}"
+                         width="200px" height="200px" alt="Default Image" />
+                   <div>
+                       <form method="post" enctype="multipart/form-data"
+                             th:action="@{/admin/water-places/{id}/change-image (id=${waterPlace.waterPlaceId})}">
+                           <input type="file" accept=".jpg, .png" name="image" value=""
+                                  th:onchange="'javascript:previewImg('+this+'); validateImageSelection();'" />
+                           <button type="submit" id="uploadButton" disabled>이미지 변경</button>
+                       </form>
+                       <form method="post" enctype="multipart/form-data"
+                             th:action="@{/admin/water-places/{id}/change-image (id=${waterPlace.waterPlaceId})}">
+                           <button type="submit" id="defaultImageButton"
+                                   th:if="${not #strings.isEmpty(waterPlace.waterPlaceImage)}">기본 이미지 변경</button>
+                       </form>
+                   </div>
+                </div>
+
+                <div th:class="valley-info-update">
+                    <div th:class="valley-info-text">
+                        <h2 th:text="${waterPlace.waterPlaceName}">금오계곡</h2>
+                        <p th:text="${waterPlace.detailAddress}">경상북도 구미시 금오대로</p>
+                        <p th:text="|위도: ${waterPlace.latitude}|">위도 : 35.222</p>
+                        <p th:text="|경도: ${waterPlace.longitude}|">경도 : 126.3222</p>
+                        <span th:text="${waterPlace.waterPlaceCategory} == '' ? '-' : ${waterPlace.waterPlaceCategory}">계곡</span>
+                        <span th:text="${waterPlace.managementType}">중점 관리 지역</span>
+                    </div>
+                    <span><a th:href="@{/admin/water-places/{id}/edit (id=${waterPlace.waterPlaceId})}">수정하기</a></span>
+                </div>
+            </div>
+            <div>
+                <span><b>안전조치사항: </b></span>
+                <span th:text="${waterPlace.safetyMeasures} == '' ? '없음' : ${waterPlace.safetyMeasures}"></span>
+            </div>
+            <div th:class="rescue-supplies">
+                <h4>계곡 구조용품 현황</h4>
+                <table border="1">
+                    <tr>
+                        <td>구명환</td>
+                        <td>구명로프</td>
+                        <td>인명구조함</td>
+                        <td>구명조끼</td>
+                        <td>이동식 거치대</td>
+                        <td>구조봉</td>
+                    </tr>
+                    <tr>
+                        <td th:text="${rescueSupply.lifeRingNum} != -1 ? ${rescueSupply.lifeRingNum} : '-'" />
+                        <td th:text="${rescueSupply.rescueRopeNum} != -1 ? ${rescueSupply.rescueRopeNum} : '-'" />
+                        <td th:text="${rescueSupply.lifeBoatNum} != -1 ? ${rescueSupply.lifeBoatNum} : '-'" />
+                        <td th:text="${rescueSupply.lifeJacketNum} != -1 ? ${rescueSupply.lifeJacketNum} : '-'" />
+                        <td th:text="${rescueSupply.portableStandNum} != -1 ? ${rescueSupply.portableStandNum} : '-'" />
+                        <td th:text="${rescueSupply.rescueRodNum} != -1 ? ${rescueSupply.rescueRodNum} : '-'" />
+                    </tr>
+                </table>
+            </div>
+            <div th:class="valley-quality">
+                <h4>게곡 수질</h4>
+                <table border="1">
+                    <tr>
+                        <td>BOD</td>
+                        <td>탁도</td>
+                    </tr>
+                    <tr>
+                        <td th:text="${waterPlace.bod} == null ? '-' : ${waterPlace.bod}">10</td>
+                        <td th:text="${waterPlace.turbidity} == null ? '-' : ${waterPlace.turbidity}">10</td>
+                    </tr>
+                </table>
+            </div>
+            <div th:class="valley-detail-info">
+                <h4>계곡 상세 정보</h4>
+                <table border="1">
+                    <tr>
+                        <td colspan="2">수심</td>
+                        <td>물놀이 구간</td>
+                        <td>위험구역 구간</td>
+                        <td>안내 표지판(합계)</td>
+                        <td>계곡 수온(°C)</td>
+                        <td>연평균 이용객(천명)</td>
+                    </tr>
+                    <tr>
+                        <td>평균</td>
+                        <td th:text="${waterPlace.avgDepth}">3</td>
+                        <td th:text="${waterPlace.waterPlaceSegment}" rowspan="2">320</td>
+                        <td th:text="${waterPlace.dangerSegments} == ''? '-' : ${waterPlace.dangerSegments}" rowspan="2">데이터가 없습니다.</td>
+                        <td th:text="${waterPlace.dangerSignboardsNum} == '' ? '-' : ${waterPlace.dangerSignboardsNum}" rowspan="2">5</td>
+                        <td th:text="${waterPlace.waterTemperature} == null ? '-' : ${waterPlace.waterTemperature}" rowspan="2">27</td>
+                        <td th:text="${waterPlace.annualVisitors} == '' ? '-' : ${waterPlace.annualVisitors}" rowspan="2">1000</td>
+                    </tr>
+                    <tr>
+                        <td>깊은 곳</td>
+                        <td>10</td>
+                    </tr>
+                </table>
+            </div>
+            <div th:class="valley-accident">
+                <div th:class="accident-title">
+                    <h4 th:text="|${waterPlace.waterPlaceName} 사고 발생 현황|">금오계곡 사고 발생 현황</h4>
+                </div>
+                <div th:class="accident-total">
+                    <h4>total</h4>
+                    <div>
+                        <h4>사망</h4>
+                        <h4 th:text="${accidents.totalDeathCnt}">4</h4>
+                        <h4>명</h4>
+                    </div>
+                    <div>
+                        <h4>실종</h4>
+                        <h4 th:text="${accidents.totalDisappearanceCnt}">4</h4>
+                        <h4>명</h4>
+                    </div>
+                    <div>
+                        <h4>부상</h4>
+                        <h4 th:text="${accidents.totalInjuryCnt}">4</h4>
+                        <h4>명</h4>
+                    </div>
+                </div>
+                <div th:class="accident-list">
+                    <div th:class="accident-item" th:each="accident, accidentStat : ${accidents.accidentDetail.content}">
+                        <h4 th:text="(${accidents.accidentDetail.number} * 5) + ${accidentStat.count}">1</h4>
+                        <h4 th:text="${accident.accidentDate}">2023/06/22</h4>
+                        <h4 th:text="${accident.accidentCondition}">사망</h4>
+                        <h4 th:text="${accident.peopleNum}">4명</h4>
+                        <a href="#" th:href="'javascript:cancel('+${waterPlace.waterPlaceId}+', '+${accident.accidentId}+')'">삭제</a>
+                    </div>
+                    <div class="paging">
+                        <nav style="text-align: center">
+                            <ul class="pagination"
+                                th:with="start=${T(java.lang.Math).floor(accidents.accidentDetail.number/10)*10 + 1}, last=(${start + 9 < accidents.accidentDetail.totalPages ? start + 9 : accidents.accidentDetail.totalPages}), currentPage=${accidents.accidentDetail.number}">
+                                <li class="disabled">
+                                    <a th:href="@{/admin/water-places/{id} (id=${waterPlace.waterPlaceId}, page=0)}" aria-label="First">
+                                        <span aria-hidden="true">First</span>
+                                    </a>
+                                </li>
+                                <li th:class="${accidents.accidentDetail.first} ? 'disabled'">
+                                    <a th:href="${accidents.accidentDetail.first} ? '#' : @{/admin/water-places/{id}(id=${waterPlace.waterPlaceId}, page=${accidents.accidentDetail.number - 1})}" aria-label="Previous">
+                                        <span aria-hidden="true">&lt;</span>
+                                    </a>
+                                </li>
+
+                                <li th:each="page: ${#numbers.sequence(start, last)}" th:class="${page == accidents.accidentDetail.number} ? 'active'">
+                                    <a th:text="${page}" th:href="@{/admin/water-places/{id} (id=${waterPlace.waterPlaceId}, page=${page - 1}, size=5)}"></a>
+                                </li>
+
+                                <li th:class="${accidents.accidentDetail.last} ? 'disabled'">
+                                    <a th:href="${accidents.accidentDetail.last} ? '#' : @{/admin/water-places/{id} (id=${waterPlace.waterPlaceId}, page=${accidents.accidentDetail.number + 1})}" aria-label="Next">
+                                        <span aria-hidden="true">&gt;</span>
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a th:href="@{/admin/water-places/{id} (id=${waterPlace.waterPlaceId}, page=${accidents.accidentDetail.totalPages - 1})}" aria-label="Last">
+                                        <span aria-hidden="true">Last</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+                </div>
+                <div th:class="accident-register">
+                    <div> <!--사고 등록 했을 때 일회성!!으로 보여지는 태그-->
+                        <!--사고 등록이 정상적으로 처리된 경우-->
+                        <div th:if="${successMessage}" class="alert alert-success">
+                            <p th:text="${successMessage}"></p>
+                        </div>
+
+                        <!--사고 등록이 실패한 경우-->
+                        <div th:if="${errorMessage}" class="alert alert-danger">
+                            <p th:text="${errorMessage}"></p>
+                        </div>
+                    </div>
+                    <form th:action="@{/admin/water-places/{id}/accidents/new (id=${waterPlace.waterPlaceId})}"
+                          th:object="${addAccidentCond}" method="post">
+                        <label for="accidentDate">날짜</label>
+                        <input type="date" id="accidentDate" th:field="*{accidentDate}" required
+                               th:max="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}">
+                        <label for="accidentCondition">상태</label>
+                        <select id="accidentCondition" th:field="*{accidentCondition}">
+                            <option th:each="status : ${accidentStatus}"
+                                    th:value="${status}"
+                                    th:text="${status.value}"
+                                    th:required>option
+                            </option>
+                        </select>
+                        <label for="peopleNum">인원</label>
+                        <input type="number" id="peopleNum" th:field="*{peopleNum}" required min="1"/>
+                        <button type="submit">등록</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
+<script th:inline="javascript">
+    function cancel(waterPlaceId, accidentId) {
+        var form = document.createElement("form");
+        form.setAttribute("method", "post");
+        form.setAttribute("action", "/admin/water-places/" + waterPlaceId + "/accidents/" + accidentId + "/delete");
+        document.body.appendChild(form);
+        form.submit();
+    }
+
+    function previewImg(input) {
+        const imgTag = document.getElementById("preview");
+        const defaultTag = document.getElementById("default");
+
+        if (!imgTag && !defaultTag) {
+            console.error("previewImg: 'preview' and 'default' elements not found.");
+            return;
+        }
+
+        const targetTag = imgTag ? imgTag : defaultTag;
+
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+
+            reader.onload = function (data) {
+                targetTag.src = data.target.result;
+                targetTag.width = 200;
+                targetTag.height = 200;
+            };
+
+            if (defaultTag) {
+                defaultTag.className = "img-none";
+            }
+
+            targetTag.className = "";
+            reader.readAsDataURL(input.files[0]);
+        } else {
+            if (defaultTag) {
+                defaultTag.className = "";
+            }
+
+            targetTag.src = "";
+            targetTag.className = "img-none";
+        }
+    }
+
+    function validateImageSelection() {
+        var fileInput = document.querySelector('input[type="file"]');
+        var uploadButton = document.getElementById('uploadButton');
+
+        if (fileInput.files.length > 0) {
+            uploadButton.removeAttribute('disabled');
+        } else {
+            uploadButton.setAttribute('disabled', 'disabled');
+        }
+    }
+</script>
 </html>

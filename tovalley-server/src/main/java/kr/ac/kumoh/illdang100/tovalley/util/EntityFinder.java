@@ -25,8 +25,13 @@ public class EntityFinder {
                 .orElseThrow(() -> new CustomApiException("물놀이 장소[" + waterPlaceId + "]가 존재하지 않습니다"));
     }
 
+    public static WaterPlaceDetail findWaterPlaceDetailWithWaterPlaceByWaterPlaceIdOrElseThrowEx(WaterPlaceDetailRepository waterPlaceDetailRepository, Long waterPlaceId) {
+        return waterPlaceDetailRepository.findWaterPlaceDetailWithWaterPlaceByWaterPlaceId(waterPlaceId)
+                .orElseThrow(() -> new CustomApiException("물놀이 장소[" + waterPlaceId + "]가 존재하지 않습니다"));
+    }
+
     public static WaterPlaceDetail findWaterPlaceDetailByWaterPlaceIdOrElseThrowEx(WaterPlaceDetailRepository waterPlaceDetailRepository, Long waterPlaceId) {
-        return waterPlaceDetailRepository.findWaterPlaceDetailWithWaterPlaceById(waterPlaceId)
+        return waterPlaceDetailRepository.findByWaterPlaceId(waterPlaceId)
                 .orElseThrow(() -> new CustomApiException("물놀이 장소[" + waterPlaceId + "]가 존재하지 않습니다"));
     }
 

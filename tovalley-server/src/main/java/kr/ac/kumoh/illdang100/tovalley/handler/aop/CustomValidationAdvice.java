@@ -25,7 +25,10 @@ public class CustomValidationAdvice {
     @Pointcut("@annotation(org.springframework.web.bind.annotation.GetMapping)")
     public void getMapping(){}
 
-    @Around("postMapping() || putMapping() || getMapping()") // joinPoint의 전후 제어
+    @Pointcut("execution(* kr.ac.kumoh.illdang100.tovalley.web.controller..*.*(..))")
+    public void excludeControllers() {}
+
+    @Around("(postMapping() || putMapping() || getMapping()) && !excludeControllers()") // joinPoint의 전후 제어
     public Object validationAdvice(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
 
         Object[] args = proceedingJoinPoint.getArgs(); // joinPoint의 매개변수

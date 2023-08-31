@@ -1,0 +1,150 @@
+.admin-valley-info {
+  display: flex;
+}
+
+.admin-header {
+  width: 20em;
+}
+
+.valley-info-page {
+  width: 100%;
+}
+
+.admin-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.valley-info {
+  display: flex;
+}
+
+.valley-img {
+  width: 250px;
+}
+
+.img-none {
+  display: none;
+}
+
+.valley-info-update {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.valley-accident {
+  margin-top: 2em;
+}
+
+.accident-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.accident-search {
+  display: flex;
+}
+
+.search-icon,
+.search-btn {
+  cursor: pointer;
+  margin-right: 1em;
+}
+
+.search-option {
+  border: 1px solid;
+  padding: 0.5em;
+}
+
+.search-option span {
+  margin-right: 0.5em;
+}
+
+.dropdown-content {
+  position: absolute;
+  display: none;
+  font-weight: 400;
+  background-color: #fcfcfc;
+  min-width: 50px;
+  border-radius: 8px;
+  height: 120px;
+  overflow: scroll;
+  box-shadow: 0px 0px 10px 3px rgba(190, 190, 190, 0.6);
+}
+.dropdown-content::-webkit-scrollbar {
+  width: 5px;
+  height: 10px;
+}
+.dropdown-content::-webkit-scrollbar-thumb {
+  border-radius: 2px;
+  background-color: rgb(194, 194, 194);
+}
+
+.dropdown-content div {
+  display: block;
+  text-decoration: none;
+  color: rgb(37, 37, 37);
+  font-size: 12px;
+  padding: 12px 20px;
+}
+.dropdown-content div:hover {
+  background-color: rgb(226, 226, 226);
+}
+
+.dropdown-content.show {
+  display: block;
+}
+.accident-total {
+  display: flex;
+}
+
+.accident-total div {
+  display: flex;
+  margin: 0 0.5em;
+}
+
+.accident-item {
+  display: flex;
+  align-items: center;
+}
+
+.accident-item h4 {
+  margin: 0 0.5em;
+}
+
+.accident-register {
+  display: flex;
+  align-items: center;
+}
+
+.accident-register h4,
+.accident-register span {
+  margin: 2em 1em;
+}
+
+.paging a {
+  font-size: 1.5rem;
+}
+
+.paging a.on {
+  text-decoration: none;
+  color: #ff0000;
+  font-weight: bold;
+}
+
+.pagination {
+  display: flex;
+  margin-top: 2em;
+}
+
+.pagination li {
+  list-style-type: none;
+}
+
+.pagination a {
+  font-size: 1rem;
+  margin: 0 1em;
+}

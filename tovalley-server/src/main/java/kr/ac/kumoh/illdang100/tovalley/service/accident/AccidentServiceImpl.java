@@ -34,6 +34,7 @@ public class AccidentServiceImpl implements AccidentService {
     private final WaterPlaceRepository waterPlaceRepository;
 
     @Override
+    @Transactional
     public void saveNewAccident(Long waterPlaceId, CreateAccidentForm form) {
 
         WaterPlace findWaterPlace =
@@ -48,6 +49,7 @@ public class AccidentServiceImpl implements AccidentService {
     }
 
     @Override
+    @Transactional
     public void deleteAccident(Long waterPlaceId, Long accidentId) {
 
         Accident findAccident =

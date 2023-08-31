@@ -7,6 +7,6 @@ import lombok.Getter;
 @Getter
 public enum AccidentEnum {
 
-    DEATH("사망"), DISAPPEARANCE("실종"), INJURY("부상"), ETC("기타");
+    DEATH("사망"), DISAPPEARANCE("실종"), INJURY("부상");
     private String value;
 }

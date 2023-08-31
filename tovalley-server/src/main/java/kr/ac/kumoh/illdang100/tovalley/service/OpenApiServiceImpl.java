@@ -239,6 +239,7 @@ public class OpenApiServiceImpl implements OpenApiService {
         String[] lines = alertString.split("\n");
 
         for (String line : lines) {
+            if ("o 없 음".equals(line)) break;
             if (line.startsWith("o")) {
                 String[] tokens = line.split(":");
                 String alertName = tokens[0].trim();
@@ -534,19 +535,12 @@ public class OpenApiServiceImpl implements OpenApiService {
                 .dangerSegments(item.optString("WTRPLAY_ER", ""))
                 .dangerSignboardsNum(item.optString("ER_SIGN_CO", ""))
                 .safetyMeasures(item.optString("SAFETY_ACT", ""))
-                .waterTemperature(roundToOneDecimalPlace(waterTemperature))
-                .bod(roundToOneDecimalPlace(bod))
-                .turbidity(roundToOneDecimalPlace(turbidity))
                 .build();
     }
 
     private double generateRandomValue(double minValue, double maxValue) {
         Random random = new Random();
         return minValue + (maxValue - minValue) * random.nextDouble();
-    }
-
-    private double roundToOneDecimalPlace(double value) {
-        return Math.round(value * 10.0) / 10.0;
     }
 
     private RescueSupply createRescueSupply(JSONObject item, WaterPlace waterPlace) {
