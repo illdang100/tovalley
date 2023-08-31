@@ -2,7 +2,6 @@ package kr.ac.kumoh.illdang100.tovalley.service.email_code;
 
 import kr.ac.kumoh.illdang100.tovalley.domain.email_code.EmailCode;
 import kr.ac.kumoh.illdang100.tovalley.domain.email_code.EmailCodeRepository;
-import kr.ac.kumoh.illdang100.tovalley.domain.email_code.EmailCodeStatusEnum;
 import kr.ac.kumoh.illdang100.tovalley.handler.ex.CustomApiException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -28,24 +27,14 @@ public class EmailCodeServiceImpl implements EmailCodeService {
     public SendEmailCodeRespDto sendEmail(String email) {
 
         EmailCode findEmailCode = emailCodeRepository.findByEmail(email).orElse(null);
-        String verifyCode = null;
-        if (findEmailCode != null) {
-            if (findEmailCode.getEmailCodeStatus() == EmailCodeStatusEnum.PENDING)
-                throw new CustomApiException("이메일 수신합을 확인하세요");
-            else if (findEmailCode.getEmailCodeStatus() == EmailCodeStatusEnum.COMPLETED) {
-                verifyCode = sendVerifyCodeByEmail(email);
-                findEmailCode.changeEmailCodeStatus(EmailCodeStatusEnum.PENDING);
-                findEmailCode.changeVerifyCode(verifyCode);
-            }
-        }
-        else {
-            verifyCode = sendVerifyCodeByEmail(email);
-            emailCodeRepository.save(EmailCode.builder()
-                    .email(email)
-                    .verifyCode(verifyCode)
-                    .emailCodeStatus(EmailCodeStatusEnum.PENDING) // 보류 중
-                    .build());
-        }
+        if (findEmailCode != null)
+            throw new CustomApiException("이메일 수신함을 확인하세요");
+
+        String verifyCode = sendVerifyCodeByEmail(email);
+        emailCodeRepository.save(EmailCode.builder()
+                .email(email)
+                .verifyCode(verifyCode)
+                .build());
 
         return new SendEmailCodeRespDto(verifyCode);
     }
@@ -73,16 +62,8 @@ public class EmailCodeServiceImpl implements EmailCodeService {
     public void checkVerifyCode(String email, String verifyCode) {
         EmailCode findEmailCode = findEmailCodeByEmailOrElseThrowEx(emailCodeRepository, email);
 
-        if (!isEqualsVerifyCode(verifyCode, findEmailCode)) {
+        if (!isEqualsVerifyCode(verifyCode, findEmailCode))
             throw new CustomApiException("이메일 인증에 실패했습니다");
-        }
-
-        EmailCodeStatusEnum status = findEmailCode.getEmailCodeStatus();
-        if (status == EmailCodeStatusEnum.COMPLETED) {
-            throw new CustomApiException("이미 인증된 코드입니다");
-        } else if (status == EmailCodeStatusEnum.PENDING) {
-            findEmailCode.changeEmailCodeStatus(EmailCodeStatusEnum.COMPLETED);
-        }
     }
 
     private boolean isEqualsVerifyCode(String verifyCode, EmailCode findEmailCode) {

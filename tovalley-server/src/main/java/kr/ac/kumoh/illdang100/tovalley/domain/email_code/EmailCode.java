@@ -1,36 +1,21 @@
 package kr.ac.kumoh.illdang100.tovalley.domain.email_code;
 
 import lombok.*;
+import org.springframework.data.redis.core.RedisHash;
 
-import javax.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.redis.core.index.Indexed;
 
-@Entity
 @Getter
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
+@RedisHash(value = "emailCode", timeToLive = 210)
 public class EmailCode {
 
     @Id
-    @Column(name = "email_code_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(nullable = false, length = 25)
+    @Indexed
     private String email;
 
-    @Column(nullable = false, length = 7)
     private String verifyCode;
-
-    @Enumerated(value = EnumType.STRING)
-    @Column(nullable = false)
-    private EmailCodeStatusEnum emailCodeStatus;
-
-    public void changeEmailCodeStatus(EmailCodeStatusEnum emailCodeStatus) {
-        this.emailCodeStatus = emailCodeStatus;
-    }
-
-    public void changeVerifyCode(String verifyCode) {
-        this.verifyCode = verifyCode;
-    }
 }
