@@ -54,7 +54,7 @@ public class WaterPlaceApiControllerTest extends DummyObject {
 
         // when
         ResultActions resultActions =
-                mvc.perform(get("/api/valleys/list")
+                mvc.perform(get("/api/water-place/list")
                         .param("province", "경상북도")
                         .param("searchWord", "계곡")
                         .param("city", CityEnum.문경시.toString())
