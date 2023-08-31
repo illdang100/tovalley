@@ -82,7 +82,7 @@ public class WaterPlaceController {
      */
     @GetMapping("/water-places/{id}")
     public String adminWaterPlaceDetail(@PathVariable("id") Long waterPlaceId,
-                                        @ModelAttribute @Valid RetrieveAccidentCondition retrieveAccidentCondition,
+                                        @ModelAttribute RetrieveAccidentCondition retrieveAccidentCondition,
                                         @PageableDefault(size = 5, sort = "accidentDate", direction = Sort.Direction.DESC) Pageable pageable,
                                         Model model) {
 
