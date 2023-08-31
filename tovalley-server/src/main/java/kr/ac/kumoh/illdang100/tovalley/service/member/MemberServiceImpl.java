@@ -49,6 +49,7 @@ public class MemberServiceImpl implements MemberService {
     private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Override
+    @Transactional
     public Member signUp(SignUpReqDto signUpReqDto) {
         // 이메일 중복 검사
         String email = signUpReqDto.getEmail();
