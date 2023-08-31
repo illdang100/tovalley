@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 
@@ -32,39 +33,17 @@ public class AccidentController {
     public String createAccident(@PathVariable("id") Long waterPlaceId,
                                  @ModelAttribute("addAccidentCond") @Valid CreateAccidentForm form,
                                  BindingResult result,
-                                 Model model) {
+                                 RedirectAttributes redirectAttributes) {
 
         if (result.hasErrors()) {
             log.debug("createAccident error 처리 동작!!");
-
-            handleErrors(waterPlaceId, model);
-
-            return "admin/water_place/waterPlaceDetail";
+            redirectAttributes.addFlashAttribute("errorMessage", "사고 등록 실패!!");
+        } else {
+            accidentService.saveNewAccident(waterPlaceId, form);
+            redirectAttributes.addFlashAttribute("successMessage", "사고 등록 성공!!");
         }
 
-        accidentService.saveNewAccident(waterPlaceId, form);
-
         return "redirect:/admin/water-places/" + waterPlaceId;
-    }
-
-    private void handleErrors(Long waterPlaceId, Model model) {
-        WaterPlaceRespDto.AdminWaterPlaceDetailRespDto waterPlaceDetail =
-                waterPlaceService.getAdminWaterPlaceDetailByWaterPlace(waterPlaceId);
-
-        RescueSupplyRespDto.RescueSupplyByWaterPlaceRespDto rescueSupply =
-                waterPlaceService.getRescueSuppliesByWaterPlace(waterPlaceId);
-
-        RetrieveAccidentCondition retrieveAccidentCondition = new RetrieveAccidentCondition(null, null);
-        PageRequest pageable = PageRequest.of(0, 5);
-
-        AccidentRespDto.AccidentForAdminByWaterPlace accidents =
-                accidentService.getAccidentDetailByWaterPlace(waterPlaceId, retrieveAccidentCondition, pageable);
-
-        model.addAttribute("waterPlace", waterPlaceDetail);
-        model.addAttribute("rescueSupply", rescueSupply);
-        model.addAttribute("accidents", accidents);
-
-        model.addAttribute("accidentStatus", AccidentEnum.values());
     }
 
     @PostMapping("/water-places/{waterPlaceId}/accidents/{accidentId}/delete")
