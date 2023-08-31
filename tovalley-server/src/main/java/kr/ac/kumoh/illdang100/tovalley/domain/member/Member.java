@@ -47,4 +47,6 @@ public class Member extends BaseTimeEntity {
     public void changeImageFile(ImageFile imageFile) {
         this.imageFile = imageFile;
     }
+
+    public void changePassword(String password) { this.password = password; }
 }
