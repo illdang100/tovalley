@@ -4,14 +4,24 @@ import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberEnum;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberRepository;
 import kr.ac.kumoh.illdang100.tovalley.dummy.DummyObject;
+import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtVO;
+import kr.ac.kumoh.illdang100.tovalley.security.jwt.RefreshToken;
+import kr.ac.kumoh.illdang100.tovalley.security.jwt.RefreshTokenRedisRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+
+import java.util.List;
 import java.util.Optional;
 
 import static kr.ac.kumoh.illdang100.tovalley.dto.member.MemberReqDto.*;
@@ -26,6 +36,9 @@ class MemberServiceImplTest extends DummyObject {
 
     @Mock
     private BCryptPasswordEncoder passwordEncoder;
+
+    @Mock
+    private RefreshTokenRedisRepository refreshTokenRedisRepository;
 
     @InjectMocks
     private MemberServiceImpl memberService;
@@ -70,6 +83,36 @@ class MemberServiceImplTest extends DummyObject {
 
         //then
         assertThat(member.getPassword()).isEqualTo(encodedPassword);
+    }
+
+    @Test
+    @DisplayName("토큰 재발급 테스트")
+    void reIssueToken_test() throws Exception {
+        //given
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        RefreshToken refreshToken = newRefreshToken("testRefreshToken");
+
+        //stub
+        when(refreshTokenRedisRepository.findByRefreshToken(any())).thenReturn(Optional.of(refreshToken));
+
+        //when
+        memberService.logout(response, "testRefreshToken");
+
+        // Then
+        ArgumentCaptor<Cookie> cookieCaptor = ArgumentCaptor.forClass(Cookie.class);
+        verify(response, times(3)).addCookie(cookieCaptor.capture());
+
+        List<Cookie> capturedCookies = cookieCaptor.getAllValues();
+
+        for (Cookie cookie : capturedCookies) {
+            if (cookie.getName().equals(JwtVO.ACCESS_TOKEN)) {
+                assertThat(cookie.getValue()).isEqualTo("");
+            } else if (cookie.getName().equals(JwtVO.REFRESH_TOKEN)) {
+                assertThat(cookie.getValue()).isEqualTo("");
+            } else if (cookie.getName().equals("ISLOGIN")) {
+                assertThat(cookie.getValue()).isEqualTo("false");
+            }
+        }
     }
 
 }
