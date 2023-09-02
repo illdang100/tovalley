@@ -127,77 +127,63 @@ const MainPage = () => {
     ],
   });
 
+  const [regionAccident, setRegionAccident] = useState({
+    accidentCountPerMonth: [
+      {
+        month: 0,
+        deathCnt: 0,
+        disappearanceCnt: 0,
+        injuryCnt: 0,
+      },
+    ],
+    province: "전국",
+    totalDeathCnt: 0,
+    totalDisappearanceCnt: 0,
+    totalInjuryCnt: 0,
+  });
+
+  const [popularValley, setPopularValley] = useState([
+    {
+      waterPlaceId: 0,
+      waterPlaceName: "",
+      waterPlaceImage: "",
+      location: "",
+      rating: 0,
+      reviewCnt: 0,
+    },
+  ]);
+
   useEffect(() => {
     axios
       .get(`${localhost}/api/main-page`)
       .then((res) => {
         console.log(res.data.data);
         setMain(res.data.data);
+        setRegionAccident(res.data.data.accidentCountDto);
+        setPopularValley(res.data.data.nationalPopularWaterPlaces);
       })
       .catch((err) => console.log(err));
 
     setMain({
       nationalWeather: [
         {
-          weatherDate: "2023-08-15",
+          weatherDate: "2023-08-11",
           dailyNationalWeather: [
             {
               region: "백령",
               weatherIcon: "10d",
               weatherDesc: "실 비",
-              minTemp: 25.27,
-              maxTemp: 25.82,
-              rainPrecipitation: 2.99,
+              minTemp: 24.26,
+              maxTemp: 24.72,
+              rainPrecipitation: 10.53,
             },
             {
               region: "여수",
               weatherIcon: "10d",
               weatherDesc: "실 비",
-              minTemp: 26.59,
-              maxTemp: 27.88,
-              rainPrecipitation: 3.69,
-            },
-          ],
-        },
-        {
-          weatherDate: "2023-08-14",
-          dailyNationalWeather: [
-            {
-              region: "백령",
-              weatherIcon: "10d",
-              weatherDesc: "실 비",
-              minTemp: 25.05,
-              maxTemp: 25.89,
-              rainPrecipitation: 1.33,
-            },
-            {
-              region: "여수",
-              weatherIcon: "10d",
-              weatherDesc: "실 비",
-              minTemp: 26.55,
-              maxTemp: 27.29,
-              rainPrecipitation: 3.79,
-            },
-          ],
-        },
-        {
-          weatherDate: "2023-08-13",
-          dailyNationalWeather: [
-            {
-              region: "백령",
-              weatherIcon: "10d",
-              weatherDesc: "실 비",
-              minTemp: 24.62,
-              maxTemp: 25.38,
-              rainPrecipitation: 1.86,
-            },
-            {
-              region: "여수",
-              weatherIcon: "10d",
-              weatherDesc: "실 비",
-              minTemp: 25.65,
-              maxTemp: 27.27,
-              rainPrecipitation: 0.13,
+              minTemp: 26.28,
+              maxTemp: 27.16,
+              rainPrecipitation: 1.42,
             },
           ],
         },
@@ -223,23 +209,65 @@ const MainPage = () => {
           ],
         },
         {
-          weatherDate: "2023-08-11",
+          weatherDate: "2023-08-13",
           dailyNationalWeather: [
             {
               region: "백령",
               weatherIcon: "10d",
               weatherDesc: "실 비",
-              minTemp: 24.26,
-              maxTemp: 24.72,
-              rainPrecipitation: 10.53,
+              minTemp: 24.62,
+              maxTemp: 25.38,
+              rainPrecipitation: 1.86,
             },
             {
               region: "여수",
               weatherIcon: "10d",
               weatherDesc: "실 비",
-              minTemp: 26.28,
-              maxTemp: 27.16,
-              rainPrecipitation: 1.42,
+              minTemp: 25.65,
+              maxTemp: 27.27,
+              rainPrecipitation: 0.13,
+            },
+          ],
+        },
+        {
+          weatherDate: "2023-08-14",
+          dailyNationalWeather: [
+            {
+              region: "백령",
+              weatherIcon: "10d",
+              weatherDesc: "실 비",
+              minTemp: 25.05,
+              maxTemp: 25.89,
+              rainPrecipitation: 1.33,
+            },
+            {
+              region: "여수",
+              weatherIcon: "10d",
+              weatherDesc: "실 비",
+              minTemp: 26.55,
+              maxTemp: 27.29,
+              rainPrecipitation: 3.79,
+            },
+          ],
+        },
+        {
+          weatherDate: "2023-08-15",
+          dailyNationalWeather: [
+            {
+              region: "백령",
+              weatherIcon: "10d",
+              weatherDesc: "실 비",
+              minTemp: 25.27,
+              maxTemp: 25.82,
+              rainPrecipitation: 2.99,
+            },
+            {
+              region: "여수",
+              weatherIcon: "10d",
+              weatherDesc: "실 비",
+              minTemp: 26.59,
+              maxTemp: 27.88,
+              rainPrecipitation: 3.69,
             },
           ],
         },
@@ -326,11 +354,51 @@ const MainPage = () => {
           },
         ],
         province: "전국",
-        totalDeathCnt: 0,
-        totalDisappearanceCnt: 0,
+        totalDeathCnt: 10,
+        totalDisappearanceCnt: 20,
         totalInjuryCnt: 0,
       },
       nationalPopularWaterPlaces: [
+        {
+          waterPlaceId: 1,
+          waterPlaceName: "관악산계곡어린이물놀이장",
+          waterPlaceImage: "http://www.dsfoifsdjoij3.com",
+          location: "서울특별시 관악구",
+          rating: 0.0,
+          reviewCnt: 0,
+        },
+        {
+          waterPlaceId: 1,
+          waterPlaceName: "관악산계곡어린이물놀이장",
+          waterPlaceImage: "http://www.dsfoifsdjoij3.com",
+          location: "서울특별시 관악구",
+          rating: 0.0,
+          reviewCnt: 0,
+        },
+        {
+          waterPlaceId: 1,
+          waterPlaceName: "관악산계곡어린이물놀이장",
+          waterPlaceImage: "http://www.dsfoifsdjoij3.com",
+          location: "서울특별시 관악구",
+          rating: 0.0,
+          reviewCnt: 0,
+        },
+        {
+          waterPlaceId: 1,
+          waterPlaceName: "관악산계곡어린이물놀이장",
+          waterPlaceImage: "http://www.dsfoifsdjoij3.com",
+          location: "서울특별시 관악구",
+          rating: 0.0,
+          reviewCnt: 0,
+        },
+        {
+          waterPlaceId: 1,
+          waterPlaceName: "관악산계곡어린이물놀이장",
+          waterPlaceImage: "http://www.dsfoifsdjoij3.com",
+          location: "서울특별시 관악구",
+          rating: 0.0,
+          reviewCnt: 0,
+        },
         {
           waterPlaceId: 1,
           waterPlaceName: "관악산계곡어린이물놀이장",
@@ -347,8 +415,116 @@ const MainPage = () => {
           rating: 0.0,
           reviewCnt: 0,
         },
+        {
+          waterPlaceId: 4,
+          waterPlaceName: "장안사 계곡",
+          waterPlaceImage: "http://www.dsfoifsdjoij3.com",
+          location: "부산광역시 기장군",
+          rating: 0.0,
+          reviewCnt: 0,
+        },
       ],
     });
+
+    setRegionAccident({
+      accidentCountPerMonth: [
+        {
+          month: 1,
+          deathCnt: 0,
+          disappearanceCnt: 0,
+          injuryCnt: 0,
+        },
+        {
+          month: 2,
+          deathCnt: 0,
+          disappearanceCnt: 0,
+          injuryCnt: 0,
+        },
+        {
+          month: 3,
+          deathCnt: 0,
+          disappearanceCnt: 0,
+          injuryCnt: 0,
+        },
+        {
+          month: 4,
+          deathCnt: 0,
+          disappearanceCnt: 0,
+          injuryCnt: 0,
+        },
+      ],
+      province: "전국",
+      totalDeathCnt: 10,
+      totalDisappearanceCnt: 0,
+      totalInjuryCnt: 0,
+    });
+
+    setPopularValley([
+      {
+        waterPlaceId: 1,
+        waterPlaceName: "관악산계곡어린이물놀이장",
+        waterPlaceImage: "http://www.dsfoifsdjoij3.com",
+        location: "서울특별시 관악구",
+        rating: 0.0,
+        reviewCnt: 0,
+      },
+      {
+        waterPlaceId: 1,
+        waterPlaceName: "관악산계곡어린이물놀이장",
+        waterPlaceImage: "http://www.dsfoifsdjoij3.com",
+        location: "서울특별시 관악구",
+        rating: 0.0,
+        reviewCnt: 0,
+      },
+      {
+        waterPlaceId: 1,
+        waterPlaceName: "관악산계곡어린이물놀이장",
+        waterPlaceImage: "http://www.dsfoifsdjoij3.com",
+        location: "서울특별시 관악구",
+        rating: 0.0,
+        reviewCnt: 0,
+      },
+      {
+        waterPlaceId: 1,
+        waterPlaceName: "관악산계곡어린이물놀이장",
+        waterPlaceImage: "http://www.dsfoifsdjoij3.com",
+        location: "서울특별시 관악구",
+        rating: 0.0,
+        reviewCnt: 0,
+      },
+      {
+        waterPlaceId: 1,
+        waterPlaceName: "관악산계곡어린이물놀이장",
+        waterPlaceImage: "http://www.dsfoifsdjoij3.com",
+        location: "서울특별시 관악구",
+        rating: 0.0,
+        reviewCnt: 0,
+      },
+      {
+        waterPlaceId: 1,
+        waterPlaceName: "관악산계곡어린이물놀이장",
+        waterPlaceImage: "http://www.dsfoifsdjoij3.com",
+        location: "서울특별시 관악구",
+        rating: 0.0,
+        reviewCnt: 0,
+      },
+      {
+        waterPlaceId: 4,
+        waterPlaceName: "장안사 계곡",
+        waterPlaceImage: "http://www.dsfoifsdjoij3.com",
+        location: "부산광역시 기장군",
+        rating: 0.0,
+        reviewCnt: 0,
+      },
+      {
+        waterPlaceId: 4,
+        waterPlaceName: "장안사 계곡",
+        waterPlaceImage: "http://www.dsfoifsdjoij3.com",
+        location: "부산광역시 기장군",
+        rating: 0.0,
+        reviewCnt: 0,
+      },
+    ]);
   }, []);
 
   return (
@@ -356,12 +532,18 @@ const MainPage = () => {
       <Header />
       <div className={styles.body}>
         <div className={styles.top}>
-          <Weather />
+          <Weather nationalWeather={main.nationalWeather} />
           <Report alert={main.weatherAlert} />
-          <Accident accident={main.accidentCountDto} />
+          <Accident
+            accident={regionAccident}
+            setRegionAccident={setRegionAccident}
+          />
         </div>
         <div>
-          <PopularValley place={main.nationalPopularWaterPlaces} />
+          <PopularValley
+            place={popularValley}
+            setPopularValley={setPopularValley}
+          />
         </div>
       </div>
       <Footer />

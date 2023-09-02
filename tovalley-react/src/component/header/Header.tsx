@@ -17,6 +17,8 @@ const Header = () => {
 
     if (loginStatus === true) {
       setLogin(true);
+    } else {
+      setLogin(false);
     }
   }, [login]);
 
@@ -26,7 +28,9 @@ const Header = () => {
       .then((res) => {
         console.log(res);
         if (res.status === 200) {
-          setLogin(false);
+          const loginStatus = cookies.get("ISLOGIN");
+          console.log("loginStatus : ", loginStatus);
+          !loginStatus && setLogin(false);
         }
       })
       .catch((err) => console.log(err));

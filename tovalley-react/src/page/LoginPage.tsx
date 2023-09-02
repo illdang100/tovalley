@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import styles from "../css/user/LoginPage.module.css";
 import Header from "../component/header/Header";
 import Footer from "../component/footer/Footer";
 import axios from "axios";
+import { MdOutlineClose } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 
 const localhost = "http://localhost:8081";
 
@@ -27,6 +29,13 @@ const LoginPage = () => {
     email: "",
     password: "",
   });
+
+  const [findView, setFindView] = useState({
+    findId: false,
+    findPassword: false,
+  });
+
+  const navigation = useNavigate();
 
   const handleLogin = () => {
     const data = {
@@ -104,13 +113,117 @@ const LoginPage = () => {
         </div>
         {/* 아이디/비밀번호 찾기 */}
         <div className={styles.loginFind}>
-          <span>아이디 찾기</span>
-          <span>비밀번호 찾기</span>
-          <span>회원가입</span>
+          <span
+            onClick={() => {
+              setFindView({ ...findView, findId: true });
+            }}
+          >
+            아이디 찾기
+          </span>
+          <span
+            onClick={() => {
+              setFindView({ ...findView, findPassword: true });
+            }}
+          >
+            비밀번호 찾기
+          </span>
+          <span
+            onClick={() => {
+              navigation("/signup");
+            }}
+          >
+            회원가입
+          </span>
         </div>
+        {findView.findId && (
+          <FindInfo
+            setFindView={setFindView}
+            info={{ title: "아이디(이메일)", findKind: "아이디" }}
+          />
+        )}
+        {findView.findPassword && (
+          <FindInfo
+            setFindView={setFindView}
+            info={{ title: "비밀번호", findKind: "비밀번호" }}
+          />
+        )}
       </div>
       <Footer />
     </>
+  );
+};
+
+interface Props {
+  setFindView: React.Dispatch<
+    React.SetStateAction<{
+      findId: boolean;
+      findPassword: boolean;
+    }>
+  >;
+  info: {
+    title: string;
+    findKind: string;
+  };
+}
+
+const FindInfo: FC<Props> = ({ setFindView, info }) => {
+  useEffect(() => {
+    document.body.style.cssText = `
+      position: fixed; 
+      top: -${window.scrollY}px;
+      overflow-y: scroll;
+      width: 100%;`;
+    return () => {
+      const scrollY = document.body.style.top;
+      document.body.style.cssText = "";
+      window.scrollTo(0, parseInt(scrollY || "0", 10) * -1);
+    };
+  }, []);
+
+  const [codeView, setCodeView] = useState(false);
+  const [passwordReset, setPasswordReset] = useState(false);
+
+  return (
+    <div className={styles.findInfoContainer}>
+      <div className={styles.findInfoModal}>
+        <span
+          className={styles.findInfoClose}
+          onClick={() => setFindView({ findId: false, findPassword: false })}
+        >
+          <MdOutlineClose color="#B8B8B8" size="30px" />
+        </span>
+        {!passwordReset ? (
+          <>
+            <h1>{info.title} 찾기</h1>
+            <span>인증 코드를 받을 이메일과 성함을 입력하세요.</span>
+            <div className={styles.findInfoInput}>
+              <input placeholder="이름" />
+              <input placeholder="이메일" />
+              <button>{info.findKind} 찾기</button>
+            </div>
+            {codeView && (
+              <div className={styles.confirmCode}>
+                <span>인증 코드가 메일로 전송되었습니다.</span>
+                <div className={styles.confirmCodeInput}>
+                  <input placeholder="확인 코드" />
+                  <button>확인</button>
+                </div>
+              </div>
+            )}
+          </>
+        ) : (
+          <div className={styles.passwordReset}>
+            <h1>비밀번호 재설정</h1>
+            <span>재설정 할 비밀번호를 입력하세요.</span>
+            <div className={styles.findInfoInput}>
+              <input placeholder="비밀번호" type="password" />
+              <input placeholder="비밀번호 확인" type="password" />
+              <button>확인</button>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
   );
 };
 

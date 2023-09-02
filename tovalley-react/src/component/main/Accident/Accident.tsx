@@ -2,6 +2,9 @@ import styles from "../../../css/main/Accident.module.css";
 import { MdNavigateNext, MdNavigateBefore } from "react-icons/md";
 import AccidentChart from "./AccidentChart";
 import React, { FC, useRef, useState } from "react";
+import axios from "axios";
+
+const localhost = "http://localhost:8081";
 
 interface Props {
   accident: {
@@ -16,20 +19,72 @@ interface Props {
     totalDisappearanceCnt: number;
     totalInjuryCnt: number;
   };
+  setRegionAccident: React.Dispatch<
+    React.SetStateAction<{
+      accidentCountPerMonth: {
+        month: number;
+        deathCnt: number;
+        disappearanceCnt: number;
+        injuryCnt: number;
+      }[];
+      province: string;
+      totalDeathCnt: number;
+      totalDisappearanceCnt: number;
+      totalInjuryCnt: number;
+    }>
+  >;
 }
 
-const Accident: FC<Props> = ({ accident }) => {
-  const region: string[] = [
-    "전국",
-    "서울",
-    "경기",
-    "강원",
-    "전라",
-    "경상",
-    "부산",
-    "제주",
-    "충청",
-    "대구",
+const Accident: FC<Props> = ({ accident, setRegionAccident }) => {
+  const region: { ko: string; en: string }[] = [
+    {
+      ko: "전국",
+      en: "NATIONWIDE",
+    },
+    {
+      ko: "서울",
+      en: "SEOUL",
+    },
+    {
+      ko: "경기",
+      en: "GYEONGGI",
+    },
+    {
+      ko: "세종",
+      en: "SEJONG",
+    },
+    {
+      ko: "강원",
+      en: "GANGWON",
+    },
+    {
+      ko: "충청",
+      en: "CHUNGCHEONG",
+    },
+    {
+      ko: "전라",
+      en: "JEOLLA",
+    },
+    {
+      ko: "광주",
+      en: "GWANGJU",
+    },
+    {
+      ko: "경상",
+      en: "GYEONGSANG",
+    },
+    {
+      ko: "부산",
+      en: "BUSAN",
+    },
+    {
+      ko: "울산",
+      en: "ULSAN",
+    },
+    {
+      ko: "제주",
+      en: "JEJU",
+    },
   ];
   const [clicked, setClicked] = useState(accident.province);
   const [next, setNext] = useState(false);
@@ -53,6 +108,23 @@ const Accident: FC<Props> = ({ accident }) => {
     onMovePrev();
   };
 
+  const getRegionAccident = (region: { ko: string; en: string }) => {
+    const config = {
+      params: {
+        province: region.en,
+      },
+    };
+    axios
+      .get(`${localhost}/api/main-page/accidents`, config)
+      .then((res) => {
+        console.log(res);
+        setRegionAccident(res.data.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <div className={styles.accident}>
       <h4>올해 사고 발생수</h4>
@@ -68,11 +140,12 @@ const Accident: FC<Props> = ({ accident }) => {
                 )}
                 <span
                   onClick={() => {
-                    setClicked(`${item}`);
+                    setClicked(`${item.ko}`);
+                    getRegionAccident(item);
                   }}
-                  style={clicked === item ? { color: "#66A5FC" } : {}}
+                  style={clicked === item.ko ? { color: "#66A5FC" } : {}}
                 >
-                  {item}
+                  {item.ko}
                 </span>
                 {index === region.length - 1 && (
                   <span ref={scroll} className={styles.blank}>

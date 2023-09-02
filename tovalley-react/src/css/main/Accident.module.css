@@ -111,7 +111,7 @@
   font-weight: bold;
   display: block;
   padding: 0.8em 0;
-  flex-grow: 1;
+  width: calc(100% / 3);
   text-align: center;
   font-size: 2em;
 }

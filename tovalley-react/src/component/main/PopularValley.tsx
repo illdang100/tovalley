@@ -1,5 +1,6 @@
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useRef, useState } from "react";
 import styles from "../../css/main/PopularValley.module.css";
+import axios from "axios";
 
 interface Props {
   place: {
@@ -10,37 +11,64 @@ interface Props {
     rating: number;
     reviewCnt: number;
   }[];
+  setPopularValley: React.Dispatch<
+    React.SetStateAction<
+      {
+        waterPlaceId: number;
+        waterPlaceName: string;
+        waterPlaceImage: string;
+        location: string;
+        rating: number;
+        reviewCnt: number;
+      }[]
+    >
+  >;
 }
 
-const valleyList = [
-  {
-    waterPlaceName: "금오계곡",
-    location: "경상북도 구미시",
-    rating: 4.3,
-    reviewCnt: 214,
-  },
-  {
-    waterPlaceName: "구미계곡",
-    location: "경상북도 구미시",
-    rating: 4.2,
-    reviewCnt: 197,
-  },
-  {
-    waterPlaceName: "우왕계곡",
-    location: "대구광역시",
-    rating: 4.1,
-    reviewCnt: 100,
-  },
-  {
-    waterPlaceName: "김천계곡",
-    location: "경상북도 김천시",
-    rating: 3.8,
-    reviewCnt: 195,
-  },
-];
+const localhost = "http://localhost:8081";
 
-const PopularValley: FC<Props> = ({ place }) => {
+const PopularValley: FC<Props> = ({ place, setPopularValley }) => {
   const [clicked, setClicked] = useState("평점");
+
+  const scroll = useRef<HTMLDivElement>(null);
+  const scrollPrev = useRef<HTMLDivElement>(null);
+
+  const onMove = () => {
+    scroll.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  };
+
+  const onMovePrev = () => {
+    scrollPrev.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest",
+    });
+  };
+
+  // useEffect(() => {
+  //   setInterval(function () {
+  //     onMove();
+  //   }, 6000);
+
+  //   setInterval(function () {
+  //     onMovePrev();
+  //   }, 6000);
+  // }, []);
+
+  const getPopluarValley = (cond: string) => {
+    const config = {
+      params: {
+        cond: cond,
+      },
+    };
+
+    axios
+      .get(`${localhost}/api/main-page/popular-water-places`, config)
+      .then((res) => {
+        console.log(res);
+        setPopularValley(res.data.data);
+      })
+      .catch((err) => console.log(err));
+  };
 
   return (
     <div className={styles.popularValley}>
@@ -49,6 +77,7 @@ const PopularValley: FC<Props> = ({ place }) => {
         <span
           onClick={() => {
             setClicked("평점");
+            getPopluarValley("RATING");
           }}
           className={
             clicked === "평점" ? styles.clickedCategory : styles.categoryBtn
@@ -59,6 +88,7 @@ const PopularValley: FC<Props> = ({ place }) => {
         <span
           onClick={() => {
             setClicked("리뷰");
+            getPopluarValley("REVIEW");
           }}
           className={
             clicked === "리뷰" ? styles.clickedCategory : styles.categoryBtn
@@ -68,9 +98,19 @@ const PopularValley: FC<Props> = ({ place }) => {
         </span>
       </div>
       <div className={styles.popularList}>
-        {place.map((item) => {
+        {place?.map((item, index) => {
           return (
-            <div className={styles.popularItem}>
+            <div
+              ref={
+                index === 0
+                  ? scrollPrev
+                  : index === place.length - 1
+                  ? scroll
+                  : null
+              }
+              className={styles.popularItem}
+            >
+              <span>{index + 1}</span>
               <img
                 src={process.env.PUBLIC_URL + "/img/계곡test이미지.png"}
                 alt="계곡 이미지"
