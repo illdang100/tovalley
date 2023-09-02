@@ -1,6 +1,7 @@
 import React, { FC, useEffect, useRef, useState } from "react";
 import styles from "../../css/main/PopularValley.module.css";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   place: {
@@ -29,6 +30,7 @@ const localhost = "http://localhost:8081";
 
 const PopularValley: FC<Props> = ({ place, setPopularValley }) => {
   const [clicked, setClicked] = useState("평점");
+  const navigation = useNavigate();
 
   const scroll = useRef<HTMLDivElement>(null);
   const scrollPrev = useRef<HTMLDivElement>(null);
@@ -109,6 +111,9 @@ const PopularValley: FC<Props> = ({ place, setPopularValley }) => {
                   : null
               }
               className={styles.popularItem}
+              onClick={() => {
+                navigation(`/valley/${item.waterPlaceId}`);
+              }}
             >
               <span>{index + 1}</span>
               <img
