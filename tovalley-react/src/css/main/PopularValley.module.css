@@ -41,12 +41,24 @@
 .popularItem {
   width: 100%;
   cursor: pointer;
-  max-width: 280px;
-  min-width: 260px;
+  min-width: calc((100% - 4.5em) / 4);
+  position: relative;
 }
 
 .popularItem:not(:last-of-type) {
-  margin-right: 1em;
+  margin-right: 1.5em;
+}
+
+.popularItem > span {
+  position: absolute;
+  color: white;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  background-color: rgba(255, 255, 255, 0.387);
 }
 
 .popularItem img {

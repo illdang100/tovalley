@@ -1,6 +1,14 @@
 import React, { FC, useState } from "react";
 import styles from "../../css/main/Report.module.css";
 import { HiSun } from "react-icons/hi";
+import { BsFillCloudRainHeavyFill } from "react-icons/bs";
+import { GiDustCloud } from "react-icons/gi";
+import { FaWind, FaRegSnowflake } from "react-icons/fa";
+import { RiTyphoonFill, RiThunderstormsFill } from "react-icons/ri";
+import { TiWaves } from "react-icons/ti";
+import { PiThermometerColdFill } from "react-icons/pi";
+import { MdDry } from "react-icons/md";
+import styled from "styled-components";
 
 interface Props {
   alert: {
@@ -21,6 +29,75 @@ interface Props {
     }[];
   };
 }
+
+interface ReportProps {
+  category: string;
+}
+
+const ReportTitle = styled.div<ReportProps>`
+  background-color: ${({ category }) =>
+    category.includes("폭염")
+      ? `#fd7878`
+      : category.includes("호우")
+      ? `#00AED4`
+      : category.includes("황사")
+      ? `#D77E3F`
+      : category.includes("강풍")
+      ? `#01AA44`
+      : category.includes("태풍")
+      ? `#2764BF`
+      : category.includes("대설")
+      ? `#939393`
+      : category.includes("풍랑")
+      ? `#ACAF12`
+      : category.includes("한파")
+      ? `#6952AA`
+      : category.includes("건조")
+      ? `#A952B7`
+      : category.includes("폭풍해일")
+      ? `#2478A7`
+      : ``};
+  color: white;
+  font-weight: bold;
+  border-radius: 12px 12px 0 0;
+  padding: 0.8em 1.2em;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+
+  span:first-child {
+    margin-right: 0.3em;
+  }
+`;
+
+const ReportContent = styled.div<ReportProps>`
+  background-color: ${({ category }) =>
+    category.includes("폭염")
+      ? `#FFAAAA`
+      : category.includes("호우")
+      ? `#7CCCDD`
+      : category.includes("황사")
+      ? `#EBAB7D`
+      : category.includes("강풍")
+      ? `#74BC91`
+      : category.includes("태풍")
+      ? `#6192DB`
+      : category.includes("대설")
+      ? `#BFBFBF`
+      : category.includes("풍랑")
+      ? `#CDCF51`
+      : category.includes("한파")
+      ? `#947ED4`
+      : category.includes("건조")
+      ? `#BD83C7`
+      : category.includes("폭풍해일")
+      ? `#5299C0`
+      : ``};
+  color: white;
+  border-radius: 0 0 12px 12px;
+  padding: 0.9em;
+  font-size: 0.8rem;
+`;
 
 const Report: FC<Props> = ({ alert }) => {
   const [report, setReport] = useState("특보");
@@ -60,13 +137,35 @@ const Report: FC<Props> = ({ alert }) => {
           {alert.weatherAlerts.map((item) => {
             return (
               <div className={styles.reportItem}>
-                <div className={styles.reportTitle}>
+                <ReportTitle category={item.title}>
                   <span>
-                    <HiSun size="20px" />
+                    {item.title.includes("폭염") ? (
+                      <HiSun size="20px" />
+                    ) : item.title.includes("호우") ? (
+                      <BsFillCloudRainHeavyFill size="20px" />
+                    ) : item.title.includes("황사") ? (
+                      <GiDustCloud size="20px" />
+                    ) : item.title.includes("강풍") ? (
+                      <FaWind size="18px" />
+                    ) : item.title.includes("태풍") ? (
+                      <RiTyphoonFill size="20px" />
+                    ) : item.title.includes("대설") ? (
+                      <FaRegSnowflake size="20px" />
+                    ) : item.title.includes("풍랑") ? (
+                      <TiWaves size="23px" />
+                    ) : item.title.includes("한파") ? (
+                      <PiThermometerColdFill size="20px" />
+                    ) : item.title.includes("건조") ? (
+                      <MdDry size="20px" />
+                    ) : item.title.includes("폭풍해일") ? (
+                      <RiThunderstormsFill size="20px" />
+                    ) : (
+                      ""
+                    )}
                   </span>
                   <span>{item.title}</span>
-                </div>
-                <div className={styles.reportContent}>
+                </ReportTitle>
+                <ReportContent category={item.title}>
                   <div className={styles.presentation}>
                     <span>발표</span>
                     <span>{item.announcementTime}</span>
@@ -78,7 +177,7 @@ const Report: FC<Props> = ({ alert }) => {
                   <div className={styles.region}>
                     <span>{item.content}</span>
                   </div>
-                </div>
+                </ReportContent>
               </div>
             );
           })}
@@ -88,13 +187,35 @@ const Report: FC<Props> = ({ alert }) => {
           {alert.weatherPreAlerts.map((item) => {
             return (
               <div className={styles.reportItem}>
-                <div className={styles.reportTitle}>
+                <ReportTitle category={item.title}>
                   <span>
-                    <HiSun size="20px" />
+                    {item.title.includes("폭염") ? (
+                      <HiSun size="20px" />
+                    ) : item.title.includes("호우") ? (
+                      <BsFillCloudRainHeavyFill size="20px" />
+                    ) : item.title.includes("황사") ? (
+                      <GiDustCloud size="20px" />
+                    ) : item.title.includes("강풍") ? (
+                      <FaWind size="18px" />
+                    ) : item.title.includes("태풍") ? (
+                      <RiTyphoonFill size="20px" />
+                    ) : item.title.includes("대설") ? (
+                      <FaRegSnowflake size="20px" />
+                    ) : item.title.includes("풍랑") ? (
+                      <TiWaves size="23px" />
+                    ) : item.title.includes("한파") ? (
+                      <PiThermometerColdFill size="20px" />
+                    ) : item.title.includes("건조") ? (
+                      <MdDry size="20px" />
+                    ) : item.title.includes("폭풍해일") ? (
+                      <RiThunderstormsFill size="20px" />
+                    ) : (
+                      ""
+                    )}
                   </span>
                   <span>{item.title}</span>
-                </div>
-                <div className={styles.reportContent}>
+                </ReportTitle>
+                <ReportContent category={item.title}>
                   <div className={styles.presentation}>
                     <span>발표</span>
                     <span>{item.announcementTime}</span>
@@ -106,7 +227,7 @@ const Report: FC<Props> = ({ alert }) => {
                       </div>
                     );
                   })}
-                </div>
+                </ReportContent>
               </div>
             );
           })}
