@@ -175,7 +175,7 @@
                                 </li>
 
                                 <li th:each="page: ${#numbers.sequence(start, last)}" th:class="${page == accidents.accidentDetail.number} ? 'active'">
-                                    <a th:text="${page}" th:href="@{/admin/water-places/{id} (id=${waterPlace.waterPlaceId}, page=${page - 1}, size=5)}"></a>
+                                    <a th:if="${page >= 1}" th:text="${page}" th:href="@{/admin/water-places/{id} (id=${waterPlace.waterPlaceId}, page=${page - 1}, size=5)}"></a>
                                 </li>
 
                                 <li th:class="${accidents.accidentDetail.last} ? 'disabled'">
