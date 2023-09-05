@@ -1,7 +1,7 @@
 package kr.ac.kumoh.illdang100.tovalley.domain.water_place;
 
 import kr.ac.kumoh.illdang100.tovalley.form.water_place.CreateWaterPlaceForm;
-import kr.ac.kumoh.illdang100.tovalley.form.water_place.WaterPlaceEditForm;
+import kr.ac.kumoh.illdang100.tovalley.form.water_place.WaterPlaceForm;
 import lombok.*;
 
 import javax.persistence.*;
@@ -29,13 +29,20 @@ public class RescueSupply {
     private Integer rescueRopeNum; // 구명로프
     private Integer rescueRodNum; // 구조봉
 
-    public void update(WaterPlaceEditForm form) {
-        this.lifeBoatNum = form.getLifeBoatNum();
-        this.portableStandNum = form.getPortableStandNum();
-        this.lifeJacketNum = form.getLifeJacketNum();
-        this.lifeRingNum = form.getLifeRingNum();
-        this.rescueRopeNum = form.getRescueRopeNum();
-        this.rescueRodNum = form.getRescueRodNum();
+    public void update(WaterPlaceForm form) {
+        Integer lifeBoatNum = form.getLifeBoatNum();
+        Integer portableStandNum = form.getPortableStandNum();
+        Integer lifeJacketNum = form.getLifeJacketNum();
+        Integer lifeRingNum = form.getLifeRingNum();
+        Integer rescueRopeNum = form.getRescueRopeNum();
+        Integer rescueRodNum = form.getRescueRodNum();
+
+        this.lifeBoatNum = lifeBoatNum == null ? -1 : lifeBoatNum;
+        this.portableStandNum = portableStandNum == null ? -1 : portableStandNum;
+        this.lifeJacketNum = lifeJacketNum == null ? -1 : lifeJacketNum;
+        this.lifeRingNum = lifeRingNum == null ? -1 : lifeRingNum;
+        this.rescueRopeNum = rescueRopeNum == null ? -1 : rescueRopeNum;
+        this.rescueRodNum = rescueRodNum == null ? -1 : rescueRodNum;
     }
 
     public static RescueSupply createNewRescueSupply(WaterPlace waterPlace, CreateWaterPlaceForm form) {

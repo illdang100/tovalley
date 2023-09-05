@@ -1,7 +1,7 @@
 package kr.ac.kumoh.illdang100.tovalley.domain.water_place;
 
 import kr.ac.kumoh.illdang100.tovalley.form.water_place.CreateWaterPlaceForm;
-import kr.ac.kumoh.illdang100.tovalley.form.water_place.WaterPlaceEditForm;
+import kr.ac.kumoh.illdang100.tovalley.form.water_place.WaterPlaceForm;
 import lombok.*;
 
 import javax.persistence.*;
@@ -52,14 +52,20 @@ public class WaterPlaceDetail {
     @Column(precision = 3, scale = 1)
     private Double turbidity; // 탁도(NTU)
 
-    public void update(WaterPlaceEditForm form) {
-        this.waterPlaceSegment = form.getWaterPlaceSegment();
-        this.deepestDepth = form.getDeepestDepth();
-        this.avgDepth = form.getAvgDepth();
-        this.annualVisitors = form.getAnnualVisitors();
-        this.dangerSegments = form.getDangerSegments();
-        this.dangerSignboardsNum = form.getDangerSignboardsNum();
-        this.safetyMeasures = form.getSafetyMeasures();
+    public void update(WaterPlaceForm form) {
+        Double waterPlaceSegment = form.getWaterPlaceSegment();
+        Double annualVisitors = form.getAnnualVisitors();
+        Integer dangerSegments = form.getDangerSegments();
+        Integer dangerSignboardsNum = form.getDangerSignboardsNum();
+        String safetyMeasures = form.getSafetyMeasures();
+
+        this.waterPlaceSegment =(waterPlaceSegment == null) ? "-" : String.valueOf(waterPlaceSegment);
+        this.deepestDepth = String.valueOf(form.getDeepestDepth());
+        this.avgDepth = String.valueOf(form.getAvgDepth());
+        this.annualVisitors = annualVisitors == null ? "" : String.valueOf(annualVisitors);
+        this.dangerSegments = dangerSegments == null ? "" : String.valueOf(dangerSegments);
+        this.dangerSignboardsNum = dangerSignboardsNum == null ? "" : String.valueOf(dangerSignboardsNum);
+        this.safetyMeasures = safetyMeasures == null ? "" : safetyMeasures;
         this.waterTemperature = form.getWaterTemperature();
         this.bod = form.getBod();
         this.turbidity = form.getTurbidity();
