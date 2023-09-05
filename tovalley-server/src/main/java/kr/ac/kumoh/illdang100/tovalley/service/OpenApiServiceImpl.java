@@ -32,7 +32,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -59,8 +58,12 @@ public class OpenApiServiceImpl implements OpenApiService {
     @Value("${key.googlemap}")
     private String googleMapKey;
 
+    @Value("${key.geocoding}")
+    private String geocodingKey;
+
     private static final String PROJECTED_CRS = "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs";
     private static final String WGS84_CRS = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
+    private static final String GOORDINATE_MSG = "추후 추가 예정";
 
     private final WaterPlaceRepository waterPlaceRepository;
     private final WaterPlaceDetailRepository waterPlaceDetailRepository;
@@ -75,6 +78,41 @@ public class OpenApiServiceImpl implements OpenApiService {
     private final NationalWeatherRepository nationalWeatherRepository;
 
     private final S3Service s3Service;
+
+    @Override
+    public Coordinate getGeoDataByAddress(String completeAddress) {
+        try {
+            String encodedAddress = URLEncoder.encode(completeAddress, "UTF-8");
+            String apiUrl = "https://maps.googleapis.com/maps/api/geocode/json?address=" + encodedAddress + "&key=" + geocodingKey;
+
+            HttpURLConnection connection = (HttpURLConnection) new URL(apiUrl).openConnection();
+            connection.setRequestMethod("GET");
+
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"))) {
+                StringBuilder responseStrBuilder = new StringBuilder();
+                String inputStr;
+                while ((inputStr = reader.readLine()) != null) {
+                    responseStrBuilder.append(inputStr);
+                }
+
+                JSONObject jo = new JSONObject(responseStrBuilder.toString());
+                JSONArray results = jo.getJSONArray("results");
+
+                if (results.length() > 0) {
+                    JSONObject jsonObject = results.getJSONObject(0);
+                    JSONObject location = jsonObject.getJSONObject("geometry").getJSONObject("location");
+                    double lat = location.getDouble("lat");
+                    double lng = location.getDouble("lng");
+                    return new Coordinate(String.valueOf(lat), String.valueOf(lng));
+                } else {
+                    return new Coordinate(GOORDINATE_MSG, GOORDINATE_MSG);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     /**
      * @methodnme: fetchAndSaveNationalWeatherData
