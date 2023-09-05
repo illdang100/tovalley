@@ -10,6 +10,7 @@ import kr.ac.kumoh.illdang100.tovalley.domain.water_place.*;
 import kr.ac.kumoh.illdang100.tovalley.form.water_place.CreateWaterPlaceForm;
 import kr.ac.kumoh.illdang100.tovalley.form.water_place.WaterPlaceEditForm;
 import kr.ac.kumoh.illdang100.tovalley.handler.ex.CustomApiException;
+import kr.ac.kumoh.illdang100.tovalley.service.OpenApiServiceImpl;
 import kr.ac.kumoh.illdang100.tovalley.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,6 +46,7 @@ public class WaterPlaceServiceImpl implements WaterPlaceService {
     private final RescueSupplyRepository rescueSupplyRepository;
     private final ReviewRepository reviewRepository;
     private final S3Service s3Service;
+    private final OpenApiServiceImpl openApiService;
 
     /**
      * // 물놀이 장소 리스트 조회 페이지
@@ -210,8 +212,7 @@ public class WaterPlaceServiceImpl implements WaterPlaceService {
     @Transactional
     public void saveNewWaterPlace(CreateWaterPlaceForm form) {
 
-        // TODO: 주소를 좌표로 변환하는 코드 필요!!
-        Coordinate coordinate = new Coordinate("임시", "임시");
+        Coordinate coordinate = openApiService.getGeoDataByAddress(form.getAddress());
 
         WaterPlace newWaterPlace =
                 WaterPlace.createNewWaterPlace(form, coordinate);

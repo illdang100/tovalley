@@ -40,14 +40,21 @@ public class RescueSupply {
 
     public static RescueSupply createNewRescueSupply(WaterPlace waterPlace, CreateWaterPlaceForm form) {
 
+        Integer lifeBoatNum = form.getLifeBoatNum();
+        Integer portableStandNum = form.getPortableStandNum();
+        Integer lifeJacketNum = form.getLifeJacketNum();
+        Integer lifeRingNum = form.getLifeRingNum();
+        Integer rescueRopeNum = form.getRescueRopeNum();
+        Integer rescueRodNum = form.getRescueRodNum();
+
         return RescueSupply.builder()
                 .waterPlace(waterPlace)
-                .lifeBoatNum(form.getLifeBoatNum())
-                .portableStandNum(form.getPortableStandNum())
-                .lifeJacketNum(form.getLifeJacketNum())
-                .lifeRingNum(form.getLifeRingNum())
-                .rescueRopeNum(form.getRescueRopeNum())
-                .rescueRodNum(form.getRescueRodNum())
+                .lifeBoatNum(lifeBoatNum == null ? -1 : lifeBoatNum)
+                .portableStandNum(portableStandNum == null ? -1 : portableStandNum)
+                .lifeJacketNum(lifeJacketNum == null ? -1 : lifeJacketNum)
+                .lifeRingNum(lifeRingNum == null ? -1 : lifeRingNum)
+                .rescueRopeNum(rescueRopeNum == null ? -1 : rescueRopeNum)
+                .rescueRodNum(rescueRodNum == null ? -1 : rescueRodNum)
                 .build();
     }
 }

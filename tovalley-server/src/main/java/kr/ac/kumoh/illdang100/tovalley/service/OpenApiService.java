@@ -1,5 +1,6 @@
 package kr.ac.kumoh.illdang100.tovalley.service;
 
+import kr.ac.kumoh.illdang100.tovalley.domain.Coordinate;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.water_place_weather.WaterPlaceWeather;
 
 import java.util.List;
@@ -28,4 +29,10 @@ public interface OpenApiService {
      * 전국 물놀이 지역 정보를 Open API로부터 가져와 데이터베이스에 저장
      */
     void fetchAndSaveWaterPlacesData();
+
+    /**
+     * @param completeAddress 클라이언트로부터 받아온 물놀이 장소 주소 정보
+     * @return 해당 물놀이 장소 좌표(위도, 경도)
+     */
+    Coordinate getGeoDataByAddress(String completeAddress);
 }

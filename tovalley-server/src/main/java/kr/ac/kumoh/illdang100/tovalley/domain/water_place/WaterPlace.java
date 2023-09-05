@@ -39,13 +39,13 @@ public class WaterPlace {
     private String address; // 주소
 
     @Column(nullable = false, length = 20)
-    private String waterPlaceCategory; // 구분(계곡, 하천)
+    private String waterPlaceCategory; // 구분(계곡, 하천 등)
 
     @Embedded
     private Coordinate coordinate; // 위경도 좌표
 
     @Column(nullable = false, length = 20)
-    private String managementType; // 관리유형(일반지역, 중점관리지역)
+    private String managementType; // 관리유형(일반지역, 중점관리지역, 위험지역)
 
     @Column(nullable = false)
     private Double rating; // 평점
@@ -75,12 +75,15 @@ public class WaterPlace {
 
     public static WaterPlace createNewWaterPlace(CreateWaterPlaceForm form, Coordinate coordinate) {
 
+        String town = form.getTown();
+        String subLocation = form.getSubLocation();
+
         return WaterPlace.builder()
                 .waterPlaceName(form.getWaterPlaceName())
                 .province(form.getProvince())
                 .city(form.getCity())
-                .town(form.getTown())
-                .subLocation(form.getSubLocation())
+                .town(town == null ? "" : town)
+                .subLocation(subLocation == null ? "" : subLocation)
                 .address(form.getAddress())
                 .waterPlaceCategory(form.getWaterPlaceCategory())
                 .coordinate(coordinate)
