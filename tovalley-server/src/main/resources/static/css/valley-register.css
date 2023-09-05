@@ -1,0 +1,174 @@
+body {
+    margin: 0;
+}
+
+a:link { color: white; text-decoration: none;}
+a:visited { color: white; text-decoration: none;}
+
+.admin-valley-register {
+    display: flex;
+}
+
+/* 헤더 */
+.admin-header {
+    width: 18em;
+    background-color: #5a5a5a;
+    height: 130vh;
+    padding: 1em 0;
+}
+
+.admin-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.admin-logo img {
+    margin-right: 1em;
+}
+
+.admin-logo h1 {
+    color: white;
+}
+
+/* 헤더 카테고리 */
+.admin-category {
+    margin-top: 1em;
+}
+
+.admin-category div {
+    background-color: #4b4b4b;
+    color: white;
+    margin: 0.8em 0;
+    padding: 1em 2em;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.admin-category > div:nth-child(3) {
+    color: #66a5fc;
+}
+
+/* 계곡 등록 페이지 */
+.valley-register-page {
+    width: 80%;
+}
+
+.admin-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 2px rgb(225, 225, 225);
+    height: 5em;
+    padding: 0 3em;
+}
+
+.admin-title h1 {
+    font-size: 1.4rem;
+}
+
+.admin-title span {
+    border: 1px solid #dadada;
+    border-radius: 20px;
+    padding: 0.5em 1em;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+.register-page {
+    padding: 4em 5%;
+}
+
+/* 계곡 기본 정보 입력 */
+.valley-info-register {
+    display: flex;
+}
+
+.valley-info-register > img {
+    border-radius: 10px;
+    margin-right: 1em;
+}
+
+.valley-info-basic {
+    border: 1px solid #bdbdbd;
+    border-radius: 10px;
+    width: 60%;
+    padding: 0 1em;
+    box-sizing: border-box;
+}
+
+.valley-info-basic > input {
+    border: none;
+}
+
+.valley-info-basic > input:focus {
+    outline: none;
+}
+
+/* 계곡 이름 입력 */
+.valley-info-basic > input:first-child {
+    width: 100%;
+    height: 3em;
+    border-bottom: 1px solid #bdbdbd;
+    font-size: 1rem;
+    font-weight: bold;
+    padding: 0;
+}
+
+.valley-info-basic > input:first-child::placeholder {
+    color: #8f8f8f;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+/* 계곡 주소 분류 선택 */
+.valley-address {
+    margin-top: 1.5em;
+}
+
+select,
+.valley-address input{
+    border: 1px solid #a5a5a5;
+    border-radius: 5px;
+    padding: 0.3em 1em;
+    margin-right: 1em;
+    color: #7d7d7d;
+    font-weight: bold;
+}
+
+/* 계곡 상세주소 입력 */
+.valley-info-basic > input:nth-child(3),
+.valley-info-basic > input:nth-child(4){
+    margin-top: 1em;
+    width: 100%;
+    height: 2em;
+    font-size: 0.9rem;
+    font-weight: bold;
+    padding: 0;
+}
+
+.valley-info-basic > input:nth-child(3)::placeholder
+.valley-info-basic > input:nth-child(4)::placeholder{
+    color: #8f8f8f;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+/* 계곡 분류 카테고리 선택 */
+.valley-category {
+    margin: 1em 0 0.8em 0;
+}
+
+.valley-category label {
+    color: #66a5fc;
+    border: 1px solid #66a5fc;
+    border-radius: 20px;
+    padding: 0.3em 1em;
+    font-size: 0.8rem;
+    margin-right: 0.5em;
+    cursor: pointer;
+}
+
+.valley-register-btn {
+    margin-top: 1em;
+}
