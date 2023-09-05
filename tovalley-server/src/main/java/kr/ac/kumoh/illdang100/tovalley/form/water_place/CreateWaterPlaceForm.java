@@ -36,6 +36,7 @@ public class CreateWaterPlaceForm {
     @Size(max = 6, message = "시도는 6자 이하로 작성해주세요")
     @Pattern(regexp = "(일반지역|중점관리지역|위험지역)$")
     private String managementType; // 관리유형(일반지역, 중점관리지역)
+    @Min(0)
     private Double waterPlaceSegment; // 물놀이구간(m)
     @NotNull
     @Min(0)
