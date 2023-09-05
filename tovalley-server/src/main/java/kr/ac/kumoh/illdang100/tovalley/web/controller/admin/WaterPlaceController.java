@@ -183,15 +183,16 @@ public class WaterPlaceController {
      */
     @PostMapping(value = "/water-places/new", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public String createWaterPlace(@RequestPart(value = "image", required = false) MultipartFile waterPlaceImage,
-                                   @ModelAttribute @Valid CreateWaterPlaceForm form,
+                                   @ModelAttribute("form") @Valid CreateWaterPlaceForm form,
                                    BindingResult result) {
 
-        /*if (result.hasErrors()) {
+        if (result.hasErrors()) {
+
             return "admin/water_place/createWaterPlaceForm";
-        }*/
+        }
 
         waterPlaceService.saveNewWaterPlace(form);
 
-        return "redirect:/admin/water-places-list";
+        return "redirect:/admin/water-place-list";
     }
 }
