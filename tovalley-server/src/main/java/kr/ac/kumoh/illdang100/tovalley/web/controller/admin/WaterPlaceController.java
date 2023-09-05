@@ -1,10 +1,10 @@
 package kr.ac.kumoh.illdang100.tovalley.web.controller.admin;
 
+import kr.ac.kumoh.illdang100.tovalley.domain.ImageFile;
 import kr.ac.kumoh.illdang100.tovalley.domain.accident.AccidentEnum;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.*;
 import kr.ac.kumoh.illdang100.tovalley.form.accident.CreateAccidentForm;
 import kr.ac.kumoh.illdang100.tovalley.form.water_place.CreateWaterPlaceForm;
-import kr.ac.kumoh.illdang100.tovalley.form.water_place.WaterPlaceEditForm;
 import kr.ac.kumoh.illdang100.tovalley.form.water_place.WaterPlaceForm;
 import kr.ac.kumoh.illdang100.tovalley.service.accident.AccidentService;
 import kr.ac.kumoh.illdang100.tovalley.service.water_place.WaterPlaceService;
@@ -127,6 +127,10 @@ public class WaterPlaceController {
 
         WaterPlaceForm form = new WaterPlaceForm(waterPlace, waterPlaceDetail, rescueSupply);
 
+        ImageFile waterPlaceImage = waterPlace.getWaterPlaceImage();
+
+        model.addAttribute("waterPlaceId", waterPlaceId);
+        model.addAttribute("waterPlaceImage", waterPlaceImage != null ? waterPlaceImage.getStoreFileUrl() : null);
         model.addAttribute("form", form);
 
         return "admin/water_place/updateWaterPlaceForm";
@@ -141,21 +145,31 @@ public class WaterPlaceController {
      */
     @PostMapping("/water-places/{id}/edit")
     public String updateWaterPlace(@PathVariable("id") Long waterPlaceId,
-                                   @ModelAttribute("form") @Valid WaterPlaceEditForm form,
-                                   BindingResult result) {
+                                   @ModelAttribute("form") @Valid WaterPlaceForm form,
+                                   BindingResult result,
+                                   Model model) {
 
-        /*if (result.hasErrors()) {
+        if (result.hasErrors()) {
+
+            WaterPlace waterPlace =
+                    findWaterPlaceByIdOrElseThrowEx(waterPlaceRepository, waterPlaceId);
+
+            ImageFile waterPlaceImage = waterPlace.getWaterPlaceImage();
+
+            model.addAttribute("waterPlaceId", waterPlaceId);
+            model.addAttribute("waterPlaceImage", waterPlaceImage != null ? waterPlaceImage.getStoreFileUrl() : null);
+
             return "admin/water_place/updateWaterPlaceForm";
-        }*/
+        }
 
-        waterPlaceService.updateWaterPlace(form);
+        waterPlaceService.updateWaterPlace(waterPlaceId, form);
 
         return "redirect:/admin/water-places/" + waterPlaceId;
     }
 
     @PostMapping(value = "/water-places/{id}/change-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public String updateWaterPlaceImage(@PathVariable("id") Long waterPlaceId,
-                                   @RequestPart(value = "image", required = false) MultipartFile waterPlaceImage) {
+                                        @RequestPart(value = "image", required = false) MultipartFile waterPlaceImage) {
 
         waterPlaceService.updateWaterPlaceImage(waterPlaceId, waterPlaceImage);
 
