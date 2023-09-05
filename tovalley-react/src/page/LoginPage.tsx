@@ -180,8 +180,83 @@ const FindInfo: FC<Props> = ({ setFindView, info }) => {
     };
   }, []);
 
-  const [codeView, setCodeView] = useState(false);
-  const [passwordReset, setPasswordReset] = useState(false);
+  const [view, setView] = useState({
+    codeView: false,
+    passwordReset: false,
+    emailConfirm: 0,
+  });
+
+  const [inputInfo, setInputInfo] = useState({
+    email: "",
+    code: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+  const handleFindId = () => {
+    const config = {
+      params: {
+        email: inputInfo.email,
+      },
+    };
+
+    axios
+      .get(`${localhost}/api/members/find-id`, config)
+      .then((res) => {
+        console.log(res);
+        res.status === 200
+          ? setView({ ...view, emailConfirm: 1 })
+          : setView({ ...view, emailConfirm: 2 });
+      })
+      .then((err) => console.log(err));
+  };
+
+  const authEmail = () => {
+    const data = {
+      email: inputInfo.email,
+    };
+    axios
+      .post(`${localhost}/api/email-code`, data)
+      .then((res) => {
+        console.log(res);
+        res.status === 200 && setView({ ...view, codeView: true });
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const authCode = () => {
+    const config = {
+      params: {
+        email: inputInfo.email,
+        verifyCode: inputInfo.code,
+      },
+    };
+
+    axios
+      .get(`${localhost}/api/email-code`, config)
+      .then((res) => {
+        console.log(res);
+        res.status === 200 && setView({ ...view, passwordReset: true });
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const handleResetPassword = () => {
+    const data = {
+      email: inputInfo.email,
+      newPassword: inputInfo.password,
+    };
+
+    inputInfo.password === inputInfo.confirmPassword &&
+      axios
+        .post(`${localhost}/api/members/reset-password`, data)
+        .then((res) => {
+          console.log(res);
+          res.status === 200 &&
+            setFindView({ findId: false, findPassword: false });
+        })
+        .catch((err) => console.log(err));
+  };
 
   return (
     <div className={styles.findInfoContainer}>
@@ -192,21 +267,50 @@ const FindInfo: FC<Props> = ({ setFindView, info }) => {
         >
           <MdOutlineClose color="#B8B8B8" size="30px" />
         </span>
-        {!passwordReset ? (
+        {!view.passwordReset ? (
           <>
             <h1>{info.title} 찾기</h1>
-            <span>인증 코드를 받을 이메일과 성함을 입력하세요.</span>
+            <span>
+              {info.findKind === "아이디"
+                ? "회원가입 시 등록했던 이메일을 입력하세요"
+                : "인증 코드를 받을 이메일을 입력하세요."}
+            </span>
             <div className={styles.findInfoInput}>
-              <input placeholder="이름" />
-              <input placeholder="이메일" />
-              <button>{info.findKind} 찾기</button>
+              <input
+                placeholder="이메일"
+                value={inputInfo.email}
+                onChange={(e) =>
+                  setInputInfo({ ...inputInfo, email: e.target.value })
+                }
+              />
+              <button
+                onClick={() => {
+                  info.findKind === "아이디" ? handleFindId() : authEmail();
+                }}
+              >
+                {info.findKind} 찾기
+              </button>
+              <span>
+                {" "}
+                {view.emailConfirm === 0
+                  ? ""
+                  : view.emailConfirm === 1
+                  ? `아이디는 ${inputInfo.email} 입니다.`
+                  : "등록된 이메일이 아닙니다."}
+              </span>
             </div>
-            {codeView && (
+            {view.codeView && (
               <div className={styles.confirmCode}>
                 <span>인증 코드가 메일로 전송되었습니다.</span>
                 <div className={styles.confirmCodeInput}>
-                  <input placeholder="확인 코드" />
-                  <button>확인</button>
+                  <input
+                    placeholder="확인 코드"
+                    value={inputInfo.code}
+                    onChange={(e) =>
+                      setInputInfo({ ...inputInfo, code: e.target.value })
+                    }
+                  />
+                  <button onClick={authCode}>확인</button>
                 </div>
               </div>
             )}
@@ -216,9 +320,31 @@ const FindInfo: FC<Props> = ({ setFindView, info }) => {
             <h1>비밀번호 재설정</h1>
             <span>재설정 할 비밀번호를 입력하세요.</span>
             <div className={styles.findInfoInput}>
-              <input placeholder="비밀번호" type="password" />
-              <input placeholder="비밀번호 확인" type="password" />
-              <button>확인</button>
+              <input
+                placeholder="비밀번호"
+                type="password"
+                value={inputInfo.password}
+                onChange={(e) =>
+                  setInputInfo({ ...inputInfo, password: e.target.value })
+                }
+              />
+              <input
+                placeholder="비밀번호 확인"
+                type="password"
+                value={inputInfo.confirmPassword}
+                onChange={(e) =>
+                  setInputInfo({
+                    ...inputInfo,
+                    confirmPassword: e.target.value,
+                  })
+                }
+              />
+              {inputInfo.password !== inputInfo.confirmPassword && (
+                <p className={styles.confirmPassword}>
+                  비밀번호가 일치하지 않습니다.
+                </p>
+              )}
+              <button onClick={handleResetPassword}>확인</button>
             </div>
           </div>
         )}
