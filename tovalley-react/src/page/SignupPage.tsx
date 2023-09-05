@@ -11,6 +11,7 @@ const SignupPage = () => {
     name: "",
     email: "",
     nickName: "",
+    code: "",
   });
   const [password, setPassword] = useState({
     password: "",
@@ -20,6 +21,11 @@ const SignupPage = () => {
     check: false,
     available: 0,
     alert: "한글, 영어, 숫자 포함 20자 이내",
+  });
+
+  const [authSubmit, setAuthSubmit] = useState({
+    authConfirm: false,
+    emailAvailable: false,
   });
 
   const KAKAO_AUTH_URL = `http://localhost:8081/oauth2/authorization/kakao`;
@@ -76,6 +82,37 @@ const SignupPage = () => {
       });
   };
 
+  const authEmail = () => {
+    const data = {
+      email: inputInfo.email,
+    };
+    axios
+      .post(`${localhost}/api/email-code`, data)
+      .then((res) => {
+        console.log(res);
+        setAuthSubmit({ ...authSubmit, authConfirm: true });
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const authCode = () => {
+    const config = {
+      params: {
+        email: inputInfo.email,
+        verifyCode: inputInfo.code,
+      },
+    };
+
+    axios
+      .get(`${localhost}/api/email-code`, config)
+      .then((res) => {
+        console.log(res);
+        res.status === 200 &&
+          setAuthSubmit({ authConfirm: false, emailAvailable: true });
+      })
+      .catch((err) => console.log(err));
+  };
+
   const handleSignUp = () => {
     const data = {
       name: inputInfo.name,
@@ -86,7 +123,8 @@ const SignupPage = () => {
 
     if (
       password.password === password.confirmPassword &&
-      available.available === 1
+      available.available === 1 &&
+      authSubmit.emailAvailable
     ) {
       axios
         .post(`${localhost}/api/members`, data)
@@ -123,8 +161,25 @@ const SignupPage = () => {
                   setInputInfo({ ...inputInfo, email: e.target.value });
                 }}
               />
-              <span className={styles.confirmBtn}>확인</span>
+              <span className={styles.confirmBtn} onClick={authEmail}>
+                {authSubmit.emailAvailable ? "사용가능" : "확인"}
+              </span>
             </div>
+            {authSubmit.authConfirm && (
+              <div>
+                <span>이메일로 인증코드를 전송하였습니다.</span>
+                <input
+                  placeholder="인증코드"
+                  value={inputInfo.code}
+                  onChange={(e) => {
+                    setInputInfo({ ...inputInfo, code: e.target.value });
+                  }}
+                />
+                <span className={styles.authBtn} onClick={authCode}>
+                  인증
+                </span>
+              </div>
+            )}
             <div>
               <span>닉네임</span>
               <input

@@ -180,6 +180,18 @@
   border-radius: 8px;
   cursor: pointer;
   min-width: 70px;
+  margin-bottom: 1em;
+}
+
+.findInfoInput span {
+  color: rgb(227, 114, 114);
+}
+
+.confirmPassword {
+  color: rgb(227, 114, 114);
+  font-size: 0.9rem;
+  margin: 0 0 1em 0.5em;
+  text-align: left;
 }
 
 .confirmCode {
