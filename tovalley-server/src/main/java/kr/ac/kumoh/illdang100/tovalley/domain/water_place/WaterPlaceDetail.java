@@ -67,15 +67,22 @@ public class WaterPlaceDetail {
 
     public static WaterPlaceDetail createNewWaterPlaceDetail(WaterPlace waterPlace, CreateWaterPlaceForm form) {
 
+        Double waterPlaceSegment = form.getWaterPlaceSegment();
+        Double avgDepth = form.getAvgDepth();
+        Double annualVisitors = form.getAnnualVisitors();
+        Integer dangerSegments = form.getDangerSegments();
+        Integer dangerSignboardsNum = form.getDangerSignboardsNum();
+        String safetyMeasures = form.getSafetyMeasures();
+
         return WaterPlaceDetail.builder()
                 .waterPlace(waterPlace)
-                .waterPlaceSegment(form.getWaterPlaceSegment())
-                .deepestDepth(form.getDeepestDepth())
-                .avgDepth(form.getAvgDepth())
-                .annualVisitors(form.getAnnualVisitors())
-                .dangerSegments(form.getDangerSegments())
-                .dangerSignboardsNum(form.getDangerSignboardsNum())
-                .safetyMeasures(form.getSafetyMeasures())
+                .waterPlaceSegment((waterPlaceSegment == null) ? "-" : String.valueOf(waterPlaceSegment))
+                .deepestDepth(String.valueOf(form.getDeepestDepth()))
+                .avgDepth(String.valueOf(avgDepth))
+                .annualVisitors(annualVisitors == null ? "" : String.valueOf(annualVisitors))
+                .dangerSegments(dangerSegments == null ? "" : String.valueOf(dangerSegments))
+                .dangerSignboardsNum(dangerSignboardsNum == null ? "" : String.valueOf(dangerSignboardsNum))
+                .safetyMeasures(safetyMeasures == null ? "" : safetyMeasures)
                 .waterTemperature(form.getWaterTemperature())
                 .bod(form.getBod())
                 .turbidity(form.getTurbidity())
