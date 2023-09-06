@@ -33,6 +33,12 @@
   position: relative;
 }
 
+#authConfirmInfo > span:not(:last-of-type) {
+  font-size: 0.8rem;
+  color: #8e8e8e;
+  margin-right: 0.5em;
+}
+
 /* 회원가입 인풋 설명 */
 .signupInput > div > span:first-child {
   color: #555555;

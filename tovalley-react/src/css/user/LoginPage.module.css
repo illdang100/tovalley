@@ -204,7 +204,6 @@
 }
 
 .confirmCodeInput {
-  margin-top: 0.7em;
   display: flex;
   align-items: center;
 }
@@ -212,4 +211,12 @@
 .confirmCodeInput input {
   width: 100%;
   margin: 0 0.5em 0 0;
+}
+
+.confirmCodeInput button {
+  margin-top: 1em;
+}
+
+.timer {
+  margin-left: 0.5em;
 }

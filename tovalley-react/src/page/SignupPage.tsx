@@ -86,6 +86,8 @@ const SignupPage = () => {
     const data = {
       email: inputInfo.email,
     };
+
+    console.log(data);
     axios
       .post(`${localhost}/api/email-code`, data)
       .then((res) => {
@@ -130,6 +132,8 @@ const SignupPage = () => {
         .post(`${localhost}/api/members`, data)
         .then((res) => console.log(res))
         .catch((err) => console.log(err));
+    } else {
+      console.log("가입 불가");
     }
   };
 
@@ -166,8 +170,9 @@ const SignupPage = () => {
               </span>
             </div>
             {authSubmit.authConfirm && (
-              <div>
+              <div id={styles.authConfirmInfo}>
                 <span>이메일로 인증코드를 전송하였습니다.</span>
+                <span>00:00</span>
                 <input
                   placeholder="인증코드"
                   value={inputInfo.code}
@@ -249,7 +254,7 @@ const SignupPage = () => {
             </div>
           </div>
           <div className={styles.signupBtn}>
-            <button onClick={handleSignUp}>가입하기</button>
+            <button onClick={() => handleSignUp()}>가입하기</button>
           </div>
         </form>
         <div className={styles.socialSignup}>

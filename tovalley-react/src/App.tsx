@@ -5,6 +5,7 @@ import ValleyListPage from "./page/ValleyListPage";
 import ValleyPage from "./page/ValleyPage";
 import LoginPage from "./page/LoginPage";
 import SignupPage from "./page/SignupPage";
+import MyPage from "./page/MyPage";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/valleylist" element={<ValleyListPage />} />
         <Route path="/valley/:id" element={<ValleyPage />} />
+        <Route path="/mypage" element={<MyPage />} />
       </Routes>
     </div>
   );

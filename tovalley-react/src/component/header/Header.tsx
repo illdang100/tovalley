@@ -51,9 +51,9 @@ const Header = () => {
             width="120px"
           />
         </div>
-        {login ? (
+        {!login ? (
           <div className={styles.login}>
-            <span>마이페이지</span>
+            <span onClick={() => navigation("/mypage")}>마이페이지</span>
             <span onClick={handleLogout}>로그아웃</span>
           </div>
         ) : (
