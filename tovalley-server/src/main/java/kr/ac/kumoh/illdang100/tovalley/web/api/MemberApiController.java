@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.dto.ResponseDto;
+import kr.ac.kumoh.illdang100.tovalley.dto.member.MemberRespDto;
 import kr.ac.kumoh.illdang100.tovalley.security.auth.PrincipalDetails;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtVO;
 import kr.ac.kumoh.illdang100.tovalley.service.member.MemberService;
@@ -16,7 +17,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
@@ -75,6 +75,20 @@ public class MemberApiController {
                                     HttpServletResponse response) {
         memberService.logout(response, refreshToken);
 
-        return new ResponseEntity<>(new ResponseDto<>(1, "로그아웃을 성공했습니다.", null), HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseDto<>(1, "로그아웃을 성공했습니다", null), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/members/find-id")
+    public ResponseEntity<?> findUserId(@ModelAttribute @Valid FindEmailReqDto findEmailReqDto, BindingResult bindingResult) {
+        String signedUpEmail = memberService.findSignedUpEmail(findEmailReqDto);
+
+        return new ResponseEntity<>(new ResponseDto<>(1, "아이디 찾기를 성공했습니댜.", null), HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/members/reset-password")
+    public ResponseEntity<?> resetPassword(@RequestBody @Valid ResetPasswordReqDto resetPasswordReqDto, BindingResult bindingResult) {
+        memberService.resetPassword(resetPasswordReqDto);
+
+        return new ResponseEntity<>(new ResponseDto<>(1, "비밀번호 변경을 성공했습니댜.", null), HttpStatus.OK);
     }
 }

@@ -42,17 +42,23 @@ public class MemberReqDto {
     }
 
     @Data
-    @Builder
-    public static class EmailMessageDto {
+    public static class ResetPasswordReqDto {
         @NotEmpty
-        @Email
-        private String to;
+        @Length(max = 30)
+        @Email(message = "잘못된 이메일 형식입니다.")
+        private String email;
 
-        @NotNull
-        @Builder.Default
-        private String subject = "제목 없음";
+        @NotEmpty
+        @Pattern(regexp = "^[a-zA-Z0-9!@#$%^&*()-_=+\\[\\]{}|;:'\",.<>/?]{1,20}$", message = "영문/숫자/특수 기호 1~20자 이내로 작성해주세요") // 영문, 숫자, 특수 기호
+        private String newPassword;
+    }
 
-        private String message;
+    @Data
+    public static class FindEmailReqDto {
+        @NotEmpty
+        @Length(max = 30)
+        @Email(message = "잘못된 이메일 형식입니다.")
+        private String email;
     }
 }
 

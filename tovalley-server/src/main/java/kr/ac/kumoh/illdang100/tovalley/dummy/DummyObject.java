@@ -21,6 +21,7 @@ import kr.ac.kumoh.illdang100.tovalley.domain.weather.special_weather.SpecialWea
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.special_weather.SpecialWeatherEnum;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.special_weather.WeatherAlertType;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.water_place_weather.WaterPlaceWeather;
+import kr.ac.kumoh.illdang100.tovalley.security.jwt.RefreshToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.time.LocalDate;
@@ -313,6 +314,14 @@ public class DummyObject {
                 .lifeRingNum(10)
                 .rescueRopeNum(10)
                 .rescueRodNum(10)
+                .build();
+    }
+
+    protected RefreshToken newRefreshToken (String refreshToken) {
+
+        return RefreshToken.builder()
+                .refreshToken(refreshToken)
+                .role(MemberEnum.CUSTOMER.toString())
                 .build();
     }
 }

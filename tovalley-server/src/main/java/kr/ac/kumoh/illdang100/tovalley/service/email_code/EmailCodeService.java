@@ -1,9 +1,10 @@
 package kr.ac.kumoh.illdang100.tovalley.service.email_code;
 
-import kr.ac.kumoh.illdang100.tovalley.domain.email_code.EmailCode;
 
-import static kr.ac.kumoh.illdang100.tovalley.dto.member.MemberReqDto.*;
+import static kr.ac.kumoh.illdang100.tovalley.dto.email_code.EmailCodeRespDto.*;
 
 public interface EmailCodeService {
-    public EmailCode sendEmail(EmailMessageDto messageDto, String type);
+    public SendEmailCodeRespDto sendEmail(String email);
+
+    public void checkVerifyCode(String email, String verifyCode);
 }
