@@ -53,7 +53,7 @@ public class WaterPlaceDetail {
     private Double turbidity; // 탁도(NTU)
 
     public void update(WaterPlaceForm form) {
-        Double waterPlaceSegment = form.getWaterPlaceSegment();
+        Integer waterPlaceSegment = form.getWaterPlaceSegment();
         Double annualVisitors = form.getAnnualVisitors();
         Integer dangerSegments = form.getDangerSegments();
         Integer dangerSignboardsNum = form.getDangerSignboardsNum();
@@ -73,7 +73,7 @@ public class WaterPlaceDetail {
 
     public static WaterPlaceDetail createNewWaterPlaceDetail(WaterPlace waterPlace, CreateWaterPlaceForm form) {
 
-        Double waterPlaceSegment = form.getWaterPlaceSegment();
+        Integer waterPlaceSegment = form.getWaterPlaceSegment();
         Double avgDepth = form.getAvgDepth();
         Double annualVisitors = form.getAnnualVisitors();
         Integer dangerSegments = form.getDangerSegments();

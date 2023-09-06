@@ -37,7 +37,7 @@ public class CreateWaterPlaceForm {
     @Pattern(regexp = "(일반지역|중점관리지역|위험지역)$")
     private String managementType; // 관리유형(일반지역, 중점관리지역)
     @Min(0)
-    private Double waterPlaceSegment; // 물놀이구간(m)
+    private Integer waterPlaceSegment; // 물놀이구간(m)
     @NotNull
     @Min(0)
     private Double deepestDepth; // 수심(깊은곳)
