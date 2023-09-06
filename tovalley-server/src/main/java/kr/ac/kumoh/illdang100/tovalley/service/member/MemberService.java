@@ -21,13 +21,10 @@ public interface MemberService {
     void isNicknameAvailable(String nickname);
 
     // 아이디 찾기
-    String findIdByEmail(String email);
-
-    // 패스워드 찾기 - 인증 이메일 발송
-    void sendPasswordResetEmail(String email);
+    String findSignedUpEmail(FindEmailReqDto findEmailReqDto);
 
     // 새로운 패스워드 설정
-    void resetPassword(String email, String newPassword);
+    void resetPassword(ResetPasswordReqDto resetPasswordReqDto);
 
     // 토큰 재발급
     void reIssueToken(HttpServletRequest request, HttpServletResponse response);

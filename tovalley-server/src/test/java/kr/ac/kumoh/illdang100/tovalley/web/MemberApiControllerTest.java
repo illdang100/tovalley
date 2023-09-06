@@ -90,10 +90,6 @@ class MemberApiControllerTest extends DummyObject {
             }
         }
 
-        System.out.println("accessToken = " + accessToken);
-        System.out.println("refreshToken = " + refreshToken);
-        System.out.println("isLogin = " + isLogin);
-
         //then
         resultActions.andExpect(status().isOk());
     }
@@ -146,7 +142,6 @@ class MemberApiControllerTest extends DummyObject {
         //then
         resultActions.andExpect(status().isCreated());
     }
-
 
     private void dataSetting() {
         memberRepository.save(newMember("user123@naver.com", "일당백"));
