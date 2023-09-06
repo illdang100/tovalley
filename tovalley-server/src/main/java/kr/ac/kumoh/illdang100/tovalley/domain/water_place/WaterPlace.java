@@ -3,7 +3,7 @@ package kr.ac.kumoh.illdang100.tovalley.domain.water_place;
 import kr.ac.kumoh.illdang100.tovalley.domain.Coordinate;
 import kr.ac.kumoh.illdang100.tovalley.domain.ImageFile;
 import kr.ac.kumoh.illdang100.tovalley.form.water_place.CreateWaterPlaceForm;
-import kr.ac.kumoh.illdang100.tovalley.form.water_place.WaterPlaceEditForm;
+import kr.ac.kumoh.illdang100.tovalley.form.water_place.WaterPlaceForm;
 import lombok.*;
 
 import javax.persistence.*;
@@ -62,12 +62,15 @@ public class WaterPlace {
         this.rating = sum / reviewCount;
     }
 
-    public void update(WaterPlaceEditForm form) {
+    public void update(WaterPlaceForm form) {
+        String town = form.getTown();
+        String subLocation = form.getSubLocation();
+
         this.waterPlaceName = form.getWaterPlaceName();
         this.province = form.getProvince();
         this.city = form.getCity();
-        this.town = form.getTown();
-        this.subLocation = form.getSubLocation();
+        this.town = town == null ? "" : town;
+        this.subLocation = subLocation == null ? "" : subLocation;
         this.address = form.getAddress();
         this.waterPlaceCategory = form.getWaterPlaceCategory();
         this.managementType = form.getManagementType();

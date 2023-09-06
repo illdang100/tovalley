@@ -38,19 +38,6 @@
                          th:unless="${not #strings.isEmpty(waterPlace.waterPlaceImage)}"
                          th:src="@{/images/default-img.png}"
                          width="200px" height="200px" alt="Default Image" />
-                   <div>
-                       <form method="post" enctype="multipart/form-data"
-                             th:action="@{/admin/water-places/{id}/change-image (id=${waterPlace.waterPlaceId})}">
-                           <input type="file" accept=".jpg, .png" name="image" value=""
-                                  th:onchange="'javascript:previewImg('+this+'); validateImageSelection();'" />
-                           <button type="submit" id="uploadButton" disabled>이미지 변경</button>
-                       </form>
-                       <form method="post" enctype="multipart/form-data"
-                             th:action="@{/admin/water-places/{id}/change-image (id=${waterPlace.waterPlaceId})}">
-                           <button type="submit" id="defaultImageButton"
-                                   th:if="${not #strings.isEmpty(waterPlace.waterPlaceImage)}">기본 이미지 변경</button>
-                       </form>
-                   </div>
                 </div>
 
                 <div th:class="valley-info-update">
@@ -236,53 +223,6 @@
         form.setAttribute("action", "/admin/water-places/" + waterPlaceId + "/accidents/" + accidentId + "/delete");
         document.body.appendChild(form);
         form.submit();
-    }
-
-    function previewImg(input) {
-        const imgTag = document.getElementById("preview");
-        const defaultTag = document.getElementById("default");
-
-        if (!imgTag && !defaultTag) {
-            console.error("previewImg: 'preview' and 'default' elements not found.");
-            return;
-        }
-
-        const targetTag = imgTag ? imgTag : defaultTag;
-
-        if (input.files && input.files[0]) {
-            const reader = new FileReader();
-
-            reader.onload = function (data) {
-                targetTag.src = data.target.result;
-                targetTag.width = 200;
-                targetTag.height = 200;
-            };
-
-            if (defaultTag) {
-                defaultTag.className = "img-none";
-            }
-
-            targetTag.className = "";
-            reader.readAsDataURL(input.files[0]);
-        } else {
-            if (defaultTag) {
-                defaultTag.className = "";
-            }
-
-            targetTag.src = "";
-            targetTag.className = "img-none";
-        }
-    }
-
-    function validateImageSelection() {
-        var fileInput = document.querySelector('input[type="file"]');
-        var uploadButton = document.getElementById('uploadButton');
-
-        if (fileInput.files.length > 0) {
-            uploadButton.removeAttribute('disabled');
-        } else {
-            uploadButton.setAttribute('disabled', 'disabled');
-        }
     }
 </script>
 </html>

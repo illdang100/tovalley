@@ -8,7 +8,7 @@ import kr.ac.kumoh.illdang100.tovalley.domain.review.ReviewRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.review.WaterQualityReviewEnum;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.*;
 import kr.ac.kumoh.illdang100.tovalley.form.water_place.CreateWaterPlaceForm;
-import kr.ac.kumoh.illdang100.tovalley.form.water_place.WaterPlaceEditForm;
+import kr.ac.kumoh.illdang100.tovalley.form.water_place.WaterPlaceForm;
 import kr.ac.kumoh.illdang100.tovalley.handler.ex.CustomApiException;
 import kr.ac.kumoh.illdang100.tovalley.service.OpenApiServiceImpl;
 import kr.ac.kumoh.illdang100.tovalley.service.S3Service;
@@ -174,9 +174,7 @@ public class WaterPlaceServiceImpl implements WaterPlaceService {
      */
     @Override
     @Transactional
-    public void updateWaterPlace(WaterPlaceEditForm form) {
-
-        Long waterPlaceId = form.getId();
+    public void updateWaterPlace(Long waterPlaceId, WaterPlaceForm form) {
 
         WaterPlace findWaterPlace =
                 findWaterPlaceByIdOrElseThrowEx(waterPlaceRepository, waterPlaceId);
