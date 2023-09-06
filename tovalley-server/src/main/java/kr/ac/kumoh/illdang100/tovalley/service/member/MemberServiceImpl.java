@@ -64,6 +64,7 @@ public class MemberServiceImpl implements MemberService {
         String password = passwordEncoder.encode(signUpReqDto.getPassword());
         Member signUpMember = Member.builder()
                 .memberName(signUpReqDto.getName())
+                .nickname(nickname)
                 .username(email)
                 .email(email)
                 .password(password)
