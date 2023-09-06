@@ -23,7 +23,7 @@ const KakaoMap = () => {
     <div
       id="map"
       style={{ width: "100%", height: "100%", borderRadius: "10px" }}
-    />
+    ></div>
   );
 };
 

@@ -104,3 +104,112 @@
   border-bottom: 1px solid #787878;
   margin: 0 1em;
 }
+
+/* 아이디 찾기 */
+.findInfoContainer {
+  z-index: 5;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #adaaa790;
+}
+
+.findInfoModal {
+  width: 500px;
+  border-radius: 10px;
+  background-color: #fdfdfd;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -250px;
+  margin-top: -220px;
+  padding: 2em 3.5em 3em 3.5em;
+  text-align: center;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.findInfoClose {
+  position: absolute;
+  cursor: pointer;
+  top: 20px;
+  left: 20px;
+}
+
+.findInfoModal h1,
+.passwordReset h1 {
+  font-size: 1.5rem;
+  margin: 0.5em;
+}
+
+.findInfoModal > span,
+.passwordReset > span {
+  color: #787878;
+}
+
+.findInfoInput {
+  margin-top: 1em;
+  display: flex;
+  flex-direction: column;
+}
+
+.findInfoInput input,
+.confirmCodeInput input {
+  margin-bottom: 0.6em;
+  font-size: 1rem;
+  padding: 0.8em 1em;
+  border-radius: 8px;
+  border: 1px solid #b8b8b8;
+}
+
+.findInfoInput input:focus,
+.confirmCodeInput input:focus {
+  outline: none;
+}
+
+.findInfoInput button,
+.confirmCodeInput button {
+  background-color: #66a5fc;
+  border: none;
+  padding: 0.8em;
+  font-size: 1rem;
+  color: white;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  min-width: 70px;
+  margin-bottom: 1em;
+}
+
+.findInfoInput span {
+  color: rgb(227, 114, 114);
+}
+
+.confirmPassword {
+  color: rgb(227, 114, 114);
+  font-size: 0.9rem;
+  margin: 0 0 1em 0.5em;
+  text-align: left;
+}
+
+.confirmCode {
+  margin-top: 2em;
+}
+
+.confirmCode > span {
+  color: #787878;
+  font-size: 0.9rem;
+}
+
+.confirmCodeInput {
+  margin-top: 0.7em;
+  display: flex;
+  align-items: center;
+}
+
+.confirmCodeInput input {
+  width: 100%;
+  margin: 0 0.5em 0 0;
+}

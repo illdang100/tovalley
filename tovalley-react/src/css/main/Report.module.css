@@ -38,29 +38,6 @@
   border-radius: 12px;
 }
 
-.reportTitle {
-  background-color: #fd7878;
-  color: white;
-  font-weight: bold;
-  border-radius: 12px 12px 0 0;
-  padding: 0.8em 1.2em;
-  font-size: 0.9rem;
-  display: flex;
-  align-items: center;
-}
-
-.reportTitle > span:first-child {
-  margin-right: 0.3em;
-}
-
-.reportContent {
-  background-color: #ffaaaa;
-  color: white;
-  border-radius: 0 0 12px 12px;
-  padding: 0.9em;
-  font-size: 0.8rem;
-}
-
 .presentation > span:first-child {
   font-weight: bold;
   margin-right: 0.5em;
