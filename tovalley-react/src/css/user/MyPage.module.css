@@ -1,5 +1,5 @@
 .body {
-  padding: 0 10%;
+  padding: 0 12%;
   margin-top: 4em;
 }
 
@@ -82,4 +82,248 @@
 
 .myReview {
   width: 100%;
+}
+
+.myReview > h4 {
+  font-size: 1.4rem;
+  margin: 0;
+  margin-bottom: 0.8em;
+}
+
+.reviewContainer {
+  height: 54vh;
+  overflow-y: scroll;
+}
+
+.reviewContainer::-webkit-scrollbar {
+  display: none;
+}
+
+.reivewList {
+  display: flex;
+  margin-bottom: 1em;
+  position: relative;
+}
+
+.reivewList img {
+  border-radius: 5px 0 0 5px;
+}
+
+.reivewList > span {
+  width: 20px;
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.499);
+  left: 96px;
+  bottom: 0;
+  color: white;
+  display: flex;
+  justify-content: center;
+  font-weight: bold;
+  padding: 0.1em;
+}
+
+.reviewItem {
+  width: 100%;
+  border: 1px solid #bcbcbc;
+  border-left: none;
+  border-radius: 0 5px 5px 0;
+  padding: 1em 0.8em 1em 1.2em;
+}
+
+/* 리뷰 별점, 리뷰 날짜 */
+.reviewInfo {
+  display: flex;
+  justify-content: space-between;
+}
+
+.reviewInfo > div {
+  display: flex;
+  margin-bottom: 1em;
+}
+
+/* 리뷰 별점 */
+.reviewInfo > div > span:nth-child(2) {
+  font-weight: bold;
+  margin-left: 0.5em;
+}
+
+/* 리뷰 날짜 */
+.reviewInfo > span {
+  color: #696969;
+}
+
+/* 리뷰 내용 */
+.reviewItem > span {
+  color: #696969;
+}
+
+.schedule {
+  margin-top: 6em;
+}
+
+.scheduleControl {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.scheduleBtn {
+  display: flex;
+}
+
+.scheduleBtn > div {
+  padding: 0 1.5em;
+}
+
+/* 앞으로의 일정 버튼 */
+.scheduleBtn > div:first-child {
+  padding-left: 0;
+  border-right: 1px solid #b3b3b3;
+}
+
+.scheduleBtn > div > span {
+  font-weight: bold;
+  color: #a5a5a5;
+  cursor: pointer;
+  font-size: 1.2rem;
+}
+
+/* 일정 삭제 버튼 */
+.scheduleControl > span {
+  background-color: #66a5fc;
+  color: white;
+  cursor: pointer;
+  padding: 0.4em 1em;
+  border-radius: 8px;
+  margin-right: 1.5em;
+}
+
+/* 일정 리스트 */
+.scheduleItem {
+  border: 1px solid #bcbcbc;
+  border-radius: 10px;
+  margin-top: 1em;
+  position: relative;
+  padding: 2em 1em;
+  display: flex;
+  min-width: 800px;
+}
+
+.scheduleCheck {
+  position: absolute;
+  top: 1em;
+  left: 1em;
+  cursor: pointer;
+}
+
+.scheduleItem img {
+  margin: 0 2em 0 3em;
+  border-radius: 8px;
+}
+
+.scheduleInfo {
+  width: 100%;
+}
+
+/* 계곡 이름 */
+.scheduleInfo > h4 {
+  margin: 0;
+  margin-top: 0.3em;
+  font-size: 1.5rem;
+}
+
+/* 계곡 주소 */
+.scheduleInfo > span:nth-child(2) {
+  color: #828282;
+  display: block;
+  margin: 0.3em 0;
+  font-size: 1.2rem;
+}
+
+/* 계곡 별점 */
+.scheduleInfo > span:nth-child(3) {
+  color: #66a5fc;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.scheduleInfo > span:nth-child(4) {
+  color: #b8b8b8;
+  font-weight: bold;
+  margin-right: 1.8em;
+  font-size: 1.1rem;
+}
+
+/* 게곡 리뷰 개수 */
+.scheduleInfo > span:nth-child(5) {
+  color: #66a5fc;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+/* 예약 정보 */
+.reservationInfo {
+  margin-top: 1.6em;
+  min-width: 200px;
+}
+
+.reservationInfo > div {
+  margin-top: 0.3em;
+}
+
+.reservationInfo > div > span {
+  font-size: 1.1rem;
+}
+
+.reservationInfo > div > span:first-child {
+  color: #a3a3a3;
+  margin-right: 1.5em;
+}
+
+.valleyInfo {
+  width: 100%;
+  margin-right: 2em;
+}
+
+/* 계곡 혼잡도 */
+.congestion {
+  display: flex;
+  justify-content: right;
+  align-items: center;
+}
+
+.congestion > span:first-child {
+  color: #666666;
+  font-weight: bold;
+  font-size: 1.2em;
+  margin-right: 0.5em;
+}
+
+.congestion > div:nth-child(2) {
+  width: 40px;
+  height: 16px;
+  border-radius: 3px;
+  background-color: #fa7f64;
+  margin-bottom: 0.3em;
+}
+
+.rescueList {
+  display: flex;
+  border: 1.5px solid #66a5fc;
+  padding: 1em;
+  border-radius: 10px;
+  justify-content: space-between;
+  min-width: 300px;
+  margin-top: 1.5em;
+}
+
+.rescueItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.rescueItem > span:nth-child(2) {
+  color: #66a5fc;
+  font-weight: bold;
 }
