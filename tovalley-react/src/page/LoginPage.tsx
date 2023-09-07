@@ -5,6 +5,7 @@ import Footer from "../component/footer/Footer";
 import axios from "axios";
 import { MdOutlineClose } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+import axiosInstance from "./../axios_interceptor";
 
 const localhost = "http://localhost:8081";
 
@@ -43,8 +44,8 @@ const LoginPage = () => {
       password: login.password,
     };
 
-    axios
-      .post(`${localhost}/api/login`, data)
+    axiosInstance
+      .post("/api/login", data)
       .then((res) => {
         console.log(res);
       })
@@ -181,7 +182,7 @@ const FindInfo: FC<Props> = ({ setFindView, info }) => {
   }, []);
 
   const [view, setView] = useState({
-    codeView: false,
+    codeView: true,
     passwordReset: false,
     emailConfirm: 0,
   });
@@ -302,6 +303,7 @@ const FindInfo: FC<Props> = ({ setFindView, info }) => {
             {view.codeView && (
               <div className={styles.confirmCode}>
                 <span>인증 코드가 메일로 전송되었습니다.</span>
+                <span className={styles.timer}>00:00</span>
                 <div className={styles.confirmCodeInput}>
                   <input
                     placeholder="확인 코드"
