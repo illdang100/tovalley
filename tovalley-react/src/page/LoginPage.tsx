@@ -40,7 +40,7 @@ const LoginPage = () => {
 
   const handleLogin = () => {
     const data = {
-      email: login.email,
+      username: login.email,
       password: login.password,
     };
 

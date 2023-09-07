@@ -1,3 +1,85 @@
 .body {
   padding: 0 10%;
+  margin-top: 4em;
+}
+
+.myPage > h1 {
+  font-size: 1.8rem;
+  margin-left: 1em;
+}
+
+.userInfo {
+  display: flex;
+}
+
+.userBasicInfo {
+  border: 1px solid #66a5fc;
+  width: 100%;
+  margin-right: 2.5em;
+  border-radius: 10px;
+  box-shadow: 0px 2px 2px rgb(210, 210, 210);
+  padding: 1em 1.5em 0.5em 1.5em;
+  min-width: 300px;
+  max-width: 600px;
+}
+
+.userBasicInfo > span {
+  color: #66a5fc;
+  font-weight: bold;
+  font-size: 1.2rem;
+  margin-left: 0.5em;
+}
+
+.profileImg {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 1.5em 0;
+}
+
+.profileImg img {
+  border-radius: 100%;
+  margin-bottom: 1em;
+}
+
+.profileImg span {
+  color: #828282;
+  cursor: pointer;
+}
+
+.userNickname,
+.userEmail {
+  border-top: 1px solid #d4d4d4;
+  padding: 1em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.userNickname > span:first-child,
+.userEmail > span:first-child {
+  color: #66a5fc;
+  font-size: 1.1rem;
+  margin-right: 3em;
+}
+
+/* 유저 닉네임 */
+.userNickname > span:nth-child(2) {
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-right: 1.8em;
+}
+
+/* 유저 닉네임 수정 */
+.userNickname > span:nth-child(3) {
+  background-color: #e6e6e6;
+  color: #828282;
+  padding: 0.3em 0.8em;
+  border-radius: 5px;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.myReview {
+  width: 100%;
 }
