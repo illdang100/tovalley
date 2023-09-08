@@ -17,6 +17,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
@@ -90,5 +91,13 @@ public class MemberApiController {
         memberService.resetPassword(resetPasswordReqDto);
 
         return new ResponseEntity<>(new ResponseDto<>(1, "비밀번호 변경을 성공했습니댜.", null), HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/token/refresh")
+    public ResponseEntity<?> reIssueToken(HttpServletRequest request, HttpServletResponse response) {
+
+        memberService.reIssueToken(request, response);
+
+        return new ResponseEntity<>(new ResponseDto<>(1, "토큰 재발급을 성공했습니다", null), HttpStatus.OK);
     }
 }
