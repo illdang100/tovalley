@@ -15,7 +15,7 @@ axiosInstance.interceptors.response.use(
       const errResponseStatus = error.response.status;
       const errMsg = error.response.data.msg;
 
-      if (errResponseStatus === 400 && errMsg === "만료된 토큰입니다") {
+      if (errResponseStatus === 400 && errMsg === "만료된 토큰입니다.") {
         axios
           .post(`http://localhost:8081/api/token/refresh`, null)
           .then(async (res) => {

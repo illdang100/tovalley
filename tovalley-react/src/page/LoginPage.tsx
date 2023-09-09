@@ -48,6 +48,7 @@ const LoginPage = () => {
       .post("/api/login", data)
       .then((res) => {
         console.log(res);
+        res.status === 200 && navigation("/");
       })
       .catch((err) => console.log(err));
   };
