@@ -13,13 +13,16 @@ axiosInstance.interceptors.response.use(
   async (error) => {
     try {
       const errResponseStatus = error.response.status;
+      const prevRequest = error.config;
       const errMsg = error.response.data.msg;
 
       if (errResponseStatus === 400 && errMsg === "만료된 토큰입니다.") {
-        axios
+        return await axios
           .post(`http://localhost:8081/api/token/refresh`, null)
           .then(async (res) => {
             console.log(res);
+
+            return await axios(prevRequest);
           })
           .catch((e) => {
             console.log("토큰 재발급 실패");
