@@ -13,6 +13,8 @@ import {
 import { FaVest } from "react-icons/fa";
 import { LuUtilityPole } from "react-icons/lu";
 import axiosInstance from "../axios_interceptor";
+import ConfirmModal from "../component/common/ConfirmModal";
+import useDidMountEffect from "../useDidMountEffect";
 
 type user = {
   userProfile: {
@@ -80,6 +82,22 @@ type user = {
 };
 
 const MyPage = () => {
+  const [scheduleBtn, setScheduleBtn] = useState("앞으로의 일정");
+  const [nickUpdate, setNickUpdate] = useState({
+    click: false,
+    duplicateCheck: false,
+    inputNick: "",
+    available: false,
+  });
+  const [confirmView, setConfirmView] = useState({
+    view: false,
+    content: "",
+  });
+
+  const [deleteSchedule, setDeleteSchedule] = useState<
+    { id: number; check: boolean }[]
+  >([]);
+
   const [user, setUser] = useState<user>({
     userProfile: {
       memberProfileImg: "",
@@ -280,7 +298,102 @@ const MyPage = () => {
     });
   }, []);
 
-  const [scheduleBtn, setScheduleBtn] = useState("앞으로의 일정");
+  useDidMountEffect(() => {
+    user.myUpcomingTripSchedules.map((item) => {
+      deleteSchedule.push({ id: item.tripScheduleId, check: false });
+      setDeleteSchedule(deleteSchedule);
+    });
+  }, [user]);
+
+  let deleteScheduleArr: {
+    tripScheduleId: number; // 여행 일정 Id(PK)
+    waterPlaceId: number; // 물놀이 장소 Id(PK)
+    waterPlaceName: string; // 물놀이 장소명
+    waterPlaceImg: string | null; // 물놀이 장소 이미지
+    waterPlaceAddr: string; // 물놀이 장소 주소
+    waterPlaceRating: number; // 물놀이 장소 평점
+    waterPlaceReviewCnt: number; // 물놀이 장소 리뷰 개수
+    waterPlaceTraffic: number; // 물놀이 장소 혼잡도(해당 날짜에 해당 계곡에 가는 인원수)
+    tripDate: string; // 내가 계획한 여행 날자
+    tripPartySize: number; // 함께 가는 여행 인원수
+    rescueSupplies: {
+      lifeBoatNum: number; // 인명구조함
+      portableStandNum: number; // 이동식거치대
+      lifeJacketNum: number; // 구명조끼
+      lifeRingNum: number; // 구명환
+      rescueRopeNum: number; // 구명로프
+      rescueRodNum: number; // 구조봉
+    };
+    hasReview: boolean; // 리뷰 작성 여부(앞으로의 일정은 리뷰를 작성할 수 없음)
+  }[];
+
+  const checkNickname = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const regExp = /^[가-힣a-zA-Z0-9]{1,10}$/;
+    if (regExp.test(e.target.value) === true) {
+      setNickUpdate({ ...nickUpdate, available: true });
+    } else {
+      setNickUpdate({ ...nickUpdate, available: false });
+    }
+  };
+
+  const checkDuplication = () => {
+    const data = {
+      nickname: nickUpdate.inputNick,
+    };
+
+    nickUpdate.available
+      ? axiosInstance
+          .post(`/api/members/check-nickname`, data)
+          .then((res) => {
+            console.log(res);
+            if (res.status === 200) {
+              setConfirmView({
+                view: true,
+                content: "사용 가능한 닉네임입니다.",
+              });
+              setNickUpdate({ ...nickUpdate, duplicateCheck: true });
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+            if (err.response.status === 400) {
+              setConfirmView({
+                view: true,
+                content: "사용 불가능한 닉네임입니다.",
+              });
+            }
+          })
+      : setConfirmView({
+          view: true,
+          content: "한/영, 숫자 포함 20자 이내로 작성해주세요.",
+        });
+  };
+
+  const handleResetNicname = () => {
+    const data = {
+      nickname: nickUpdate.inputNick,
+    };
+
+    axiosInstance
+      .post("/api/members/set-nickname", data)
+      .then((res) => {
+        console.log(res);
+        setNickUpdate({ ...nickUpdate, click: false });
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const handleDeleteSchedule = () => {
+    deleteScheduleArr = user.myUpcomingTripSchedules;
+
+    for (let i = 0; i < deleteSchedule.length; i++) {
+      deleteScheduleArr = deleteScheduleArr.filter(
+        (schedule) => schedule.tripScheduleId !== deleteSchedule[i].id
+      );
+    }
+
+    setUser({ ...user, myUpcomingTripSchedules: deleteScheduleArr });
+  };
 
   return (
     <div>
@@ -305,8 +418,66 @@ const MyPage = () => {
               </div>
               <div className={styles.userNickname}>
                 <span>닉네임</span>
-                <span>{user.userProfile.memberNick}</span>
-                <span>수정</span>
+                {nickUpdate.click ? (
+                  <input
+                    placeholder="닉네임"
+                    value={nickUpdate.inputNick}
+                    onChange={(e) =>
+                      setNickUpdate({
+                        ...nickUpdate,
+                        inputNick: e.target.value,
+                      })
+                    }
+                    onBlur={checkNickname}
+                    maxLength={20}
+                  />
+                ) : (
+                  <span>{user.userProfile.memberNick}</span>
+                )}
+                <span
+                  onClick={() => {
+                    if (nickUpdate.click && !nickUpdate.duplicateCheck) {
+                      checkDuplication();
+                    } else if (nickUpdate.duplicateCheck) {
+                      handleResetNicname();
+                      setUser({
+                        ...user,
+                        userProfile: {
+                          ...user.userProfile,
+                          memberNick: nickUpdate.inputNick,
+                        },
+                      });
+                    } else {
+                      setNickUpdate({ ...nickUpdate, click: true });
+                    }
+                  }}
+                >
+                  {nickUpdate.click
+                    ? nickUpdate.duplicateCheck
+                      ? "저장"
+                      : "중복검사"
+                    : "수정"}
+                </span>
+                {nickUpdate.click && (
+                  <span
+                    onClick={() => {
+                      if (nickUpdate.click) {
+                        setNickUpdate({
+                          ...nickUpdate,
+                          click: false,
+                        });
+                      }
+                    }}
+                  >
+                    취소
+                  </span>
+                )}
+                {confirmView.view && (
+                  <ConfirmModal
+                    content={confirmView.content}
+                    handleModal={setConfirmView}
+                  />
+                )}
               </div>
               <div className={styles.userEmail}>
                 <span>이름</span>
@@ -374,15 +545,31 @@ const MyPage = () => {
                 </span>
               </div>
             </div>
-            <span>삭제</span>
+            <span onClick={handleDeleteSchedule}>삭제</span>
           </div>
           <div className={styles.scheduleList}>
-            {user.myUpcomingTripSchedules.map((item) => {
+            {user.myUpcomingTripSchedules.map((item, index) => {
               return (
                 <div className={styles.scheduleItem}>
-                  <span className={styles.scheduleCheck}>
-                    <MdCheckBoxOutlineBlank color="#66A5FC" size="25px" />
-                  </span>
+                  {/* <span
+                    className={styles.scheduleCheck}
+                    onClick={() => {
+                      if (deleteSchedule[index].check === false) {
+                        deleteSchedule[index].check = true;
+                        setDeleteSchedule(deleteSchedule);
+                      } else {
+                        deleteSchedule[index].check = false;
+                        setDeleteSchedule(deleteSchedule);
+                      }
+                      console.log(deleteSchedule);
+                    }}
+                  >
+                    {deleteSchedule[index].check === false ? (
+                      <MdCheckBoxOutlineBlank color="#66A5FC" size="25px" />
+                    ) : (
+                      <MdCheckBox color="#66A5FC" size="25px" />
+                    )}
+                  </span> */}
                   <img
                     src={
                       item.waterPlaceImg === null
