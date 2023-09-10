@@ -86,8 +86,8 @@ class MemberServiceImplTest extends DummyObject {
     }
 
     @Test
-    @DisplayName("토큰 재발급 테스트")
-    void reIssueToken_test() throws Exception {
+    @DisplayName("로그아웃 테스트")
+    void logout_test() throws Exception {
         //given
         HttpServletResponse response = mock(HttpServletResponse.class);
         RefreshToken refreshToken = newRefreshToken("testRefreshToken");
