@@ -67,6 +67,17 @@
   margin-right: 4em;
 }
 
+.userNickname > input {
+  border: none;
+  font-size: 1.1rem;
+  font-weight: bold;
+  width: 30%;
+}
+
+.userNickname > input:focus {
+  outline: none;
+}
+
 /* 유저 닉네임 */
 .userNickname > span:nth-child(2) {
   font-weight: bold;
@@ -75,13 +86,15 @@
 }
 
 /* 유저 닉네임 수정 */
-.userNickname > span:nth-child(3) {
+.userNickname > span:nth-child(3),
+.userNickname > span:nth-child(4) {
   background-color: #e6e6e6;
   color: #828282;
   padding: 0.3em 0.8em;
   border-radius: 5px;
   font-size: 0.8rem;
   cursor: pointer;
+  margin-right: 0.5em;
 }
 
 .myReview {
