@@ -92,12 +92,4 @@ public class MemberApiController {
 
         return new ResponseEntity<>(new ResponseDto<>(1, "비밀번호 변경을 성공했습니댜.", null), HttpStatus.OK);
     }
-
-    @PostMapping(value = "/token/refresh")
-    public ResponseEntity<?> reIssueToken(HttpServletRequest request, HttpServletResponse response) {
-
-        memberService.reIssueToken(request, response);
-
-        return new ResponseEntity<>(new ResponseDto<>(1, "토큰 재발급을 성공했습니다", null), HttpStatus.OK);
-    }
 }

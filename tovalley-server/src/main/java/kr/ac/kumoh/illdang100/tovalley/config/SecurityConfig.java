@@ -45,7 +45,7 @@ public class SecurityConfig {
         public void configure(HttpSecurity http) throws Exception {
             AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
             http.addFilter(new JwtAuthenticationFilter(authenticationManager, jwtProcess, refreshTokenRedisRepository));
-            http.addFilter(new JwtAuthorizationFilter(authenticationManager, jwtProcess));
+            http.addFilter(new JwtAuthorizationFilter(authenticationManager, jwtProcess, refreshTokenRedisRepository));
         }
     }
 

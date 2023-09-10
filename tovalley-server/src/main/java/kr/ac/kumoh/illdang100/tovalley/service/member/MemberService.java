@@ -26,9 +26,6 @@ public interface MemberService {
     // 새로운 패스워드 설정
     void resetPassword(ResetPasswordReqDto resetPasswordReqDto);
 
-    // 토큰 재발급
-    void reIssueToken(HttpServletRequest request, HttpServletResponse response);
-
     // 사용자 정보 조회
     MemberProfileRespDto getMemberDetail(Long memberId);
 
