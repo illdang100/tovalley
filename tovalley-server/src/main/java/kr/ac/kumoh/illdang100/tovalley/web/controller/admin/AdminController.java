@@ -21,7 +21,7 @@ public class AdminController {
     public String loginForm(Model model) {
 
         model.addAttribute("loginForm", new LoginForm());
-        return "admin/loginForm";
+        return "admin/admin-login";
     }
 
     /**
