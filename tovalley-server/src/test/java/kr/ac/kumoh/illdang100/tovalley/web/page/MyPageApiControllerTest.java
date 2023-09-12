@@ -84,6 +84,8 @@ public class MyPageApiControllerTest extends DummyObject {
         // when
         ResultActions resultActions = mvc.perform(get("/api/auth/my-page"));
 
+        LocalDate now = LocalDate.now();
+
         // then
         resultActions
                 .andExpect(status().isOk())
@@ -140,19 +142,19 @@ public class MyPageApiControllerTest extends DummyObject {
         List<TripSchedule> tripScheduleList = new ArrayList<>();
         int year = now.getYear();
         int month = now.getMonthValue();
-        TripSchedule tripSchedule1 = newTripSchedule(member2, waterPlace1, LocalDate.of(year, month, 1), 50);
-        TripSchedule tripSchedule2 = newTripSchedule(member3, waterPlace1, LocalDate.of(year, month, 3), 150);
-        TripSchedule tripSchedule3 = newTripSchedule(member4, waterPlace1, LocalDate.of(year, month, 5), 60);
-        TripSchedule tripSchedule4 = newTripSchedule(member6, waterPlace1, LocalDate.of(year, month, 7), 34);
-        TripSchedule tripSchedule5 = newTripSchedule(member1, waterPlace1, LocalDate.of(year, month, 9), 11);
-        TripSchedule tripSchedule6 = newTripSchedule(member5, waterPlace1, LocalDate.of(year, month, 11), 94);
+        TripSchedule tripSchedule1 = newTripSchedule(member2, waterPlace1, now.minusDays(1), 50);
+        TripSchedule tripSchedule2 = newTripSchedule(member3, waterPlace1, now.minusDays(3), 150);
+        TripSchedule tripSchedule3 = newTripSchedule(member4, waterPlace1, now.minusDays(5), 60);
+        TripSchedule tripSchedule4 = newTripSchedule(member6, waterPlace1, now.minusDays(3), 34);
+        TripSchedule tripSchedule5 = newTripSchedule(member1, waterPlace1, now.minusDays(7), 11);
+        TripSchedule tripSchedule6 = newTripSchedule(member5, waterPlace1, now.minusDays(11), 94);
 
-        TripSchedule tripSchedule7 = newTripSchedule(member2, waterPlace2, LocalDate.of(year, month, 15), 11);
-        TripSchedule tripSchedule8 = newTripSchedule(member3, waterPlace2, LocalDate.of(year, month, 16), 51);
-        TripSchedule tripSchedule9 = newTripSchedule(member4, waterPlace2, LocalDate.of(year, month, 18), 111);
-        TripSchedule tripSchedule10 = newTripSchedule(member6, waterPlace2, LocalDate.of(year, month, 20), 61);
-        TripSchedule tripSchedule11 = newTripSchedule(member1, waterPlace2, LocalDate.of(year, month, 22), 22);
-        TripSchedule tripSchedule12 = newTripSchedule(member6, waterPlace2, LocalDate.of(year, month, 24), 26);
+        TripSchedule tripSchedule7 = newTripSchedule(member2, waterPlace2, now.minusDays(1), 11);
+        TripSchedule tripSchedule8 = newTripSchedule(member3, waterPlace2, now.minusDays(3), 51);
+        TripSchedule tripSchedule9 = newTripSchedule(member4, waterPlace2, now.minusDays(5), 111);
+        TripSchedule tripSchedule10 = newTripSchedule(member6, waterPlace2, now.minusDays(3), 61);
+        TripSchedule tripSchedule11 = newTripSchedule(member1, waterPlace2, now.minusDays(7), 22);
+        TripSchedule tripSchedule12 = newTripSchedule(member6, waterPlace2, now.minusDays(11), 26);
 
         TripSchedule tripSchedule13 = newTripSchedule(member1, waterPlace1, now.plusDays(10), 61);
         TripSchedule tripSchedule14 = newTripSchedule(member1, waterPlace2, now.plusMonths(1), 22);
