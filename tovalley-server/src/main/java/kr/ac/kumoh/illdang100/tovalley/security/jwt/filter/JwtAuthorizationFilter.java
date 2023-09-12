@@ -54,7 +54,6 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 
             } catch (Exception e) {
-                log.debug("액세스 토큰 만료!");
                 reIssueToken(request, response);
             }
         }
