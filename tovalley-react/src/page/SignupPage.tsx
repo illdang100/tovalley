@@ -130,7 +130,10 @@ const SignupPage = () => {
     ) {
       axios
         .post(`${localhost}/api/members`, data)
-        .then((res) => console.log(res))
+        .then((res) => {
+          console.log(res);
+          res.status === 200 && window.location.replace("/");
+        })
         .catch((err) => console.log(err));
     } else {
       console.log("가입 불가");

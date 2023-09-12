@@ -157,7 +157,7 @@ const MainPage = () => {
     axios
       .get(`${localhost}/api/main-page`)
       .then((res) => {
-        console.log(res.data.data);
+        console.log(res);
         setMain(res.data.data);
         setRegionAccident(res.data.data.accidentCountDto);
         setPopularValley(res.data.data.nationalPopularWaterPlaces);
@@ -170,7 +170,7 @@ const MainPage = () => {
           weatherDate: "2023-08-11",
           dailyNationalWeather: [
             {
-              region: "백령",
+              region: "춘천",
               weatherIcon: "10d",
               weatherDesc: "실 비",
               minTemp: 24.26,
@@ -178,7 +178,7 @@ const MainPage = () => {
               rainPrecipitation: 10.53,
             },
             {
-              region: "여수",
+              region: "백령",
               weatherIcon: "10d",
               weatherDesc: "실 비",
               minTemp: 26.28,

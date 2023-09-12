@@ -105,10 +105,15 @@ const ValleyInfo: FC<Props> = ({
     <div>
       <div
         className={styles.title}
-        style={{
-          backgroundImage:
-            "url(https://i.namu.wiki/i/Jfan6XhewqCg_goiK0JQuHfLMhvlZeRShTkXigf8BvNXIFyPzLvta1jeXRXL7mnfGGPDos76v5Hc5o89ieG-B9PRJOUkiQMsQva-zjBaopwzQXL3Nue5Z4vuxsxdtBOXBnFqwj2kicGXkA-52BNQEQ.webp)",
-        }}
+        style={
+          waterPlaceDetails.waterPlaceImage === null
+            ? {
+                backgroundImage: "url('/img/default-waterfall.jpg')",
+              }
+            : {
+                backgroundImage: `url(${waterPlaceDetails.waterPlaceImage})`,
+              }
+        }
       >
         <div className={styles.valleyName}>
           <span>{waterPlaceDetails.waterPlaceName}</span>
