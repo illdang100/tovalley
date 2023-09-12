@@ -3,18 +3,9 @@ import Header from "../component/header/Header";
 import Footer from "../component/footer/Footer";
 import styles from "../css/user/MyPage.module.css";
 import RatingStar from "../component/common/RatingStar";
-import { TbChartDonut4, TbJumpRope } from "react-icons/tb";
-import {
-  MdEmojiPeople,
-  MdHomeRepairService,
-  MdCheckBoxOutlineBlank,
-  MdCheckBox,
-} from "react-icons/md";
-import { FaVest } from "react-icons/fa";
-import { LuUtilityPole } from "react-icons/lu";
 import axiosInstance from "../axios_interceptor";
 import ConfirmModal from "../component/common/ConfirmModal";
-import useDidMountEffect from "../useDidMountEffect";
+import TripSchedule from "../component/user/TripSchedule";
 
 type user = {
   userProfile: {
@@ -81,8 +72,54 @@ type user = {
   }[];
 };
 
+type preSchedule = {
+  content: {
+    tripScheduleId: number;
+    waterPlaceId: number;
+    waterPlaceName: string;
+    waterPlaceImg: string | null;
+    waterPlaceAddr: string;
+    waterPlaceRating: number;
+    waterPlaceReviewCnt: number;
+    waterPlaceTraffic: number;
+    tripDate: string;
+    tripPartySize: number;
+    rescueSupplies: {
+      lifeBoatNum: number;
+      portableStandNum: number;
+      lifeJacketNum: number;
+      lifeRingNum: number;
+      rescueRopeNum: number;
+      rescueRodNum: number;
+    };
+    hasReview: boolean;
+  }[];
+  pageable: {
+    sort: {
+      empty: boolean;
+      unsorted: boolean;
+      sorted: boolean;
+    };
+    offset: number;
+    pageNumber: number;
+    pageSize: number;
+    paged: boolean;
+    unpaged: boolean;
+  };
+  number: number;
+  sort: {
+    empty: boolean;
+    unsorted: boolean;
+    sorted: boolean;
+  };
+  first: boolean;
+  last: boolean;
+  size: number;
+  numberOfElements: number;
+  empty: boolean;
+};
+
 const MyPage = () => {
-  const [scheduleBtn, setScheduleBtn] = useState("앞으로의 일정");
   const [nickUpdate, setNickUpdate] = useState({
     click: false,
     duplicateCheck: false,
@@ -94,9 +131,7 @@ const MyPage = () => {
     content: "",
   });
 
-  const [deleteSchedule, setDeleteSchedule] = useState<
-    { id: number; check: boolean }[]
-  >([]);
+  const [scheduleBtn, setScheduleBtn] = useState("앞으로의 일정");
 
   const [user, setUser] = useState<user>({
     userProfile: {
@@ -166,12 +201,61 @@ const MyPage = () => {
     ],
   });
 
+  const [preSchedule, setPreSchedule] = useState<preSchedule>({
+    content: [
+      {
+        tripScheduleId: 0,
+        waterPlaceId: 0,
+        waterPlaceName: "",
+        waterPlaceImg: "",
+        waterPlaceAddr: "",
+        waterPlaceRating: 0,
+        waterPlaceReviewCnt: 0,
+        waterPlaceTraffic: 0,
+        tripDate: "",
+        tripPartySize: 0,
+        rescueSupplies: {
+          lifeBoatNum: 0,
+          portableStandNum: 0,
+          lifeJacketNum: 0,
+          lifeRingNum: 0,
+          rescueRopeNum: 0,
+          rescueRodNum: 0,
+        },
+        hasReview: false,
+      },
+    ],
+    pageable: {
+      sort: {
+        empty: false,
+        unsorted: false,
+        sorted: false,
+      },
+      offset: 0,
+      pageNumber: 0,
+      pageSize: 0,
+      paged: false,
+      unpaged: false,
+    },
+    number: 0,
+    sort: {
+      empty: false,
+      unsorted: false,
+      sorted: false,
+    },
+    first: false,
+    last: false,
+    size: 0,
+    numberOfElements: 0,
+    empty: false,
+  });
+
   useEffect(() => {
     axiosInstance
       .get("/api/auth/my-page")
       .then((res) => {
         console.log(res);
-        setUser(res.data.data);
+        //setUser(res.data.data);
       })
       .catch((err) => console.log(err));
 
@@ -298,35 +382,6 @@ const MyPage = () => {
     });
   }, []);
 
-  useDidMountEffect(() => {
-    user.myUpcomingTripSchedules.map((item) => {
-      deleteSchedule.push({ id: item.tripScheduleId, check: false });
-      setDeleteSchedule(deleteSchedule);
-    });
-  }, [user]);
-
-  let deleteScheduleArr: {
-    tripScheduleId: number; // 여행 일정 Id(PK)
-    waterPlaceId: number; // 물놀이 장소 Id(PK)
-    waterPlaceName: string; // 물놀이 장소명
-    waterPlaceImg: string | null; // 물놀이 장소 이미지
-    waterPlaceAddr: string; // 물놀이 장소 주소
-    waterPlaceRating: number; // 물놀이 장소 평점
-    waterPlaceReviewCnt: number; // 물놀이 장소 리뷰 개수
-    waterPlaceTraffic: number; // 물놀이 장소 혼잡도(해당 날짜에 해당 계곡에 가는 인원수)
-    tripDate: string; // 내가 계획한 여행 날자
-    tripPartySize: number; // 함께 가는 여행 인원수
-    rescueSupplies: {
-      lifeBoatNum: number; // 인명구조함
-      portableStandNum: number; // 이동식거치대
-      lifeJacketNum: number; // 구명조끼
-      lifeRingNum: number; // 구명환
-      rescueRopeNum: number; // 구명로프
-      rescueRodNum: number; // 구조봉
-    };
-    hasReview: boolean; // 리뷰 작성 여부(앞으로의 일정은 리뷰를 작성할 수 없음)
-  }[];
-
   const checkNickname = (e: React.ChangeEvent<HTMLInputElement>) => {
     const regExp = /^[가-힣a-zA-Z0-9]{1,10}$/;
     if (regExp.test(e.target.value) === true) {
@@ -383,16 +438,84 @@ const MyPage = () => {
       .catch((err) => console.log(err));
   };
 
-  const handleDeleteSchedule = () => {
-    deleteScheduleArr = user.myUpcomingTripSchedules;
+  //   const handleDeleteSchedule = () => {
+  //     deleteScheduleArr = user.myUpcomingTripSchedules;
 
-    for (let i = 0; i < deleteSchedule.length; i++) {
-      deleteScheduleArr = deleteScheduleArr.filter(
-        (schedule) => schedule.tripScheduleId !== deleteSchedule[i].id
-      );
-    }
+  //     for (let i = 0; i < deleteSchedule.length; i++) {
+  //       deleteScheduleArr = deleteScheduleArr.filter(
+  //         (schedule) => schedule.tripScheduleId !== deleteSchedule[i].id
+  //       );
+  //     }
 
-    setUser({ ...user, myUpcomingTripSchedules: deleteScheduleArr });
+  //     setUser({ ...user, myUpcomingTripSchedules: deleteScheduleArr });
+  //   };
+
+  const getPreSchedule = () => {
+    setPreSchedule({
+      content: [
+        {
+          tripScheduleId: 4, // 위의 앞으로의 일정 조회와 필드 동일
+          waterPlaceId: 1000,
+          waterPlaceName: "명곡저수지 상류계곡",
+          waterPlaceImg: null,
+          waterPlaceAddr: "경상남도 양산시 서창동 명동 산20-1",
+          waterPlaceRating: 3.2,
+          waterPlaceReviewCnt: 6,
+          waterPlaceTraffic: 10,
+          tripDate: "2023-08-19",
+          rescueSupplies: {
+            lifeBoatNum: 5,
+            portableStandNum: 0,
+            lifeJacketNum: 5,
+            lifeRingNum: 5,
+            rescueRopeNum: 5,
+            rescueRodNum: 0,
+          },
+          tripPartySize: 10,
+          hasReview: false, // 리뷰 작성 여부 (지난 일정의 경우 리뷰를 작성할 수 있음)
+        },
+      ],
+      pageable: {
+        sort: {
+          empty: false,
+          unsorted: false,
+          sorted: true,
+        },
+        offset: 0,
+        pageNumber: 0,
+        pageSize: 5,
+        paged: true,
+        unpaged: false,
+      },
+      number: 0,
+      sort: {
+        empty: false,
+        unsorted: false,
+        sorted: true,
+      },
+      first: true, // 첫번째 페이지인지 여부
+      last: true, // 마지막 페이지인지 여부 (이게 false라면 다음에도 요청 가능!!)
+      size: 5, // 요청한 여행 일정 개수
+      numberOfElements: 5, // 현재 응답에서 조회된 여행 일정 개수 (0개 ~ 5개)
+      empty: false,
+    });
+    axiosInstance
+      .get("/api/auth/my-page/pre-schedules")
+      .then((res) => {
+        console.log(res);
+        setPreSchedule(res.data.data);
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const getUpcomingSchedule = () => {
+    axiosInstance
+      .get("/api/auth/my-page/upcoming-schedules")
+      .then((res) => {
+        console.log(res);
+        setUser({ ...user, myUpcomingTripSchedules: res.data.data });
+      })
+      .catch((err) => console.log(err));
   };
 
   return (
@@ -526,6 +649,7 @@ const MyPage = () => {
                 <span
                   onClick={() => {
                     setScheduleBtn("앞으로의 일정");
+                    getUpcomingSchedule();
                   }}
                   style={
                     scheduleBtn === "앞으로의 일정" ? { color: "black" } : {}
@@ -538,6 +662,7 @@ const MyPage = () => {
                 <span
                   onClick={() => {
                     setScheduleBtn("지난 일정");
+                    getPreSchedule();
                   }}
                   style={scheduleBtn === "지난 일정" ? { color: "black" } : {}}
                 >
@@ -545,114 +670,20 @@ const MyPage = () => {
                 </span>
               </div>
             </div>
-            <span onClick={handleDeleteSchedule}>삭제</span>
+            <span>삭제</span>
           </div>
           <div className={styles.scheduleList}>
-            {user.myUpcomingTripSchedules.map((item, index) => {
-              return (
-                <div className={styles.scheduleItem}>
-                  {/* <span
-                    className={styles.scheduleCheck}
-                    onClick={() => {
-                      if (deleteSchedule[index].check === false) {
-                        deleteSchedule[index].check = true;
-                        setDeleteSchedule(deleteSchedule);
-                      } else {
-                        deleteSchedule[index].check = false;
-                        setDeleteSchedule(deleteSchedule);
-                      }
-                      console.log(deleteSchedule);
-                    }}
-                  >
-                    {deleteSchedule[index].check === false ? (
-                      <MdCheckBoxOutlineBlank color="#66A5FC" size="25px" />
-                    ) : (
-                      <MdCheckBox color="#66A5FC" size="25px" />
-                    )}
-                  </span> */}
-                  <img
-                    src={
-                      item.waterPlaceImg === null
-                        ? process.env.PUBLIC_URL + "/img/default-image.png"
-                        : item.waterPlaceImg
-                    }
-                    alt="계곡 사진"
-                    width="180px"
-                  />
-                  <div className={styles.scheduleInfo}>
-                    <h4>{item.waterPlaceName}</h4>
-                    <span>{item.waterPlaceAddr}</span>
-                    <span>{item.waterPlaceRating}</span>
-                    <span>/5</span>
-                    <span>리뷰 {item.waterPlaceReviewCnt}개</span>
-                    <div className={styles.reservationInfo}>
-                      <div>
-                        <span>날짜</span>
-                        <span>{item.tripDate}</span>
-                      </div>
-                      <div>
-                        <span>인원</span>
-                        <span>{item.tripPartySize}</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className={styles.valleyInfo}>
-                    <div className={styles.congestion}>
-                      <span>계곡 혼잡도</span>
-                      <div
-                        style={
-                          item.waterPlaceTraffic >= 15
-                            ? { backgroundColor: "#FA7F64" }
-                            : item.waterPlaceTraffic >= 10
-                            ? { backgroundColor: "#FFD874" }
-                            : item.waterPlaceTraffic >= 5
-                            ? { backgroundColor: "#8EBBFF" }
-                            : { backgroundColor: "#E0E0E0" }
-                        }
-                      ></div>
-                    </div>
-                    <div className={styles.rescueList}>
-                      <div className={styles.rescueItem}>
-                        <span>
-                          <TbChartDonut4 size="40px" color="#66A5FC" />
-                        </span>
-                        <span>{item.rescueSupplies.lifeRingNum}</span>
-                      </div>
-                      <div className={styles.rescueItem}>
-                        <span>
-                          <TbJumpRope size="40px" color="#66A5FC" />
-                        </span>
-                        <span>{item.rescueSupplies.rescueRopeNum}</span>
-                      </div>
-                      <div className={styles.rescueItem}>
-                        <span>
-                          <MdEmojiPeople size="40px" color="#66A5FC" />
-                        </span>
-                        <span>{item.rescueSupplies.lifeBoatNum}</span>
-                      </div>
-                      <div className={styles.rescueItem}>
-                        <span>
-                          <FaVest size="40px" color="#66A5FC" />
-                        </span>
-                        <span>{item.rescueSupplies.lifeJacketNum}</span>
-                      </div>
-                      <div className={styles.rescueItem}>
-                        <span>
-                          <MdHomeRepairService size="40px" color="#66A5FC" />
-                        </span>
-                        <span>{item.rescueSupplies.portableStandNum}</span>
-                      </div>
-                      <div className={styles.rescueItem}>
-                        <span>
-                          <LuUtilityPole size="40px" color="#66A5FC" />
-                        </span>
-                        <span>{item.rescueSupplies.rescueRodNum}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
+            {scheduleBtn === "앞으로의 일정" ? (
+              <TripSchedule
+                scheduleBtn={scheduleBtn}
+                tripSchedules={user.myUpcomingTripSchedules}
+              />
+            ) : (
+              <TripSchedule
+                scheduleBtn={scheduleBtn}
+                tripSchedules={preSchedule.content}
+              />
+            )}
           </div>
         </div>
       </div>

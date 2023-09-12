@@ -1,0 +1,214 @@
+.modalContainer {
+  z-index: 5;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #eeeeeebd;
+}
+
+.modalBox {
+  width: 500px;
+  height: 95vh;
+  border-radius: 5px;
+  background-color: #ffffff;
+  position: absolute;
+  left: 50%;
+  margin-left: -250px;
+  margin-top: 20px;
+  overflow-y: scroll;
+}
+
+.writeTitle {
+  border-bottom: 1px solid #b5b5b5;
+  display: flex;
+  justify-content: center;
+  padding: 1em;
+  position: relative;
+}
+
+.writeTitle > span:first-child {
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.writeTitle > span:last-child {
+  position: absolute;
+  right: 20px;
+  top: 13px;
+  cursor: pointer;
+}
+
+.writeDetail {
+  padding: 1em 2.5em;
+  margin-top: 1em;
+}
+
+.valleyInfo {
+  display: flex;
+}
+
+.valleyInfo > img {
+  border-radius: 5px 0 0 5px;
+  margin: 0;
+}
+
+.valleyInfoDetail {
+  border: 1px solid #b5b5b5;
+  border-left: none;
+  border-radius: 0 5px 5px 0;
+  width: 100%;
+  padding: 0.8em 1em;
+}
+
+.valleyInfoDetail > h4 {
+  margin: 0;
+  font-size: 1.1rem;
+  margin-bottom: 0.3em;
+}
+
+.valleyInfoDetail > span {
+  color: #929292;
+  font-size: 0.9rem;
+}
+
+.valleyInfoDetail > div:nth-child(3) {
+  margin-top: 1em;
+}
+
+.valleyInfoDetail > div > span:first-child {
+  color: #929292;
+  font-size: 0.9rem;
+  margin-right: 1em;
+}
+
+.valleyInfoDetail > div > span:last-child {
+  font-size: 0.9rem;
+}
+
+.writeStar {
+  display: flex;
+  justify-content: center;
+  margin: 2em 0 1em 0;
+}
+
+.writeStar > span {
+  cursor: pointer;
+}
+
+.reviewTextarea {
+  border: 1px solid #d1d1d1;
+  background-color: #f4f4f4;
+  width: 100%;
+  box-sizing: border-box;
+  border-radius: 5px;
+  height: 300px;
+  padding: 1.2em 1.5em;
+  position: relative;
+}
+
+.reviewTextarea > textarea {
+  border: none;
+  background-color: transparent;
+  width: 100%;
+  box-sizing: border-box;
+  height: 250px;
+  resize: none;
+}
+
+.reviewTextarea > textarea:focus {
+  outline: none;
+}
+
+.reviewTextarea > textarea::placeholder {
+  color: #848484;
+}
+
+.reviewTextarea > span {
+  color: #848484;
+  position: absolute;
+  font-size: small;
+  right: 20px;
+  bottom: 10px;
+}
+
+.pictureBtn {
+  border: 1px solid #b5b5b5;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.5em;
+  cursor: pointer;
+  margin-top: 1em;
+  margin-bottom: 2em;
+}
+
+.pictureBtn > span:last-child {
+  font-weight: bold;
+  margin-left: 0.5em;
+}
+
+.writeQuality > span {
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.writeQuality > div {
+  margin-top: 0.8em;
+  display: flex;
+}
+
+.writeQuality > div > div {
+  border: 1px solid #b5b5b5;
+  border-radius: 5px;
+  padding: 0.5em 1.5em;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.writeQuality > div > div:not(:last-of-type) {
+  margin-right: 0.3em;
+}
+
+.writeQuality > div > div > span:last-child {
+  font-weight: bold;
+  color: #5e5e5e;
+  font-size: 0.9rem;
+  margin-left: 0.3em;
+}
+
+.reviewBtn {
+  margin: 2em 0 1.5em 0;
+  display: flex;
+  padding: 0 2.5em;
+}
+
+.reviewBtn > button:first-child {
+  border: 1px solid #b5b5b5;
+  color: #5e5e5e;
+  font-weight: bold;
+  background-color: transparent;
+  border-radius: 5px;
+  padding: 0.5em;
+  margin-right: 0.5em;
+  width: 100%;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.reviewBtn > button:last-child {
+  border: none;
+  color: white;
+  font-weight: bold;
+  background-color: #66a5fc;
+  border-radius: 5px;
+  padding: 0.6em;
+  width: 100%;
+  cursor: pointer;
+  font-size: 1rem;
+}

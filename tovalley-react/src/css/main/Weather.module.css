@@ -11,6 +11,7 @@
 }
 
 .dayContainer {
+  width: 360px;
   border: 1px solid #cccccc;
   padding: 0em 1.5em;
   border-radius: 10px;
@@ -43,7 +44,134 @@
 }
 
 .weatherMap {
-  width: 100%;
+  width: 410px;
   height: 80vh;
   margin-top: 0.8em;
+  background-color: #c0e1ff;
+  box-sizing: border-box;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.weatherMap > img {
+  width: 100%;
+}
+
+.weatherMap > div {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.weatherMap > div > span {
+  font-weight: bold;
+  font-size: 0.8rem;
+  position: absolute;
+  bottom: 0px;
+}
+
+.chuncheon {
+  top: 50px;
+  right: 130px;
+  position: relative;
+}
+
+.baengnyeong {
+  top: 80px;
+  left: 40px;
+  position: relative;
+}
+
+.seoul {
+  top: 80px;
+  left: 120px;
+  position: relative;
+}
+
+.gangneung {
+  top: 100px;
+  right: 70px;
+  position: relative;
+}
+
+.cheongju {
+  top: 150px;
+  right: 140px;
+  position: relative;
+}
+
+.ulleung {
+  top: 160px;
+  right: 0px;
+  position: relative;
+}
+
+.suwon {
+  top: 150px;
+  left: 110px;
+  position: relative;
+}
+
+.andong {
+  top: 220px;
+  right: 90px;
+  position: relative;
+}
+
+.daejeon {
+  top: 210px;
+  left: 160px;
+  position: relative;
+}
+
+.jeonju {
+  top: 270px;
+  left: 120px;
+  position: relative;
+}
+
+.daegu {
+  top: 280px;
+  right: 120px;
+  position: relative;
+}
+
+.ulsan {
+  top: 270px;
+  right: 50px;
+  position: relative;
+}
+
+.gwangju {
+  top: 330px;
+  left: 90px;
+  position: relative;
+}
+
+.mokpo {
+  top: 380px;
+  left: 40px;
+  position: relative;
+}
+
+.yeosu {
+  top: 390px;
+  left: 140px;
+  position: relative;
+}
+
+.busan {
+  top: 330px;
+  right: 60px;
+  position: relative;
+}
+
+.jeju {
+  top: 460px;
+  left: 60px;
+  position: relative;
 }

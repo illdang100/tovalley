@@ -12,6 +12,8 @@ const ValleyListPage = () => {
   const [click, setClick] = useState("전국");
   const [regionClick, setRegionClick] = useState({ ko: "", en: "" });
   const [sort, setSort] = useState("평점");
+  const [search, setSearch] = useState("");
+  const [searchValley, setSearchValley] = useState(false);
   const navigation = useNavigate();
 
   const [page, setPage] = useState(1);
@@ -69,21 +71,36 @@ const ValleyListPage = () => {
 
   useEffect(() => {
     sort === "평점"
-      ? getValleyList(click, regionClick.en, "rating,desc")
-      : getValleyList(click, regionClick.en, "review,desc");
-  }, [regionClick, sort, page]);
+      ? getValleyList(click, regionClick.en, "rating,desc", search)
+      : getValleyList(click, regionClick.en, "review,desc", search);
+  }, [regionClick, sort, page, searchValley]);
 
-  const getValleyList = (province: string, city: string, sort: string) => {
+  const getValleyList = (
+    province: string,
+    city: string,
+    sort: string,
+    search: string
+  ) => {
     console.log(province, city);
-    const config = {
-      params: {
-        province: province,
-        city: city,
-        sort: sort,
-        page: page,
-        size: 12,
-      },
-    };
+    const config =
+      search === ""
+        ? {
+            params: {
+              province: province,
+              city: city,
+              page: page,
+              size: 12,
+            },
+          }
+        : {
+            params: {
+              province: province,
+              city: city,
+              searchWord: search,
+              page: page,
+              size: 12,
+            },
+          };
 
     axios
       .get(`${localhost}/api/water-place/list`, config)
@@ -344,8 +361,19 @@ const ValleyListPage = () => {
               </span>
             </div>
             <div className={styles.search}>
-              <input placeholder="계곡을 검색해보세요" />
-              <span>
+              <input
+                value={search}
+                placeholder="계곡을 검색해보세요"
+                onChange={(e) => {
+                  setSearch(e.target.value);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    setSearchValley((prev) => !prev);
+                  }
+                }}
+              />
+              <span onClick={() => setSearchValley((prev) => !prev)}>
                 <BiSearchAlt2 size="22px" color="#838383" />
               </span>
             </div>
@@ -369,13 +397,15 @@ const ValleyListPage = () => {
                     <span className={styles.valleyRegion}>
                       {item.waterPlaceAddr}
                     </span>
-                    <span>하천</span>
                     <span className={styles.valleyRating}>
                       <span>{item.rating}</span>
                       <span>/5</span>
                     </span>
                     <span className={styles.valleyReview}>
                       리뷰 {item.reviewNum}개
+                    </span>
+                    <span className={styles.valleyCategory}>
+                      {item.category}
                     </span>
                   </div>
                 </div>

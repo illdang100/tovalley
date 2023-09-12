@@ -1,8 +1,9 @@
 .report {
   margin-top: 7em;
-  margin-right: 2.5em;
+  margin-right: 1.5em;
   min-width: 16em;
-  max-width: 16em;
+  width: 100%;
+  margin-left: 5.5em;
 }
 
 .menu {
