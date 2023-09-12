@@ -11,7 +11,7 @@ import javax.validation.constraints.NotEmpty;
 public class LoginForm {
 
     @NotEmpty(message = "이메일은 필수입니다")
-    private String email;
+    private String username;
 
     @NotEmpty(message = "패스워드는 필수입니다")
     private String password;
