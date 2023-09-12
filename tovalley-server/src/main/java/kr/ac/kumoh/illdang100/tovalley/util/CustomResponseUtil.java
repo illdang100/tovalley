@@ -3,6 +3,7 @@ package kr.ac.kumoh.illdang100.tovalley.util;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.dto.ResponseDto;
+import kr.ac.kumoh.illdang100.tovalley.handler.ex.CustomApiException;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtProcess;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtVO;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.RefreshToken;
@@ -77,12 +78,12 @@ public class CustomResponseUtil {
     }
 
 
-    public static boolean isCookieVerify(HttpServletRequest request) {
+    public static boolean isCookieVerify(HttpServletRequest request, String cookieName) {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 String cookieValue = URLDecoder.decode(cookie.getValue(), StandardCharsets.UTF_8);
-                if (cookie.getName().equals(JwtVO.ACCESS_TOKEN) && cookieValue.startsWith(JwtVO.TOKEN_PREFIX)) {
+                if (cookie.getName().equals(cookieName) && cookieValue.startsWith(JwtVO.TOKEN_PREFIX)) {
                     return true;
                 }
             }

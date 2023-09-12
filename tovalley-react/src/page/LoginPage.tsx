@@ -40,7 +40,7 @@ const LoginPage = () => {
 
   const handleLogin = () => {
     const data = {
-      email: login.email,
+      username: login.email,
       password: login.password,
     };
 
@@ -48,6 +48,7 @@ const LoginPage = () => {
       .post("/api/login", data)
       .then((res) => {
         console.log(res);
+        res.status === 200 && navigation("/");
       })
       .catch((err) => console.log(err));
   };
@@ -66,7 +67,7 @@ const LoginPage = () => {
             />
           </div>
           {/* 로그인 입력창 */}
-          <form className={styles.loginInput}>
+          <div className={styles.loginInput}>
             <input
               type="email"
               required
@@ -81,8 +82,8 @@ const LoginPage = () => {
               value={login.password}
               onChange={(e) => setLogin({ ...login, password: e.target.value })}
             />
-            <button onClick={handleLogin}>로그인</button>
-          </form>
+            <button onClick={() => handleLogin()}>로그인</button>
+          </div>
           {/* 소셜로그인 */}
           <div className={styles.socialLogin}>
             <div className={styles.socialLoginTitle}>

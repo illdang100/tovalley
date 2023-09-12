@@ -5,6 +5,8 @@ import kr.ac.kumoh.illdang100.tovalley.dto.ResponseDto;
 import kr.ac.kumoh.illdang100.tovalley.security.auth.PrincipalDetails;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtProcess;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtVO;
+import kr.ac.kumoh.illdang100.tovalley.security.jwt.RefreshToken;
+import kr.ac.kumoh.illdang100.tovalley.security.jwt.RefreshTokenRedisRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,24 +21,28 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static kr.ac.kumoh.illdang100.tovalley.util.CustomResponseUtil.findCookieValue;
-import static kr.ac.kumoh.illdang100.tovalley.util.CustomResponseUtil.isCookieVerify;
+import static kr.ac.kumoh.illdang100.tovalley.util.CustomResponseUtil.*;
+import static kr.ac.kumoh.illdang100.tovalley.util.CustomResponseUtil.addCookie;
+import static kr.ac.kumoh.illdang100.tovalley.util.EntityFinder.findRefreshTokenOrElseThrowEx;
 
 @Slf4j
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
     private JwtProcess jwtProcess;
 
-    public JwtAuthorizationFilter(AuthenticationManager authenticationManager, JwtProcess jwtProcess) {
+    private RefreshTokenRedisRepository refreshTokenRedisRepository;
+
+    public JwtAuthorizationFilter(AuthenticationManager authenticationManager, JwtProcess jwtProcess, RefreshTokenRedisRepository refreshTokenRedisRepository) {
         super(authenticationManager);
         this.jwtProcess = jwtProcess;
+        this.refreshTokenRedisRepository = refreshTokenRedisRepository;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-        if (isCookieVerify(request)) {
+        if (isCookieVerify(request, JwtVO.ACCESS_TOKEN)) {
             String token = findCookieValue(request, JwtVO.ACCESS_TOKEN).replace(JwtVO.TOKEN_PREFIX, "");
-            log.debug("token={}", token);
+            log.debug("accessToken={}", token);
 
             try {
                 PrincipalDetails loginMember = jwtProcess.verify(token);
@@ -48,12 +54,45 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 
             } catch (Exception e) {
+                log.debug("액세스 토큰 만료!");
+                reIssueToken(request, response);
+            }
+        }
+        chain.doFilter(request, response);
+    }
+
+    private void reIssueToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        if (isCookieVerify(request, JwtVO.REFRESH_TOKEN)) {
+            String refreshToken = findCookieValue(request, JwtVO.REFRESH_TOKEN);
+            String jwtToken = refreshToken.replace(JwtVO.TOKEN_PREFIX, "");
+
+            // 리프레시 토큰 유효성 검사
+            try {
+                jwtProcess.isSatisfiedToken(jwtToken);
+            } catch (Exception e) {
                 handleTokenVerificationFailure(response);
                 return;
             }
-        }
 
-        chain.doFilter(request, response);
+            RefreshToken findRefreshToken
+                    = findRefreshTokenOrElseThrowEx(refreshTokenRedisRepository, refreshToken);
+
+            // 토큰 재발급
+            String memberId = findRefreshToken.getId();
+            String memberRole = findRefreshToken.getRole();
+
+            String newAccessToken = jwtProcess.createNewAccessToken(Long.valueOf(memberId), memberRole);
+            String newRefreshToken = jwtProcess.createRefreshToken(memberId, memberRole);
+
+            findRefreshToken.changeRefreshToken(newRefreshToken);
+            refreshTokenRedisRepository.save(findRefreshToken);
+
+            log.debug("[토큰 재발급]accessToken={}", newAccessToken);
+
+            // 토큰을 쿠키에 추가
+            addCookie(response, JwtVO.ACCESS_TOKEN, newAccessToken);
+            addCookie(response, JwtVO.REFRESH_TOKEN, newRefreshToken);
+        }
     }
 
     private void handleTokenVerificationFailure(HttpServletResponse response) throws IOException {
@@ -65,5 +104,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         response.getWriter().write(responseBody);
         response.getWriter().flush();
         response.getWriter().close();
+
+        addCookie(response, ISLOGIN, "false", false);
     }
 }

@@ -110,41 +110,6 @@ public class MemberServiceImpl implements MemberService {
         findMember.changePassword(encodedPw);
     }
 
-    @Override
-    @Transactional
-    public void reIssueToken(HttpServletRequest request, HttpServletResponse response) {
-
-        Cookie[] cookies = request.getCookies();
-        if (isCookieVerify(request)) {
-            String refreshToken = findCookieValue(request, JwtVO.REFRESH_TOKEN);
-            String jwtToken = refreshToken.replace(JwtVO.TOKEN_PREFIX, "");
-
-            // 리프레시 토큰 유효성 검사
-            try {
-                jwtProcess.isSatisfiedToken(jwtToken);
-            } catch (Exception e) {
-                throw new CustomApiException("유효하지 않은 토큰입니다");
-            }
-
-            RefreshToken findRefreshToken
-                    = findRefreshTokenOrElseThrowEx(refreshTokenRedisRepository, refreshToken);
-
-            // 토큰 재발급
-            String memberId = findRefreshToken.getId();
-            String memberRole = findRefreshToken.getRole();
-
-            String newAccessToken = jwtProcess.createNewAccessToken(Long.valueOf(memberId), memberRole);
-            String newRefreshToken = jwtProcess.createRefreshToken(memberId, memberRole);
-
-            findRefreshToken.changeRefreshToken(newRefreshToken);
-            refreshTokenRedisRepository.save(findRefreshToken);
-
-            // 토큰을 쿠키에 추가
-            addCookie(response, JwtVO.ACCESS_TOKEN, newAccessToken);
-            addCookie(response, JwtVO.REFRESH_TOKEN, newRefreshToken);
-        }
-    }
-
     /**
      * @param memberId: 사용자 pk
      * @methodnme: getMemberDetail
