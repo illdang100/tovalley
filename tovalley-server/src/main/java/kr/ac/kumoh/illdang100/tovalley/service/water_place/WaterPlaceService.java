@@ -31,4 +31,6 @@ public interface WaterPlaceService {
     void updateWaterPlaceImage(Long waterPlaceId, MultipartFile waterPlaceImage);
 
     void saveNewWaterPlace(CreateWaterPlaceForm form);
+
+    Page<AdminRetrieveWaterPlacesDto> getAdminWaterPlaceList(String searchWord, Pageable pageable);
 }

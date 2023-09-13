@@ -10,6 +10,7 @@ import kr.ac.kumoh.illdang100.tovalley.service.accident.AccidentService;
 import kr.ac.kumoh.illdang100.tovalley.service.water_place.WaterPlaceService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -29,6 +30,7 @@ import java.util.List;
 import static kr.ac.kumoh.illdang100.tovalley.dto.accident.AccidentReqDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.accident.AccidentRespDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.rescue_supply.RescueSupplyRespDto.*;
+import static kr.ac.kumoh.illdang100.tovalley.dto.water_place.WaterPlaceReqDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.water_place.WaterPlaceRespDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.util.EntityFinder.*;
 
@@ -70,7 +72,14 @@ public class WaterPlaceController {
      * @return 관리자용 물놀이 장소 리스트 페이지
      */
     @GetMapping("/water-place-list")
-    public String adminWaterPlaceList(Model model) {
+    public String adminWaterPlaceList(@ModelAttribute("waterPlaceCond") AdminRetrieveWaterPlacesCondition adminRetrieveWaterPlacesCondition,
+                                      @PageableDefault(size = 12) Pageable pageable,
+                                      Model model) {
+
+        String searchWord = adminRetrieveWaterPlacesCondition.getSearchWord();
+
+        Page<AdminRetrieveWaterPlacesDto> waterPlaceList = waterPlaceService.getAdminWaterPlaceList(searchWord, pageable);
+        model.addAttribute("waterPlaceList", waterPlaceList);
 
         return "admin/water_place/waterPlaceList";
     }
