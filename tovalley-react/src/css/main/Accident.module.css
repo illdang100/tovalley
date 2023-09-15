@@ -1,6 +1,6 @@
 .accident {
-  min-width: 23em;
-  width: 100%;
+  min-width: 25em;
+  width: calc(100% / 3);
 }
 
 .accident h4 {
@@ -71,7 +71,7 @@
 .lineGraph {
   border: 1px solid #cccccc;
   border-radius: 10px;
-  height: 55vh;
+  height: 46vh;
   margin-top: 0.7em;
   padding: 1em 0.8em;
 }

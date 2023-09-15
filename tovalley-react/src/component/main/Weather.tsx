@@ -28,6 +28,14 @@ const dateFormat = (date: string) => {
   return formatedDate;
 };
 
+const weatherSort = (date: string) => {
+  let createDate = new Date(date);
+
+  let formatedDate = `${createDate.getMonth() + 1}.${createDate.getDate()}`;
+
+  return formatedDate;
+};
+
 const getDayOfWeek = (day: string) => {
   const week = ["일", "월", "화", "수", "목", "금", "토"];
   const dayOfWeek = week[new Date(day).getDay()];
@@ -35,83 +43,29 @@ const getDayOfWeek = (day: string) => {
   return dayOfWeek;
 };
 
-type regionType = {
-  maxTemp: number;
-  minTemp: number;
-  rainPrecipitation: number;
-  region: string;
-  weatherDesc: string;
-  weatherIcon: string;
-}[];
-
-const tempRegion = {
-  maxTemp: 0,
-  minTemp: 0,
-  rainPrecipitation: 0,
-  region: "",
-  weatherDesc: "",
-  weatherIcon: "",
-};
-
 const Weather: FC<Props> = ({ nationalWeather }) => {
-  const [clicked, setClicked] = useState(nationalWeather[0]);
-  const 춘천: regionType = clicked.dailyNationalWeather.map((item) => {
-    return item.region === "춘천" ? item : tempRegion;
-  });
-  const 백령: regionType = clicked.dailyNationalWeather.map((item) => {
-    return item.region === "백령" ? item : tempRegion;
-  });
-  const 서울: regionType = clicked.dailyNationalWeather.map((item) => {
-    return item.region === "서울" ? item : tempRegion;
-  });
-  const 강릉: regionType = clicked.dailyNationalWeather.map((item) => {
-    return item.region === "강릉" ? item : tempRegion;
-  });
-  const 청주: regionType = clicked.dailyNationalWeather.map((item) => {
-    return item.region === "청주" ? item : tempRegion;
-  });
-  const 수원: regionType = clicked.dailyNationalWeather.map((item) => {
-    return item.region === "수원" ? item : tempRegion;
-  });
-  const 울릉: regionType = clicked.dailyNationalWeather.map((item) => {
-    return item.region === "울릉" ? item : tempRegion;
-  });
-  const 대전: regionType = clicked.dailyNationalWeather.map((item) => {
-    return item.region === "대전" ? item : tempRegion;
-  });
-  const 안동: regionType = clicked.dailyNationalWeather.map((item) => {
-    return item.region === "안동" ? item : tempRegion;
-  });
-  const 전주: regionType = clicked.dailyNationalWeather.map((item) => {
-    return item.region === "전주" ? item : tempRegion;
-  });
-  const 대구: regionType = clicked.dailyNationalWeather.map((item) => {
-    return item.region === "대구" ? item : tempRegion;
-  });
-  const 울산: regionType = clicked.dailyNationalWeather.map((item) => {
-    return item.region === "울산" ? item : tempRegion;
-  });
-  const 광주: regionType = clicked.dailyNationalWeather.map((item) => {
-    return item.region === "광주" ? item : tempRegion;
-  });
-  const 부산: regionType = clicked.dailyNationalWeather.map((item) => {
-    return item.region === "부산" ? item : tempRegion;
-  });
-  const 목포: regionType = clicked.dailyNationalWeather.map((item) => {
-    return item.region === "목포" ? item : tempRegion;
-  });
-  const 여수: regionType = clicked.dailyNationalWeather.map((item) => {
-    return item.region === "여수" ? item : tempRegion;
-  });
-  const 제주: regionType = clicked.dailyNationalWeather.map((item) => {
-    return item.region === "제주" ? item : tempRegion;
-  });
+  let dateArr = nationalWeather;
+
+  for (let i = 0; i < dateArr.length; i++) {
+    for (let j = 0; j < dateArr.length - 1; j++) {
+      if (
+        Number(weatherSort(dateArr[j].weatherDate)) >
+        Number(weatherSort(dateArr[j + 1].weatherDate))
+      ) {
+        let temp = dateArr[j];
+        dateArr[j] = dateArr[j + 1];
+        dateArr[j + 1] = temp;
+      }
+    }
+  }
+
+  const [clicked, setClicked] = useState(dateArr[0]);
 
   return (
     <div className={styles.weather}>
       <h4>전국날씨</h4>
       <div className={styles.dayContainer}>
-        {nationalWeather.reverse().map((item) => {
+        {dateArr.map((item) => {
           return (
             <div
               onClick={() => {
@@ -121,10 +75,22 @@ const Weather: FC<Props> = ({ nationalWeather }) => {
             >
               {dateFormat(item.weatherDate) === "오늘" ? (
                 <>
-                  <span style={{ color: "#66A5FC" }}>
+                  <span
+                    style={
+                      clicked.weatherDate === "" ? { color: "#66A5FC" } : {}
+                    }
+                  >
                     {getDayOfWeek(item.weatherDate)}
                   </span>
-                  <span style={{ color: "#66A5FC" }}>
+                  <span
+                    style={
+                      clicked.weatherDate === ""
+                        ? {
+                            color: "#66A5FC",
+                          }
+                        : {}
+                    }
+                  >
                     {dateFormat(item.weatherDate)}
                   </span>
                 </>
@@ -143,9 +109,9 @@ const Weather: FC<Props> = ({ nationalWeather }) => {
           src={process.env.PUBLIC_URL + "/img/map_img.png"}
           alt="지도 이미지"
         ></img>
-        <div className={styles.chuncheon}>
+        {/* <div className={styles.chuncheon}>
           <img
-            src={`https://openweathermap.org/img/wn/${춘천[0].weatherIcon}@2x.png`}
+            src={`https://openweathermap.org/img/wn/${clicked.dailyNationalWeather[2].weatherIcon}@2x.png`}
             alt="날씨 아이콘"
             width="70px"
           />
@@ -153,7 +119,7 @@ const Weather: FC<Props> = ({ nationalWeather }) => {
         </div>
         <div className={styles.baengnyeong}>
           <img
-            src={`https://openweathermap.org/img/wn/${백령[0].weatherIcon}@2x.png`}
+            src={`https://openweathermap.org/img/wn/${clicked.dailyNationalWeather[0].weatherIcon}@2x.png`}
             alt="날씨 아이콘"
             width="70px"
           />
@@ -161,7 +127,7 @@ const Weather: FC<Props> = ({ nationalWeather }) => {
         </div>
         <div className={styles.seoul}>
           <img
-            src={`https://openweathermap.org/img/wn/${서울[0].weatherIcon}@2x.png`}
+            src={`https://openweathermap.org/img/wn/${clicked.dailyNationalWeather[1].weatherIcon}@2x.png`}
             alt="날씨 아이콘"
             width="70px"
           />
@@ -169,7 +135,7 @@ const Weather: FC<Props> = ({ nationalWeather }) => {
         </div>
         <div className={styles.gangneung}>
           <img
-            src={`https://openweathermap.org/img/wn/${강릉[0].weatherIcon}@2x.png`}
+            src={`https://openweathermap.org/img/wn/${clicked.dailyNationalWeather[3].weatherIcon}@2x.png`}
             alt="날씨 아이콘"
             width="70px"
           />
@@ -177,7 +143,7 @@ const Weather: FC<Props> = ({ nationalWeather }) => {
         </div>
         <div className={styles.cheongju}>
           <img
-            src={`https://openweathermap.org/img/wn/${청주[0].weatherIcon}@2x.png`}
+            src={`https://openweathermap.org/img/wn/${clicked.dailyNationalWeather[5].weatherIcon}@2x.png`}
             alt="날씨 아이콘"
             width="70px"
           />
@@ -185,7 +151,7 @@ const Weather: FC<Props> = ({ nationalWeather }) => {
         </div>
         <div className={styles.ulleung}>
           <img
-            src={`https://openweathermap.org/img/wn/${울릉[0].weatherIcon}@2x.png`}
+            src={`https://openweathermap.org/img/wn/${clicked.dailyNationalWeather[6].weatherIcon}@2x.png`}
             alt="날씨 아이콘"
             width="70px"
           />
@@ -193,7 +159,7 @@ const Weather: FC<Props> = ({ nationalWeather }) => {
         </div>
         <div className={styles.suwon}>
           <img
-            src={`https://openweathermap.org/img/wn/${수원[0].weatherIcon}@2x.png`}
+            src={`https://openweathermap.org/img/wn/${clicked.dailyNationalWeather[4].weatherIcon}@2x.png`}
             alt="날씨 아이콘"
             width="70px"
           />
@@ -201,7 +167,7 @@ const Weather: FC<Props> = ({ nationalWeather }) => {
         </div>
         <div className={styles.andong}>
           <img
-            src={`https://openweathermap.org/img/wn/${안동[0].weatherIcon}@2x.png`}
+            src={`https://openweathermap.org/img/wn/${clicked.dailyNationalWeather[8].weatherIcon}@2x.png`}
             alt="날씨 아이콘"
             width="70px"
           />
@@ -209,7 +175,7 @@ const Weather: FC<Props> = ({ nationalWeather }) => {
         </div>
         <div className={styles.daejeon}>
           <img
-            src={`https://openweathermap.org/img/wn/${대전[0].weatherIcon}@2x.png`}
+            src={`https://openweathermap.org/img/wn/${clicked.dailyNationalWeather[7].weatherIcon}@2x.png`}
             alt="날씨 아이콘"
             width="70px"
           />
@@ -217,7 +183,7 @@ const Weather: FC<Props> = ({ nationalWeather }) => {
         </div>
         <div className={styles.jeonju}>
           <img
-            src={`https://openweathermap.org/img/wn/${전주[0].weatherIcon}@2x.png`}
+            src={`https://openweathermap.org/img/wn/${clicked.dailyNationalWeather[9].weatherIcon}@2x.png`}
             alt="날씨 아이콘"
             width="70px"
           />
@@ -225,7 +191,7 @@ const Weather: FC<Props> = ({ nationalWeather }) => {
         </div>
         <div className={styles.daegu}>
           <img
-            src={`https://openweathermap.org/img/wn/${대구[0].weatherIcon}@2x.png`}
+            src={`https://openweathermap.org/img/wn/${clicked.dailyNationalWeather[10].weatherIcon}@2x.png`}
             alt="날씨 아이콘"
             width="70px"
           />
@@ -233,7 +199,7 @@ const Weather: FC<Props> = ({ nationalWeather }) => {
         </div>
         <div className={styles.ulsan}>
           <img
-            src={`https://openweathermap.org/img/wn/${울산[0].weatherIcon}@2x.png`}
+            src={`https://openweathermap.org/img/wn/${clicked.dailyNationalWeather[11].weatherIcon}@2x.png`}
             alt="날씨 아이콘"
             width="70px"
           />
@@ -241,7 +207,7 @@ const Weather: FC<Props> = ({ nationalWeather }) => {
         </div>
         <div className={styles.gwangju}>
           <img
-            src={`https://openweathermap.org/img/wn/${광주[0].weatherIcon}@2x.png`}
+            src={`https://openweathermap.org/img/wn/${clicked.dailyNationalWeather[12].weatherIcon}@2x.png`}
             alt="날씨 아이콘"
             width="70px"
           />
@@ -249,7 +215,7 @@ const Weather: FC<Props> = ({ nationalWeather }) => {
         </div>
         <div className={styles.mokpo}>
           <img
-            src={`https://openweathermap.org/img/wn/${목포[0].weatherIcon}@2x.png`}
+            src={`https://openweathermap.org/img/wn/${clicked.dailyNationalWeather[13].weatherIcon}@2x.png`}
             alt="날씨 아이콘"
             width="70px"
           />
@@ -257,7 +223,7 @@ const Weather: FC<Props> = ({ nationalWeather }) => {
         </div>
         <div className={styles.yeosu}>
           <img
-            src={`https://openweathermap.org/img/wn/${여수[0].weatherIcon}@2x.png`}
+            src={`https://openweathermap.org/img/wn/${clicked.dailyNationalWeather[16].weatherIcon}@2x.png`}
             alt="날씨 아이콘"
             width="70px"
           />
@@ -265,7 +231,7 @@ const Weather: FC<Props> = ({ nationalWeather }) => {
         </div>
         <div className={styles.busan}>
           <img
-            src={`https://openweathermap.org/img/wn/${부산[0].weatherIcon}@2x.png`}
+            src={`https://openweathermap.org/img/wn/${clicked.dailyNationalWeather[14].weatherIcon}@2x.png`}
             alt="날씨 아이콘"
             width="70px"
           />
@@ -273,12 +239,12 @@ const Weather: FC<Props> = ({ nationalWeather }) => {
         </div>
         <div className={styles.jeju}>
           <img
-            src={`https://openweathermap.org/img/wn/${제주[0].weatherIcon}@2x.png`}
+            src={`https://openweathermap.org/img/wn/${clicked.dailyNationalWeather[15].weatherIcon}@2x.png`}
             alt="날씨 아이콘"
             width="70px"
           />
-          <span>제주</span>
-        </div>
+          <span>제주</span> 
+        </div>*/}
       </div>
     </div>
   );

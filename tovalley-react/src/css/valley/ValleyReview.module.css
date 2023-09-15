@@ -99,7 +99,6 @@
 }
 
 .ratioItem div > div {
-  width: 80%;
   background-color: #66a5fc;
   height: 16px;
   margin: 0;
@@ -133,8 +132,27 @@
   margin-bottom: 1.5em;
 }
 
+.valleyImg {
+  position: relative;
+}
+
 .valleyImg img {
   border-radius: 5px;
+  height: 100%;
+}
+
+.valleyImg > span:nth-child(2) {
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  color: white;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  background-color: rgba(255, 255, 255, 0.387);
 }
 
 .reviewDetail {
@@ -180,4 +198,60 @@
 
 .reviewDetail > span:last-child {
   color: #696969;
+}
+
+.paging {
+  display: flex;
+  justify-content: center;
+  margin-top: 3em;
+}
+
+.paging > button {
+  border: none;
+  color: #d4cbbb;
+  padding: 0 1em;
+  font-size: 1.1rem;
+  background-color: white;
+}
+
+.paging button:hover {
+  cursor: pointer;
+}
+
+.paging button[aria-current] {
+  font-weight: bold;
+  color: #66a5fc;
+  cursor: pointer;
+}
+
+.imgContainer {
+  z-index: 5;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.imgBox {
+  width: 120vh;
+  height: 80vh;
+  background-color: #00000090;
+  top: 50%;
+  left: 50%;
+  margin-left: -60vh;
+  margin-top: -40vh;
+  position: relative;
+}
+
+.close {
+  cursor: pointer;
+  position: absolute;
+  top: 20px;
+  right: 30px;
+}
+
+.imgList {
+  position: relative;
+  z-index: 6;
 }

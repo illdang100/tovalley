@@ -8,8 +8,43 @@ import { useNavigate } from "react-router-dom";
 
 const localhost = "http://localhost:8081";
 
+type List = {
+  content: {
+    waterPlaceId: number;
+    waterPlaceName: string;
+    waterPlaceAddr: string;
+    rating: number | string;
+    reviewNum: number | string;
+    category: string;
+  }[];
+  pageable: {
+    sort: {
+      unsorted: boolean;
+      sorted: boolean;
+      empty: boolean;
+    };
+    pageSize: number;
+    pageNumber: number;
+    offset: number;
+    paged: boolean;
+    unpaged: boolean;
+  };
+  last: boolean;
+  totalPages: number;
+  totalElements: number;
+  first: boolean;
+  numberOfElements: number;
+  size: number;
+  number: number;
+  sort: {
+    unsorted: boolean;
+    sorted: boolean;
+    empty: boolean;
+  };
+  empty: boolean;
+};
 const ValleyListPage = () => {
-  const [click, setClick] = useState("전국");
+  const [click, setClick] = useState({ category: "전국", detail: false });
   const [regionClick, setRegionClick] = useState({ ko: "", en: "" });
   const [sort, setSort] = useState("평점");
   const [search, setSearch] = useState("");
@@ -22,17 +57,32 @@ const ValleyListPage = () => {
   let firstNum = currPage - (currPage % 5) + 1;
   let lastNum = currPage - (currPage % 5) + 5;
 
-  const [list, setList] = useState({
+  const [list, setList] = useState<List>({
     content: [
       {
         waterPlaceId: 1,
         waterPlaceName: "대천천계곡",
         waterPlaceAddr: "부산광역시 북구 화명동 2102번지",
+        rating: "",
+        reviewNum: "",
+        category: "",
+      },
+      {
+        waterPlaceId: 40,
+        waterPlaceName: "대천천계곡",
+        waterPlaceAddr: "부산광역시 북구 화명동 2102번지",
         rating: 4.7,
         reviewNum: 195,
-        category: "하천",
+        category: "계곡",
       },
-
+      {
+        waterPlaceId: 40,
+        waterPlaceName: "대천천계곡",
+        waterPlaceAddr: "부산광역시 북구 화명동 2102번지",
+        rating: 4.7,
+        reviewNum: 195,
+        category: "계곡",
+      },
       {
         waterPlaceId: 40,
         waterPlaceName: "대천천계곡",
@@ -71,8 +121,8 @@ const ValleyListPage = () => {
 
   useEffect(() => {
     sort === "평점"
-      ? getValleyList(click, regionClick.en, "rating,desc", search)
-      : getValleyList(click, regionClick.en, "review,desc", search);
+      ? getValleyList(click.category, regionClick.en, "rating", search)
+      : getValleyList(click.category, regionClick.en, "review", search);
   }, [regionClick, sort, page, searchValley]);
 
   const getValleyList = (
@@ -84,12 +134,29 @@ const ValleyListPage = () => {
     console.log(province, city);
     const config =
       search === ""
+        ? city === ""
+          ? {
+              params: {
+                province: province,
+                sortCond: sort,
+                page: page - 1,
+              },
+            }
+          : {
+              params: {
+                province: province,
+                city: city,
+                sortCond: sort,
+                page: page - 1,
+              },
+            }
+        : city === ""
         ? {
             params: {
               province: province,
-              city: city,
-              page: page,
-              size: 12,
+              searchWord: search,
+              sortCond: sort,
+              page: page - 1,
             },
           }
         : {
@@ -97,11 +164,12 @@ const ValleyListPage = () => {
               province: province,
               city: city,
               searchWord: search,
-              page: page,
-              size: 12,
+              sortCond: sort,
+              page: page - 1,
             },
           };
 
+    console.log(config);
     axios
       .get(`${localhost}/api/water-place/list`, config)
       .then((res) => {
@@ -118,11 +186,15 @@ const ValleyListPage = () => {
     },
     {
       name: "울산광역시",
-      region: [{ ko: "울주군", en: "ULJU_GUN" }],
+      region: [
+        { ko: "전체", en: "" },
+        { ko: "울주군", en: "ULJU_GUN" },
+      ],
     },
     {
       name: "대전광역시",
       region: [
+        { ko: "전체", en: "" },
         {
           ko: "대덕구",
           en: "DAEDEOK_GU",
@@ -137,11 +209,15 @@ const ValleyListPage = () => {
     },
     {
       name: "광주광역시",
-      region: [{ ko: "광산구", en: "GWANGSAN_GU" }],
+      region: [
+        { ko: "전체", en: "" },
+        { ko: "광산구", en: "GWANGSAN_GU" },
+      ],
     },
     {
       name: "전라남도",
       region: [
+        { ko: "전체", en: "" },
         { ko: "곡성군", en: "GOKSEONG_GUN" },
         { ko: "장성군", en: "JANGSEONG_GUN" },
         { ko: "영암군", en: "YEONGAM_GUN" },
@@ -159,6 +235,7 @@ const ValleyListPage = () => {
     {
       name: "부산광역시",
       region: [
+        { ko: "전체", en: "" },
         { ko: "해운대구", en: "HAEUNDAE_GU" },
         { ko: "금정구", en: "GEUMJEONG_GU" },
         { ko: "북구", en: "BUK_GU" },
@@ -168,6 +245,7 @@ const ValleyListPage = () => {
     {
       name: "경기도",
       region: [
+        { ko: "전체", en: "" },
         { ko: "연천군", en: "YEONCHEON_GUN" },
         { ko: "남양주시", en: "NAMYANGJU" },
         { ko: "양평군", en: "YANGPYEONG_GUN" },
@@ -178,6 +256,7 @@ const ValleyListPage = () => {
     {
       name: "전라북도",
       region: [
+        { ko: "전체", en: "" },
         { ko: "진안군", en: "JINAN_GUN" },
         { ko: "고창군", en: "GOCHANG_GUN" },
         { ko: "정읍시", en: "JEONGEUP_SI" },
@@ -193,6 +272,7 @@ const ValleyListPage = () => {
     {
       name: "경상남도",
       region: [
+        { ko: "전체", en: "" },
         { ko: "사천시", en: "SACHEON_SI" },
         { ko: "김해시", en: "GIMHAE_SI" },
         { ko: "양산시", en: "YANGSAN_SI" },
@@ -215,11 +295,15 @@ const ValleyListPage = () => {
     },
     {
       name: "서울특별시",
-      region: [{ ko: "관악구", en: "GWANAK_GU" }],
+      region: [
+        { ko: "전체", en: "" },
+        { ko: "관악구", en: "GWANAK_GU" },
+      ],
     },
     {
       name: "충청남도",
       region: [
+        { ko: "전체", en: "" },
         { ko: "청양군", en: "CHEONGYANG_GUN" },
         { ko: "천안시", en: "CHUNAN_SI" },
         { ko: "서산시", en: "SEOSAN_SI" },
@@ -231,6 +315,7 @@ const ValleyListPage = () => {
     {
       name: "충청북도",
       region: [
+        { ko: "전체", en: "" },
         { ko: "청주시", en: "CHEONGJU_SI" },
         { ko: "상당구", en: "SANGDANG_GU" },
         { ko: "충주시", en: "CHUNGJU_SI" },
@@ -247,6 +332,7 @@ const ValleyListPage = () => {
     {
       name: "제주특별자치도",
       region: [
+        { ko: "전체", en: "" },
         { ko: "제주시", en: "JEJU_SI" },
         { ko: "서귀포시", en: "SEOGWIPO_SI" },
       ],
@@ -254,6 +340,7 @@ const ValleyListPage = () => {
     {
       name: "강원도",
       region: [
+        { ko: "전체", en: "" },
         { ko: "정선군", en: "JEONGSEON_GUN" },
         { ko: "춘천시", en: "CHUNCHEON_SI" },
         { ko: "평창군", en: "PYEONGCHANG_GUN" },
@@ -274,6 +361,7 @@ const ValleyListPage = () => {
     {
       name: "경상북도",
       region: [
+        { ko: "전체", en: "" },
         { ko: "영주시", en: "YEONGJU_SI" },
         { ko: "영천시", en: "YEONGCHEON_SI" },
         { ko: "영덕군", en: "YEONGDEOK_GUN" },
@@ -298,7 +386,10 @@ const ValleyListPage = () => {
     },
     {
       name: "세종특별자치시",
-      region: [{ ko: "세종시", en: "SEJONG_SI" }],
+      region: [
+        { ko: "전체", en: "" },
+        { ko: "세종시", en: "SEJONG_SI" },
+      ],
     },
   ];
 
@@ -313,14 +404,25 @@ const ValleyListPage = () => {
                 <div
                   className={styles.categoryList}
                   style={
-                    click === area.name ? { backgroundColor: "#F5F5F5" } : {}
+                    click.category === area.name
+                      ? { backgroundColor: "#F5F5F5" }
+                      : {}
                   }
                 >
-                  <span onClick={() => setClick(`${area.name}`)}>
+                  <span
+                    onClick={() => {
+                      setClick({
+                        category: `${area.name}`,
+                        detail:
+                          area.name === click.category ? !click.detail : true,
+                      });
+                      setRegionClick(area.region[0]);
+                    }}
+                  >
                     {area.name}
                   </span>
                 </div>
-                {click === area.name && (
+                {click.category === area.name && click.detail && (
                   <div className={styles.regionList}>
                     {area.region.map((region) => {
                       return (
@@ -397,16 +499,20 @@ const ValleyListPage = () => {
                     <span className={styles.valleyRegion}>
                       {item.waterPlaceAddr}
                     </span>
-                    <span className={styles.valleyRating}>
-                      <span>{item.rating}</span>
-                      <span>/5</span>
-                    </span>
-                    <span className={styles.valleyReview}>
-                      리뷰 {item.reviewNum}개
-                    </span>
-                    <span className={styles.valleyCategory}>
-                      {item.category}
-                    </span>
+                    {item.category !== "" && (
+                      <span className={styles.valleyCategory}>
+                        {item.category}
+                      </span>
+                    )}
+                    <div className={styles.reviewContainer}>
+                      <span className={styles.valleyRating}>
+                        <span>{item.rating === "" ? 0 : item.rating}</span>
+                        <span>/5</span>
+                      </span>
+                      <span className={styles.valleyReview}>
+                        리뷰 {item.reviewNum === "" ? 0 : item.reviewNum}개
+                      </span>
+                    </div>
                   </div>
                 </div>
               );

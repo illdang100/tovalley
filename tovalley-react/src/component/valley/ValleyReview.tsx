@@ -1,12 +1,59 @@
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import styles from "../../css/valley/ValleyReview.module.css";
-import {
-  MdOutlineStar,
-  MdOutlineStarOutline,
-  MdOutlineChatBubble,
-} from "react-icons/md";
+import { MdOutlineChatBubble } from "react-icons/md";
 import { FaUserCircle } from "react-icons/fa";
-import PagingBtn from "../common/PagingBtn";
+import RatingStar from "../common/RatingStar";
+import axiosInstance from "../../axios_interceptor";
+import { useParams } from "react-router-dom";
+import { IoCloseOutline } from "react-icons/io5";
+
+type valleyReview = {
+  waterPlaceRating: number;
+  reviewCnt: number;
+  ratingRatio: {
+    "1": number;
+    "2": number;
+    "3": number;
+    "4": number;
+    "5": number;
+  };
+  reviews: {
+    content: {
+      reviewId: number;
+      memberProfileImg: string | null;
+      nickname: string;
+      rating: number;
+      createdReviewDate: string;
+      content: string;
+      reviewImages: string[];
+    }[];
+    pageable: {
+      sort: {
+        empty: boolean;
+        unsorted: boolean;
+        sorted: boolean;
+      };
+      offset: number;
+      pageNumber: number;
+      pageSize: number;
+      paged: boolean;
+      unpaged: boolean;
+    };
+    last: boolean;
+    totalPages: number;
+    totalElements: number;
+    first: boolean;
+    sort: {
+      empty: boolean;
+      unsorted: boolean;
+      sorted: boolean;
+    };
+    number: number;
+    size: number;
+    numberOfElements: number;
+    empty: boolean;
+  };
+};
 
 interface Props {
   reviewRespDto: {
@@ -56,11 +103,57 @@ interface Props {
       empty: boolean;
     };
   };
+  setValleyReview: React.Dispatch<React.SetStateAction<valleyReview>>;
 }
 
-const ValleyReview: FC<Props> = ({ reviewRespDto }) => {
+const ValleyReview: FC<Props> = ({ reviewRespDto, setValleyReview }) => {
   const [sort, setSort] = useState("최신순");
   const sortMenu = ["최신순", "평점 높은 순", "평점 낮은 순"];
+  const [page, setPage] = useState(1);
+  const [currPage, setCurrPage] = useState(page);
+  const [detailReview, setDetailReview] = useState(false);
+
+  let firstNum = currPage - (currPage % 5) + 1;
+  let lastNum = currPage - (currPage % 5) + 5;
+
+  const { id } = useParams();
+
+  useEffect(() => {
+    const config =
+      sort === "최신순"
+        ? {
+            params: {
+              sort: "createdDate,desc",
+              page: page - 1,
+              size: 10,
+            },
+          }
+        : sort === "평점 높은 순"
+        ? {
+            params: {
+              sort: "rating,desc",
+              page: page - 1,
+              size: 10,
+            },
+          }
+        : {
+            params: {
+              sort: "rating,asc",
+              page: page - 1,
+              size: 10,
+            },
+          };
+
+    console.log(config);
+
+    axiosInstance
+      .get(`/api/water-places/${id}/reviews`, config)
+      .then((res) => {
+        console.log(res);
+        setValleyReview(res.data.data);
+      })
+      .catch((err) => console.log(err));
+  }, [sort, page]);
 
   return (
     <div className={styles.valleyReview}>
@@ -70,19 +163,7 @@ const ValleyReview: FC<Props> = ({ reviewRespDto }) => {
           <span>총 평점</span>
           <div className={styles.ratingStar}>
             <span>
-              <MdOutlineStar size="30px" color="#66A5FC" />
-            </span>
-            <span>
-              <MdOutlineStar size="30px" color="#66A5FC" />
-            </span>
-            <span>
-              <MdOutlineStar size="30px" color="#66A5FC" />
-            </span>
-            <span>
-              <MdOutlineStar size="30px" color="#66A5FC" />
-            </span>
-            <span>
-              <MdOutlineStarOutline size="30px" color="#66A5FC" />
+              <RatingStar rating={reviewRespDto.waterPlaceRating} size="30px" />
             </span>
           </div>
           <div className={styles.ratingNum}>
@@ -104,47 +185,67 @@ const ValleyReview: FC<Props> = ({ reviewRespDto }) => {
             <div className={styles.ratioItem}>
               <span>5점</span>
               <div>
-                <div>
+                <div
+                  style={{
+                    width: `calc(${reviewRespDto.ratingRatio[5]}/${reviewRespDto.reviewCnt}*100%)`,
+                  }}
+                >
                   <></>
                 </div>
               </div>
-              <span>100</span>
+              <span>{reviewRespDto.ratingRatio[5]}</span>
             </div>
             <div className={styles.ratioItem}>
               <span>4점</span>
               <div>
-                <div>
+                <div
+                  style={{
+                    width: `calc(${reviewRespDto.ratingRatio[4]}/${reviewRespDto.reviewCnt}*100%)`,
+                  }}
+                >
                   <></>
                 </div>
               </div>
-              <span>60</span>
+              <span>{reviewRespDto.ratingRatio[4]}</span>
             </div>
             <div className={styles.ratioItem}>
               <span>3점</span>
               <div>
-                <div>
+                <div
+                  style={{
+                    width: `calc(${reviewRespDto.ratingRatio[3]}/${reviewRespDto.reviewCnt}*100%)`,
+                  }}
+                >
                   <></>
                 </div>
               </div>
-              <span>10</span>
+              <span>{reviewRespDto.ratingRatio[3]}</span>
             </div>
             <div className={styles.ratioItem}>
               <span>2점</span>
               <div>
-                <div>
+                <div
+                  style={{
+                    width: `calc(${reviewRespDto.ratingRatio[2]}/${reviewRespDto.reviewCnt}*100%)`,
+                  }}
+                >
                   <></>
                 </div>
               </div>
-              <span>15</span>
+              <span>{reviewRespDto.ratingRatio[2]}</span>
             </div>
             <div className={styles.ratioItem}>
               <span>1점</span>
               <div>
-                <div>
+                <div
+                  style={{
+                    width: `calc(${reviewRespDto.ratingRatio[1]}/${reviewRespDto.reviewCnt}*100%)`,
+                  }}
+                >
                   <></>
                 </div>
               </div>
-              <span>30</span>
+              <span>{reviewRespDto.ratingRatio[1]}</span>
             </div>
           </div>
         </div>
@@ -172,12 +273,33 @@ const ValleyReview: FC<Props> = ({ reviewRespDto }) => {
           {reviewRespDto.reviews.content.map((item) => {
             return (
               <div className={styles.reviewItem}>
-                <div className={styles.valleyImg}>
+                <div
+                  className={styles.valleyImg}
+                  onClick={() =>
+                    item.reviewImages?.length === 0 && setDetailReview(true)
+                  }
+                  style={
+                    item.reviewImages?.length === 0 ? {} : { cursor: "pointer" }
+                  }
+                >
                   <img
-                    src={process.env.PUBLIC_URL + "/img/계곡test이미지.png"}
+                    src={
+                      item.reviewImages?.length === 0
+                        ? process.env.PUBLIC_URL + "/img/default-image.png"
+                        : `${item.reviewImages[0]}`
+                    }
                     alt="계곡 이미지"
                     width="140px"
                   />
+                  {item.reviewImages.length > 1 && (
+                    <span>{item.reviewImages.length}</span>
+                  )}
+                  {detailReview && (
+                    <DetailReviewImg
+                      images={item.reviewImages}
+                      setDetailReview={setDetailReview}
+                    />
+                  )}
                 </div>
                 <div className={styles.reviewDetail}>
                   <div className={styles.reviewInfo}>
@@ -190,11 +312,9 @@ const ValleyReview: FC<Props> = ({ reviewRespDto }) => {
                     <span>{item.createdReviewDate}</span>
                   </div>
                   <div className={styles.reviewItemRating}>
-                    {[0, 0, 0, 0, 0].map(() => (
-                      <span>
-                        <MdOutlineStar size="20px" color="#66A5FC" />
-                      </span>
-                    ))}
+                    <span>
+                      <RatingStar rating={item.rating} size="20px" />
+                    </span>
                     <span>{item.rating}</span>
                   </div>
                   <span>{item.content}</span>
@@ -204,7 +324,98 @@ const ValleyReview: FC<Props> = ({ reviewRespDto }) => {
           })}
         </div>
       </div>
-      <PagingBtn totalPages={reviewRespDto.reviews.totalPages} />
+      <div className={styles.paging}>
+        <button
+          onClick={() => {
+            setPage(page - 1);
+            setCurrPage(page - 2);
+          }}
+          disabled={page === 1}
+        >
+          &lt;
+        </button>
+        <button
+          onClick={() => setPage(firstNum)}
+          aria-current={page === firstNum ? "page" : undefined}
+        >
+          {firstNum}
+        </button>
+        {Array(4)
+          .fill(0)
+          .map((_, i) => {
+            if (firstNum + 1 + i > reviewRespDto.reviews.totalPages) {
+              return null;
+            } else {
+              if (i <= 2) {
+                return (
+                  <button
+                    key={i + 1}
+                    onClick={() => {
+                      setPage(firstNum + 1 + i);
+                    }}
+                    aria-current={
+                      page === firstNum + 1 + i ? "page" : undefined
+                    }
+                  >
+                    {firstNum + 1 + i}
+                  </button>
+                );
+              } else if (i >= 3) {
+                return (
+                  <button
+                    key={i + 1}
+                    onClick={() => setPage(lastNum)}
+                    aria-current={page === lastNum ? "page" : undefined}
+                  >
+                    {lastNum}
+                  </button>
+                );
+              }
+            }
+          })}
+        <button
+          onClick={() => {
+            setPage(page + 1);
+            setCurrPage(page);
+          }}
+          disabled={page === reviewRespDto.reviews.totalPages}
+        >
+          &gt;
+        </button>
+      </div>
+    </div>
+  );
+};
+
+const DetailReviewImg: FC<{
+  images: string[];
+  setDetailReview: React.Dispatch<React.SetStateAction<boolean>>;
+}> = ({ images, setDetailReview }) => {
+  useEffect(() => {
+    document.body.style.cssText = `
+          position: fixed; 
+          top: -${window.scrollY}px;
+          overflow-y: scroll;
+          width: 100%;`;
+    return () => {
+      const scrollY = document.body.style.top;
+      document.body.style.cssText = "";
+      window.scrollTo(0, parseInt(scrollY || "0", 10) * -1);
+    };
+  }, []);
+
+  return (
+    <div className={styles.imgContainer}>
+      <div className={styles.imgBox}>
+        <span className={styles.close} onClick={() => setDetailReview(false)}>
+          <IoCloseOutline color="#FFFFFF" size="40px" />
+        </span>
+        <div className={styles.imgList}>
+          {images.map((item) => {
+            return <img src={item} alt="리뷰 이미지" width="130px" />;
+          })}
+        </div>
+      </div>
     </div>
   );
 };
