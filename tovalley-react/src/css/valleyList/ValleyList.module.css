@@ -147,10 +147,14 @@
   text-overflow: ellipsis;
 }
 
+.valleyType {
+  display: flex;
+}
+
 .valleyCategory {
   color: #66a5fc;
   border: 1px solid #66a5fc;
-  font-size: 0.9rem;
+  font-size: 0.7rem;
   padding: 0.1em 0.5em;
   border-radius: 20px;
   display: block;
@@ -158,6 +162,7 @@
   justify-content: center;
   width: fit-content;
   margin-bottom: 0.5em;
+  margin-right: 0.5em;
 }
 
 .reviewContainer {

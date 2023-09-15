@@ -13,9 +13,10 @@ type List = {
     waterPlaceId: number;
     waterPlaceName: string;
     waterPlaceAddr: string;
-    rating: number | string;
-    reviewNum: number | string;
-    category: string;
+    waterPlaceRating: number | string;
+    waterPlaceReviewCnt: number | string;
+    managementType: string;
+    waterPlaceCategory: string;
   }[];
   pageable: {
     sort: {
@@ -63,33 +64,37 @@ const ValleyListPage = () => {
         waterPlaceId: 1,
         waterPlaceName: "대천천계곡",
         waterPlaceAddr: "부산광역시 북구 화명동 2102번지",
-        rating: "",
-        reviewNum: "",
-        category: "",
+        waterPlaceRating: "",
+        waterPlaceReviewCnt: "",
+        waterPlaceCategory: "",
+        managementType: "일반지역",
       },
       {
         waterPlaceId: 40,
         waterPlaceName: "대천천계곡",
         waterPlaceAddr: "부산광역시 북구 화명동 2102번지",
-        rating: 4.7,
-        reviewNum: 195,
-        category: "계곡",
+        waterPlaceRating: 4.7,
+        waterPlaceReviewCnt: 195,
+        waterPlaceCategory: "계곡",
+        managementType: "일반지역",
       },
       {
         waterPlaceId: 40,
         waterPlaceName: "대천천계곡",
         waterPlaceAddr: "부산광역시 북구 화명동 2102번지",
-        rating: 4.7,
-        reviewNum: 195,
-        category: "계곡",
+        waterPlaceRating: 4.7,
+        waterPlaceReviewCnt: 195,
+        waterPlaceCategory: "계곡",
+        managementType: "일반지역",
       },
       {
         waterPlaceId: 40,
         waterPlaceName: "대천천계곡",
         waterPlaceAddr: "부산광역시 북구 화명동 2102번지",
-        rating: 4.7,
-        reviewNum: 195,
-        category: "계곡",
+        waterPlaceRating: 4.7,
+        waterPlaceReviewCnt: 195,
+        waterPlaceCategory: "계곡",
+        managementType: "일반지역",
       },
     ],
     pageable: {
@@ -180,10 +185,6 @@ const ValleyListPage = () => {
   };
 
   const category = [
-    {
-      name: "전국",
-      region: [],
-    },
     {
       name: "울산광역시",
       region: [
@@ -398,6 +399,24 @@ const ValleyListPage = () => {
       <Header />
       <div className={styles.body}>
         <div className={styles.category}>
+          <div
+            className={styles.categoryList}
+            style={
+              click.category === "전국" ? { backgroundColor: "#F5F5F5" } : {}
+            }
+          >
+            <span
+              onClick={() => {
+                setClick({
+                  category: "전국",
+                  detail: false,
+                });
+                setRegionClick({ ko: "", en: "" });
+              }}
+            >
+              전국
+            </span>
+          </div>
           {category.map((area) => {
             return (
               <div>
@@ -499,18 +518,33 @@ const ValleyListPage = () => {
                     <span className={styles.valleyRegion}>
                       {item.waterPlaceAddr}
                     </span>
-                    {item.category !== "" && (
-                      <span className={styles.valleyCategory}>
-                        {item.category}
-                      </span>
-                    )}
+                    <div className={styles.valleyType}>
+                      {item.waterPlaceCategory !== "" && (
+                        <span className={styles.valleyCategory}>
+                          {item.waterPlaceCategory}
+                        </span>
+                      )}
+                      {item.managementType !== "" && (
+                        <span className={styles.valleyCategory}>
+                          {item.managementType}
+                        </span>
+                      )}
+                    </div>
                     <div className={styles.reviewContainer}>
                       <span className={styles.valleyRating}>
-                        <span>{item.rating === "" ? 0 : item.rating}</span>
+                        <span>
+                          {item.waterPlaceRating === ""
+                            ? 0
+                            : item.waterPlaceRating}
+                        </span>
                         <span>/5</span>
                       </span>
                       <span className={styles.valleyReview}>
-                        리뷰 {item.reviewNum === "" ? 0 : item.reviewNum}개
+                        리뷰{" "}
+                        {item.waterPlaceReviewCnt === ""
+                          ? 0
+                          : item.waterPlaceReviewCnt}
+                        개
                       </span>
                     </div>
                   </div>
