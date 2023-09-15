@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "../../../css/valley/calendar/ControlDate.module.css";
 import {
   MdArrowDropDown,
@@ -24,6 +24,15 @@ const ControlDate = ({ nowDate, setNowDate }: Props) => {
     setNowDate(date);
   };
 
+  const [addSchedule, setAddSchedule] = useState(false);
+
+  const congestionInfo = [
+    { peopleCnt: "15명", color: "#FA7F64" },
+    { peopleCnt: "10명", color: "#FFD874" },
+    { peopleCnt: "5명", color: "#8EBBFF" },
+    { peopleCnt: "1명", color: "#E0E0E0" },
+  ];
+
   return (
     <div className={styles.container}>
       <div className={styles.controlCalendar}>
@@ -44,10 +53,19 @@ const ControlDate = ({ nowDate, setNowDate }: Props) => {
           </span>
         </div>
         <div className={styles.addSchedule}>
-          <span>일정 추가</span>
+          <span onClick={() => setAddSchedule(true)}>일정 추가</span>
         </div>
       </div>
-      <div className={styles.congestionInfo}></div>
+      <div className={styles.congestionInfo}>
+        {congestionInfo.map((item) => {
+          return (
+            <div>
+              <span>{item.peopleCnt}↑</span>
+              <div style={{ backgroundColor: item.color }} />
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 };

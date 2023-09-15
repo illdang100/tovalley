@@ -142,12 +142,55 @@
   padding: 0.5em;
   cursor: pointer;
   margin-top: 1em;
-  margin-bottom: 2em;
+  margin-bottom: 1em;
 }
 
 .pictureBtn > span:last-child {
   font-weight: bold;
   margin-left: 0.5em;
+}
+
+.imgInput[type="file"] {
+  display: none;
+}
+
+.previewImg {
+  height: 200px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 2em;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.imageContainer {
+  display: inline-block;
+  position: relative;
+  margin-right: 1.5em;
+  border: 1px solid #b5b5b5;
+  border-radius: 10px;
+}
+
+.imageContainer > div {
+  width: 150px;
+  height: 150px;
+  overflow: hidden;
+}
+
+.imageContainer > div > img {
+  margin: 0;
+  width: 100%;
+}
+
+.imageContainer > span {
+  position: absolute;
+  cursor: pointer;
+  top: -15px;
+  right: -15px;
+}
+
+.writeQuality {
+  margin-top: 2em;
 }
 
 .writeQuality > span {

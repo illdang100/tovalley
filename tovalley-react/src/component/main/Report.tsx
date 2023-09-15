@@ -134,103 +134,117 @@ const Report: FC<Props> = ({ alert }) => {
       </div>
       {report === "특보" ? (
         <div className={styles.reportList}>
-          {alert.weatherAlerts.map((item) => {
-            return (
-              <div className={styles.reportItem}>
-                <ReportTitle category={item.title}>
-                  <span>
-                    {item.title.includes("폭염") ? (
-                      <HiSun size="20px" />
-                    ) : item.title.includes("호우") ? (
-                      <BsFillCloudRainHeavyFill size="20px" />
-                    ) : item.title.includes("황사") ? (
-                      <GiDustCloud size="20px" />
-                    ) : item.title.includes("강풍") ? (
-                      <FaWind size="18px" />
-                    ) : item.title.includes("태풍") ? (
-                      <RiTyphoonFill size="20px" />
-                    ) : item.title.includes("대설") ? (
-                      <FaRegSnowflake size="20px" />
-                    ) : item.title.includes("풍랑") ? (
-                      <TiWaves size="23px" />
-                    ) : item.title.includes("한파") ? (
-                      <PiThermometerColdFill size="20px" />
-                    ) : item.title.includes("건조") ? (
-                      <MdDry size="20px" />
-                    ) : item.title.includes("폭풍해일") ? (
-                      <RiThunderstormsFill size="20px" />
-                    ) : (
-                      ""
-                    )}
-                  </span>
-                  <span>{item.title}</span>
-                </ReportTitle>
-                <ReportContent category={item.title}>
-                  <div className={styles.presentation}>
-                    <span>발표</span>
-                    <span>{item.announcementTime}</span>
-                  </div>
-                  <div className={styles.presentation}>
-                    <span>발효</span>
-                    <span>{item.effectiveTime}</span>
-                  </div>
-                  <div className={styles.region}>
-                    <span>{item.content}</span>
-                  </div>
-                </ReportContent>
-              </div>
-            );
-          })}
+          {alert.weatherAlerts.length === 0 ? (
+            <div className={styles.defaultAlert}>
+              <div>특보 정보가 없습니다.</div>
+              <div />
+            </div>
+          ) : (
+            alert.weatherAlerts.map((item) => {
+              return (
+                <div className={styles.reportItem}>
+                  <ReportTitle category={item.title}>
+                    <span>
+                      {item.title.includes("폭염") ? (
+                        <HiSun size="20px" />
+                      ) : item.title.includes("호우") ? (
+                        <BsFillCloudRainHeavyFill size="20px" />
+                      ) : item.title.includes("황사") ? (
+                        <GiDustCloud size="20px" />
+                      ) : item.title.includes("강풍") ? (
+                        <FaWind size="18px" />
+                      ) : item.title.includes("태풍") ? (
+                        <RiTyphoonFill size="20px" />
+                      ) : item.title.includes("대설") ? (
+                        <FaRegSnowflake size="20px" />
+                      ) : item.title.includes("풍랑") ? (
+                        <TiWaves size="23px" />
+                      ) : item.title.includes("한파") ? (
+                        <PiThermometerColdFill size="20px" />
+                      ) : item.title.includes("건조") ? (
+                        <MdDry size="20px" />
+                      ) : item.title.includes("폭풍해일") ? (
+                        <RiThunderstormsFill size="20px" />
+                      ) : (
+                        ""
+                      )}
+                    </span>
+                    <span>{item.title}</span>
+                  </ReportTitle>
+                  <ReportContent category={item.title}>
+                    <div className={styles.presentation}>
+                      <span>발표</span>
+                      <span>{item.announcementTime}</span>
+                    </div>
+                    <div className={styles.presentation}>
+                      <span>발효</span>
+                      <span>{item.effectiveTime}</span>
+                    </div>
+                    <div className={styles.region}>
+                      <span>{item.content}</span>
+                    </div>
+                  </ReportContent>
+                </div>
+              );
+            })
+          )}
         </div>
       ) : (
         <div className={styles.reportList}>
-          {alert.weatherPreAlerts.map((item) => {
-            return (
-              <div className={styles.reportItem}>
-                <ReportTitle category={item.title}>
-                  <span>
-                    {item.title.includes("폭염") ? (
-                      <HiSun size="20px" />
-                    ) : item.title.includes("호우") ? (
-                      <BsFillCloudRainHeavyFill size="20px" />
-                    ) : item.title.includes("황사") ? (
-                      <GiDustCloud size="20px" />
-                    ) : item.title.includes("강풍") ? (
-                      <FaWind size="18px" />
-                    ) : item.title.includes("태풍") ? (
-                      <RiTyphoonFill size="20px" />
-                    ) : item.title.includes("대설") ? (
-                      <FaRegSnowflake size="20px" />
-                    ) : item.title.includes("풍랑") ? (
-                      <TiWaves size="23px" />
-                    ) : item.title.includes("한파") ? (
-                      <PiThermometerColdFill size="20px" />
-                    ) : item.title.includes("건조") ? (
-                      <MdDry size="20px" />
-                    ) : item.title.includes("폭풍해일") ? (
-                      <RiThunderstormsFill size="20px" />
-                    ) : (
-                      ""
-                    )}
-                  </span>
-                  <span>{item.title}</span>
-                </ReportTitle>
-                <ReportContent category={item.title}>
-                  <div className={styles.presentation}>
-                    <span>발표</span>
-                    <span>{item.announcementTime}</span>
-                  </div>
-                  {item.contents.map((content) => {
-                    return (
-                      <div className={styles.region}>
-                        <span>{content.content}</span>
-                      </div>
-                    );
-                  })}
-                </ReportContent>
-              </div>
-            );
-          })}
+          {alert.weatherPreAlerts.length === 0 ? (
+            <div className={styles.defaultAlert}>
+              <div>예비 특보 정보가 없습니다.</div>
+              <div />
+            </div>
+          ) : (
+            alert.weatherPreAlerts.map((item) => {
+              return (
+                <div className={styles.reportItem}>
+                  <ReportTitle category={item.title}>
+                    <span>
+                      {item.title.includes("폭염") ? (
+                        <HiSun size="20px" />
+                      ) : item.title.includes("호우") ? (
+                        <BsFillCloudRainHeavyFill size="20px" />
+                      ) : item.title.includes("황사") ? (
+                        <GiDustCloud size="20px" />
+                      ) : item.title.includes("강풍") ? (
+                        <FaWind size="18px" />
+                      ) : item.title.includes("태풍") ? (
+                        <RiTyphoonFill size="20px" />
+                      ) : item.title.includes("대설") ? (
+                        <FaRegSnowflake size="20px" />
+                      ) : item.title.includes("풍랑") ? (
+                        <TiWaves size="23px" />
+                      ) : item.title.includes("한파") ? (
+                        <PiThermometerColdFill size="20px" />
+                      ) : item.title.includes("건조") ? (
+                        <MdDry size="20px" />
+                      ) : item.title.includes("폭풍해일") ? (
+                        <RiThunderstormsFill size="20px" />
+                      ) : (
+                        ""
+                      )}
+                    </span>
+                    <span>{item.title}</span>
+                  </ReportTitle>
+                  <ReportContent category={item.title}>
+                    <div className={styles.presentation}>
+                      <span>발표</span>
+                      <span>{item.announcementTime}</span>
+                    </div>
+                    {item.contents.map((content) => {
+                      return (
+                        <div className={styles.region}>
+                          <span>{content.content}</span>
+                        </div>
+                      );
+                    })}
+                  </ReportContent>
+                </div>
+              );
+            })
+          )}
         </div>
       )}
     </div>

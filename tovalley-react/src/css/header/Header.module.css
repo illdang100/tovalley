@@ -49,14 +49,15 @@
 .navMenu {
   cursor: pointer;
   display: block;
-  padding: 0.8em 0;
+  padding: 1.5em 0 0.8em 0;
   margin-right: 5em;
+  font-weight: bold;
 }
 
 .navMenuClicked {
   cursor: pointer;
   display: block;
-  padding: 0.7em 0;
+  padding: 1.5em 0 0.8em 0;
   margin-right: 5em;
   border-bottom: 3px solid #66a5fc;
   color: #66a5fc;

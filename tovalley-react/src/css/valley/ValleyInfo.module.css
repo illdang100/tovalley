@@ -44,6 +44,7 @@
 
 .valleyMap {
   width: 100%;
+
   margin-right: 2.5em;
   min-width: 400px;
 }
@@ -118,7 +119,8 @@
 .weatherItem > div > span:nth-child(2) {
   font-weight: bold;
   color: #5a5a5a;
-  margin: 0.5em 0;
+  margin-bottom: 0.5em;
+  font-size: 0.8rem;
 }
 
 /* 온도 */
@@ -178,7 +180,7 @@
 
 .dayInfo > span:first-child {
   font-weight: bold;
-  font-size: 1.4rem;
+  font-size: 1.1rem;
 }
 
 /* 계곡 상세보기 사고 수 */
@@ -207,10 +209,10 @@
   color: white;
   font-weight: bold;
   display: block;
-  padding: 1em;
+  padding: 0.7em;
   flex-grow: 1;
   text-align: center;
-  font-size: 1.3rem;
+  font-size: 1.1rem;
 }
 
 .graphTitle > span:not(:last-of-type),
@@ -230,7 +232,7 @@
   padding: 0.8em 0;
   width: calc(100% / 3);
   text-align: center;
-  font-size: 2em;
+  font-size: 1.5rem;
 }
 
 .rescueList {
