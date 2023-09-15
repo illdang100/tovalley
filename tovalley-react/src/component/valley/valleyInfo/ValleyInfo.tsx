@@ -143,18 +143,25 @@ const ValleyInfo: FC<Props> = ({
             <ValleyMap
               latitude={waterPlaceDetails.latitude}
               longitude={waterPlaceDetails.longitude}
+              menu={mapMenu}
             />
           </div>
         </div>
         <div className={styles.valleyDetail}>
           <div className={styles.valleyWeather}>
-            <span>경상북도 구미시 날씨 ☁️</span>
+            <span>경상북도 구미시 날씨</span>
             <div className={styles.weatherList}>
               {weatherList.map((item, index) => {
                 return (
                   <div className={styles.weatherItem}>
                     <div>
-                      <span>☀️</span>
+                      <span>
+                        <img
+                          src={`https://openweathermap.org/img/wn/${item.climateIcon}@2x.png`}
+                          alt="날씨 아이콘"
+                          width="55px"
+                        />
+                      </span>
                       <span>{item.climateDescription}</span>
                       <div className={styles.temperature}>
                         <span>{item.lowestTemperature.toFixed()}°</span>

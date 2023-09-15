@@ -1,0 +1,202 @@
+import React, { FC, useState } from "react";
+import styles from "../../css/user/TripScheduleItem.module.css";
+import { TbChartDonut4, TbJumpRope } from "react-icons/tb";
+import {
+  MdEmojiPeople,
+  MdHomeRepairService,
+  MdCheckBoxOutlineBlank,
+  MdCheckBox,
+} from "react-icons/md";
+import { FaVest } from "react-icons/fa";
+import { LuUtilityPole } from "react-icons/lu";
+import WriteReview from "./WriteReview";
+
+interface Props {
+  schedule: {
+    tripScheduleId: number;
+    waterPlaceId: number;
+    waterPlaceName: string;
+    waterPlaceImg: string | null;
+    waterPlaceAddr: string;
+    waterPlaceRating: number | string;
+    waterPlaceReviewCnt: number | string;
+    waterPlaceTraffic: number;
+    tripDate: string;
+    tripPartySize: number;
+    rescueSupplies: {
+      lifeBoatNum: number;
+      portableStandNum: number;
+      lifeJacketNum: number;
+      lifeRingNum: number;
+      rescueRopeNum: number;
+      rescueRodNum: number;
+    };
+    hasReview: boolean;
+  };
+  scheduleBtn: string;
+  deleteSchedule: {
+    id: number;
+    check: boolean;
+  }[];
+  setDeleteSchedule: React.Dispatch<
+    React.SetStateAction<
+      {
+        id: number;
+        check: boolean;
+      }[]
+    >
+  >;
+}
+
+const TripScheduleItem: FC<Props> = ({
+  schedule,
+  scheduleBtn,
+  deleteSchedule,
+  setDeleteSchedule,
+}) => {
+  const [writeReviewView, setWriteReviewView] = useState(false);
+  const [check, setCheck] = useState(false);
+
+  return (
+    <div className={styles.scheduleItem}>
+      <span
+        className={styles.scheduleCheck}
+        onClick={() => {
+          setCheck(!check);
+        }}
+      >
+        {check ? (
+          <MdCheckBox color="#66A5FC" size="25px" />
+        ) : (
+          <MdCheckBoxOutlineBlank color="#66A5FC" size="25px" />
+        )}
+      </span>
+      <img
+        src={
+          schedule.waterPlaceImg === null
+            ? process.env.PUBLIC_URL + "/img/default-image.png"
+            : schedule.waterPlaceImg
+        }
+        alt="계곡 사진"
+        width="180px"
+      />
+      <div className={styles.scheduleInfo}>
+        <h4>{schedule.waterPlaceName}</h4>
+        <span>{schedule.waterPlaceAddr}</span>
+        <span>
+          {schedule.waterPlaceRating === "" ? 0 : schedule.waterPlaceRating}
+        </span>
+        <span>/5</span>
+        <span>
+          리뷰{" "}
+          {schedule.waterPlaceReviewCnt === ""
+            ? 0
+            : schedule.waterPlaceReviewCnt}
+          개
+        </span>
+        <div className={styles.reservationInfo}>
+          <div>
+            <span>날짜</span>
+            <span>{schedule.tripDate}</span>
+          </div>
+          <div>
+            <span>인원</span>
+            <span>{schedule.tripPartySize}</span>
+          </div>
+        </div>
+      </div>
+      <div className={styles.valleyInfo}>
+        {scheduleBtn === "앞으로의 일정" && (
+          <div className={styles.congestion}>
+            <span>계곡 혼잡도</span>
+            <div
+              style={
+                schedule.waterPlaceTraffic >= 15
+                  ? { backgroundColor: "#FA7F64" }
+                  : schedule.waterPlaceTraffic >= 10
+                  ? { backgroundColor: "#FFD874" }
+                  : schedule.waterPlaceTraffic >= 5
+                  ? { backgroundColor: "#8EBBFF" }
+                  : { backgroundColor: "#E0E0E0" }
+              }
+            ></div>
+          </div>
+        )}
+        {scheduleBtn === "지난 일정" && (
+          <div className={styles.writeReviewBtn}>
+            <span onClick={() => setWriteReviewView(true)}>리뷰 쓰기</span>
+            {writeReviewView && (
+              <WriteReview
+                setWriteReviewView={setWriteReviewView}
+                valleyInfo={{
+                  id: schedule.tripScheduleId,
+                  title: schedule.waterPlaceName,
+                  addr: schedule.waterPlaceAddr,
+                  tripDate: schedule.tripDate,
+                  people: schedule.tripPartySize,
+                  img: schedule.waterPlaceImg,
+                }}
+              />
+            )}
+          </div>
+        )}
+        <div className={styles.rescueList}>
+          <div className={styles.rescueItem}>
+            <span>
+              <TbChartDonut4 size="40px" color="#66A5FC" />
+            </span>
+            <span>{schedule.rescueSupplies.lifeRingNum}</span>
+          </div>
+          <div className={styles.rescueItem}>
+            <span>
+              <TbJumpRope size="40px" color="#66A5FC" />
+            </span>
+            <span>{schedule.rescueSupplies.rescueRopeNum}</span>
+          </div>
+          <div className={styles.rescueItem}>
+            <span>
+              <MdEmojiPeople size="40px" color="#66A5FC" />
+            </span>
+            <span>{schedule.rescueSupplies.lifeBoatNum}</span>
+          </div>
+          <div className={styles.rescueItem}>
+            <span>
+              <FaVest size="40px" color="#66A5FC" />
+            </span>
+            <span>{schedule.rescueSupplies.lifeJacketNum}</span>
+          </div>
+          <div className={styles.rescueItem}>
+            <span>
+              <MdHomeRepairService size="40px" color="#66A5FC" />
+            </span>
+            <span>{schedule.rescueSupplies.portableStandNum}</span>
+          </div>
+          <div className={styles.rescueItem}>
+            <span>
+              <LuUtilityPole size="40px" color="#66A5FC" />
+            </span>
+            <span>{schedule.rescueSupplies.rescueRodNum}</span>
+          </div>
+        </div>
+        {scheduleBtn === "지난 일정" && (
+          <div className={styles.preCongestion}>
+            <span>계곡 혼잡도</span>
+            <div
+              style={
+                schedule.waterPlaceTraffic >= 15
+                  ? { backgroundColor: "#FA7F64" }
+                  : schedule.waterPlaceTraffic >= 10
+                  ? { backgroundColor: "#FFD874" }
+                  : schedule.waterPlaceTraffic >= 5
+                  ? { backgroundColor: "#8EBBFF" }
+                  : { backgroundColor: "#E0E0E0" }
+              }
+            ></div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default TripScheduleItem;

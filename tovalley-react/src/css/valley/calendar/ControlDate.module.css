@@ -61,5 +61,23 @@
 }
 
 .congestionInfo {
-  width: 100px;
+  width: 120px;
+}
+
+.congestionInfo > div {
+  display: flex;
+  align-items: center;
+  justify-content: right;
+  margin-right: 1em;
+}
+
+.congestionInfo > div > span {
+  font-weight: 500;
+  margin-right: 0.5em;
+}
+
+.congestionInfo > div > div {
+  width: 50px;
+  height: 9px;
+  border-radius: 4px;
 }

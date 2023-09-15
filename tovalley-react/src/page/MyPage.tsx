@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { FC, useEffect, useRef, useState } from "react";
 import Header from "../component/header/Header";
 import Footer from "../component/footer/Footer";
 import styles from "../css/user/MyPage.module.css";
@@ -79,8 +79,8 @@ type preSchedule = {
     waterPlaceName: string;
     waterPlaceImg: string | null;
     waterPlaceAddr: string;
-    waterPlaceRating: number;
-    waterPlaceReviewCnt: number;
+    waterPlaceRating: number | string;
+    waterPlaceReviewCnt: number | string;
     waterPlaceTraffic: number;
     tripDate: string;
     tripPartySize: number;
@@ -130,7 +130,15 @@ const MyPage = () => {
     view: false,
     content: "",
   });
+  const [changeImg, setChangeImg] = useState<{
+    modal: boolean;
+    imgFile: string | null | ArrayBuffer;
+  }>({
+    modal: false,
+    imgFile: "",
+  });
 
+  const imgRef = useRef<HTMLInputElement>(null);
   const [scheduleBtn, setScheduleBtn] = useState("앞으로의 일정");
 
   const [user, setUser] = useState<user>({
@@ -255,7 +263,7 @@ const MyPage = () => {
       .get("/api/auth/my-page")
       .then((res) => {
         console.log(res);
-        //setUser(res.data.data);
+        setUser(res.data.data);
       })
       .catch((err) => console.log(err));
 
@@ -518,6 +526,30 @@ const MyPage = () => {
       .catch((err) => console.log(err));
   };
 
+  const saveImgFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+
+      reader.onload = () => {
+        setChangeImg({ imgFile: reader.result, modal: false });
+      };
+
+      const formData = new FormData();
+      if (file !== undefined) {
+        formData.append("image", file);
+      }
+
+      axiosInstance
+        .post("/api/auth/members/profile-image", formData)
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => console.log(err));
+    }
+  };
+
   return (
     <div>
       <Header />
@@ -527,18 +559,43 @@ const MyPage = () => {
           <div className={styles.userInfo}>
             <div className={styles.userBasicInfo}>
               <span>기본정보</span>
-              <div className={styles.profileImg}>
-                <img
-                  src={
-                    user.userProfile.memberProfileImg === null
-                      ? process.env.PUBLIC_URL + "/img/user-profile.png"
-                      : user.userProfile.memberProfileImg
-                  }
-                  alt="사용자 프로필 이미지"
-                  width="180px"
-                />
-                <span>프로필 이미지 변경</span>
-              </div>
+              <form encType="multipart/form-data">
+                <div className={styles.profileImg}>
+                  <div className={styles.profileUser}>
+                    <img
+                      src={
+                        changeImg.imgFile === null || changeImg.imgFile === ""
+                          ? process.env.PUBLIC_URL + "/img/user-profile.png"
+                          : changeImg.imgFile.toString()
+                      }
+                      alt="사용자 프로필 이미지"
+                    />
+                  </div>
+                  <input
+                    name="accountProfileImage"
+                    className={styles.profileInput}
+                    type="file"
+                    accept="image/*"
+                    id="profileImg"
+                    onChange={saveImgFile}
+                    ref={imgRef}
+                  />
+                  <span
+                    onClick={() =>
+                      setChangeImg({ ...changeImg, modal: !changeImg.modal })
+                    }
+                  >
+                    프로필 이미지 변경
+                  </span>
+                </div>
+                {changeImg.modal && (
+                  <Profile
+                    changeImg={changeImg}
+                    setChangeImg={setChangeImg}
+                    imgRef={imgRef}
+                  />
+                )}
+              </form>
               <div className={styles.userNickname}>
                 <span>닉네임</span>
                 {nickUpdate.click ? (
@@ -688,6 +745,77 @@ const MyPage = () => {
         </div>
       </div>
       <Footer />
+    </div>
+  );
+};
+
+interface ProfileProp {
+  changeImg: {
+    modal: boolean;
+    imgFile: string | null | ArrayBuffer;
+  };
+  setChangeImg: React.Dispatch<
+    React.SetStateAction<{
+      modal: boolean;
+      imgFile: string | null | ArrayBuffer;
+    }>
+  >;
+  imgRef: React.RefObject<HTMLInputElement>;
+}
+
+const Profile: FC<ProfileProp> = ({ changeImg, setChangeImg, imgRef }) => {
+  useEffect(() => {
+    document.body.style.cssText = `
+      position: fixed; 
+      top: -${window.scrollY}px;
+      overflow-y: scroll;
+      width: 100%;`;
+    return () => {
+      const scrollY = document.body.style.top;
+      document.body.style.cssText = "";
+      window.scrollTo(0, parseInt(scrollY || "0", 10) * -1);
+    };
+  }, []);
+
+  const deleteProfileImg = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (imgRef.current) {
+      imgRef.current.value = "";
+      setChangeImg({ imgFile: "", modal: false });
+    }
+
+    // const formData = new FormData();
+    //   formData.append("image", file);
+
+    //   axiosInstance
+    //     .post("/api/auth/members/profile-image", formData)
+    //     .then((res) => {
+    //       console.log(res);
+    //     })
+    //     .catch((err) => console.log(err));
+    // }
+  };
+
+  return (
+    <div className={styles.modalContainer}>
+      <div className={styles.profileUpdate}>
+        <div>
+          <h1>프로필 사진 바꾸기</h1>
+        </div>
+        <div>
+          <label htmlFor="profileImg">
+            <h2>사진 업로드</h2>
+          </label>
+        </div>
+        <div>
+          <h2 onClick={(e) => deleteProfileImg(e)}>기본 이미지로 변경</h2>
+        </div>
+        <div>
+          <p onClick={() => setChangeImg({ ...changeImg, modal: false })}>
+            취소
+          </p>
+        </div>
+      </div>
     </div>
   );
 };
