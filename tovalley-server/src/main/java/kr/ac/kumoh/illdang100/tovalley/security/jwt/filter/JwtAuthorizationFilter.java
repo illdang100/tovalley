@@ -81,16 +81,10 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             String memberRole = findRefreshToken.getRole();
 
             String newAccessToken = jwtProcess.createNewAccessToken(Long.valueOf(memberId), memberRole);
-            String newRefreshToken = jwtProcess.createRefreshToken(memberId, memberRole);
-
-            findRefreshToken.changeRefreshToken(newRefreshToken);
-            refreshTokenRedisRepository.save(findRefreshToken);
-
             log.debug("[토큰 재발급]accessToken={}", newAccessToken);
 
             // 토큰을 쿠키에 추가
             addCookie(response, JwtVO.ACCESS_TOKEN, newAccessToken);
-            addCookie(response, JwtVO.REFRESH_TOKEN, newRefreshToken);
         }
     }
 
