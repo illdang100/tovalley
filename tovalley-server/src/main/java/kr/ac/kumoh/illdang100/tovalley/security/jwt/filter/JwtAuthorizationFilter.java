@@ -81,20 +81,16 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             String memberRole = findRefreshToken.getRole();
 
             String newAccessToken = jwtProcess.createNewAccessToken(Long.valueOf(memberId), memberRole);
-            String newRefreshToken = jwtProcess.createRefreshToken(memberId, memberRole);
-
-            findRefreshToken.changeRefreshToken(newRefreshToken);
-            refreshTokenRedisRepository.save(findRefreshToken);
-
             log.debug("[토큰 재발급]accessToken={}", newAccessToken);
 
             // 토큰을 쿠키에 추가
             addCookie(response, JwtVO.ACCESS_TOKEN, newAccessToken);
-            addCookie(response, JwtVO.REFRESH_TOKEN, newRefreshToken);
         }
     }
 
     private void handleTokenVerificationFailure(HttpServletResponse response) throws IOException {
+        addCookie(response, ISLOGIN, "false");
+
         ObjectMapper objectMapper = new ObjectMapper();
         ResponseDto<Object> responseDto = new ResponseDto<>(-1, "만료된 토큰입니다.", null);
         String responseBody = objectMapper.writeValueAsString(responseDto);
@@ -103,7 +99,5 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         response.getWriter().write(responseBody);
         response.getWriter().flush();
         response.getWriter().close();
-
-        addCookie(response, ISLOGIN, "false", false);
     }
 }
