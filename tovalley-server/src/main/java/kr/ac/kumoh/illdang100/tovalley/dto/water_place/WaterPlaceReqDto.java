@@ -21,6 +21,18 @@ public class WaterPlaceReqDto {
 
         @Nullable
         private String searchWord;
+
+        @NotNull
+        private String sortCond;
+
+        @NotNull
+        private int page;
+    }
+
+    @AllArgsConstructor
+    @Data
+    public static class AdminRetrieveWaterPlacesCondition {
+        private String searchWord;
     }
 
     @AllArgsConstructor

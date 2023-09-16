@@ -45,11 +45,11 @@ public class WaterPlaceApiController {
 
     }
     @GetMapping("/water-place/list")
+    @Operation(summary = "물놀이 장소 리스트", description = "물놀이 장소 리스트를 출력합니다.")
     public ResponseEntity<?> getWaterPlaces(@ModelAttribute @Valid RetrieveWaterPlacesCondition retrieveWaterPlacesCondition,
-                                                    BindingResult bindingResult,
-                                                    @PageableDefault(size = 12, sort = "rating", direction = Sort.Direction.DESC) Pageable pageable) {
+                                                    BindingResult bindingResult) {
 
-        Page<RetrieveWaterPlacesDto> result = waterPlaceService.getWaterPlaces(retrieveWaterPlacesCondition, pageable);
+        Page<RetrieveWaterPlacesDto> result = waterPlaceService.getWaterPlaces(retrieveWaterPlacesCondition);
 
         return new ResponseEntity<>(new ResponseDto<>(1, "전국 물놀이 지역 조회에 성공하였습니다.", result), HttpStatus.OK);
     }

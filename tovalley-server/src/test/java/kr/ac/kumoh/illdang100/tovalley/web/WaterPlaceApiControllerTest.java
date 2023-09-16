@@ -58,6 +58,8 @@ public class WaterPlaceApiControllerTest extends DummyObject {
                         .param("province", "경상북도")
                         .param("searchWord", "계곡")
                         .param("city", CityEnum.문경시.toString())
+                        .param("sortCond", "rating")
+                        .param("page", "0")
                         .contentType(MediaType.APPLICATION_JSON));
 
         // then
