@@ -89,6 +89,8 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     }
 
     private void handleTokenVerificationFailure(HttpServletResponse response) throws IOException {
+        addCookie(response, ISLOGIN, "false");
+
         ObjectMapper objectMapper = new ObjectMapper();
         ResponseDto<Object> responseDto = new ResponseDto<>(-1, "만료된 토큰입니다.", null);
         String responseBody = objectMapper.writeValueAsString(responseDto);
@@ -97,7 +99,5 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         response.getWriter().write(responseBody);
         response.getWriter().flush();
         response.getWriter().close();
-
-        addCookie(response, ISLOGIN, "false", false);
     }
 }
