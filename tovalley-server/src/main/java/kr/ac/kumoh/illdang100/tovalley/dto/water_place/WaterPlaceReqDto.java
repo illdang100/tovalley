@@ -34,10 +34,4 @@ public class WaterPlaceReqDto {
     public static class AdminRetrieveWaterPlacesCondition {
         private String searchWord;
     }
-
-    @AllArgsConstructor
-    @Data
-    public static class AdminRetrieveWaterPlacesCondition {
-        private String searchWord;
-    }
 }
