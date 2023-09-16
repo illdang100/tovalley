@@ -22,4 +22,10 @@ public class WaterPlaceReqDto {
         @Nullable
         private String searchWord;
     }
+
+    @AllArgsConstructor
+    @Data
+    public static class AdminRetrieveWaterPlacesCondition {
+        private String searchWord;
+    }
 }

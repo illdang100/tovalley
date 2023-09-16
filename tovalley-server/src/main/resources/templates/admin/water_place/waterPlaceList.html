@@ -1,10 +1,129 @@
 <!DOCTYPE html>
-<html lang="kr" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>관리자 물놀이 장소 리스트 조회 페이지</title>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/base :: common_header(~{:: title},~{:: link})">
+  <title>계곡 정보 관리</title>
+  <link rel="stylesheet" th:href="@{/css/admin-valley-info.css}" />
 </head>
-<body>
-<h1>관리자 물놀이 장소 조회 페이지입니다.</h1>
-</body>
+<style>
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    list-style: none;
+    padding: 0;
+  }
+  .pagination li {
+    margin: 0 5px;
+  }
+  .pagination li.active a {
+    font-weight: bold;
+  }
+  .water-place-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
+  }
+   .water-place-item {
+     text-align: center;
+     border: 1px solid #ccc;
+     padding: 10px;
+   }
+  .water-place-item img {
+    max-width: 200px;
+    max-height: 200px;
+    min-width: 200px;
+    min-height: 200px;
+  }
+</style>
+  <body>
+      <div th:class="admin-valley-info">
+        <div th:class="admin-header">
+          <div th:class="admin-logo">
+            <img src="./img/투계곡-logo.png" th:src="@{/images/투계곡-logo.png}" alt="tovalley logo" width="120px" />
+            <h1>ADMIN</h1>
+          </div>
+
+          <div th:class="admin-category">
+            <div><a th:href="@{/admin/home}">지역별 사고 발생 현황 관리</a></div>
+            <div><a th:href="@{/admin/water-place-list}">계곡 정보 관리</a></div>
+            <div><a th:href="@{/admin/water-places/new}">계곡 등록</a></div>
+          </div>
+        </div>
+
+      <div class="valley-info-page">
+        <div class="admin-title">
+          <h1>계곡 정보 관리</h1>
+          <span><a th:href="@{/admin/logout}">로그아웃</a></span>
+        </div>
+        <div class="valley-search-container">
+          <form th:action="@{/admin/water-place-list}" th:object="${waterPlaceCond}">
+            <input id="searchWord" type="text" th:field="*{searchWord}" placeholder="계곡을 검색하세요" />
+            <button>검색</button>
+
+            <div th:class="water-place-grid">
+              <div class="water-place-item" th:each="waterPlace, waterPlaceStat : ${waterPlaceList.content}" th:onclick="waterPlaceDetail([[${waterPlace.waterPlaceId}]])">
+                <a href="#">
+                <input type="hidden" name="waterPlaceId" th:value="${waterPlace.waterPlaceId}" />
+                  <img th:if="${not #strings.isEmpty(waterPlace.waterPlaceImageUrl)}"
+                       th:src="${waterPlace.waterPlaceImageUrl}"
+                       alt="계곡 이미지"/>
+                  <img th:unless="${not #strings.isEmpty(waterPlace.waterPlaceImageUrl)}"
+                       th:src="@{/images/default-img.png}"
+                       alt="기본 이미지" />
+                <h4 th:text="${waterPlace.waterPlaceName}">금오계곡</h4>
+                <p th:text="${waterPlace.province+' '+waterPlace.city}">경상북도 구미시</p>
+                </a>
+              </div>
+            </div>
+          </form>
+
+          <div class="paging">
+            <nav style="text-align: center">
+              <ul class="pagination"
+                  th:with="start=${T(java.lang.Math).floor(waterPlaceList.number/10)*10 + 1}, last=(${start + 9 < waterPlaceList.totalPages ? start + 9 : waterPlaceList.totalPages}), currentPage=${waterPlaceList.number}">
+                <li class="disabled">
+                  <a th:href="@{/admin/water-place-list(page=0, size=12)}" aria-label="First">
+                    <span aria-hidden="true">First</span>
+                  </a>
+                </li>
+                <li th:class="${waterPlaceList.first} ? 'disabled'">
+                  <a th:if="${not waterPlaceList.first}"
+                     th:href="@{/admin/water-place-list(page=${waterPlaceList.number - 1}, size=12)}"
+                     aria-label="Previous">Previous</a>
+                  <span aria-hidden="true">&lt;</span>
+                  </a>
+                </li>
+                <li th:each="page: ${#numbers.sequence(start, last)}" th:class="${page - 1 == currentPage} ? 'active'">
+                  <a th:if="${page >= 1}"
+                     th:text="${page}"
+                     th:href="@{/admin/water-place-list(page=${page - 1}, size=12)}"></a>
+                </li>
+                <li th:class="${waterPlaceList.last} ? 'disabled'">
+                  <a th:if="${not waterPlaceList.last}"
+                     th:href="@{/admin/water-place-list(page=${waterPlaceList.number + 1}, size=12)}"
+                     aria-label="Next">Next</a>
+                  <span aria-hidden="true">&gt;</span>
+                  </a>
+                </li>
+                <li>
+                  <a th:if="${waterPlaceList.totalPages > 0}"
+                     th:href="@{/admin/water-place-list(page=${waterPlaceList.totalPages - 1}, size=12)}"
+                     aria-label="Last">Last</a>
+                  <span aria-hidden="true"></span>
+                  </a>
+                </li>
+              </ul>
+            </nav>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </body>
+<script th:inline="javascript">
+  function waterPlaceDetail(waterPlaceId) {
+    var url = "water-places/" + waterPlaceId;
+    window.location.href = url;
+  }
+</script>
 </html>

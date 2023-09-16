@@ -226,6 +226,18 @@ public class WaterPlaceServiceImpl implements WaterPlaceService {
         rescueSupplyRepository.save(newRescueSupply);
     }
 
+    /**
+     * @param searchWord: 검색어
+     * @methodnme: getAdminWaterPlaceList
+     * @author: jimin
+     * @description: 관리자용 물놀이 장소 리스트 조회 페이지
+     * @return: 관리자용 물놀이 장소 리스트
+     */
+    @Override
+    public Page<AdminRetrieveWaterPlacesDto> getAdminWaterPlaceList(String searchWord, Pageable pageable) {
+        return waterPlaceRepository.getAdminWaterPlaceList(searchWord, pageable);
+    }
+
     private void processImageUpdate(WaterPlace waterPlace, MultipartFile waterPlaceImage) {
         try {
             if (waterPlaceImage != null) {

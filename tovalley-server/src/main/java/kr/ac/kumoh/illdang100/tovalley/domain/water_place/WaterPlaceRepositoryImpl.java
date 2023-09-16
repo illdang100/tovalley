@@ -65,6 +65,31 @@ public class WaterPlaceRepositoryImpl implements WaterPlaceRepositoryCustom {
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
 
+    @Override
+    public Page<AdminRetrieveWaterPlacesDto> getAdminWaterPlaceList(String searchWord, Pageable pageable) {
+        List<AdminRetrieveWaterPlacesDto> content = queryFactory
+                .select(Projections.constructor(AdminRetrieveWaterPlacesDto.class,
+                        waterPlace.id,
+                        waterPlace.waterPlaceImage.storeFileUrl,
+                        waterPlace.waterPlaceName,
+                        waterPlace.province,
+                        waterPlace.city
+                ))
+                .from(waterPlace)
+                .where(searchWordContain(searchWord))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+
+        JPAQuery<Long> countQuery = queryFactory
+                .select(waterPlace.count())
+                .from(waterPlace)
+                .where(searchWordContain(searchWord));
+
+        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
+    }
+
     private BooleanExpression provinceEq(String province) {
         return province.equals("전국") ? null : waterPlace.province.eq(province);
     }

@@ -139,4 +139,14 @@ public class WaterPlaceRespDto {
         private Integer reviewCnt; // 리뷰 개수
         private String waterPlaceImageUrl; // 물놀이 지역 이미지
     }
+
+    @Data
+    @AllArgsConstructor
+    public static class AdminRetrieveWaterPlacesDto {
+        private Long waterPlaceId; // 물놀이 지역 아이디
+        private String waterPlaceImageUrl; // 물놀이 지역 이미지
+        private String waterPlaceName; // 물놀이 지역 이름
+        private String province; // 시도
+        private String city; // 시군구
+    }
 }
