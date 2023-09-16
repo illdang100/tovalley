@@ -92,11 +92,11 @@ class WaterPlaceServiceImplTest extends DummyObject {
 
         // given
         List<RetrieveWaterPlacesDto> waterPlaceDtoList = new ArrayList<>();
-        RetrieveWaterPlacesDto retrieveWaterPlacesDto1 = new RetrieveWaterPlacesDto(1L, "서울계곡", "종로구", 4.9, 50, "중점관리지역", "계곡");
-        RetrieveWaterPlacesDto retrieveWaterPlacesDto2 = new RetrieveWaterPlacesDto(1L, "금오계곡", "형곡동", 4.8, 40, "중점관리지역", "계곡");
-        RetrieveWaterPlacesDto retrieveWaterPlacesDto3 = new RetrieveWaterPlacesDto(1L, "대전계곡", "서구", 4.7, 30, "중점관리지역", "계곡");
-        RetrieveWaterPlacesDto retrieveWaterPlacesDto4 = new RetrieveWaterPlacesDto(1L, "부산계곡", "중구", 4.6, 20, "중점관리지역", "계곡");
-        RetrieveWaterPlacesDto retrieveWaterPlacesDto5 = new RetrieveWaterPlacesDto(1L, "울산계곡", "북구", 4.5, 10, "중점관리지역", "계곡");
+        RetrieveWaterPlacesDto retrieveWaterPlacesDto1 = new RetrieveWaterPlacesDto(1L, "서울계곡", "종로구", 4.9, 50, "중점관리지역", "계곡", null);
+        RetrieveWaterPlacesDto retrieveWaterPlacesDto2 = new RetrieveWaterPlacesDto(1L, "금오계곡", "형곡동", 4.8, 40, "중점관리지역", "계곡", null);
+        RetrieveWaterPlacesDto retrieveWaterPlacesDto3 = new RetrieveWaterPlacesDto(1L, "대전계곡", "서구", 4.7, 30, "중점관리지역", "계곡", null);
+        RetrieveWaterPlacesDto retrieveWaterPlacesDto4 = new RetrieveWaterPlacesDto(1L, "부산계곡", "중구", 4.6, 20, "중점관리지역", "계곡", null);
+        RetrieveWaterPlacesDto retrieveWaterPlacesDto5 = new RetrieveWaterPlacesDto(1L, "울산계곡", "북구", 4.5, 10, "중점관리지역", "계곡", null);
 
         waterPlaceDtoList.add(retrieveWaterPlacesDto1);
         waterPlaceDtoList.add(retrieveWaterPlacesDto2);
@@ -104,8 +104,8 @@ class WaterPlaceServiceImplTest extends DummyObject {
         waterPlaceDtoList.add(retrieveWaterPlacesDto4);
         waterPlaceDtoList.add(retrieveWaterPlacesDto5);
 
-        RetrieveWaterPlacesCondition condition = new RetrieveWaterPlacesCondition("경상북도", null, null);
-        Pageable pageable = PageRequest.of(0, 5, Sort.by(Sort.Direction.DESC, "rating"));
+        RetrieveWaterPlacesCondition condition = new RetrieveWaterPlacesCondition("경상북도", null, null, "rating", 0);
+        Pageable pageable = PageRequest.of(0, 5, Sort.by(Sort.Direction.DESC, condition.getSortCond()));
         Page<RetrieveWaterPlacesDto> page = new PageImpl<>(waterPlaceDtoList, pageable, waterPlaceDtoList.size());
 
         // stub

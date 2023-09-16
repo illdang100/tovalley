@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -51,12 +52,14 @@ public class WaterPlaceServiceImpl implements WaterPlaceService {
     /**
      * // 물놀이 장소 리스트 조회 페이지
      * @param retrieveWaterPlacesCondition
-     * @param pageable
      * @return
      */
     @Override
-    public Page<RetrieveWaterPlacesDto> getWaterPlaces(RetrieveWaterPlacesCondition retrieveWaterPlacesCondition, Pageable pageable) {
-        return waterPlaceRepository.findWaterPlaceList(retrieveWaterPlacesCondition, pageable);
+    public Page<RetrieveWaterPlacesDto> getWaterPlaces(RetrieveWaterPlacesCondition retrieveWaterPlacesCondition) {
+
+        PageRequest pageRequest = PageRequest.of(retrieveWaterPlacesCondition.getPage(), 12, Sort.by(Sort.Direction.DESC, retrieveWaterPlacesCondition.getSortCond()));
+
+        return waterPlaceRepository.findWaterPlaceList(retrieveWaterPlacesCondition, pageRequest);
     }
 
     /**

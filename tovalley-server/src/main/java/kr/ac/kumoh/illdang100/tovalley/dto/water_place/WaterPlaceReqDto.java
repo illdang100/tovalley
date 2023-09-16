@@ -21,6 +21,12 @@ public class WaterPlaceReqDto {
 
         @Nullable
         private String searchWord;
+
+        @NotNull
+        private String sortCond;
+
+        @NotNull
+        private int page;
     }
 
     @AllArgsConstructor
