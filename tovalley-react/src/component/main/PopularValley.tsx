@@ -26,7 +26,7 @@ interface Props {
   >;
 }
 
-const localhost = "http://localhost:8081";
+const localhost = "http://43.202.36.150";
 
 const PopularValley: FC<Props> = ({ place, setPopularValley }) => {
   const [clicked, setClicked] = useState("평점");

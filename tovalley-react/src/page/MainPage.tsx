@@ -8,7 +8,7 @@ import Footer from "../component/footer/Footer";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-const localhost = "http://localhost:8081";
+const localhost = "http://43.202.36.150";
 
 type main = {
   nationalWeather: {

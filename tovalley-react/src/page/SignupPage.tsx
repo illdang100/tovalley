@@ -4,7 +4,7 @@ import Footer from "../component/footer/Footer";
 import styles from "../css/user/SignupPage.module.css";
 import axios from "axios";
 
-const localhost = "http://localhost:8081";
+const localhost = "http://43.202.36.150";
 
 const SignupPage = () => {
   const [inputInfo, setInputInfo] = useState({
@@ -28,9 +28,9 @@ const SignupPage = () => {
     emailAvailable: false,
   });
 
-  const KAKAO_AUTH_URL = `http://localhost:8081/oauth2/authorization/kakao`;
-  const GOOGLE_AUTH_URL = `http://localhost:8081/oauth2/authorization/google`;
-  const NAVER_AUTH_URL = `http://localhost:8081/oauth2/authorization/naver`;
+  const KAKAO_AUTH_URL = `http://ec2-43-202-36-150.ap-northeast-2.compute.amazonaws.com:8080/oauth2/authorization/kakao`;
+  const GOOGLE_AUTH_URL = `http://ec2-43-202-36-150.ap-northeast-2.compute.amazonaws.com:8080/oauth2/authorization/google`;
+  const NAVER_AUTH_URL = `http://ec2-43-202-36-150.ap-northeast-2.compute.amazonaws.com:8080/oauth2/authorization/naver`;
 
   const kakaoLogin = () => {
     window.location.href = KAKAO_AUTH_URL;
