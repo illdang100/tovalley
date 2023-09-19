@@ -29,7 +29,7 @@ jobs:
           docker-compose -f docker-compose.yml push
 
       - name: SSH into EC2 and Deploy
-        uses: appleboy/ssh-action@v0.5.1
+        uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
