@@ -1,0 +1,15 @@
+# Ignore Git related files
+.git
+.gitignore
+
+# Ignore development and local files
+node_modules
+npm-debug.log
+
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# Ignore application configuration files (if applicable)
+config.js
+config.json
