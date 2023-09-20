@@ -4,7 +4,7 @@ import Footer from "../component/footer/Footer";
 import styles from "../css/user/SignupPage.module.css";
 import axios from "axios";
 
-const localhost = "http://43.202.36.150";
+const localhost = "http://13.125.136.237";
 
 const SignupPage = () => {
   const [inputInfo, setInputInfo] = useState({

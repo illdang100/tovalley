@@ -6,7 +6,7 @@ import { BiSearchAlt2 } from "react-icons/bi";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const localhost = "http://43.202.36.150";
+const localhost = "http://13.125.136.237";
 
 const ValleyListPage = () => {
   const [click, setClick] = useState("전국");
