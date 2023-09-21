@@ -2,18 +2,6 @@ version: "3.2"
 
 services:
 
-  # db: -> rds 사용
-  #   build: 
-  #     context: ./db
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     # - "3306:3306"
-  #     - "3307:3306"
-  #   volumes:
-  #     - ./db/store:/var/lib/mysql
-  #   networks:
-  #     - mynetwork
-
   redis:
     container_name: redis
     image: redis
@@ -24,9 +12,6 @@ services:
 
   server:
     image: jeongyeonjun/tovalley-server
-    # build: 
-    #   context: ./tovalley-server
-    #   dockerfile: Dockerfile
     ports:
       - "8080:8080"
     depends_on:
@@ -37,9 +22,6 @@ services:
 
   react:
     image: jeongyeonjun/tovalley-react
-    # build:
-    #   context: ./tovalley-react
-    #   dockerfile: Dockerfile
     ports:
       - 80:80
     depends_on:
