@@ -79,7 +79,7 @@ jobs:
           docker push jeongyeonjun/tovalley-server:latest
 
       - name: Copy docker-compose.yml to EC2
-        run: scp -i ${{ secrets.EC2_PRIVATE_KEY }} docker-compose.yml ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:~/tovalley
+        run: scp -i ${{ secrets.EC2_PRIVATE_KEY }} docker-compose.yml ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:~/tovalley/
 
       - name: SSH into EC2 and Start Docker Compose
         uses: appleboy/ssh-action@v1.0.0

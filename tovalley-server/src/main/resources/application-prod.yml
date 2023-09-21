@@ -7,7 +7,7 @@ server:
 
 spring:
   datasource:
-    url: jdbc:mariadb://${rds.hostname}:${rds.port}/${rds.db.name}
+    url: jdbc:mariadb://${rds.hostname}:3306/${rds.db.name}
     driver-class-name: org.mariadb.jdbc.Driver
     username: ${rds.username}
     password: ${rds.password}
