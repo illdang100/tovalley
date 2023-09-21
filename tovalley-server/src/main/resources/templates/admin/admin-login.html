@@ -20,8 +20,8 @@
     <div th:class="admin-login-container">
       <h4>관리자 로그인</h4>
       <div>
-        <input id="username" type="email" th:field="*{username}" placeholder="이메일" />
-        <p id="usernameError" class="textError">이메일을 입력하세요.</p>
+        <input id="username" type="email" th:field="*{username}" placeholder="아이디" />
+        <p id="usernameError" class="textError">아이디를 입력하세요.</p>
       </div>
       <div>
         <input id="password" type="password" th:field="*{password}" placeholder="비밀번호" />
@@ -73,7 +73,7 @@
     }).then((response) => {
       console.log(response.status);
       if (response.ok) {
-        window.location.href = "/admin/home"
+        window.location.href = "/admin/water-place-list"
       }
       else {
         alert("아이디 혹은 비밀번호를 확인하세요")
