@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import styles from "../../../css/valley/calendar/ControlDate.module.css";
 import {
   MdArrowDropDown,
@@ -9,9 +9,23 @@ import {
 interface Props {
   nowDate: Date;
   setNowDate: React.Dispatch<React.SetStateAction<Date>>;
+  addScheduleBtn: boolean;
+  setAddScheduleBtn: React.Dispatch<React.SetStateAction<boolean>>;
+  tripDate: {
+    startClick: boolean;
+    start: Date;
+    endClick: boolean;
+    end: Date;
+  };
 }
 
-const ControlDate = ({ nowDate, setNowDate }: Props) => {
+const ControlDate = ({
+  nowDate,
+  setNowDate,
+  addScheduleBtn,
+  setAddScheduleBtn,
+  tripDate,
+}: Props) => {
   const changeYear = (change: number) => {
     const date = new Date(nowDate.getTime());
     date.setFullYear(date.getFullYear() + change);
@@ -23,8 +37,6 @@ const ControlDate = ({ nowDate, setNowDate }: Props) => {
     date.setMonth(date.getMonth() + change);
     setNowDate(date);
   };
-
-  const [addSchedule, setAddSchedule] = useState(false);
 
   const congestionInfo = [
     { peopleCnt: "15명", color: "#FA7F64" },
@@ -53,7 +65,20 @@ const ControlDate = ({ nowDate, setNowDate }: Props) => {
           </span>
         </div>
         <div className={styles.addSchedule}>
-          <span onClick={() => setAddSchedule(true)}>일정 추가</span>
+          {addScheduleBtn ? (
+            <span
+              onClick={() => {}}
+              style={
+                tripDate.startClick && tripDate.endClick
+                  ? {}
+                  : { backgroundColor: "#D3D3D3", cursor: "auto" }
+              }
+            >
+              등록하기
+            </span>
+          ) : (
+            <span onClick={() => setAddScheduleBtn(true)}>일정 추가</span>
+          )}
         </div>
       </div>
       <div className={styles.congestionInfo}>

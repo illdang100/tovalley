@@ -4,7 +4,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1em;
+  padding: 1em 1em 0em 1em;
   box-sizing: border-box;
 }
 
@@ -80,4 +80,5 @@
   width: 50px;
   height: 9px;
   border-radius: 4px;
+  color: rgb(212, 212, 212);
 }

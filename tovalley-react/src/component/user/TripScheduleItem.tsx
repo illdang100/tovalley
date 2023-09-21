@@ -34,25 +34,13 @@ interface Props {
     hasReview: boolean;
   };
   scheduleBtn: string;
-  deleteSchedule: {
-    id: number;
-    check: boolean;
-  }[];
-  setDeleteSchedule: React.Dispatch<
-    React.SetStateAction<
-      {
-        id: number;
-        check: boolean;
-      }[]
-    >
-  >;
+  checkItemHandler: (id: number, isChecked: boolean) => void;
 }
 
 const TripScheduleItem: FC<Props> = ({
   schedule,
   scheduleBtn,
-  deleteSchedule,
-  setDeleteSchedule,
+  checkItemHandler,
 }) => {
   const [writeReviewView, setWriteReviewView] = useState(false);
   const [check, setCheck] = useState(false);
@@ -62,6 +50,7 @@ const TripScheduleItem: FC<Props> = ({
       <span
         className={styles.scheduleCheck}
         onClick={() => {
+          checkItemHandler(schedule.tripScheduleId, !check);
           setCheck(!check);
         }}
       >

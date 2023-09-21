@@ -10,6 +10,7 @@ const Container = styled.div<ContainerProps>`
   justify-content: right;
   padding: 0 1.2em;
   height: 20px;
+  margin-bottom: 2em;
 
   p {
     font-weight: bold;

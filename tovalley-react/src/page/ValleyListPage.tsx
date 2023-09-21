@@ -17,6 +17,7 @@ type List = {
     waterPlaceReviewCnt: number | string;
     managementType: string;
     waterPlaceCategory: string;
+    waterPlaceImageUrl: string | null;
   }[];
   pageable: {
     sort: {
@@ -68,6 +69,7 @@ const ValleyListPage = () => {
         waterPlaceReviewCnt: "",
         waterPlaceCategory: "",
         managementType: "일반지역",
+        waterPlaceImageUrl: "",
       },
       {
         waterPlaceId: 40,
@@ -77,6 +79,7 @@ const ValleyListPage = () => {
         waterPlaceReviewCnt: 195,
         waterPlaceCategory: "계곡",
         managementType: "일반지역",
+        waterPlaceImageUrl: "",
       },
       {
         waterPlaceId: 40,
@@ -86,6 +89,7 @@ const ValleyListPage = () => {
         waterPlaceReviewCnt: 195,
         waterPlaceCategory: "계곡",
         managementType: "일반지역",
+        waterPlaceImageUrl: "",
       },
       {
         waterPlaceId: 40,
@@ -95,6 +99,7 @@ const ValleyListPage = () => {
         waterPlaceReviewCnt: 195,
         waterPlaceCategory: "계곡",
         managementType: "일반지역",
+        waterPlaceImageUrl: "",
       },
     ],
     pageable: {
@@ -126,8 +131,8 @@ const ValleyListPage = () => {
 
   useEffect(() => {
     sort === "평점"
-      ? getValleyList(click.category, regionClick.en, "rating", search)
-      : getValleyList(click.category, regionClick.en, "review", search);
+      ? getValleyList(click.category, regionClick.ko, "rating", search)
+      : getValleyList(click.category, regionClick.ko, "review", search);
   }, [regionClick, sort, page, searchValley]);
 
   const getValleyList = (
@@ -139,7 +144,7 @@ const ValleyListPage = () => {
     console.log(province, city);
     const config =
       search === ""
-        ? city === ""
+        ? city === "전체" || province === "전국"
           ? {
               params: {
                 province: province,
@@ -155,7 +160,7 @@ const ValleyListPage = () => {
                 page: page - 1,
               },
             }
-        : city === ""
+        : city === "전체" || province === "전국"
         ? {
             params: {
               province: province,
@@ -507,7 +512,12 @@ const ValleyListPage = () => {
                   onClick={() => navigation(`/valley/${item.waterPlaceId}`)}
                 >
                   <img
-                    src={process.env.PUBLIC_URL + "/img/계곡test이미지.png"}
+                    src={
+                      item.waterPlaceImageUrl === null ||
+                      item.waterPlaceImageUrl === ""
+                        ? process.env.PUBLIC_URL + "/img/default-image.png"
+                        : item.waterPlaceImageUrl
+                    }
                     alt="계곡 이미지"
                     width="140px"
                   />

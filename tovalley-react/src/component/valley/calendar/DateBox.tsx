@@ -18,6 +18,21 @@ interface Props {
   tripPlanToWaterPlace: {
     [key: string]: number;
   };
+  addScheduleBtn: boolean;
+  tripDate: {
+    startClick: boolean;
+    start: Date;
+    endClick: boolean;
+    end: Date;
+  };
+  setTripDate: React.Dispatch<
+    React.SetStateAction<{
+      startClick: boolean;
+      start: Date;
+      endClick: boolean;
+      end: Date;
+    }>
+  >;
 }
 
 const monthList = (nowDate: Date) => {
@@ -52,6 +67,9 @@ const DateBox = ({
   clickedDate,
   setClickedDate,
   tripPlanToWaterPlace,
+  addScheduleBtn,
+  tripDate,
+  setTripDate,
 }: Props) => {
   const allDay: Date[] = monthList(nowDate);
 
@@ -72,6 +90,9 @@ const DateBox = ({
             clickedDate={clickedDate}
             setClickedDate={setClickedDate}
             tripPlanToWaterPlace={tripPlanToWaterPlace}
+            addScheduleBtn={addScheduleBtn}
+            tripDate={tripDate}
+            setTripDate={setTripDate}
           />
         );
       })}

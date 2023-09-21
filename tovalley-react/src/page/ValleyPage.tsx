@@ -553,7 +553,7 @@ const ValleyPage = () => {
             content: "content5",
             reviewImages: [
               "https://file.thisisgame.com/upload/nboard/news/2015/07/24/20150724161608_6058.jpg",
-              "https://file.thisisgame.com/upload/nboard/news/2015/07/24/20150724161608_6058.jpg",
+              "https://m.m-peak.com/file_data/design0011/2020/09/14/76c5d7968683b6477ac009c3fc1bba66.png",
             ],
           },
           {

@@ -44,7 +44,7 @@
 
 .weatherMap {
   width: 100%;
-  height: 70vh;
+  height: 75vh;
   margin-top: 0.8em;
   background-color: #c0e1ff;
   box-sizing: border-box;
@@ -52,25 +52,46 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.weatherMapContainer {
   position: relative;
 }
 
-.weatherMap > img {
-  width: 100%;
+.weatherMapContainer > img {
+  width: 400px;
 }
 
-.weatherMap > div {
+.weatherMapContainer > div {
   position: absolute;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.weatherMap > div > span {
+.weatherMapContainer > div > span:nth-child(2) {
   font-weight: bold;
   font-size: 0.8rem;
   position: absolute;
   bottom: 0px;
+}
+
+.weatherDetail {
+  font-weight: bold;
+  font-size: xx-small;
+  background-color: rgb(49, 49, 204);
+  color: white;
+  padding: 0.8em;
+  border-radius: 10px;
+  position: absolute;
+}
+
+.weatherDetail > div:first-child {
+  margin-bottom: 0.3em;
+}
+
+.weatherDetail > div > span:first-child {
+  margin-right: 0.3em;
 }
 
 .chuncheon {
@@ -158,7 +179,7 @@
 }
 
 .yeosu {
-  top: 390px;
+  top: 370px;
   left: 140px;
   position: relative;
 }
@@ -170,7 +191,7 @@
 }
 
 .jeju {
-  top: 460px;
+  top: 420px;
   left: 60px;
   position: relative;
 }

@@ -29,6 +29,7 @@ const LoginPage = () => {
   const [login, setLogin] = useState({
     email: "",
     password: "",
+    passwordConfirm: false,
   });
 
   const [findView, setFindView] = useState({
@@ -50,7 +51,12 @@ const LoginPage = () => {
         console.log(res);
         res.status === 200 && navigation("/");
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+        err.response.status === 400
+          ? setLogin({ ...login, passwordConfirm: true })
+          : console.log(err);
+      });
   };
 
   return (
@@ -82,6 +88,11 @@ const LoginPage = () => {
               value={login.password}
               onChange={(e) => setLogin({ ...login, password: e.target.value })}
             />
+            {login.passwordConfirm && (
+              <span className={styles.passwordAlert}>
+                비밀번호가 틀렸습니다.
+              </span>
+            )}
             <button onClick={() => handleLogin()}>로그인</button>
           </div>
           {/* 소셜로그인 */}
@@ -297,7 +308,7 @@ const FindInfo: FC<Props> = ({ setFindView, info }) => {
                 {view.emailConfirm === 0
                   ? ""
                   : view.emailConfirm === 1
-                  ? `아이디는 ${inputInfo.email} 입니다.`
+                  ? "등록된 이메일입니다."
                   : "등록된 이메일이 아닙니다."}
               </span>
             </div>

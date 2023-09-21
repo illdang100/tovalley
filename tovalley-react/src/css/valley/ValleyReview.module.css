@@ -223,35 +223,3 @@
   color: #66a5fc;
   cursor: pointer;
 }
-
-.imgContainer {
-  z-index: 5;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-}
-
-.imgBox {
-  width: 120vh;
-  height: 80vh;
-  background-color: #00000090;
-  top: 50%;
-  left: 50%;
-  margin-left: -60vh;
-  margin-top: -40vh;
-  position: relative;
-}
-
-.close {
-  cursor: pointer;
-  position: absolute;
-  top: 20px;
-  right: 30px;
-}
-
-.imgList {
-  position: relative;
-  z-index: 6;
-}

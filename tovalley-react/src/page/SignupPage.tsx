@@ -24,6 +24,7 @@ const SignupPage = () => {
   });
 
   const [authSubmit, setAuthSubmit] = useState({
+    emailDuplication: 0,
     authConfirm: false,
     emailAvailable: false,
   });
@@ -82,17 +83,36 @@ const SignupPage = () => {
       });
   };
 
+  const checkEmailDuplication = () => {
+    const config = {
+      params: {
+        email: inputInfo.email,
+      },
+    };
+
+    axios
+      .get(`${localhost}/api/members/find-id`, config)
+      .then((res) => {
+        console.log(res);
+        res.status === 200
+          ? setAuthSubmit({ ...authSubmit, emailDuplication: 1 })
+          : setAuthSubmit({ ...authSubmit, emailDuplication: 2 });
+      })
+      .then((err) => console.log(err));
+  };
+
   const authEmail = () => {
     const data = {
       email: inputInfo.email,
     };
 
     console.log(data);
+    setAuthSubmit({ ...authSubmit, authConfirm: true });
+
     axios
       .post(`${localhost}/api/email-code`, data)
       .then((res) => {
         console.log(res);
-        setAuthSubmit({ ...authSubmit, authConfirm: true });
       })
       .catch((err) => console.log(err));
   };
@@ -110,7 +130,11 @@ const SignupPage = () => {
       .then((res) => {
         console.log(res);
         res.status === 200 &&
-          setAuthSubmit({ authConfirm: false, emailAvailable: true });
+          setAuthSubmit({
+            ...authSubmit,
+            authConfirm: false,
+            emailAvailable: true,
+          });
       })
       .catch((err) => console.log(err));
   };
@@ -168,9 +192,41 @@ const SignupPage = () => {
                   setInputInfo({ ...inputInfo, email: e.target.value });
                 }}
               />
-              <span className={styles.confirmBtn} onClick={authEmail}>
-                {authSubmit.emailAvailable ? "사용가능" : "확인"}
+              <span
+                className={
+                  authSubmit.authConfirm || inputInfo.email === ""
+                    ? styles.disableBtn
+                    : styles.confirmBtn
+                }
+                onClick={() => {
+                  if (authSubmit.emailAvailable) return;
+                  else {
+                    authSubmit.emailDuplication !== 1
+                      ? checkEmailDuplication()
+                      : !authSubmit.authConfirm && authEmail();
+                  }
+                }}
+              >
+                {authSubmit.emailDuplication !== 1
+                  ? "중복확인"
+                  : authSubmit.emailAvailable
+                  ? "사용가능"
+                  : "인증"}
               </span>
+              {authSubmit.emailDuplication !== 0 && (
+                <span
+                  className={styles.emailAlert}
+                  style={
+                    authSubmit.emailDuplication === 1
+                      ? { color: "#38A612" }
+                      : { color: "#EA0E00" }
+                  }
+                >
+                  {authSubmit.emailDuplication === 1
+                    ? "사용 가능한 이메일입니다."
+                    : "이미 가입된 이메일입니다."}
+                </span>
+              )}
             </div>
             {authSubmit.authConfirm && (
               <div id={styles.authConfirmInfo}>
@@ -184,7 +240,7 @@ const SignupPage = () => {
                   }}
                 />
                 <span className={styles.authBtn} onClick={authCode}>
-                  인증
+                  확인
                 </span>
               </div>
             )}
@@ -207,7 +263,7 @@ const SignupPage = () => {
                   available.check && checkDuplication();
                 }}
               >
-                중복체크
+                중복확인
               </span>
               <span className={styles.charCnt}>
                 {inputInfo.nickName.length}/20

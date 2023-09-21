@@ -11,28 +11,48 @@ interface Props {
 
 const Container = styled.div`
   width: 100%;
-  height: 540px;
   display: flex;
   flex-direction: column;
   margin-top: 6em;
   border: 1px solid #8e8e8e;
   border-radius: 10px;
-  padding: 2em 0;
+  padding-bottom: 2em;
 `;
 
 const ValleySchedule: FC<Props> = ({ tripPlanToWaterPlace }) => {
   const [nowDate, setNowDate] = useState<Date>(new Date());
   const [clickedDate, setClickedDate] = useState<Date>();
+  const [tripDate, setTripDate] = useState<{
+    startClick: boolean;
+    start: Date;
+    endClick: boolean;
+    end: Date;
+  }>({
+    startClick: false,
+    start: new Date(1000 - 1 - 1),
+    endClick: false,
+    end: new Date(1000 - 1 - 1),
+  });
+  const [addScheduleBtn, setAddScheduleBtn] = useState(false);
 
   return (
     <Container>
-      <ControlDate nowDate={nowDate} setNowDate={setNowDate} />
+      <ControlDate
+        nowDate={nowDate}
+        setNowDate={setNowDate}
+        addScheduleBtn={addScheduleBtn}
+        setAddScheduleBtn={setAddScheduleBtn}
+        tripDate={tripDate}
+      />
       <DateBox
         nowDate={nowDate}
         setNowDate={setNowDate}
         clickedDate={clickedDate}
         setClickedDate={setClickedDate}
         tripPlanToWaterPlace={tripPlanToWaterPlace}
+        addScheduleBtn={addScheduleBtn}
+        tripDate={tripDate}
+        setTripDate={setTripDate}
       />
     </Container>
   );
