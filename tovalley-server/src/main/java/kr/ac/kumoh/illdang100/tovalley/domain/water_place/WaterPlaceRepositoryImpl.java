@@ -81,6 +81,7 @@ public class WaterPlaceRepositoryImpl implements WaterPlaceRepositoryCustom {
                 ))
                 .from(waterPlace)
                 .where(searchWordContain(searchWord))
+                .orderBy(waterPlace.waterPlaceName.asc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
