@@ -38,20 +38,20 @@ public class WaterPlaceRepositoryImpl implements WaterPlaceRepositoryCustom {
                 .select(Projections.constructor(RetrieveWaterPlacesDto.class,
                         waterPlace.id,
                         waterPlace.waterPlaceName,
-                        waterPlace.town,
+                        waterPlace.address,
                         waterPlace.rating,
                         waterPlace.reviewCount,
                         waterPlace.managementType,
-                        waterPlace.waterPlaceCategory
+                        waterPlace.waterPlaceCategory,
+                        waterPlace.waterPlaceImage.storeFileUrl
                 ))
                 .from(waterPlace)
                 .where(provinceEq(province),
                         cityEq(city),
                         searchWordContain(searchWord))
+                .orderBy(addSorting(pageable))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize());
-
-        addSorting(query, pageable.getSort());
 
         List<RetrieveWaterPlacesDto> content = query.fetch();
 
@@ -61,6 +61,31 @@ public class WaterPlaceRepositoryImpl implements WaterPlaceRepositoryCustom {
                 .where(provinceEq(province),
                         cityEq(city),
                         searchWordContain(searchWord));
+
+        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
+    }
+
+    @Override
+    public Page<AdminRetrieveWaterPlacesDto> getAdminWaterPlaceList(String searchWord, Pageable pageable) {
+        List<AdminRetrieveWaterPlacesDto> content = queryFactory
+                .select(Projections.constructor(AdminRetrieveWaterPlacesDto.class,
+                        waterPlace.id,
+                        waterPlace.waterPlaceImage.storeFileUrl,
+                        waterPlace.waterPlaceName,
+                        waterPlace.province,
+                        waterPlace.city
+                ))
+                .from(waterPlace)
+                .where(searchWordContain(searchWord))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+
+        JPAQuery<Long> countQuery = queryFactory
+                .select(waterPlace.count())
+                .from(waterPlace)
+                .where(searchWordContain(searchWord));
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
@@ -78,25 +103,18 @@ public class WaterPlaceRepositoryImpl implements WaterPlaceRepositoryCustom {
     }
 
 
-    private void addSorting(JPAQuery<?> query, Sort sort) {
-        PathBuilder<?> pathBuilder = new PathBuilder<>(waterPlace.getType(), waterPlace.getMetadata());
-
-        OrderSpecifier<Double> ratingOrder = pathBuilder.getNumber("rating", Double.class).desc();
-        OrderSpecifier<Long> reviewCountOrder = pathBuilder.getNumber("reviewCount", Long.class).desc();
-        OrderSpecifier<Long> idOrder = pathBuilder.getNumber("id", Long.class).asc();
-
-        for (Sort.Order o : sort) {
-            String property = o.getProperty();
-            OrderSpecifier<?> orderSpecifier;
-            if ("reviewCount".equals(property)) {
-                orderSpecifier = new OrderSpecifier<>(o.isAscending() ? Order.ASC : Order.DESC, pathBuilder.getNumber(property, Long.class));
-                query.orderBy(orderSpecifier, ratingOrder, idOrder);
-            } else if ("rating".equals(property)) {
-                orderSpecifier = new OrderSpecifier<>(o.isAscending() ? Order.ASC : Order.DESC, pathBuilder.getNumber(property, Double.class));
-                query.orderBy(orderSpecifier, reviewCountOrder, idOrder);
-            } else {
-                continue;
+    private OrderSpecifier<?> addSorting(Pageable pageable) {
+        if (!pageable.getSort().isEmpty()) {
+            for (Sort.Order order : pageable.getSort()) {
+                Order direction = order.getDirection().isAscending() ? Order.ASC : Order.DESC;
+                switch (order.getProperty()) {
+                    case "rating":
+                        return new OrderSpecifier<>(direction, waterPlace.rating);
+                    case "review":
+                        return new OrderSpecifier<>(direction, waterPlace.reviewCount);
+                }
             }
         }
+        return null;
     }
 }

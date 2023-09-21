@@ -3,6 +3,7 @@ package kr.ac.kumoh.illdang100.tovalley.security.oauth;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberEnum;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberRepository;
+import kr.ac.kumoh.illdang100.tovalley.handler.ex.CustomApiException;
 import kr.ac.kumoh.illdang100.tovalley.security.auth.PrincipalDetails;
 import kr.ac.kumoh.illdang100.tovalley.security.oauth.provider.GoogleUserInfo;
 import kr.ac.kumoh.illdang100.tovalley.security.oauth.provider.KakaoUserInfo;
@@ -18,6 +19,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -86,6 +88,14 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private Member createNewMember(String username, String email, String memberName) {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String password = passwordEncoder.encode(UUID.randomUUID().toString());
+
+        Optional<Member> memberOptional = memberRepository.findByEmail(email);
+        if (memberOptional.isPresent()) {
+            Member member = memberOptional.get();
+            if (member.getUsername().equals(email)) {
+                throw new CustomApiException("이미 가입된 회원입니다");
+            }
+        }
 
         Member member = Member.builder()
                 .username(username)

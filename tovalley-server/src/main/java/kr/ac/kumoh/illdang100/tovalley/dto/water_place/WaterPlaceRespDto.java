@@ -17,11 +17,12 @@ public class WaterPlaceRespDto {
     public static class RetrieveWaterPlacesDto {
         private Long waterPlaceId; // 물놀이 장소 pk
         private String waterPlaceName; // 물놀이 장소 이름
-        private String town; // town 정보 (null일 수 있음)
+        private String waterPlaceAddr; // 물놀이 장소 주소
         private Double waterPlaceRating; // 평점
         private Integer waterPlaceReviewCnt; // 리뷰수
         private String managementType; // managementType 정보 (일반지역, 중점관리 지역)
         private String waterPlaceCategory; // waterPlaceCategory 정보 (하천, 계곡)
+        private String waterPlaceImageUrl;
     }
 
     @AllArgsConstructor
@@ -138,5 +139,15 @@ public class WaterPlaceRespDto {
         private String rating; // 평점
         private Integer reviewCnt; // 리뷰 개수
         private String waterPlaceImageUrl; // 물놀이 지역 이미지
+    }
+
+    @Data
+    @AllArgsConstructor
+    public static class AdminRetrieveWaterPlacesDto {
+        private Long waterPlaceId; // 물놀이 지역 아이디
+        private String waterPlaceImageUrl; // 물놀이 지역 이미지
+        private String waterPlaceName; // 물놀이 지역 이름
+        private String province; // 시도
+        private String city; // 시군구
     }
 }

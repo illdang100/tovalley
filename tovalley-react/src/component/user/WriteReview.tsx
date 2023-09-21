@@ -9,6 +9,7 @@ import {
 import { MdClose } from "react-icons/md";
 import { MdOutlineStar } from "react-icons/md";
 import axiosInstance from "../../axios_interceptor";
+import { IoIosCloseCircle } from "react-icons/io";
 
 interface Props {
   setWriteReviewView: React.Dispatch<React.SetStateAction<boolean>>;
@@ -41,6 +42,7 @@ const WriteReview: FC<Props> = ({ setWriteReviewView, valleyInfo }) => {
     quality: "",
     content: "",
   });
+  const [uploadImg, setUploadImg] = useState<String[]>([]);
 
   const [star, setStar] = useState({
     one: false,
@@ -68,10 +70,12 @@ const WriteReview: FC<Props> = ({ setWriteReviewView, valleyInfo }) => {
     else if (star.two === true) rating = 2;
     else rating = 1;
 
-    rating = formData.append("tripScheduleId", `${valleyInfo.id}`);
+    formData.append("tripScheduleId", `${valleyInfo.id}`);
     formData.append("waterQuality", quality);
     formData.append("rating", `${rating}`);
     formData.append("content", review.content);
+
+    //formData.append("imageContainer", uploadImg)
 
     axiosInstance
       .post("/api/auth/reviews", formData)
@@ -80,6 +84,33 @@ const WriteReview: FC<Props> = ({ setWriteReviewView, valleyInfo }) => {
         res.status === 200 && setWriteReviewView(false);
       })
       .catch((err) => console.log(err));
+  };
+
+  const saveImgFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files!;
+
+    if (!files[0]) return;
+
+    let imgUrlList = [...uploadImg];
+
+    for (let i = 0; i < files.length; i++) {
+      const currentImageUrl = URL.createObjectURL(files[i]);
+      imgUrlList.push(currentImageUrl);
+    }
+
+    if (imgUrlList.length > 5) {
+      imgUrlList = imgUrlList.slice(0, 5);
+    }
+
+    setUploadImg(imgUrlList);
+
+    if (uploadImg.length + files.length > 5) {
+      return alert("최대 5개 사진만 첨부할 수 있습니다.");
+    }
+  };
+
+  const handleDeleteImage = (id: number) => {
+    setUploadImg(uploadImg.filter((_, index) => index !== id));
   };
 
   return (
@@ -138,12 +169,36 @@ const WriteReview: FC<Props> = ({ setWriteReviewView, valleyInfo }) => {
               />
               <span>{review.content.length}/5000</span>
             </div>
-            <div className={styles.pictureBtn}>
-              <span>
-                <BsCameraFill size="26px" />
-              </span>
-              <span>사진 첨부하기</span>
-            </div>
+            <label htmlFor="input-file">
+              <div className={styles.pictureBtn}>
+                <span>
+                  <BsCameraFill size="26px" />
+                </span>
+                <input
+                  className={styles.imgInput}
+                  type="file"
+                  accept="image/*"
+                  id="input-file"
+                  multiple
+                  onChange={saveImgFile}
+                />
+                <span>사진 첨부하기</span>
+              </div>
+            </label>
+            {uploadImg.length !== 0 && (
+              <div className={styles.previewImg}>
+                {uploadImg.map((image, id) => (
+                  <div className={styles.imageContainer}>
+                    <div key={id}>
+                      <img src={`${image}`} alt={`${image}-${id}`} />
+                    </div>
+                    <span onClick={() => handleDeleteImage(id)}>
+                      <IoIosCloseCircle color="#F6483D" size="30px" />
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
           <div className={styles.writeQuality}>
             <span>수질은 괜찮았나요?</span>
