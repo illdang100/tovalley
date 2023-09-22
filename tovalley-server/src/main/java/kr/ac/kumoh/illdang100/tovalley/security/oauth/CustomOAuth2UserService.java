@@ -3,7 +3,7 @@ package kr.ac.kumoh.illdang100.tovalley.security.oauth;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberEnum;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberRepository;
-import kr.ac.kumoh.illdang100.tovalley.handler.ex.CustomApiException;
+import kr.ac.kumoh.illdang100.tovalley.handler.ex.CustomOAuth2AuthenticationException;
 import kr.ac.kumoh.illdang100.tovalley.security.auth.PrincipalDetails;
 import kr.ac.kumoh.illdang100.tovalley.security.oauth.provider.GoogleUserInfo;
 import kr.ac.kumoh.illdang100.tovalley.security.oauth.provider.KakaoUserInfo;
@@ -93,7 +93,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         if (memberOptional.isPresent()) {
             Member member = memberOptional.get();
             if (member.getUsername().equals(email)) {
-                throw new CustomApiException("이미 가입된 회원입니다");
+                throw new CustomOAuth2AuthenticationException("이미 가입된 이메일입니다");
             }
         }
 
