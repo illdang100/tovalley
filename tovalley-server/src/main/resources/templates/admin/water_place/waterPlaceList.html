@@ -44,7 +44,6 @@
           </div>
 
           <div th:class="admin-category">
-            <div><a th:href="@{/admin/home}">지역별 사고 발생 현황 관리</a></div>
             <div><a th:href="@{/admin/water-place-list}">계곡 정보 관리</a></div>
             <div><a th:href="@{/admin/water-places/new}">계곡 등록</a></div>
           </div>
@@ -70,8 +69,13 @@
                   <img th:unless="${not #strings.isEmpty(waterPlace.waterPlaceImageUrl)}"
                        th:src="@{/images/default-img.png}"
                        alt="기본 이미지" />
-                <h4 th:text="${waterPlace.waterPlaceName}">금오계곡</h4>
-                <p th:text="${waterPlace.province+' '+waterPlace.city}">경상북도 구미시</p>
+                  <h4 th:text="${waterPlace.waterPlaceName}">물놀이 장소 이름</h4>
+                  <p th:text="${waterPlace.province+' '+waterPlace.city}">주소</p>
+                  <p th:text="${waterPlace.waterPlaceCategory}">물놀이 장소 구분</p>
+                  <p th:text="${waterPlace.managementType}">안전관리유형</p>
+                  <p th:text="${waterPlace.rating}+'/5'"></p>
+                  <p th:text="'리뷰 '+${waterPlace.reviewCnt}+'개'"></p>
+                  <p></p>
                 </a>
               </div>
             </div>

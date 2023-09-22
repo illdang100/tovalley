@@ -149,5 +149,9 @@ public class WaterPlaceRespDto {
         private String waterPlaceName; // 물놀이 지역 이름
         private String province; // 시도
         private String city; // 시군구
+        private String managementType; // 안전 관리 유형
+        private Integer reviewCnt; // 리뷰 순
+        private Double rating; // 평점
+        private String waterPlaceCategory; // 구분
     }
 }
