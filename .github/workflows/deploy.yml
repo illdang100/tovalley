@@ -33,27 +33,27 @@ jobs:
           docker build -t jeongyeonjun/tovalley-server:latest .
           docker push jeongyeonjun/tovalley-server:latest
 
-      - name: SSH into EC2 and Start Docker Compose
+      - name: SSH into EC2 and Stop Docker Compose
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script: |
-            echo "------------ project 종료 중 ------------"
+            echo "------------ 프로젝트 종료 중 ------------"
             docker stop $(docker ps -q)
             docker rm $(docker ps -a -q)
             docker rmi -f $(docker images -q)
             cd ~/tovalley
             rm docker-compose.yml
-            echo "------------ project 종료 완료 ------------"
+            echo "------------ 프로젝트 종료 완료 ------------"
 
-      - name: copy file via ssh password
+      - name: copy docker-compose.yml via ssh password
         uses: appleboy/scp-action@v0.1.4
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
-          password: ${{ secrets.EC2_PRIVATE_KEY }}
+          password: ${{ secrets.EC2_PASSWORD }}
           source: "docker-compose.yml"
           target: "/home/ubuntu/tovalley"
 
