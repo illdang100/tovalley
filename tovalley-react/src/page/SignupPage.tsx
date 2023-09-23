@@ -28,9 +28,9 @@ const SignupPage = () => {
     emailAvailable: false,
   });
 
-  const KAKAO_AUTH_URL = `http://ec2-43-202-36-150.ap-northeast-2.compute.amazonaws.com:8080/oauth2/authorization/kakao`;
-  const GOOGLE_AUTH_URL = `http://ec2-43-202-36-150.ap-northeast-2.compute.amazonaws.com:8080/oauth2/authorization/google`;
-  const NAVER_AUTH_URL = `http://ec2-43-202-36-150.ap-northeast-2.compute.amazonaws.com:8080/oauth2/authorization/naver`;
+  const KAKAO_AUTH_URL = `http://ec2-13-125-136-237.ap-northeast-2.compute.amazonaws.com:8080/oauth2/authorization/kakao`;
+  const GOOGLE_AUTH_URL = `http://ec2-13-125-136-237.ap-northeast-2.compute.amazonaws.com:8080/oauth2/authorization/google`;
+  const NAVER_AUTH_URL = `http://ec2-13-125-136-237.ap-northeast-2.compute.amazonaws.com:8080/oauth2/authorization/naver`;
 
   const kakaoLogin = () => {
     window.location.href = KAKAO_AUTH_URL;
