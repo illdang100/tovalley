@@ -30,7 +30,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
     private  final RefreshTokenRedisRepository refreshTokenRedisRepository;
 
-    private static final String REDIRECT_URL = "http://localhost:3000";
+    private static final String REDIRECT_URL = "http://13.125.136.237/";
 
 
     @Override
