@@ -95,7 +95,7 @@ public class OpenApiServiceImpl implements OpenApiService {
                     responseStrBuilder.append(inputStr);
                 }
 
-                JSONObject jo = new JSONObject(responseStrBuilder.toString());
+                JSONObject jo = new JSONObject(responseStrBuilder.toString().trim());
                 JSONArray results = jo.getJSONArray("results");
 
                 if (results.length() > 0) {
@@ -246,8 +246,7 @@ public class OpenApiServiceImpl implements OpenApiService {
             conn.disconnect();
 
             String result = sb.toString();
-            log.debug("special weather open api result = {}", result);
-            return new JSONObject(result);
+            return new JSONObject(result.trim());
         } catch (IOException e) {
             throw new CustomApiException(e.getMessage());
         }
@@ -456,7 +455,7 @@ public class OpenApiServiceImpl implements OpenApiService {
             rd.close();
             conn.disconnect();
 
-            return new JSONObject(sb.toString());
+            return new JSONObject(sb.toString().trim());
         } catch (IOException e) {
             throw new CustomApiException(e.getMessage());
         }
@@ -623,7 +622,7 @@ public class OpenApiServiceImpl implements OpenApiService {
             rd.close();
             conn.disconnect();
 
-            return new JSONObject(sb.toString());
+            return new JSONObject(sb.toString().trim());
         } catch (IOException e) {
             throw new CustomApiException(e.getMessage());
         }
@@ -758,7 +757,7 @@ public class OpenApiServiceImpl implements OpenApiService {
         reader.close();
         con.disconnect();
 
-        JSONObject jsonResponse = new JSONObject(response.toString());
+        JSONObject jsonResponse = new JSONObject(response.toString().trim());
         return jsonResponse;
     }
 }
