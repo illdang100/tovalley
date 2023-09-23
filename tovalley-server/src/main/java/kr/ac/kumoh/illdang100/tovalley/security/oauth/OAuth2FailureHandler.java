@@ -24,7 +24,7 @@ import java.io.IOException;
 @Component
 public class OAuth2FailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
-    private String DEFAULT_URL = "http://13.125.136.237/";
+    private String DEFAULT_URL = "http://13.125.136.237";
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
