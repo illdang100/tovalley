@@ -13,6 +13,18 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      # UTC가 기준이기 때문에 한국시간으로 맞추려면 +9시간 해야 한다.
+      - name: Get current time
+        uses: 1466587594/get-current-time@v2
+        id: current-time
+        with:
+          format: YYYY-MM-DDTHH-mm-ss
+          utcOffset: "+09:00"
+
+      - name: Show Current Time
+        run: echo "CurrentTime=${{steps.current-time.outputs.formattedTime}}"
+        shell: bash
+
       - name: Set up JDK 11
         uses: actions/setup-java@v3
         with:
@@ -22,17 +34,13 @@ jobs:
       - name: make application.properties
         working-directory: ./tovalley-server
         run: |
-          # cd ./src/main/resources
           touch ./application-prod.yml
           echo "${{ secrets.PROPERTIES }}" > ./application-prod.yml
 
-      ### CI
-      #gradlew 권한 추가
       - name: Grant Execute Permission For Gradlew
         working-directory: ./tovalley-server
         run: chmod +x gradlew
 
-      #test를 제외한 프로젝트 빌드
       - name: Build With Gradle
         working-directory: ./tovalley-server
         run: ./gradlew build -x test
@@ -61,18 +69,6 @@ jobs:
         run: |
           docker build -t jeongyeonjun/tovalley-server:latest .
           docker push jeongyeonjun/tovalley-server:latest
-
-      # UTC가 기준이기 때문에 한국시간으로 맞추려면 +9시간 해야 한다.
-      - name: Get current time
-        uses: 1466587594/get-current-time@v2
-        id: current-time
-        with:
-          format: YYYY-MM-DDTHH-mm-ss
-          utcOffset: "+09:00"
-
-      - name: Show Current Time
-        run: echo "CurrentTime=${{steps.current-time.outputs.formattedTime}}"
-        shell: bash
 
       - name: SSH into EC2 and Stop Docker Compose
         uses: appleboy/ssh-action@v1.0.0
