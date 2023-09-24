@@ -78,6 +78,5 @@ jobs:
           script: |
             echo "------------ 프로젝트 재실행 ------------"
             cd ~/tovalley
-            echo $RDS_PORT
             docker-compose up -d
             echo "------------ 프로젝트 재실행 완료 ------------"
