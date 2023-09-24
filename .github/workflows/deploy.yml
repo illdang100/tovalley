@@ -24,6 +24,7 @@ jobs:
       - name: Set up Environment Variables
         run: |
           echo "${{ secrets.PROJECT_ENVIRONMENT }}" > .env
+          echo "TEST_ENV=${{ secrets.TEST_ENV }}"
           export $(cat .env | xargs)
 
       - name: Build and Push tovalley-react Docker Image
