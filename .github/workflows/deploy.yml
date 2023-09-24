@@ -13,6 +13,30 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          distribution: "zulu"
+          java-version: 11
+
+      - name: make application.properties
+        working-directory: ./tovalley-server
+        run: |
+          # cd ./src/main/resources
+          touch ./application-prod.yml
+          echo "${{ secrets.PROPERTIES }}" > ./application-prod.yml
+
+      ### CI
+      #gradlew 권한 추가
+      - name: Grant Execute Permission For Gradlew
+        working-directory: ./tovalley-server
+        run: chmod +x gradlew
+
+      #test를 제외한 프로젝트 빌드
+      - name: Build With Gradle
+        working-directory: ./tovalley-server
+        run: ./gradlew build -x test
+
       - name: Setup Docker Compose
         run: |
           sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
@@ -24,7 +48,6 @@ jobs:
       - name: Set up Environment Variables
         run: |
           echo "${{ secrets.PROJECT_ENVIRONMENT }}" > .env
-          echo "TEST_ENV=${{ secrets.TEST_ENV }}"
           export $(cat .env | xargs)
 
       - name: Build and Push tovalley-react Docker Image
