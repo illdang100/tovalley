@@ -43,7 +43,7 @@ jobs:
 
       - name: Build With Gradle
         working-directory: ./tovalley-server
-        run: ./gradlew build -x test
+        run: ./gradlew clean build
 
       - name: Setup Docker Compose
         run: |
