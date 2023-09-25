@@ -56,7 +56,6 @@ class MemberApiControllerTest extends DummyObject {
         dataSetting();
     }
 
-    @WithUserDetails(value = "user123@naver.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     @DisplayName("자체 로그인 테스트")
     void selfLogin_test() throws Exception {
