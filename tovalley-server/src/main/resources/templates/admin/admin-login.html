@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head th:replace="layout/base :: common_header(~{:: title},~{:: link})">
-  <link rel="stylesheet" th:href="@{tovalley-server/src/main/resources/static/css/admin-login.css}" />
+  <link rel="stylesheet" th:href="@{/th/css/admin-login.css}" />
   <title>관리자 로그인 페이지</title>
 </head>
 <style>
@@ -13,7 +13,7 @@
 <body>
 <div th:class="admin-login">
   <div th:class="admin-logo">
-    <img src="./img/투계곡-logo.png" th:src="@{/images/투계곡-logo.png}" alt="tovalley logo" width="120px"/>
+    <img src="./img/투계곡-logo.png" th:src="@{/th/images/투계곡-logo.png}" alt="tovalley logo" width="120px"/>
     <h1>ADMIN</h1>
   </div>
   <form action="/api/login" th:object="${loginForm}" method="post">
