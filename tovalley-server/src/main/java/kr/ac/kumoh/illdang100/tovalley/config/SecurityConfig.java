@@ -75,7 +75,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests()
                 .antMatchers("/api/auth/**").authenticated()
-                .antMatchers("/admin/**").hasRole("" + MemberEnum.ADMIN)
+                .antMatchers("/th/admin/**").hasRole("" + MemberEnum.ADMIN)
                 .anyRequest().permitAll();
 
         http

@@ -22,7 +22,7 @@ import static kr.ac.kumoh.illdang100.tovalley.dto.accident.AccidentReqDto.*;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/admin")
+@RequestMapping("/th/admin")
 @Slf4j
 public class AccidentController {
 
@@ -43,7 +43,7 @@ public class AccidentController {
             redirectAttributes.addFlashAttribute("successMessage", "사고 등록 성공!!");
         }
 
-        return "redirect:/admin/water-places/" + waterPlaceId;
+        return "redirect:/th/admin/water-places/" + waterPlaceId;
     }
 
     @PostMapping("/water-places/{waterPlaceId}/accidents/{accidentId}/delete")
@@ -52,6 +52,6 @@ public class AccidentController {
 
         accidentService.deleteAccident(waterPlaceId, accidentId);
 
-        return "redirect:/admin/water-places/" + waterPlaceId;
+        return "redirect:/th/admin/water-places/" + waterPlaceId;
     }
 }

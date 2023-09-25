@@ -17,14 +17,14 @@
             <h1>ADMIN</h1>
         </div>
         <div th:class="admin-category">
-            <div><a th:href="@{/admin/water-place-list}">계곡 정보 관리</a></div>
-            <div><a th:href="@{/admin/water-places/new}">계곡 등록</a></div>
+            <div><a th:href="@{/th/admin/water-place-list}">계곡 정보 관리</a></div>
+            <div><a th:href="@{/th/admin/water-places/new}">계곡 등록</a></div>
         </div>
     </div>
     <div class="valley-info-page">
         <div class="admin-title">
             <h1>계곡 정보 관리</h1>
-            <span><a th:href="@{/admin/logout}">로그아웃</a></span>
+            <span><a th:href="@{/th/admin/logout}">로그아웃</a></span>
         </div>
         <div th:class="valley-info-page-main">
             <div th:class="valley-info">
@@ -48,7 +48,7 @@
                         <span th:text="${waterPlace.waterPlaceCategory} == '' ? '-' : ${waterPlace.waterPlaceCategory}">계곡</span>
                         <span th:text="${waterPlace.managementType}">중점 관리 지역</span>
                     </div>
-                    <span><a th:href="@{/admin/water-places/{id}/edit (id=${waterPlace.waterPlaceId})}">수정하기</a></span>
+                    <span><a th:href="@{/th/admin/water-places/{id}/edit (id=${waterPlace.waterPlaceId})}">수정하기</a></span>
                 </div>
             </div>
             <div>
@@ -150,28 +150,28 @@
                             <ul class="pagination"
                                 th:with="start=${T(java.lang.Math).floor(accidents.accidentDetail.number/10)*10 + 1}, last=(${start + 9 < accidents.accidentDetail.totalPages ? start + 9 : accidents.accidentDetail.totalPages}), currentPage=${accidents.accidentDetail.number}">
                                 <li class="disabled">
-                                    <a th:href="@{/admin/water-places/{id} (id=${waterPlace.waterPlaceId}, page=0)}" aria-label="First">
+                                    <a th:href="@{/th/admin/water-places/{id} (id=${waterPlace.waterPlaceId}, page=0)}" aria-label="First">
                                         <span aria-hidden="true">First</span>
                                     </a>
                                 </li>
                                 <li th:class="${accidents.accidentDetail.first} ? 'disabled'">
-                                    <a th:href="${accidents.accidentDetail.first} ? '#' : @{/admin/water-places/{id}(id=${waterPlace.waterPlaceId}, page=${accidents.accidentDetail.number - 1})}" aria-label="Previous">
+                                    <a th:href="${accidents.accidentDetail.first} ? '#' : @{/th/admin/water-places/{id}(id=${waterPlace.waterPlaceId}, page=${accidents.accidentDetail.number - 1})}" aria-label="Previous">
                                         <span aria-hidden="true">&lt;</span>
                                     </a>
                                 </li>
 
                                 <li th:each="page: ${#numbers.sequence(start, last)}" th:class="${page == accidents.accidentDetail.number} ? 'active'">
-                                    <a th:if="${page >= 1}" th:text="${page}" th:href="@{/admin/water-places/{id} (id=${waterPlace.waterPlaceId}, page=${page - 1}, size=5)}"></a>
+                                    <a th:if="${page >= 1}" th:text="${page}" th:href="@{/th/admin/water-places/{id} (id=${waterPlace.waterPlaceId}, page=${page - 1}, size=5)}"></a>
                                 </li>
 
                                 <li th:class="${accidents.accidentDetail.last} ? 'disabled'">
-                                    <a th:href="${accidents.accidentDetail.last} ? '#' : @{/admin/water-places/{id} (id=${waterPlace.waterPlaceId}, page=${accidents.accidentDetail.number + 1})}" aria-label="Next">
+                                    <a th:href="${accidents.accidentDetail.last} ? '#' : @{/th/admin/water-places/{id} (id=${waterPlace.waterPlaceId}, page=${accidents.accidentDetail.number + 1})}" aria-label="Next">
                                         <span aria-hidden="true">&gt;</span>
                                     </a>
                                 </li>
 
                                 <li>
-                                    <a th:href="@{/admin/water-places/{id} (id=${waterPlace.waterPlaceId}, page=${accidents.accidentDetail.totalPages - 1})}" aria-label="Last">
+                                    <a th:href="@{/th/admin/water-places/{id} (id=${waterPlace.waterPlaceId}, page=${accidents.accidentDetail.totalPages - 1})}" aria-label="Last">
                                         <span aria-hidden="true">Last</span>
                                     </a>
                                 </li>
@@ -192,7 +192,7 @@
                             <p th:text="${errorMessage}"></p>
                         </div>
                     </div>
-                    <form th:action="@{/admin/water-places/{id}/accidents/new (id=${waterPlace.waterPlaceId})}"
+                    <form th:action="@{/th/admin/water-places/{id}/accidents/new (id=${waterPlace.waterPlaceId})}"
                           th:object="${addAccidentCond}" method="post">
                         <label for="accidentDate">날짜</label>
                         <input type="date" id="accidentDate" th:field="*{accidentDate}" required
@@ -219,7 +219,7 @@
     function cancel(waterPlaceId, accidentId) {
         var form = document.createElement("form");
         form.setAttribute("method", "post");
-        form.setAttribute("action", "/admin/water-places/" + waterPlaceId + "/accidents/" + accidentId + "/delete");
+        form.setAttribute("action", "/th/admin/water-places/" + waterPlaceId + "/accidents/" + accidentId + "/delete");
         document.body.appendChild(form);
         form.submit();
     }

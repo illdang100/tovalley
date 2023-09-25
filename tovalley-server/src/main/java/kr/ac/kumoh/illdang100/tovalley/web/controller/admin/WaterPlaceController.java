@@ -36,7 +36,7 @@ import static kr.ac.kumoh.illdang100.tovalley.util.EntityFinder.*;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/admin")
+@RequestMapping("/th/admin")
 @Slf4j
 public class WaterPlaceController {
 
@@ -173,7 +173,7 @@ public class WaterPlaceController {
 
         waterPlaceService.updateWaterPlace(waterPlaceId, form);
 
-        return "redirect:/admin/water-places/" + waterPlaceId;
+        return "redirect:/th/admin/water-places/" + waterPlaceId;
     }
 
     @PostMapping(value = "/water-places/{id}/change-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -182,7 +182,7 @@ public class WaterPlaceController {
 
         waterPlaceService.updateWaterPlaceImage(waterPlaceId, waterPlaceImage);
 
-        return "redirect:/admin/water-places/" + waterPlaceId;
+        return "redirect:/th/admin/water-places/" + waterPlaceId;
     }
 
     /**
@@ -216,6 +216,6 @@ public class WaterPlaceController {
 
         waterPlaceService.saveNewWaterPlace(form);
 
-        return "redirect:/admin/water-place-list";
+        return "redirect:/th/admin/water-place-list";
     }
 }

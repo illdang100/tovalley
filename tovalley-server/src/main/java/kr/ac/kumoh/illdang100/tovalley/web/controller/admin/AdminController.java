@@ -22,7 +22,7 @@ public class AdminController {
      * @param model
      * @return 관리자용 로그인 페이지
      */
-    @GetMapping("/admin-login")
+    @GetMapping("/th/admin-login")
     public String loginForm(Model model) {
 
         model.addAttribute("loginForm", new LoginForm());
@@ -33,10 +33,10 @@ public class AdminController {
      * 관리자 로그아웃
      * @return 관리자용 로그인 페이지
      */
-    @GetMapping("/admin/logout")
+    @GetMapping("/th/admin/logout")
     public String logOut(@CookieValue(JwtVO.REFRESH_TOKEN) String refreshToken,
                          HttpServletResponse response) {
         memberService.logout(response, refreshToken);
 
-        return "redirect:/admin-login";
+        return "redirect:/th/admin-login";
     }}
