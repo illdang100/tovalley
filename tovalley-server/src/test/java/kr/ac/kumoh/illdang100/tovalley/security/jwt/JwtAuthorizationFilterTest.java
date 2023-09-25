@@ -91,7 +91,7 @@ public class JwtAuthorizationFilterTest extends DummyObject {
         String decodedRefreshToken = URLDecoder.decode(refreshToken, StandardCharsets.UTF_8);
 
         //when
-        ResultActions resultActions = mvc.perform(get("/admin/tovalley/test")
+        ResultActions resultActions = mvc.perform(get("/th/admin/tovalley/test")
                 .cookie(new Cookie(JwtVO.ACCESS_TOKEN, decodedAccessToken),
                         new Cookie(JwtVO.REFRESH_TOKEN, decodedRefreshToken)));
 
