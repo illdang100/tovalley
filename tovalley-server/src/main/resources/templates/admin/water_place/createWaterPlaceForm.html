@@ -17,18 +17,18 @@
             <h1>ADMIN</h1>
         </div>
         <div th:class="admin-category">
-            <div><a th:href="@{/admin/water-place-list}">계곡 정보 관리</a></div>
-            <div><a th:href="@{/admin/water-places/new}">계곡 등록</a></div>
+            <div><a th:href="@{/th/admin/water-place-list}">계곡 정보 관리</a></div>
+            <div><a th:href="@{/th/admin/water-places/new}">계곡 등록</a></div>
         </div>
     </div>
     <div class="valley-register-page">
         <div class="admin-title">
             <h1>계곡 등록</h1>
-            <span><a th:href="@{/admin/logout}">로그아웃</a></span>
+            <span><a th:href="@{/th/admin/logout}">로그아웃</a></span>
         </div>
         <form method="post"
               enctype="multipart/form-data"
-              th:action="@{/admin/water-places/new}"
+              th:action="@{/th/admin/water-places/new}"
               th:object="${form}">
             <div class="register-page">
                 <div class="valley-info-register">

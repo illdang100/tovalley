@@ -17,14 +17,14 @@
             <h1>ADMIN</h1>
         </div>
         <div th:class="admin-category">
-            <div><a th:href="@{/admin/water-place-list}">계곡 정보 관리</a></div>
-            <div><a th:href="@{/admin/water-places/new}">계곡 등록</a></div>
+            <div><a th:href="@{/th/admin/water-place-list}">계곡 정보 관리</a></div>
+            <div><a th:href="@{/th/admin/water-places/new}">계곡 등록</a></div>
         </div>
     </div>
     <div class="valley-register-page">
         <div class="admin-title">
             <h1>계곡 정보 수정</h1>
-            <span><a th:href="@{/admin/logout}">로그아웃</a></span>
+            <span><a th:href="@{/th/admin/logout}">로그아웃</a></span>
         </div>
         <div th:class="valley-img">
             <img id="preview"
@@ -37,20 +37,20 @@
                  width="200px" height="200px" alt="Default Image" />
             <div>
                 <form method="post" enctype="multipart/form-data"
-                      th:action="@{/admin/water-places/{id}/change-image (id=${waterPlaceId})}">
+                      th:action="@{/th/admin/water-places/{id}/change-image (id=${waterPlaceId})}">
                     <input type="file" accept=".jpg, .png" name="image" value=""
                            th:onchange="'javascript:previewImg('+this+'); validateImageSelection();'" />
                     <button type="submit" id="uploadButton" disabled>이미지 변경</button>
                 </form>
                 <form method="post" enctype="multipart/form-data"
-                      th:action="@{/admin/water-places/{id}/change-image (id=${waterPlaceId})}">
+                      th:action="@{/th/admin/water-places/{id}/change-image (id=${waterPlaceId})}">
                     <button type="submit" id="defaultImageButton"
                             th:if="${not #strings.isEmpty(waterPlaceImage)}">기본 이미지 변경</button>
                 </form>
             </div>
         </div>
         <form method="post"
-              th:action="@{/admin/water-places/{id}/edit (id=${waterPlaceId})}"
+              th:action="@{/th/admin/water-places/{id}/edit (id=${waterPlaceId})}"
               th:object="${form}">
             <div class="register-page">
                 <div class="valley-info-register">

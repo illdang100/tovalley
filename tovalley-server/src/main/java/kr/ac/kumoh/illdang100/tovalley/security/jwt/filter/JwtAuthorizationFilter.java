@@ -40,7 +40,10 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-        if (isCookieVerify(request, JwtVO.ACCESS_TOKEN)) {
+        String requestUrl = request.getRequestURL().toString();
+        boolean containsApiAuth = requestUrl.contains("/api/auth/");
+        boolean containsAdmin = requestUrl.contains("/th/admin/");
+        if ((containsApiAuth || containsAdmin) && isCookieVerify(request, JwtVO.ACCESS_TOKEN)) {
             String token = findCookieValue(request, JwtVO.ACCESS_TOKEN).replace(JwtVO.TOKEN_PREFIX, "");
             log.debug("accessToken={}", token);
 
