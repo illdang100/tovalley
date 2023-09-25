@@ -1,24 +1,16 @@
 package kr.ac.kumoh.illdang100.tovalley.web.controller.admin;
 
-import kr.ac.kumoh.illdang100.tovalley.domain.accident.AccidentEnum;
-import kr.ac.kumoh.illdang100.tovalley.dto.accident.AccidentRespDto;
-import kr.ac.kumoh.illdang100.tovalley.dto.rescue_supply.RescueSupplyRespDto;
-import kr.ac.kumoh.illdang100.tovalley.dto.water_place.WaterPlaceRespDto;
 import kr.ac.kumoh.illdang100.tovalley.form.accident.CreateAccidentForm;
 import kr.ac.kumoh.illdang100.tovalley.service.accident.AccidentService;
 import kr.ac.kumoh.illdang100.tovalley.service.water_place.WaterPlaceService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
-
-import static kr.ac.kumoh.illdang100.tovalley.dto.accident.AccidentReqDto.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -27,7 +19,6 @@ import static kr.ac.kumoh.illdang100.tovalley.dto.accident.AccidentReqDto.*;
 public class AccidentController {
 
     private final AccidentService accidentService;
-    private final WaterPlaceService waterPlaceService;
 
     @PostMapping("/water-places/{id}/accidents/new")
     public String createAccident(@PathVariable("id") Long waterPlaceId,
