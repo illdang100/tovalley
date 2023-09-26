@@ -31,11 +31,17 @@ jobs:
           distribution: "zulu"
           java-version: 11
 
-      - name: make application.properties
+      - name: Make application-prod.yml
         working-directory: ./tovalley-server
         run: |
           touch ./application-prod.yml
           echo "${{ secrets.PROPERTIES }}" > ./application-prod.yml
+
+      - name: Make React .env
+        working-directory: ./tovalley-react
+        run: |
+          touch ./.env
+          echo "${{ secrets.REACT_ENV }}" > ./.env
 
       - name: Grant Execute Permission For Gradlew
         working-directory: ./tovalley-server
@@ -45,18 +51,8 @@ jobs:
         working-directory: ./tovalley-server
         run: ./gradlew build -x test
 
-      - name: Setup Docker Compose
-        run: |
-          sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-          sudo chmod +x /usr/local/bin/docker-compose
-
       - name: Log in to Docker Hub
         run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Set up Environment Variables
-        run: |
-          echo "${{ secrets.PROJECT_ENVIRONMENT }}" > .env
-          export $(cat .env | xargs)
 
       - name: Build and Push tovalley-react Docker Image
         working-directory: ./tovalley-react
