@@ -18,6 +18,9 @@ RUN npm install axios --silent
 # 호스트 머신의 현재 디렉토리 파일들을 컨테이너 내부로 전부 복사
 COPY . .
 
+# 환경 변수를 위한 .env 파일 복사 
+COPY .env ./.env 
+
 # npm build
 RUN npm run build
 

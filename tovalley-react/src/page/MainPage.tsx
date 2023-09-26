@@ -155,7 +155,6 @@ const MainPage = () => {
   ]);
 
   useEffect(() => {
-    console.log("localhost: ", `${localhost}`);
     setLoading(true);
     axios
       .get(`${localhost}/api/main-page`)
