@@ -1,12 +1,12 @@
 import axios from "axios";
 
 const Axios = axios.create({
-  baseURL: "http://13.125.136.237",
+  baseURL: process.env.REACT_APP_HOST,
   withCredentials: true,
 });
 
 const axiosInstance = axios.create({
-  baseURL: "http://13.125.136.237",
+  baseURL: process.env.REACT_APP_HOST,
   withCredentials: true,
 });
 
@@ -22,7 +22,6 @@ axiosInstance.interceptors.response.use(
       const errMsg = error.response.data.msg;
 
       if (errResponseStatus === 400 && errMsg === "만료된 토큰입니다.") {
-        Axios.delete("/api/auth/logout");
         window.location.replace("/login");
       } else if (errResponseStatus === 400) {
         console.log(error.response.data.msg);

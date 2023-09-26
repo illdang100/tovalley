@@ -1,5 +1,7 @@
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import styles from "../../css/main/Weather.module.css";
+import { FaTemperatureEmpty } from "react-icons/fa6";
+import { BsCloudRainHeavyFill } from "react-icons/bs";
 
 interface Props {
   nationalWeather: {
@@ -46,20 +48,44 @@ const getDayOfWeek = (day: string) => {
 const Weather: FC<Props> = ({ nationalWeather }) => {
   let dateArr = nationalWeather;
 
-  for (let i = 0; i < dateArr.length; i++) {
-    for (let j = 0; j < dateArr.length - 1; j++) {
-      if (
-        Number(weatherSort(dateArr[j].weatherDate)) >
-        Number(weatherSort(dateArr[j + 1].weatherDate))
-      ) {
-        let temp = dateArr[j];
-        dateArr[j] = dateArr[j + 1];
-        dateArr[j + 1] = temp;
+  const [clicked, setClicked] = useState(nationalWeather[0]);
+  const [hover, setHover] = useState("");
+  const region = [
+    "백령",
+    "서울",
+    "춘천",
+    "강릉",
+    "수원",
+    "청주",
+    "울릉/독도",
+    "대전",
+    "안동",
+    "전주",
+    "대구",
+    "울산",
+    "광주",
+    "목포",
+    "부산",
+    "제주",
+    "여수",
+  ];
+
+  useEffect(() => {
+    for (let i = 0; i < dateArr.length; i++) {
+      for (let j = 0; j < dateArr.length - 1; j++) {
+        if (
+          Number(weatherSort(dateArr[j].weatherDate)) >
+          Number(weatherSort(dateArr[j + 1].weatherDate))
+        ) {
+          let temp = dateArr[j];
+          dateArr[j] = dateArr[j + 1];
+          dateArr[j + 1] = temp;
+        }
       }
     }
-  }
 
-  const [clicked, setClicked] = useState(dateArr[0]);
+    setClicked(dateArr[0]);
+  }, []);
 
   return (
     <div className={styles.weather}>
@@ -70,6 +96,7 @@ const Weather: FC<Props> = ({ nationalWeather }) => {
             <div
               onClick={() => {
                 setClicked(item);
+                console.log(item);
               }}
               className={clicked === item ? styles.dateClicked : styles.date}
             >
@@ -105,146 +132,89 @@ const Weather: FC<Props> = ({ nationalWeather }) => {
         })}
       </div>
       <div className={styles.weatherMap}>
-        <img
-          src={process.env.PUBLIC_URL + "/img/map_img.png"}
-          alt="지도 이미지"
-        ></img>
-        {/* <div className={styles.chuncheon}>
+        <div className={styles.weatherMapContainer}>
           <img
-            src={`https://openweathermap.org/img/wn/${clicked.dailyNationalWeather[2].weatherIcon}@2x.png`}
-            alt="날씨 아이콘"
-            width="70px"
-          />
-          <span>춘천</span>
+            src={process.env.PUBLIC_URL + "/img/map_img.png"}
+            alt="지도 이미지"
+          ></img>
+          {region.map((item, index) => {
+            return (
+              <div
+                className={
+                  index === 0
+                    ? styles.baengnyeong
+                    : index === 1
+                    ? styles.seoul
+                    : index === 2
+                    ? styles.chuncheon
+                    : index === 3
+                    ? styles.gangneung
+                    : index === 4
+                    ? styles.suwon
+                    : index === 5
+                    ? styles.cheongju
+                    : index === 6
+                    ? styles.ulleung
+                    : index === 7
+                    ? styles.daejeon
+                    : index === 8
+                    ? styles.andong
+                    : index === 9
+                    ? styles.jeonju
+                    : index === 10
+                    ? styles.daegu
+                    : index === 11
+                    ? styles.ulsan
+                    : index === 12
+                    ? styles.gwangju
+                    : index === 13
+                    ? styles.mokpo
+                    : index === 14
+                    ? styles.busan
+                    : index === 15
+                    ? styles.jeju
+                    : styles.yeosu
+                }
+                onMouseOver={() => setHover(item)}
+                onMouseLeave={() => setHover("")}
+              >
+                {clicked.dailyNationalWeather[0].weatherIcon !== "" && (
+                  <img
+                    src={`https://openweathermap.org/img/wn/${clicked.dailyNationalWeather[index].weatherIcon}@2x.png`}
+                    alt="날씨 아이콘"
+                    width="70px"
+                  />
+                )}
+                <span>{item}</span>
+                {hover === item && (
+                  <div className={styles.weatherDetail}>
+                    <div>
+                      <span>
+                        <FaTemperatureEmpty />
+                      </span>
+                      <span>
+                        {clicked.dailyNationalWeather[index].minTemp.toFixed()}
+                        °/
+                        {clicked.dailyNationalWeather[index].maxTemp.toFixed()}°
+                      </span>
+                    </div>
+                    <div>
+                      <span>
+                        <BsCloudRainHeavyFill />
+                      </span>
+                      <span>
+                        {clicked.dailyNationalWeather[
+                          index
+                        ].rainPrecipitation.toFixed()}
+                        %
+                      </span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
-        <div className={styles.baengnyeong}>
-          <img
-            src={`https://openweathermap.org/img/wn/${clicked.dailyNationalWeather[0].weatherIcon}@2x.png`}
-            alt="날씨 아이콘"
-            width="70px"
-          />
-          <span>백령</span>
-        </div>
-        <div className={styles.seoul}>
-          <img
-            src={`https://openweathermap.org/img/wn/${clicked.dailyNationalWeather[1].weatherIcon}@2x.png`}
-            alt="날씨 아이콘"
-            width="70px"
-          />
-          <span>서울</span>
-        </div>
-        <div className={styles.gangneung}>
-          <img
-            src={`https://openweathermap.org/img/wn/${clicked.dailyNationalWeather[3].weatherIcon}@2x.png`}
-            alt="날씨 아이콘"
-            width="70px"
-          />
-          <span>강릉</span>
-        </div>
-        <div className={styles.cheongju}>
-          <img
-            src={`https://openweathermap.org/img/wn/${clicked.dailyNationalWeather[5].weatherIcon}@2x.png`}
-            alt="날씨 아이콘"
-            width="70px"
-          />
-          <span>청주</span>
-        </div>
-        <div className={styles.ulleung}>
-          <img
-            src={`https://openweathermap.org/img/wn/${clicked.dailyNationalWeather[6].weatherIcon}@2x.png`}
-            alt="날씨 아이콘"
-            width="70px"
-          />
-          <span>울릉</span>
-        </div>
-        <div className={styles.suwon}>
-          <img
-            src={`https://openweathermap.org/img/wn/${clicked.dailyNationalWeather[4].weatherIcon}@2x.png`}
-            alt="날씨 아이콘"
-            width="70px"
-          />
-          <span>수원</span>
-        </div>
-        <div className={styles.andong}>
-          <img
-            src={`https://openweathermap.org/img/wn/${clicked.dailyNationalWeather[8].weatherIcon}@2x.png`}
-            alt="날씨 아이콘"
-            width="70px"
-          />
-          <span>안동</span>
-        </div>
-        <div className={styles.daejeon}>
-          <img
-            src={`https://openweathermap.org/img/wn/${clicked.dailyNationalWeather[7].weatherIcon}@2x.png`}
-            alt="날씨 아이콘"
-            width="70px"
-          />
-          <span>대전</span>
-        </div>
-        <div className={styles.jeonju}>
-          <img
-            src={`https://openweathermap.org/img/wn/${clicked.dailyNationalWeather[9].weatherIcon}@2x.png`}
-            alt="날씨 아이콘"
-            width="70px"
-          />
-          <span>전주</span>
-        </div>
-        <div className={styles.daegu}>
-          <img
-            src={`https://openweathermap.org/img/wn/${clicked.dailyNationalWeather[10].weatherIcon}@2x.png`}
-            alt="날씨 아이콘"
-            width="70px"
-          />
-          <span>대구</span>
-        </div>
-        <div className={styles.ulsan}>
-          <img
-            src={`https://openweathermap.org/img/wn/${clicked.dailyNationalWeather[11].weatherIcon}@2x.png`}
-            alt="날씨 아이콘"
-            width="70px"
-          />
-          <span>울산</span>
-        </div>
-        <div className={styles.gwangju}>
-          <img
-            src={`https://openweathermap.org/img/wn/${clicked.dailyNationalWeather[12].weatherIcon}@2x.png`}
-            alt="날씨 아이콘"
-            width="70px"
-          />
-          <span>광주</span>
-        </div>
-        <div className={styles.mokpo}>
-          <img
-            src={`https://openweathermap.org/img/wn/${clicked.dailyNationalWeather[13].weatherIcon}@2x.png`}
-            alt="날씨 아이콘"
-            width="70px"
-          />
-          <span>목포</span>
-        </div>
-        <div className={styles.yeosu}>
-          <img
-            src={`https://openweathermap.org/img/wn/${clicked.dailyNationalWeather[16].weatherIcon}@2x.png`}
-            alt="날씨 아이콘"
-            width="70px"
-          />
-          <span>여수</span>
-        </div>
-        <div className={styles.busan}>
-          <img
-            src={`https://openweathermap.org/img/wn/${clicked.dailyNationalWeather[14].weatherIcon}@2x.png`}
-            alt="날씨 아이콘"
-            width="70px"
-          />
-          <span>부산</span>
-        </div>
-        <div className={styles.jeju}>
-          <img
-            src={`https://openweathermap.org/img/wn/${clicked.dailyNationalWeather[15].weatherIcon}@2x.png`}
-            alt="날씨 아이콘"
-            width="70px"
-          />
-          <span>제주</span> 
-        </div>*/}
       </div>
     </div>
   );

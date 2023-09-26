@@ -39,7 +39,7 @@ public class SecurityConfigTest {
         //given
 
         //when
-        ResultActions resultActions = mvc.perform(get("/admin/test"));
+        ResultActions resultActions = mvc.perform(get("/th/admin/test"));
         String responseBody = resultActions.andReturn().getResponse().getContentAsString();
         int httpStatusCode = resultActions.andReturn().getResponse().getStatus();
 

@@ -53,7 +53,6 @@
   color: #555555;
   width: 100%;
   box-sizing: border-box;
-  margin: 0.2em 0;
 }
 
 .signupInput input:focus {
@@ -61,9 +60,14 @@
   outline: 1px solid #66a5fc;
 }
 
+.emailAlert {
+  font-size: 0.8rem;
+}
+
 /* 확인, 중복체크 버튼 */
 .confirmBtn,
 .authBtn {
+  background-color: white;
   color: #66a5fc;
   border: 1px solid #66a5fc;
   font-size: 0.9rem;
@@ -117,7 +121,7 @@
 
 /* 가입하기 버튼 */
 .signupBtn {
-  width: 100%;
+  width: 98%;
 }
 
 .signupBtn button {
@@ -129,7 +133,7 @@
   font-weight: bold;
   border-radius: 7px;
   cursor: pointer;
-  margin-top: 2.5em;
+  margin-top: 1em;
   width: 100%;
 }
 

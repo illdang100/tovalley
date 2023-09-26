@@ -10,12 +10,13 @@
 }
 
 .menu span {
-  border: 1px solid #66a5fc;
+  box-shadow: 0 2px 3px rgb(183, 183, 183);
   border-radius: 5px;
-  padding: 0.3em 0.5em;
-  margin-right: 0.3em;
+  padding: 0.5em 0.8em;
+  margin-right: 0.6em;
   cursor: pointer;
   font-size: 0.9rem;
+  color: #66a5fc;
 }
 
 .defaultAlert {

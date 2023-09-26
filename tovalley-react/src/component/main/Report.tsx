@@ -95,8 +95,10 @@ const ReportContent = styled.div<ReportProps>`
       : ``};
   color: white;
   border-radius: 0 0 12px 12px;
-  padding: 0.9em;
-  font-size: 0.8rem;
+  padding: 1em;
+  font-size: 0.9rem;
+  text-align: justify;
+  line-height: 1.4em;
 `;
 
 const Report: FC<Props> = ({ alert }) => {

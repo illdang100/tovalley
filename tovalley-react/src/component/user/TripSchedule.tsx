@@ -1,5 +1,97 @@
 import React, { FC, useEffect, useState } from "react";
 import TripScheduleItem from "./TripScheduleItem";
+import useDidMountEffect from "../../useDidMountEffect";
+
+type preSchedule = {
+  content: {
+    tripScheduleId: number;
+    waterPlaceId: number;
+    waterPlaceName: string;
+    waterPlaceImg: string | null;
+    waterPlaceAddr: string;
+    waterPlaceRating: number | string;
+    waterPlaceReviewCnt: number | string;
+    waterPlaceTraffic: number;
+    tripDate: string;
+    tripPartySize: number;
+    rescueSupplies: {
+      lifeBoatNum: number;
+      portableStandNum: number;
+      lifeJacketNum: number;
+      lifeRingNum: number;
+      rescueRopeNum: number;
+      rescueRodNum: number;
+    };
+    hasReview: boolean;
+  }[];
+  pageable: {
+    sort: {
+      empty: boolean;
+      unsorted: boolean;
+      sorted: boolean;
+    };
+    offset: number;
+    pageNumber: number;
+    pageSize: number;
+    paged: boolean;
+    unpaged: boolean;
+  };
+  number: number;
+  sort: {
+    empty: boolean;
+    unsorted: boolean;
+    sorted: boolean;
+  };
+  first: boolean;
+  last: boolean;
+  size: number;
+  numberOfElements: number;
+  empty: boolean;
+};
+
+type schedule = {
+  tripScheduleId: number;
+  waterPlaceId: number;
+  waterPlaceName: string;
+  waterPlaceImg: string | null;
+  waterPlaceAddr: string;
+  waterPlaceRating: number | string;
+  waterPlaceReviewCnt: number | string;
+  waterPlaceTraffic: number;
+  tripDate: string;
+  tripPartySize: number;
+  rescueSupplies: {
+    lifeBoatNum: number;
+    portableStandNum: number;
+    lifeJacketNum: number;
+    lifeRingNum: number;
+    rescueRopeNum: number;
+    rescueRodNum: number;
+  };
+  hasReview: boolean;
+}[];
+
+type scheduleItem = {
+  tripScheduleId: number;
+  waterPlaceId: number;
+  waterPlaceName: string;
+  waterPlaceImg: string | null;
+  waterPlaceAddr: string;
+  waterPlaceRating: number | string;
+  waterPlaceReviewCnt: number | string;
+  waterPlaceTraffic: number;
+  tripDate: string;
+  tripPartySize: number;
+  rescueSupplies: {
+    lifeBoatNum: number;
+    portableStandNum: number;
+    lifeJacketNum: number;
+    lifeRingNum: number;
+    rescueRopeNum: number;
+    rescueRodNum: number;
+  };
+  hasReview: boolean;
+};
 
 interface Props {
   scheduleBtn: string;
@@ -25,12 +117,45 @@ interface Props {
     };
     hasReview: boolean; // 리뷰 작성 여부(앞으로의 일정은 리뷰를 작성할 수 없음)
   }[];
+  setUpCommingSchedule: React.Dispatch<React.SetStateAction<schedule>>;
+  setPreSchedule: React.Dispatch<React.SetStateAction<preSchedule>>;
+  deleteBtn: boolean;
+  preSchedule: preSchedule;
+  setDeleteBtn: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const TripSchedule: FC<Props> = ({ scheduleBtn, tripSchedules }) => {
-  const [deleteSchedule, setDeleteSchedule] = useState<
-    { id: number; check: boolean }[]
-  >([]);
+const TripSchedule: FC<Props> = ({
+  scheduleBtn,
+  tripSchedules,
+  deleteBtn,
+  setDeleteBtn,
+  setUpCommingSchedule,
+  setPreSchedule,
+}) => {
+  const [checkedItems, setCheckedItems] = useState(new Set());
+  let checkedItemsArr: schedule = [];
+
+  const checkedItemHandler = (id: scheduleItem, isChecked: boolean) => {
+    // if (isChecked) {
+    //   checkedItems.add(id);
+    //   checkedItemsArr = Array.from(checkedItems);
+    //   console.log(checkedItemsArr);
+    // } else if (!isChecked && checkedItems.has(id)) {
+    //   checkedItems.delete(id);
+    //   setCheckedItems(checkedItems);
+    //   checkedItemsArr = Array.from(checkedItems);
+    //   console.log(checkedItemsArr);
+    // }
+  };
+
+  useDidMountEffect(() => {
+    // if (deleteBtn) {
+    //   scheduleBtn === "앞으로의 일정"
+    //     ? setUpCommingSchedule(checkedItemsArr)
+    //     : setPreSchedule(checkedItemsArr);
+    //   setDeleteBtn(false);
+    // }
+  }, [deleteBtn]);
 
   return (
     <div>
@@ -39,8 +164,7 @@ const TripSchedule: FC<Props> = ({ scheduleBtn, tripSchedules }) => {
           <TripScheduleItem
             schedule={item}
             scheduleBtn={scheduleBtn}
-            deleteSchedule={deleteSchedule}
-            setDeleteSchedule={setDeleteSchedule}
+            checkItemHandler={checkedItemHandler}
           />
         );
       })}

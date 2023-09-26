@@ -6,9 +6,12 @@ interface ContainerProps {
   sameDay: boolean;
   clickDay: boolean;
   peopleCnt: number;
+  addScheduleBtn: boolean;
+  afterToday: boolean;
 }
 
 const Container = styled.div<ContainerProps>`
+  height: 5.5em;
   border: 1px solid #8e8e8e;
   border-top: none;
   border-left: none;
@@ -17,6 +20,8 @@ const Container = styled.div<ContainerProps>`
   align-items: top;
   padding: 0 1.2em;
   position: relative;
+  cursor: ${({ sameMonth, addScheduleBtn, afterToday }) =>
+    sameMonth && addScheduleBtn && afterToday ? `pointer` : ``};
 
   &:nth-child(7n) {
     border-right: none;
@@ -27,11 +32,20 @@ const Container = styled.div<ContainerProps>`
   }
 
   p {
+    position: relative;
+    z-index: 2;
     margin-top: 0.7em;
     height: fit-content;
     text-align: center;
     font-weight: ${({ sameMonth }) => (sameMonth ? `700` : `500`)};
-    color: ${({ sameMonth }) => (sameMonth ? `black` : `#BCBCBC`)};
+    color: ${({ sameMonth, addScheduleBtn, afterToday }) =>
+      sameMonth && addScheduleBtn && afterToday
+        ? ``
+        : sameMonth && !addScheduleBtn
+        ? `black`
+        : !sameMonth && !addScheduleBtn
+        ? `#BCBCBC`
+        : `rgb(212, 212, 212);`};
 
     ${({ sameDay }) =>
       sameDay
@@ -40,20 +54,33 @@ const Container = styled.div<ContainerProps>`
             color: white;
             background-color: red;
             border-radius: 100%;
+            width: 1.3em;
+            height: 1.3em;
           `
         : css``}
 
     ${({ clickDay }) =>
       clickDay
         ? css`
-            border: 1px solid skyblue;
+            background-color: #3378fc;
+            color: white;
+            border-radius: 100%;
+            padding: 0.3em;
+            width: 1.3em;
           `
         : css``}
   }
 
   &:nth-child(7n + 8) {
     p {
-      color: ${({ sameMonth }) => (sameMonth ? `#F52E2E` : ``)};
+      position: relative;
+      z-index: 2;
+      color: ${({ sameMonth, addScheduleBtn, afterToday }) =>
+        sameMonth && addScheduleBtn && afterToday
+          ? `#F52E2E`
+          : sameMonth && !addScheduleBtn
+          ? `#F52E2E`
+          : `rgb(212, 212, 212);`};
       color: ${({ sameDay }) =>
         sameDay
           ? css`
@@ -61,6 +88,18 @@ const Container = styled.div<ContainerProps>`
               color: white;
               background-color: red;
               border-radius: 100%;
+              width: 1.3em;
+              height: 1.3em;
+            `
+          : css``};
+      color: ${({ clickDay }) =>
+        clickDay
+          ? css`
+              background-color: #3378fc;
+              color: white;
+              border-radius: 100%;
+              padding: 0.3em;
+              width: 1.3em;
             `
           : css``};
     }
@@ -68,7 +107,14 @@ const Container = styled.div<ContainerProps>`
 
   &:nth-child(7n) {
     p {
-      color: ${({ sameMonth }) => (sameMonth ? `#567BFD` : ``)};
+      position: relative;
+      z-index: 2;
+      color: ${({ sameMonth, addScheduleBtn, afterToday }) =>
+        sameMonth && addScheduleBtn && afterToday
+          ? `#567BFD`
+          : sameMonth && !addScheduleBtn
+          ? `#567BFD`
+          : `rgb(212, 212, 212);`};
       color: ${({ sameDay }) =>
         sameDay
           ? css`
@@ -76,12 +122,24 @@ const Container = styled.div<ContainerProps>`
               color: white;
               background-color: red;
               border-radius: 100%;
+              width: 1.3em;
+              height: 1.3em;
+            `
+          : css``};
+      color: ${({ clickDay }) =>
+        clickDay
+          ? css`
+              background-color: #3378fc;
+              color: white;
+              border-radius: 100%;
+              padding: 0.3em;
+              width: 1.3em;
             `
           : css``};
     }
   }
 
-  div {
+  .peopleCnt {
     width: 85%;
     height: 8px;
     position: absolute;
@@ -99,15 +157,20 @@ const Container = styled.div<ContainerProps>`
   }
 `;
 
+type tripPeopleCnt = {
+  tripPlanToWaterPlace: {
+    [key: string]: number;
+  };
+};
+
 interface Props {
   day: Date;
   nowDate: Date;
   setNowDate: React.Dispatch<React.SetStateAction<Date>>;
   clickedDate: Date | undefined;
   setClickedDate: React.Dispatch<React.SetStateAction<Date | undefined>>;
-  tripPlanToWaterPlace: {
-    [key: string]: number;
-  };
+  tripPlanToWaterPlace: tripPeopleCnt;
+  addScheduleBtn: boolean;
 }
 
 let formatedDate;
@@ -151,6 +214,7 @@ const allDay = ({
   clickedDate,
   setClickedDate,
   tripPlanToWaterPlace,
+  addScheduleBtn,
 }: Props) => {
   const nowTime = new Date();
 
@@ -160,6 +224,13 @@ const allDay = ({
     nowTime.getMonth() === day.getMonth() &&
     nowTime.getDate() === day.getDate();
 
+  const afterToday =
+    nowTime.getFullYear() < day.getFullYear() ||
+    nowTime.getMonth() < day.getMonth() ||
+    (nowTime.getMonth() <= day.getMonth() &&
+      nowTime.getFullYear() <= day.getFullYear() &&
+      nowTime.getDate() <= day.getDate());
+
   const clickDay: boolean = clickedDate
     ? clickedDate.getFullYear() === day.getFullYear() &&
       clickedDate.getMonth() === day.getMonth() &&
@@ -167,24 +238,35 @@ const allDay = ({
     : false;
 
   const clickDate = () => {
-    setClickedDate(day);
+    if (addScheduleBtn) {
+      setClickedDate(day);
+    }
   };
 
   return (
     <Container
-      onClick={() => clickDate()}
+      onClick={() => afterToday && clickDate()}
       sameMonth={sameMonth}
       sameDay={sameDay}
       clickDay={clickDay}
-      peopleCnt={dateFormat(nowDate, day, tripPlanToWaterPlace)}
+      peopleCnt={dateFormat(
+        nowDate,
+        day,
+        tripPlanToWaterPlace.tripPlanToWaterPlace
+      )}
+      addScheduleBtn={addScheduleBtn}
+      afterToday={afterToday}
     >
       <p>{day.getDate()}</p>
-      {(sameMonth && dateFormat(nowDate, day, tripPlanToWaterPlace) === 0) ||
+      {(sameMonth &&
+        dateFormat(nowDate, day, tripPlanToWaterPlace.tripPlanToWaterPlace) ===
+          0) ||
       (sameMonth &&
-        dateFormat(nowDate, day, tripPlanToWaterPlace) === undefined) ? (
+        dateFormat(nowDate, day, tripPlanToWaterPlace.tripPlanToWaterPlace) ===
+          undefined) ? (
         <></>
       ) : sameMonth ? (
-        <div />
+        <div className="peopleCnt" />
       ) : (
         <></>
       )}

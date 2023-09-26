@@ -11,6 +11,28 @@ import { FaVest } from "react-icons/fa";
 import { LuUtilityPole } from "react-icons/lu";
 import WriteReview from "./WriteReview";
 
+type schedule = {
+  tripScheduleId: number;
+  waterPlaceId: number;
+  waterPlaceName: string;
+  waterPlaceImg: string | null;
+  waterPlaceAddr: string;
+  waterPlaceRating: number | string;
+  waterPlaceReviewCnt: number | string;
+  waterPlaceTraffic: number;
+  tripDate: string;
+  tripPartySize: number;
+  rescueSupplies: {
+    lifeBoatNum: number;
+    portableStandNum: number;
+    lifeJacketNum: number;
+    lifeRingNum: number;
+    rescueRopeNum: number;
+    rescueRodNum: number;
+  };
+  hasReview: boolean;
+};
+
 interface Props {
   schedule: {
     tripScheduleId: number;
@@ -34,25 +56,13 @@ interface Props {
     hasReview: boolean;
   };
   scheduleBtn: string;
-  deleteSchedule: {
-    id: number;
-    check: boolean;
-  }[];
-  setDeleteSchedule: React.Dispatch<
-    React.SetStateAction<
-      {
-        id: number;
-        check: boolean;
-      }[]
-    >
-  >;
+  checkItemHandler: (id: schedule, isChecked: boolean) => void;
 }
 
 const TripScheduleItem: FC<Props> = ({
   schedule,
   scheduleBtn,
-  deleteSchedule,
-  setDeleteSchedule,
+  checkItemHandler,
 }) => {
   const [writeReviewView, setWriteReviewView] = useState(false);
   const [check, setCheck] = useState(false);
@@ -62,6 +72,7 @@ const TripScheduleItem: FC<Props> = ({
       <span
         className={styles.scheduleCheck}
         onClick={() => {
+          checkItemHandler(schedule, !check);
           setCheck(!check);
         }}
       >

@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../component/header/Header";
 import Footer from "../component/footer/Footer";
 import styles from "../css/user/SignupPage.module.css";
 import axios from "axios";
+import ConfirmModal from "../component/common/ConfirmModal";
 
-const localhost = "http://13.125.136.237";
+const localhost = process.env.REACT_APP_HOST;
 
 const SignupPage = () => {
   const [inputInfo, setInputInfo] = useState({
@@ -24,13 +25,46 @@ const SignupPage = () => {
   });
 
   const [authSubmit, setAuthSubmit] = useState({
+    emailDuplication: 0,
     authConfirm: false,
     emailAvailable: false,
+    resendView: false,
   });
 
-  const KAKAO_AUTH_URL = `http://ec2-13-125-136-237.ap-northeast-2.compute.amazonaws.com:8080/oauth2/authorization/kakao`;
-  const GOOGLE_AUTH_URL = `http://ec2-13-125-136-237.ap-northeast-2.compute.amazonaws.com:8080/oauth2/authorization/google`;
-  const NAVER_AUTH_URL = `http://ec2-13-125-136-237.ap-northeast-2.compute.amazonaws.com:8080/oauth2/authorization/naver`;
+  const MINUTES_IN_MS = 3 * 60 * 1000;
+  const INTERVAL = 1000;
+  const [timeLeft, setTimeLeft] = useState<number>(MINUTES_IN_MS);
+
+  const [mailBoxView, setMailBoxView] = useState({
+    view: false,
+    content: "확인",
+  });
+
+  const minutes = String(Math.floor((timeLeft / (1000 * 60)) % 60)).padStart(
+    2,
+    "0"
+  );
+  const second = String(Math.floor((timeLeft / 1000) % 60)).padStart(2, "0");
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft((prevTime) => prevTime - INTERVAL);
+    }, INTERVAL);
+
+    if (timeLeft <= 0) {
+      clearInterval(timer);
+      setTimeLeft(0);
+      setAuthSubmit({ ...authSubmit, resendView: true });
+    }
+
+    return () => {
+      clearInterval(timer);
+    };
+  }, [timeLeft]);
+
+  const KAKAO_AUTH_URL = `http://13.125.136.237/oauth2/authorization/kakao`;
+  const GOOGLE_AUTH_URL = `http://13.125.136.237/oauth2/authorization/google`;
+  const NAVER_AUTH_URL = `http://13.125.136.237/oauth2/authorization/naver`;
 
   const kakaoLogin = () => {
     window.location.href = KAKAO_AUTH_URL;
@@ -82,19 +116,48 @@ const SignupPage = () => {
       });
   };
 
+  const checkEmailDuplication = () => {
+    const config = {
+      params: {
+        email: inputInfo.email,
+      },
+    };
+
+    axios
+      .get(`${localhost}/api/members/find-id`, config)
+      .then((res) => {
+        console.log(res);
+        res.status === 200 &&
+          setAuthSubmit({ ...authSubmit, emailDuplication: 2 });
+      })
+      .catch((err) => {
+        console.log(err);
+        err.response.status === 400 &&
+          setAuthSubmit({ ...authSubmit, emailDuplication: 1 });
+      });
+  };
+
   const authEmail = () => {
     const data = {
       email: inputInfo.email,
     };
 
     console.log(data);
+    setAuthSubmit({ ...authSubmit, authConfirm: true });
+
     axios
       .post(`${localhost}/api/email-code`, data)
       .then((res) => {
         console.log(res);
-        setAuthSubmit({ ...authSubmit, authConfirm: true });
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+        if (err.response.status === 400) {
+          setTimeLeft(0);
+          setMailBoxView({ ...mailBoxView, view: true });
+          setAuthSubmit({ ...authSubmit, resendView: true });
+        }
+      });
   };
 
   const authCode = () => {
@@ -110,7 +173,11 @@ const SignupPage = () => {
       .then((res) => {
         console.log(res);
         res.status === 200 &&
-          setAuthSubmit({ authConfirm: false, emailAvailable: true });
+          setAuthSubmit({
+            ...authSubmit,
+            authConfirm: false,
+            emailAvailable: true,
+          });
       })
       .catch((err) => console.log(err));
   };
@@ -168,14 +235,53 @@ const SignupPage = () => {
                   setInputInfo({ ...inputInfo, email: e.target.value });
                 }}
               />
-              <span className={styles.confirmBtn} onClick={authEmail}>
-                {authSubmit.emailAvailable ? "사용가능" : "확인"}
+              <span
+                className={
+                  authSubmit.authConfirm || inputInfo.email === ""
+                    ? styles.disableBtn
+                    : styles.confirmBtn
+                }
+                onClick={() => {
+                  if (authSubmit.emailAvailable) return;
+                  else {
+                    if (authSubmit.emailDuplication !== 1)
+                      checkEmailDuplication();
+                    else {
+                      if (!authSubmit.authConfirm) {
+                        setTimeLeft(MINUTES_IN_MS);
+                        authEmail();
+                      }
+                    }
+                  }
+                }}
+              >
+                {authSubmit.emailDuplication !== 1
+                  ? "중복확인"
+                  : authSubmit.emailAvailable
+                  ? "사용가능"
+                  : "인증"}
               </span>
+              {authSubmit.emailDuplication !== 0 && (
+                <span
+                  className={styles.emailAlert}
+                  style={
+                    authSubmit.emailDuplication === 1
+                      ? { color: "#38A612" }
+                      : { color: "#EA0E00" }
+                  }
+                >
+                  {authSubmit.emailDuplication === 1
+                    ? "사용 가능한 이메일입니다."
+                    : "이미 가입된 이메일입니다."}
+                </span>
+              )}
             </div>
             {authSubmit.authConfirm && (
               <div id={styles.authConfirmInfo}>
                 <span>이메일로 인증코드를 전송하였습니다.</span>
-                <span>00:00</span>
+                <span>
+                  {minutes} : {second}
+                </span>
                 <input
                   placeholder="인증코드"
                   value={inputInfo.code}
@@ -183,10 +289,29 @@ const SignupPage = () => {
                     setInputInfo({ ...inputInfo, code: e.target.value });
                   }}
                 />
-                <span className={styles.authBtn} onClick={authCode}>
-                  인증
-                </span>
+                {!authSubmit.resendView ? (
+                  <span className={styles.authBtn} onClick={authCode}>
+                    확인
+                  </span>
+                ) : (
+                  <span
+                    className={styles.authBtn}
+                    onClick={() => {
+                      setTimeLeft(MINUTES_IN_MS);
+                      authEmail();
+                      setAuthSubmit({ ...authSubmit, resendView: false });
+                    }}
+                  >
+                    재전송
+                  </span>
+                )}
               </div>
+            )}
+            {mailBoxView.view && (
+              <ConfirmModal
+                content="메일 수신함을 확인하세요"
+                handleModal={setMailBoxView}
+              />
             )}
             <div>
               <span>닉네임</span>
@@ -207,7 +332,7 @@ const SignupPage = () => {
                   available.check && checkDuplication();
                 }}
               >
-                중복체크
+                중복확인
               </span>
               <span className={styles.charCnt}>
                 {inputInfo.nickName.length}/20
