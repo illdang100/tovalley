@@ -1,5 +1,6 @@
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import TripScheduleItem from "./TripScheduleItem";
+import useDidMountEffect from "../../useDidMountEffect";
 
 type preSchedule = {
   content: {
@@ -70,6 +71,28 @@ type schedule = {
   hasReview: boolean;
 }[];
 
+type scheduleItem = {
+  tripScheduleId: number;
+  waterPlaceId: number;
+  waterPlaceName: string;
+  waterPlaceImg: string | null;
+  waterPlaceAddr: string;
+  waterPlaceRating: number | string;
+  waterPlaceReviewCnt: number | string;
+  waterPlaceTraffic: number;
+  tripDate: string;
+  tripPartySize: number;
+  rescueSupplies: {
+    lifeBoatNum: number;
+    portableStandNum: number;
+    lifeJacketNum: number;
+    lifeRingNum: number;
+    rescueRopeNum: number;
+    rescueRodNum: number;
+  };
+  hasReview: boolean;
+};
+
 interface Props {
   scheduleBtn: string;
   tripSchedules: // 앞으로의 일정 리스트 (최대 5개)
@@ -98,34 +121,41 @@ interface Props {
   setPreSchedule: React.Dispatch<React.SetStateAction<preSchedule>>;
   deleteBtn: boolean;
   preSchedule: preSchedule;
+  setDeleteBtn: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const TripSchedule: FC<Props> = ({ scheduleBtn, tripSchedules, deleteBtn }) => {
+const TripSchedule: FC<Props> = ({
+  scheduleBtn,
+  tripSchedules,
+  deleteBtn,
+  setDeleteBtn,
+  setUpCommingSchedule,
+  setPreSchedule,
+}) => {
   const [checkedItems, setCheckedItems] = useState(new Set());
-  const checkedItemHandler = (id: number, isChecked: boolean) => {
-    if (isChecked) {
-      checkedItems.add(id);
-      setCheckedItems(checkedItems);
-    } else if (!isChecked && checkedItems.has(id)) {
-      checkedItems.delete(id);
-      setCheckedItems(checkedItems);
-    }
+  let checkedItemsArr: schedule = [];
+
+  const checkedItemHandler = (id: scheduleItem, isChecked: boolean) => {
+    // if (isChecked) {
+    //   checkedItems.add(id);
+    //   checkedItemsArr = Array.from(checkedItems);
+    //   console.log(checkedItemsArr);
+    // } else if (!isChecked && checkedItems.has(id)) {
+    //   checkedItems.delete(id);
+    //   setCheckedItems(checkedItems);
+    //   checkedItemsArr = Array.from(checkedItems);
+    //   console.log(checkedItemsArr);
+    // }
   };
 
-  let newSchedule;
-
-  if (deleteBtn) {
-    if (scheduleBtn === "앞으로의 일정") {
-      newSchedule = tripSchedules.filter((item) => {
-        return checkedItems.has(item.tripScheduleId) !== true;
-      });
-    } else {
-      newSchedule = tripSchedules.filter((item) => {
-        return checkedItems.has(item.tripScheduleId) === true;
-      });
-      //setPreSchedule({ ...preSchedule, content: newSchedule });
-    }
-  }
+  useDidMountEffect(() => {
+    // if (deleteBtn) {
+    //   scheduleBtn === "앞으로의 일정"
+    //     ? setUpCommingSchedule(checkedItemsArr)
+    //     : setPreSchedule(checkedItemsArr);
+    //   setDeleteBtn(false);
+    // }
+  }, [deleteBtn]);
 
   return (
     <div>

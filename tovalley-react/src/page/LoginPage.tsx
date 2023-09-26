@@ -7,7 +7,7 @@ import { MdOutlineClose } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "./../axios_interceptor";
 
-const localhost = "http://localhost:8081";
+const localhost = process.env.REACT_APP_HOST;
 
 const LoginPage = () => {
   const KAKAO_AUTH_URL = `http://localhost:8081/oauth2/authorization/kakao`;
@@ -197,6 +197,7 @@ const FindInfo: FC<Props> = ({ setFindView, info }) => {
     codeView: true,
     passwordReset: false,
     emailConfirm: 0,
+    resendView: false,
   });
 
   const [inputInfo, setInputInfo] = useState({
@@ -205,6 +206,31 @@ const FindInfo: FC<Props> = ({ setFindView, info }) => {
     password: "",
     confirmPassword: "",
   });
+
+  const MINUTES_IN_MS = 3 * 60 * 1000;
+  const INTERVAL = 1000;
+  const [timeLeft, setTimeLeft] = useState<number>(MINUTES_IN_MS);
+
+  const minutes = String(Math.floor((timeLeft / (1000 * 60)) % 60)).padStart(
+    2,
+    "0"
+  );
+  const second = String(Math.floor((timeLeft / 1000) % 60)).padStart(2, "0");
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft((prevTime) => prevTime - INTERVAL);
+    }, INTERVAL);
+
+    if (timeLeft <= 0) {
+      clearInterval(timer);
+      setView({ ...view, resendView: true });
+    }
+
+    return () => {
+      clearInterval(timer);
+    };
+  }, [timeLeft]);
 
   const handleFindId = () => {
     const config = {
@@ -312,10 +338,12 @@ const FindInfo: FC<Props> = ({ setFindView, info }) => {
                   : "등록된 이메일이 아닙니다."}
               </span>
             </div>
-            {view.codeView && (
+            {!view.codeView && (
               <div className={styles.confirmCode}>
                 <span>인증 코드가 메일로 전송되었습니다.</span>
-                <span className={styles.timer}>00:00</span>
+                <span className={styles.timer}>
+                  {minutes} : {second}
+                </span>
                 <div className={styles.confirmCodeInput}>
                   <input
                     placeholder="확인 코드"
@@ -324,7 +352,19 @@ const FindInfo: FC<Props> = ({ setFindView, info }) => {
                       setInputInfo({ ...inputInfo, code: e.target.value })
                     }
                   />
-                  <button onClick={authCode}>확인</button>
+                  {!view.resendView ? (
+                    <button onClick={authCode}>확인</button>
+                  ) : (
+                    <button
+                      onClick={() => {
+                        authEmail();
+                        setTimeLeft(MINUTES_IN_MS);
+                        setView({ ...view, resendView: false });
+                      }}
+                    >
+                      재전송
+                    </button>
+                  )}
                 </div>
               </div>
             )}

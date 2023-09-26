@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../component/header/Header";
 import Footer from "../component/footer/Footer";
 import styles from "../css/user/SignupPage.module.css";
 import axios from "axios";
+import ConfirmModal from "../component/common/ConfirmModal";
 
-const localhost = "http://localhost:8081";
+const localhost = process.env.REACT_APP_HOST;
 
 const SignupPage = () => {
   const [inputInfo, setInputInfo] = useState({
@@ -27,11 +28,43 @@ const SignupPage = () => {
     emailDuplication: 0,
     authConfirm: false,
     emailAvailable: false,
+    resendView: false,
   });
 
-  const KAKAO_AUTH_URL = `http://localhost:8081/oauth2/authorization/kakao`;
-  const GOOGLE_AUTH_URL = `http://localhost:8081/oauth2/authorization/google`;
-  const NAVER_AUTH_URL = `http://localhost:8081/oauth2/authorization/naver`;
+  const MINUTES_IN_MS = 3 * 60 * 1000;
+  const INTERVAL = 1000;
+  const [timeLeft, setTimeLeft] = useState<number>(MINUTES_IN_MS);
+
+  const [mailBoxView, setMailBoxView] = useState({
+    view: false,
+    content: "확인",
+  });
+
+  const minutes = String(Math.floor((timeLeft / (1000 * 60)) % 60)).padStart(
+    2,
+    "0"
+  );
+  const second = String(Math.floor((timeLeft / 1000) % 60)).padStart(2, "0");
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft((prevTime) => prevTime - INTERVAL);
+    }, INTERVAL);
+
+    if (timeLeft <= 0) {
+      clearInterval(timer);
+      setTimeLeft(0);
+      setAuthSubmit({ ...authSubmit, resendView: true });
+    }
+
+    return () => {
+      clearInterval(timer);
+    };
+  }, [timeLeft]);
+
+  const KAKAO_AUTH_URL = `http://13.125.136.237/oauth2/authorization/kakao`;
+  const GOOGLE_AUTH_URL = `http://13.125.136.237/oauth2/authorization/google`;
+  const NAVER_AUTH_URL = `http://13.125.136.237/oauth2/authorization/naver`;
 
   const kakaoLogin = () => {
     window.location.href = KAKAO_AUTH_URL;
@@ -94,11 +127,14 @@ const SignupPage = () => {
       .get(`${localhost}/api/members/find-id`, config)
       .then((res) => {
         console.log(res);
-        res.status === 200
-          ? setAuthSubmit({ ...authSubmit, emailDuplication: 1 })
-          : setAuthSubmit({ ...authSubmit, emailDuplication: 2 });
+        res.status === 200 &&
+          setAuthSubmit({ ...authSubmit, emailDuplication: 2 });
       })
-      .then((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+        err.response.status === 400 &&
+          setAuthSubmit({ ...authSubmit, emailDuplication: 1 });
+      });
   };
 
   const authEmail = () => {
@@ -114,7 +150,14 @@ const SignupPage = () => {
       .then((res) => {
         console.log(res);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+        if (err.response.status === 400) {
+          setTimeLeft(0);
+          setMailBoxView({ ...mailBoxView, view: true });
+          setAuthSubmit({ ...authSubmit, resendView: true });
+        }
+      });
   };
 
   const authCode = () => {
@@ -201,9 +244,14 @@ const SignupPage = () => {
                 onClick={() => {
                   if (authSubmit.emailAvailable) return;
                   else {
-                    authSubmit.emailDuplication !== 1
-                      ? checkEmailDuplication()
-                      : !authSubmit.authConfirm && authEmail();
+                    if (authSubmit.emailDuplication !== 1)
+                      checkEmailDuplication();
+                    else {
+                      if (!authSubmit.authConfirm) {
+                        setTimeLeft(MINUTES_IN_MS);
+                        authEmail();
+                      }
+                    }
                   }
                 }}
               >
@@ -231,7 +279,9 @@ const SignupPage = () => {
             {authSubmit.authConfirm && (
               <div id={styles.authConfirmInfo}>
                 <span>이메일로 인증코드를 전송하였습니다.</span>
-                <span>00:00</span>
+                <span>
+                  {minutes} : {second}
+                </span>
                 <input
                   placeholder="인증코드"
                   value={inputInfo.code}
@@ -239,10 +289,29 @@ const SignupPage = () => {
                     setInputInfo({ ...inputInfo, code: e.target.value });
                   }}
                 />
-                <span className={styles.authBtn} onClick={authCode}>
-                  확인
-                </span>
+                {!authSubmit.resendView ? (
+                  <span className={styles.authBtn} onClick={authCode}>
+                    확인
+                  </span>
+                ) : (
+                  <span
+                    className={styles.authBtn}
+                    onClick={() => {
+                      setTimeLeft(MINUTES_IN_MS);
+                      authEmail();
+                      setAuthSubmit({ ...authSubmit, resendView: false });
+                    }}
+                  >
+                    재전송
+                  </span>
+                )}
               </div>
+            )}
+            {mailBoxView.view && (
+              <ConfirmModal
+                content="메일 수신함을 확인하세요"
+                handleModal={setMailBoxView}
+              />
             )}
             <div>
               <span>닉네임</span>

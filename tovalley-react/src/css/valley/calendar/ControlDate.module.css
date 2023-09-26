@@ -82,3 +82,110 @@
   border-radius: 4px;
   color: rgb(212, 212, 212);
 }
+
+.infoContainer {
+  z-index: 5;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #eeeeeebd;
+}
+
+.infoBox {
+  width: 460px;
+  height: 50vh;
+  border-radius: 15px;
+  background-color: #ffffff;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin-left: -230px;
+  margin-top: -30vh;
+  padding: 2em 1em;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.infoBox > div > h1 {
+  font-size: 1.8rem;
+  text-align: center;
+  margin: 0;
+  margin-bottom: 1em;
+}
+
+.valleyInfo {
+  border-top: 1px solid #cdcdcd;
+  border-bottom: 1px solid #cdcdcd;
+  padding: 1em;
+  margin-bottom: 1.5em;
+}
+
+.valleyInfo > h4 {
+  margin: 0;
+  font-size: 1.3rem;
+  margin-bottom: 0.5em;
+}
+
+.valleyInfo > span {
+  color: #949494;
+}
+
+.peopleCnt {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.peopleCnt > span:first-child {
+  font-weight: bold;
+  margin-left: -2em;
+  margin-right: 1em;
+  font-size: 1.2rem;
+}
+
+.peopleCnt > span:not(:first-of-type) {
+  cursor: pointer;
+}
+
+.peopleCnt > input {
+  border: none;
+  font-size: 1.8rem;
+  font-weight: bold;
+  width: 2em;
+  text-align: center;
+}
+
+.peopleCnt > input:focus {
+  outline: none;
+}
+
+.addBtn {
+  display: flex;
+  justify-content: center;
+}
+
+.addBtn > span:first-child,
+.addBtn > span:last-child {
+  width: 100%;
+  border-radius: 8px;
+  font-weight: bold;
+  padding: 0.7em;
+  display: flex;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.addBtn > span:first-child {
+  border: 1px solid #b5b5b5;
+  margin-right: 0.5em;
+  color: #5e5e5e;
+}
+
+.addBtn > span:last-child {
+  background-color: #66a5fc;
+  color: white;
+}

@@ -1,6 +1,9 @@
 .header {
   border-bottom: 1px solid #dadada;
   padding: 1em 10% 0;
+  z-index: 4;
+  position: relative;
+  background-color: white;
 }
 
 .headertop {
@@ -51,6 +54,7 @@
   display: block;
   padding: 1.5em 0 0.8em 0;
   margin-right: 5em;
+  font-size: 1.1em;
   font-weight: bold;
 }
 
@@ -62,4 +66,5 @@
   border-bottom: 3px solid #66a5fc;
   color: #66a5fc;
   font-weight: bold;
+  font-size: 1.1em;
 }

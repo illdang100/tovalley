@@ -1,12 +1,12 @@
 import axios from "axios";
 
 const Axios = axios.create({
-  baseURL: "http://localhost:8081",
+  baseURL: process.env.REACT_APP_HOST,
   withCredentials: true,
 });
 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:8081",
+  baseURL: process.env.REACT_APP_HOST,
   withCredentials: true,
 });
 

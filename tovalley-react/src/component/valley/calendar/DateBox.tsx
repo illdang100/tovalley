@@ -10,29 +10,19 @@ const Container = styled.div`
   grid-template-columns: repeat(7, 1fr);
 `;
 
+type tripPeopleCnt = {
+  tripPlanToWaterPlace: {
+    [key: string]: number;
+  };
+};
+
 interface Props {
   nowDate: Date;
   setNowDate: React.Dispatch<React.SetStateAction<Date>>;
   clickedDate: Date | undefined;
   setClickedDate: React.Dispatch<React.SetStateAction<Date | undefined>>;
-  tripPlanToWaterPlace: {
-    [key: string]: number;
-  };
+  tripPlanToWaterPlace: tripPeopleCnt;
   addScheduleBtn: boolean;
-  tripDate: {
-    startClick: boolean;
-    start: Date;
-    endClick: boolean;
-    end: Date;
-  };
-  setTripDate: React.Dispatch<
-    React.SetStateAction<{
-      startClick: boolean;
-      start: Date;
-      endClick: boolean;
-      end: Date;
-    }>
-  >;
 }
 
 const monthList = (nowDate: Date) => {
@@ -68,8 +58,6 @@ const DateBox = ({
   setClickedDate,
   tripPlanToWaterPlace,
   addScheduleBtn,
-  tripDate,
-  setTripDate,
 }: Props) => {
   const allDay: Date[] = monthList(nowDate);
 
@@ -91,8 +79,6 @@ const DateBox = ({
             setClickedDate={setClickedDate}
             tripPlanToWaterPlace={tripPlanToWaterPlace}
             addScheduleBtn={addScheduleBtn}
-            tripDate={tripDate}
-            setTripDate={setTripDate}
           />
         );
       })}

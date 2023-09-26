@@ -6,7 +6,7 @@ import { BiSearchAlt2 } from "react-icons/bi";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const localhost = "http://localhost:8081";
+const localhost = process.env.REACT_APP_HOST;
 
 type List = {
   content: {
@@ -62,68 +62,38 @@ const ValleyListPage = () => {
   const [list, setList] = useState<List>({
     content: [
       {
-        waterPlaceId: 1,
-        waterPlaceName: "대천천계곡",
-        waterPlaceAddr: "부산광역시 북구 화명동 2102번지",
+        waterPlaceId: 0,
+        waterPlaceName: "",
+        waterPlaceAddr: "",
         waterPlaceRating: "",
         waterPlaceReviewCnt: "",
         waterPlaceCategory: "",
-        managementType: "일반지역",
-        waterPlaceImageUrl: "",
-      },
-      {
-        waterPlaceId: 40,
-        waterPlaceName: "대천천계곡",
-        waterPlaceAddr: "부산광역시 북구 화명동 2102번지",
-        waterPlaceRating: 4.7,
-        waterPlaceReviewCnt: 195,
-        waterPlaceCategory: "계곡",
-        managementType: "일반지역",
-        waterPlaceImageUrl: "",
-      },
-      {
-        waterPlaceId: 40,
-        waterPlaceName: "대천천계곡",
-        waterPlaceAddr: "부산광역시 북구 화명동 2102번지",
-        waterPlaceRating: 4.7,
-        waterPlaceReviewCnt: 195,
-        waterPlaceCategory: "계곡",
-        managementType: "일반지역",
-        waterPlaceImageUrl: "",
-      },
-      {
-        waterPlaceId: 40,
-        waterPlaceName: "대천천계곡",
-        waterPlaceAddr: "부산광역시 북구 화명동 2102번지",
-        waterPlaceRating: 4.7,
-        waterPlaceReviewCnt: 195,
-        waterPlaceCategory: "계곡",
-        managementType: "일반지역",
+        managementType: "",
         waterPlaceImageUrl: "",
       },
     ],
     pageable: {
       sort: {
         unsorted: false,
-        sorted: true,
+        sorted: false,
         empty: false,
       },
       pageSize: 0,
       pageNumber: 0,
       offset: 0,
-      paged: true,
+      paged: false,
       unpaged: false,
     },
     last: false,
-    totalPages: 13,
-    totalElements: 50,
+    totalPages: 0,
+    totalElements: 0,
     first: false,
-    numberOfElements: 4,
-    size: 4,
+    numberOfElements: 0,
+    size: 0,
     number: 0,
     sort: {
       unsorted: false,
-      sorted: true,
+      sorted: false,
       empty: false,
     },
     empty: false,
@@ -511,16 +481,17 @@ const ValleyListPage = () => {
                   className={styles.valleyItem}
                   onClick={() => navigation(`/valley/${item.waterPlaceId}`)}
                 >
-                  <img
-                    src={
-                      item.waterPlaceImageUrl === null ||
-                      item.waterPlaceImageUrl === ""
-                        ? process.env.PUBLIC_URL + "/img/default-image.png"
-                        : item.waterPlaceImageUrl
-                    }
-                    alt="계곡 이미지"
-                    width="140px"
-                  />
+                  <div>
+                    <img
+                      src={
+                        item.waterPlaceImageUrl === null ||
+                        item.waterPlaceImageUrl === ""
+                          ? process.env.PUBLIC_URL + "/img/default-image.png"
+                          : item.waterPlaceImageUrl
+                      }
+                      alt="계곡 이미지"
+                    />
+                  </div>
                   <div className={styles.valleyInfo}>
                     <span className={styles.valleyName}>
                       {item.waterPlaceName}

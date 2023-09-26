@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import styles from "../../css/main/Weather.module.css";
 import { FaTemperatureEmpty } from "react-icons/fa6";
 import { BsCloudRainHeavyFill } from "react-icons/bs";
@@ -48,20 +48,7 @@ const getDayOfWeek = (day: string) => {
 const Weather: FC<Props> = ({ nationalWeather }) => {
   let dateArr = nationalWeather;
 
-  for (let i = 0; i < dateArr.length; i++) {
-    for (let j = 0; j < dateArr.length - 1; j++) {
-      if (
-        Number(weatherSort(dateArr[j].weatherDate)) >
-        Number(weatherSort(dateArr[j + 1].weatherDate))
-      ) {
-        let temp = dateArr[j];
-        dateArr[j] = dateArr[j + 1];
-        dateArr[j + 1] = temp;
-      }
-    }
-  }
-
-  const [clicked, setClicked] = useState(dateArr[0]);
+  const [clicked, setClicked] = useState(nationalWeather[0]);
   const [hover, setHover] = useState("");
   const region = [
     "백령",
@@ -82,6 +69,23 @@ const Weather: FC<Props> = ({ nationalWeather }) => {
     "제주",
     "여수",
   ];
+
+  useEffect(() => {
+    for (let i = 0; i < dateArr.length; i++) {
+      for (let j = 0; j < dateArr.length - 1; j++) {
+        if (
+          Number(weatherSort(dateArr[j].weatherDate)) >
+          Number(weatherSort(dateArr[j + 1].weatherDate))
+        ) {
+          let temp = dateArr[j];
+          dateArr[j] = dateArr[j + 1];
+          dateArr[j + 1] = temp;
+        }
+      }
+    }
+
+    setClicked(dateArr[0]);
+  }, []);
 
   return (
     <div className={styles.weather}>

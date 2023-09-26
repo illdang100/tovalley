@@ -8,8 +8,6 @@ interface ContainerProps {
   peopleCnt: number;
   addScheduleBtn: boolean;
   afterToday: boolean;
-  startDate: boolean;
-  endDate: boolean;
 }
 
 const Container = styled.div<ContainerProps>`
@@ -61,8 +59,8 @@ const Container = styled.div<ContainerProps>`
           `
         : css``}
 
-    ${({ startDate, endDate }) =>
-      startDate || endDate
+    ${({ clickDay }) =>
+      clickDay
         ? css`
             background-color: #3378fc;
             color: white;
@@ -94,8 +92,8 @@ const Container = styled.div<ContainerProps>`
               height: 1.3em;
             `
           : css``};
-      color: ${({ startDate, endDate }) =>
-        startDate || endDate
+      color: ${({ clickDay }) =>
+        clickDay
           ? css`
               background-color: #3378fc;
               color: white;
@@ -128,8 +126,8 @@ const Container = styled.div<ContainerProps>`
               height: 1.3em;
             `
           : css``};
-      color: ${({ startDate, endDate }) =>
-        startDate || endDate
+      color: ${({ clickDay }) =>
+        clickDay
           ? css`
               background-color: #3378fc;
               color: white;
@@ -157,34 +155,13 @@ const Container = styled.div<ContainerProps>`
         ? `#8EBBFF`
         : `#E0E0E0`};
   }
-
-  .middleDate {
-    width: 100%;
-    height: 1.75em;
-    position: absolute;
-    top: 11.5px;
-    left: 0px;
-    background-color: #76a3f67c;
-  }
-
-  .startDate {
-    width: 1.8em;
-    height: 1.75em;
-    position: absolute;
-    right: 0;
-    top: 11.5px;
-    background-color: #76a3f67c;
-  }
-
-  .endDate {
-    width: calc(100% - 1.8em);
-    height: 1.75em;
-    position: absolute;
-    left: 0;
-    top: 11.5px;
-    background-color: #76a3f67c;
-  }
 `;
+
+type tripPeopleCnt = {
+  tripPlanToWaterPlace: {
+    [key: string]: number;
+  };
+};
 
 interface Props {
   day: Date;
@@ -192,24 +169,8 @@ interface Props {
   setNowDate: React.Dispatch<React.SetStateAction<Date>>;
   clickedDate: Date | undefined;
   setClickedDate: React.Dispatch<React.SetStateAction<Date | undefined>>;
-  tripPlanToWaterPlace: {
-    [key: string]: number;
-  };
+  tripPlanToWaterPlace: tripPeopleCnt;
   addScheduleBtn: boolean;
-  tripDate: {
-    startClick: boolean;
-    start: Date;
-    endClick: boolean;
-    end: Date;
-  };
-  setTripDate: React.Dispatch<
-    React.SetStateAction<{
-      startClick: boolean;
-      start: Date;
-      endClick: boolean;
-      end: Date;
-    }>
-  >;
 }
 
 let formatedDate;
@@ -254,8 +215,6 @@ const allDay = ({
   setClickedDate,
   tripPlanToWaterPlace,
   addScheduleBtn,
-  tripDate,
-  setTripDate,
 }: Props) => {
   const nowTime = new Date();
 
@@ -280,75 +239,9 @@ const allDay = ({
 
   const clickDate = () => {
     if (addScheduleBtn) {
-      if (tripDate.startClick) {
-        if (tripDate.endClick) {
-          setTripDate({
-            startClick: true,
-            start: day,
-            endClick: false,
-            end: new Date(1000 - 1 - 1),
-          });
-        } else if (day.getMonth() === tripDate.start.getMonth()) {
-          day.getDate() < tripDate.start.getDate()
-            ? setTripDate({
-                startClick: true,
-                start: day,
-                endClick: false,
-                end: new Date(1000 - 1 - 1),
-              })
-            : setTripDate({ ...tripDate, endClick: true, end: day });
-        } else if (day.getMonth() < tripDate.start.getMonth()) {
-          setTripDate({
-            startClick: true,
-            start: day,
-            endClick: false,
-            end: new Date(1000 - 1 - 1),
-          });
-        } else {
-          setTripDate({ ...tripDate, endClick: true, end: day });
-        }
-      } else {
-        if (tripDate.endClick) {
-          setTripDate({
-            startClick: true,
-            start: day,
-            endClick: false,
-            end: new Date(1000 - 1 - 1),
-          });
-        } else {
-          setTripDate({
-            startClick: true,
-            start: day,
-            endClick: false,
-            end: new Date(1000 - 1 - 1),
-          });
-        }
-      }
+      setClickedDate(day);
     }
   };
-
-  const startDate: boolean = tripDate.start
-    ? tripDate.start.getFullYear() === day.getFullYear() &&
-      tripDate.start.getMonth() === day.getMonth() &&
-      tripDate.start.getDate() === day.getDate()
-    : false;
-  const endDate: boolean = tripDate.end
-    ? tripDate.end.getFullYear() === day.getFullYear() &&
-      tripDate.end.getMonth() === day.getMonth() &&
-      tripDate.end.getDate() === day.getDate()
-    : false;
-
-  const middleDate: boolean =
-    tripDate.end.getMonth() === tripDate.start.getMonth()
-      ? day.getMonth() === tripDate.start.getMonth() &&
-        day.getDate() > tripDate.start.getDate() &&
-        day.getDate() < tripDate.end.getDate()
-      : tripDate.start.getMonth() < tripDate.end.getMonth()
-      ? (day.getMonth() === tripDate.start.getMonth() &&
-          day.getDate() > tripDate.start.getDate()) ||
-        (day.getMonth() === tripDate.end.getMonth() &&
-          day.getDate() < tripDate.end.getDate())
-      : false;
 
   return (
     <Container
@@ -356,19 +249,21 @@ const allDay = ({
       sameMonth={sameMonth}
       sameDay={sameDay}
       clickDay={clickDay}
-      peopleCnt={dateFormat(nowDate, day, tripPlanToWaterPlace)}
+      peopleCnt={dateFormat(
+        nowDate,
+        day,
+        tripPlanToWaterPlace.tripPlanToWaterPlace
+      )}
       addScheduleBtn={addScheduleBtn}
       afterToday={afterToday}
-      startDate={startDate}
-      endDate={endDate}
     >
       <p>{day.getDate()}</p>
-      {startDate && tripDate.endClick && <div className="startDate" />}
-      {middleDate && <div className="middleDate" />}
-      {endDate && <div className="endDate" />}
-      {(sameMonth && dateFormat(nowDate, day, tripPlanToWaterPlace) === 0) ||
+      {(sameMonth &&
+        dateFormat(nowDate, day, tripPlanToWaterPlace.tripPlanToWaterPlace) ===
+          0) ||
       (sameMonth &&
-        dateFormat(nowDate, day, tripPlanToWaterPlace) === undefined) ? (
+        dateFormat(nowDate, day, tripPlanToWaterPlace.tripPlanToWaterPlace) ===
+          undefined) ? (
         <></>
       ) : sameMonth ? (
         <div className="peopleCnt" />

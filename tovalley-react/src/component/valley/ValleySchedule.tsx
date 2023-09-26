@@ -3,10 +3,17 @@ import ControlDate from "./calendar/ControlDate";
 import DateBox from "./calendar/DateBox";
 import styled from "styled-components";
 
-interface Props {
+type tripPeopleCnt = {
   tripPlanToWaterPlace: {
     [key: string]: number;
   };
+};
+
+interface Props {
+  tripPlanToWaterPlace: tripPeopleCnt;
+  waterPlaceName: string;
+  detailAddress: string;
+  setPeopleCnt: React.Dispatch<React.SetStateAction<tripPeopleCnt>>;
 }
 
 const Container = styled.div`
@@ -19,20 +26,14 @@ const Container = styled.div`
   padding-bottom: 2em;
 `;
 
-const ValleySchedule: FC<Props> = ({ tripPlanToWaterPlace }) => {
+const ValleySchedule: FC<Props> = ({
+  tripPlanToWaterPlace,
+  waterPlaceName,
+  detailAddress,
+  setPeopleCnt,
+}) => {
   const [nowDate, setNowDate] = useState<Date>(new Date());
   const [clickedDate, setClickedDate] = useState<Date>();
-  const [tripDate, setTripDate] = useState<{
-    startClick: boolean;
-    start: Date;
-    endClick: boolean;
-    end: Date;
-  }>({
-    startClick: false,
-    start: new Date(1000 - 1 - 1),
-    endClick: false,
-    end: new Date(1000 - 1 - 1),
-  });
   const [addScheduleBtn, setAddScheduleBtn] = useState(false);
 
   return (
@@ -42,7 +43,12 @@ const ValleySchedule: FC<Props> = ({ tripPlanToWaterPlace }) => {
         setNowDate={setNowDate}
         addScheduleBtn={addScheduleBtn}
         setAddScheduleBtn={setAddScheduleBtn}
-        tripDate={tripDate}
+        clickedDate={clickedDate}
+        waterPlaceName={waterPlaceName}
+        detailAddress={detailAddress}
+        setClickedDate={setClickedDate}
+        tripPlanToWaterPlace={tripPlanToWaterPlace}
+        setPeopleCnt={setPeopleCnt}
       />
       <DateBox
         nowDate={nowDate}
@@ -51,8 +57,6 @@ const ValleySchedule: FC<Props> = ({ tripPlanToWaterPlace }) => {
         setClickedDate={setClickedDate}
         tripPlanToWaterPlace={tripPlanToWaterPlace}
         addScheduleBtn={addScheduleBtn}
-        tripDate={tripDate}
-        setTripDate={setTripDate}
       />
     </Container>
   );
