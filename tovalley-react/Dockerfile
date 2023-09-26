@@ -33,8 +33,6 @@ RUN rm /etc/nginx/conf.d/default.conf
 # custom 설정파일을 컨테이너 내부로 복사한다.
 COPY nginx/nginx.conf /etc/nginx/conf.d
 
-COPY ../tovalley-server/src/main/java/kr/ac/kumoh/illdang100/tovalley/resources/static /usr/share/static
-
 # 컨테이너의 80번 포트를 열어준다.
 EXPOSE 80
 
