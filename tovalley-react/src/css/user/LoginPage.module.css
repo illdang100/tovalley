@@ -44,6 +44,14 @@
   color: #b8b8b8;
 }
 
+.passwordAlert {
+  font-size: 0.8rem;
+  text-align: left;
+  display: block;
+  margin: 0.5em 0 0 0.5em;
+  color: #ea0e00;
+}
+
 /* 로그인 버튼 */
 .loginInput button {
   background-color: #66a5fc;
@@ -54,7 +62,7 @@
   font-weight: bold;
   border-radius: 7px;
   cursor: pointer;
-  margin-top: 2.5em;
+  margin-top: 1.5em;
 }
 
 /* 소셜 로그인 */

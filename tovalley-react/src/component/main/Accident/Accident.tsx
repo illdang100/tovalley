@@ -4,7 +4,7 @@ import AccidentChart from "./AccidentChart";
 import React, { FC, useRef, useState } from "react";
 import axios from "axios";
 
-const localhost = "http://localhost:8081";
+const localhost = process.env.REACT_APP_HOST;
 
 interface Props {
   accident: {

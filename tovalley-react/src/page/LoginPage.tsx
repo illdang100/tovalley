@@ -7,7 +7,7 @@ import { MdOutlineClose } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "./../axios_interceptor";
 
-const localhost = "http://localhost:8081";
+const localhost = process.env.REACT_APP_HOST;
 
 const LoginPage = () => {
   const KAKAO_AUTH_URL = `http://localhost:8081/oauth2/authorization/kakao`;
@@ -29,6 +29,7 @@ const LoginPage = () => {
   const [login, setLogin] = useState({
     email: "",
     password: "",
+    passwordConfirm: false,
   });
 
   const [findView, setFindView] = useState({
@@ -50,7 +51,12 @@ const LoginPage = () => {
         console.log(res);
         res.status === 200 && navigation("/");
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+        err.response.status === 400
+          ? setLogin({ ...login, passwordConfirm: true })
+          : console.log(err);
+      });
   };
 
   return (
@@ -82,6 +88,11 @@ const LoginPage = () => {
               value={login.password}
               onChange={(e) => setLogin({ ...login, password: e.target.value })}
             />
+            {login.passwordConfirm && (
+              <span className={styles.passwordAlert}>
+                비밀번호가 틀렸습니다.
+              </span>
+            )}
             <button onClick={() => handleLogin()}>로그인</button>
           </div>
           {/* 소셜로그인 */}
@@ -186,6 +197,7 @@ const FindInfo: FC<Props> = ({ setFindView, info }) => {
     codeView: true,
     passwordReset: false,
     emailConfirm: 0,
+    resendView: false,
   });
 
   const [inputInfo, setInputInfo] = useState({
@@ -194,6 +206,31 @@ const FindInfo: FC<Props> = ({ setFindView, info }) => {
     password: "",
     confirmPassword: "",
   });
+
+  const MINUTES_IN_MS = 3 * 60 * 1000;
+  const INTERVAL = 1000;
+  const [timeLeft, setTimeLeft] = useState<number>(MINUTES_IN_MS);
+
+  const minutes = String(Math.floor((timeLeft / (1000 * 60)) % 60)).padStart(
+    2,
+    "0"
+  );
+  const second = String(Math.floor((timeLeft / 1000) % 60)).padStart(2, "0");
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft((prevTime) => prevTime - INTERVAL);
+    }, INTERVAL);
+
+    if (timeLeft <= 0) {
+      clearInterval(timer);
+      setView({ ...view, resendView: true });
+    }
+
+    return () => {
+      clearInterval(timer);
+    };
+  }, [timeLeft]);
 
   const handleFindId = () => {
     const config = {
@@ -297,14 +334,16 @@ const FindInfo: FC<Props> = ({ setFindView, info }) => {
                 {view.emailConfirm === 0
                   ? ""
                   : view.emailConfirm === 1
-                  ? `아이디는 ${inputInfo.email} 입니다.`
+                  ? "등록된 이메일입니다."
                   : "등록된 이메일이 아닙니다."}
               </span>
             </div>
-            {view.codeView && (
+            {!view.codeView && (
               <div className={styles.confirmCode}>
                 <span>인증 코드가 메일로 전송되었습니다.</span>
-                <span className={styles.timer}>00:00</span>
+                <span className={styles.timer}>
+                  {minutes} : {second}
+                </span>
                 <div className={styles.confirmCodeInput}>
                   <input
                     placeholder="확인 코드"
@@ -313,7 +352,19 @@ const FindInfo: FC<Props> = ({ setFindView, info }) => {
                       setInputInfo({ ...inputInfo, code: e.target.value })
                     }
                   />
-                  <button onClick={authCode}>확인</button>
+                  {!view.resendView ? (
+                    <button onClick={authCode}>확인</button>
+                  ) : (
+                    <button
+                      onClick={() => {
+                        authEmail();
+                        setTimeLeft(MINUTES_IN_MS);
+                        setView({ ...view, resendView: false });
+                      }}
+                    >
+                      재전송
+                    </button>
+                  )}
                 </div>
               </div>
             )}

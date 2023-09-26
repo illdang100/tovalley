@@ -5,7 +5,7 @@ import { FaUserCircle } from "react-icons/fa";
 import RatingStar from "../common/RatingStar";
 import axiosInstance from "../../axios_interceptor";
 import { useParams } from "react-router-dom";
-import { IoCloseOutline } from "react-icons/io5";
+import DetailReviewImg from "./DetailReviewImg";
 
 type valleyReview = {
   waterPlaceRating: number;
@@ -111,7 +111,10 @@ const ValleyReview: FC<Props> = ({ reviewRespDto, setValleyReview }) => {
   const sortMenu = ["최신순", "평점 높은 순", "평점 낮은 순"];
   const [page, setPage] = useState(1);
   const [currPage, setCurrPage] = useState(page);
-  const [detailReview, setDetailReview] = useState(false);
+  const [detailReview, setDetailReview] = useState<{
+    view: boolean;
+    images: string[];
+  }>({ view: false, images: [] });
 
   let firstNum = currPage - (currPage % 5) + 1;
   let lastNum = currPage - (currPage % 5) + 5;
@@ -276,7 +279,8 @@ const ValleyReview: FC<Props> = ({ reviewRespDto, setValleyReview }) => {
                 <div
                   className={styles.valleyImg}
                   onClick={() =>
-                    item.reviewImages?.length === 0 && setDetailReview(true)
+                    item.reviewImages?.length !== 0 &&
+                    setDetailReview({ view: true, images: item.reviewImages })
                   }
                   style={
                     item.reviewImages?.length === 0 ? {} : { cursor: "pointer" }
@@ -293,12 +297,6 @@ const ValleyReview: FC<Props> = ({ reviewRespDto, setValleyReview }) => {
                   />
                   {item.reviewImages.length > 1 && (
                     <span>{item.reviewImages.length}</span>
-                  )}
-                  {detailReview && (
-                    <DetailReviewImg
-                      images={item.reviewImages}
-                      setDetailReview={setDetailReview}
-                    />
                   )}
                 </div>
                 <div className={styles.reviewDetail}>
@@ -383,39 +381,12 @@ const ValleyReview: FC<Props> = ({ reviewRespDto, setValleyReview }) => {
           &gt;
         </button>
       </div>
-    </div>
-  );
-};
-
-const DetailReviewImg: FC<{
-  images: string[];
-  setDetailReview: React.Dispatch<React.SetStateAction<boolean>>;
-}> = ({ images, setDetailReview }) => {
-  useEffect(() => {
-    document.body.style.cssText = `
-          position: fixed; 
-          top: -${window.scrollY}px;
-          overflow-y: scroll;
-          width: 100%;`;
-    return () => {
-      const scrollY = document.body.style.top;
-      document.body.style.cssText = "";
-      window.scrollTo(0, parseInt(scrollY || "0", 10) * -1);
-    };
-  }, []);
-
-  return (
-    <div className={styles.imgContainer}>
-      <div className={styles.imgBox}>
-        <span className={styles.close} onClick={() => setDetailReview(false)}>
-          <IoCloseOutline color="#FFFFFF" size="40px" />
-        </span>
-        <div className={styles.imgList}>
-          {images.map((item) => {
-            return <img src={item} alt="리뷰 이미지" width="130px" />;
-          })}
-        </div>
-      </div>
+      {detailReview.view && (
+        <DetailReviewImg
+          detailReview={detailReview}
+          setDetailReview={setDetailReview}
+        />
+      )}
     </div>
   );
 };

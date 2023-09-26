@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useRef, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import styles from "../../css/main/PopularValley.module.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -7,7 +7,7 @@ interface Props {
   place: {
     waterPlaceId: number;
     waterPlaceName: string;
-    waterPlaceImage: string;
+    waterPlaceImageUrl: string;
     location: string;
     rating: number;
     reviewCnt: number;
@@ -17,7 +17,7 @@ interface Props {
       {
         waterPlaceId: number;
         waterPlaceName: string;
-        waterPlaceImage: string;
+        waterPlaceImageUrl: string;
         location: string;
         rating: number;
         reviewCnt: number;
@@ -25,36 +25,60 @@ interface Props {
     >
   >;
 }
-
-const localhost = "http://localhost:8081";
+const localhost = process.env.REACT_APP_HOST;
 
 const PopularValley: FC<Props> = ({ place, setPopularValley }) => {
   const [clicked, setClicked] = useState("평점");
   const navigation = useNavigate();
+  const [num, setNum] = useState(0);
+  const [carouselTransition, setCarouselTransition] = useState(
+    "transform 500ms ease-in-out"
+  );
+  const [currList, setCurrList] = useState<
+    {
+      waterPlaceId: number;
+      waterPlaceName: string;
+      waterPlaceImageUrl: string;
+      location: string;
+      rating: number;
+      reviewCnt: number;
+    }[]
+  >([place[place.length - 1], ...place, place[0]]);
 
-  const scroll = useRef<HTMLDivElement>(null);
-  const scrollPrev = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (place.length !== 0) {
+      setCurrList([
+        place[place.length - 1],
+        ...place,
+        place[0],
+        place[1],
+        place[2],
+        place[3],
+      ]);
+    }
+  }, [place]);
 
-  const onMove = () => {
-    scroll.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-  };
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setNum((num) => num + 1);
+      setCarouselTransition("transform 500ms ease-in-out");
+    }, 2500);
 
-  const onMovePrev = () => {
-    scrollPrev.current?.scrollIntoView({
-      behavior: "smooth",
-      block: "nearest",
-    });
-  };
+    return () => {
+      clearInterval(timer);
+    };
+  }, []);
 
-  // useEffect(() => {
-  //   setInterval(function () {
-  //     onMove();
-  //   }, 6000);
+  useEffect(() => {
+    if (num === place.length) handleOriginSlide(0);
+  }, [num]);
 
-  //   setInterval(function () {
-  //     onMovePrev();
-  //   }, 6000);
-  // }, []);
+  function handleOriginSlide(index: number) {
+    setTimeout(() => {
+      setNum(index);
+      setCarouselTransition("");
+    }, 500);
+  }
 
   const getPopluarValley = (cond: string) => {
     const config = {
@@ -100,28 +124,32 @@ const PopularValley: FC<Props> = ({ place, setPopularValley }) => {
         </span>
       </div>
       <div className={styles.popularList}>
-        {place?.map((item, index) => {
+        {currList.map((item, index) => {
           return (
             <div
-              ref={
-                index === 0
-                  ? scrollPrev
-                  : index === place.length - 1
-                  ? scroll
-                  : null
-              }
+              key={index}
               className={styles.popularItem}
               onClick={() => {
                 navigation(`/valley/${item.waterPlaceId}`);
               }}
+              style={{
+                transition: `${carouselTransition}`,
+                transform: `translateX(-${num}00%)`,
+              }}
             >
-              <span>{index + 1}</span>
-              <img
-                src={process.env.PUBLIC_URL + "/img/계곡test이미지.png"}
-                alt="계곡 이미지"
-                width="100%"
-                height="60%"
-              />
+              <span>{index + 1 <= 8 ? index + 1 : (index + 1) % 8}</span>
+              <div className={styles.valleyItemImg}>
+                <img
+                  src={
+                    item.waterPlaceImageUrl === null ||
+                    item.waterPlaceImageUrl === ""
+                      ? process.env.PUBLIC_URL + "/img/default-image.png"
+                      : item.waterPlaceImageUrl
+                  }
+                  alt="계곡 이미지"
+                  width="100%"
+                />
+              </div>
               <div className={styles.valleyInfo}>
                 <div className={styles.valleyTitle}>
                   <span>{item.waterPlaceName}</span>
