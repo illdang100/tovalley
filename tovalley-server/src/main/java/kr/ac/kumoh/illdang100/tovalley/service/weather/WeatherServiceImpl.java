@@ -68,6 +68,10 @@ public class WeatherServiceImpl implements WeatherService {
                 .minTemp(nationalWeather.getLowestTemperature())
                 .maxTemp(nationalWeather.getHighestTemperature())
                 .rainPrecipitation(nationalWeather.getRainPrecipitation())
+                .humidity(nationalWeather.getHumidity())
+                .windSpeed(nationalWeather.getWindSpeed())
+                .clouds(nationalWeather.getClouds())
+                .dayFeelsLike(nationalWeather.getDayFeelsLike())
                 .build();
     }
 
