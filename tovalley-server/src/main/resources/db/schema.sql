@@ -62,6 +62,10 @@ CREATE TABLE IF NOT EXISTS `national_weather` (
                                     `climate_icon`	VARCHAR(3)	NOT NULL,
                                     `climate_description`	VARCHAR(20)	NOT NULL,
                                     `rain_precipitation`	DOUBLE	NOT NULL,
+                                    `humidity`	INT	NOT NULL,
+                                    `wind_speed`	DOUBLE	NOT NULL,
+                                    `clouds`	INT	NOT NULL,
+                                    `day_feels_like`	DOUBLE	NOT NULL,
     primary key (national_weather_id)
 ) engine=InnoDB;
 

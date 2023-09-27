@@ -60,6 +60,10 @@ public class WeatherRespDto {
         private Double minTemp;
         private Double maxTemp;
         private Double rainPrecipitation;
+        private Integer humidity;
+        private Double windSpeed;
+        private Integer clouds;
+        private Double dayFeelsLike;
     }
 
     @AllArgsConstructor
