@@ -41,4 +41,16 @@ public class NationalWeather {
 
     @Column(nullable = false)
     private Double rainPrecipitation; // 강수량(mm)
+
+    @Column(nullable = false)
+    private Integer humidity; // 습도(%)
+
+    @Column(nullable = false)
+    private Double windSpeed; // 풍속(m/s)
+
+    @Column(nullable = false)
+    private Integer clouds; // 흐림(%)
+
+    @Column(nullable = false)
+    private Double dayFeelsLike; // 주간 체감 온도
 }
