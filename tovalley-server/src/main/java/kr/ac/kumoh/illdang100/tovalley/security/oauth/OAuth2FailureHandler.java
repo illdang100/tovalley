@@ -9,9 +9,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
-import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
-import org.springframework.security.web.savedrequest.RequestCache;
-import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletException;
@@ -19,12 +16,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static kr.ac.kumoh.illdang100.tovalley.util.CustomResponseUtil.addCookie;
+
 @Slf4j
 @RequiredArgsConstructor
 @Component
 public class OAuth2FailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
-    private String DEFAULT_URL = "http://localhost:3000";
+
+    private final String cookieName = "social_login_error";
+    private final String cookieValue = "email_already_registered";
+    private final String DEFAULT_URL = "http://localhost:3000";
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
@@ -39,6 +41,7 @@ public class OAuth2FailureHandler extends SimpleUrlAuthenticationFailureHandler 
             errorMessage = "인증 실패";
         }
 
+        addCookie(response, cookieName, cookieValue, false);
         resultRedirectStrategy(request, response);
         CustomResponseUtil.fail(response, errorMessage, HttpStatus.BAD_REQUEST);
     }
