@@ -31,6 +31,7 @@ const Header = () => {
           const loginStatus = cookies.get("ISLOGIN");
           console.log("loginStatus : ", loginStatus);
           !loginStatus && setLogin(false);
+          navigation("/");
         }
       })
       .catch((err) => console.log(err));

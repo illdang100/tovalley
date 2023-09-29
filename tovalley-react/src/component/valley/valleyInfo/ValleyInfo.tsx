@@ -10,8 +10,8 @@ interface Props {
   waterPlaceDetails: {
     waterPlaceImage: string | null;
     waterPlaceName: string;
-    latitude: number;
-    longitude: number;
+    latitude: string;
+    longitude: string;
     managementType: string;
     detailAddress: string;
     town: string;
@@ -141,15 +141,15 @@ const ValleyInfo: FC<Props> = ({
           </div>
           <div className={styles.valleyPlace}>
             <ValleyMap
-              latitude={waterPlaceDetails.latitude}
-              longitude={waterPlaceDetails.longitude}
+              latitude={Number(waterPlaceDetails.latitude)}
+              longitude={Number(waterPlaceDetails.longitude)}
               menu={mapMenu}
             />
           </div>
         </div>
         <div className={styles.valleyDetail}>
           <div className={styles.valleyWeather}>
-            <span>경상북도 구미시 날씨</span>
+            <span>{waterPlaceDetails.town} 날씨</span>
             <div className={styles.weatherList}>
               {weatherList.map((item, index) => {
                 return (

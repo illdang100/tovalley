@@ -6,13 +6,16 @@ import axios from "axios";
 import { MdOutlineClose } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "./../axios_interceptor";
+import { Cookies } from "react-cookie";
 
 const localhost = process.env.REACT_APP_HOST;
+const social_localhost = process.env.REACT_APP_SOCIAL_HOST;
+const cookies = new Cookies();
 
 const LoginPage = () => {
-  const KAKAO_AUTH_URL = `http://ec2-13-125-136-237.ap-northeast-2.compute.amazonaws.com:8080/oauth2/authorization/kakao`;
-  const GOOGLE_AUTH_URL = `http://ec2-13-125-136-237.ap-northeast-2.compute.amazonaws.com:8080/oauth2/authorization/google`;
-  const NAVER_AUTH_URL = `http://ec2-13-125-136-237.ap-northeast-2.compute.amazonaws.com:8080/oauth2/authorization/naver`;
+  const KAKAO_AUTH_URL = `${social_localhost}/oauth2/authorization/kakao`;
+  const GOOGLE_AUTH_URL = `${social_localhost}/oauth2/authorization/google`;
+  const NAVER_AUTH_URL = `${social_localhost}/oauth2/authorization/naver`;
 
   const kakaoLogin = () => {
     window.location.href = KAKAO_AUTH_URL;
@@ -38,6 +41,16 @@ const LoginPage = () => {
   });
 
   const navigation = useNavigate();
+
+  useEffect(() => {
+    const social_login_error = cookies.get("social_login_error");
+    console.log("social_login_error : ", social_login_error);
+
+    if (social_login_error === "email_already_registered") {
+      alert("이미 자체 회원가입으로 등록된 회원입니다.");
+      cookies.remove("social_login_error");
+    }
+  }, []);
 
   const handleLogin = () => {
     const data = {
@@ -87,6 +100,11 @@ const LoginPage = () => {
               placeholder="비밀번호"
               value={login.password}
               onChange={(e) => setLogin({ ...login, password: e.target.value })}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleLogin();
+                }
+              }}
             />
             {login.passwordConfirm && (
               <span className={styles.passwordAlert}>
@@ -211,6 +229,11 @@ const FindInfo: FC<Props> = ({ setFindView, info }) => {
   const INTERVAL = 1000;
   const [timeLeft, setTimeLeft] = useState<number>(MINUTES_IN_MS);
 
+  const [mailBoxView, setMailBoxView] = useState({
+    view: false,
+    content: "확인",
+  });
+
   const minutes = String(Math.floor((timeLeft / (1000 * 60)) % 60)).padStart(
     2,
     "0"
@@ -224,6 +247,7 @@ const FindInfo: FC<Props> = ({ setFindView, info }) => {
 
     if (timeLeft <= 0) {
       clearInterval(timer);
+      setTimeLeft(0);
       setView({ ...view, resendView: true });
     }
 
@@ -254,13 +278,22 @@ const FindInfo: FC<Props> = ({ setFindView, info }) => {
     const data = {
       email: inputInfo.email,
     };
+
+    setView({ ...view, codeView: true });
+
     axios
       .post(`${localhost}/api/email-code`, data)
       .then((res) => {
         console.log(res);
-        res.status === 200 && setView({ ...view, codeView: true });
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+        if (err.response.status === 400) {
+          setTimeLeft(0);
+          setMailBoxView({ ...mailBoxView, view: true });
+          setView({ ...view, resendView: true });
+        }
+      });
   };
 
   const authCode = () => {
@@ -357,8 +390,8 @@ const FindInfo: FC<Props> = ({ setFindView, info }) => {
                   ) : (
                     <button
                       onClick={() => {
-                        authEmail();
                         setTimeLeft(MINUTES_IN_MS);
+                        authEmail();
                         setView({ ...view, resendView: false });
                       }}
                     >

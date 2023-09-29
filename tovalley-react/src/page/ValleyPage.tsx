@@ -25,8 +25,8 @@ type valley = {
   waterPlaceDetails: {
     waterPlaceImage: string | null;
     waterPlaceName: string;
-    latitude: number;
-    longitude: number;
+    latitude: string;
+    longitude: string;
     managementType: string;
     detailAddress: string;
     town: string;
@@ -184,8 +184,8 @@ const ValleyPage = () => {
     waterPlaceDetails: {
       waterPlaceImage: null,
       waterPlaceName: "",
-      latitude: 0,
-      longitude: 0,
+      latitude: "0",
+      longitude: "0",
       managementType: "",
       detailAddress: "",
       town: "",

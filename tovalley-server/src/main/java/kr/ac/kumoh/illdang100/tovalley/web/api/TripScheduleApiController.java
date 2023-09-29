@@ -51,7 +51,7 @@ public class TripScheduleApiController {
     public ResponseEntity<?> deleteTripSchedules(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                  @RequestParam List<Long> tripScheduleIds) {
 
-        tripScheduleService.deleteTripSchedules(1L, tripScheduleIds);
+        tripScheduleService.deleteTripSchedules(principalDetails.getMember().getId(), tripScheduleIds);
 
         return new ResponseEntity<>(new ResponseDto<>(1, "일정 삭제가 성공적으로 완료되었습니다", null), HttpStatus.OK);
     }

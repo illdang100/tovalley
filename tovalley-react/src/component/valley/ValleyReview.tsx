@@ -6,6 +6,7 @@ import RatingStar from "../common/RatingStar";
 import axiosInstance from "../../axios_interceptor";
 import { useParams } from "react-router-dom";
 import DetailReviewImg from "./DetailReviewImg";
+import useDidMountEffect from "../../useDidMountEffect";
 
 type valleyReview = {
   waterPlaceRating: number;
@@ -121,7 +122,7 @@ const ValleyReview: FC<Props> = ({ reviewRespDto, setValleyReview }) => {
 
   const { id } = useParams();
 
-  useEffect(() => {
+  useDidMountEffect(() => {
     const config =
       sort === "최신순"
         ? {
@@ -189,9 +190,16 @@ const ValleyReview: FC<Props> = ({ reviewRespDto, setValleyReview }) => {
               <span>5점</span>
               <div>
                 <div
-                  style={{
-                    width: `calc(${reviewRespDto.ratingRatio[5]}/${reviewRespDto.reviewCnt}*100%)`,
-                  }}
+                  style={
+                    reviewRespDto.reviewCnt !== 0 ||
+                    reviewRespDto.ratingRatio[5] !== 0
+                      ? {
+                          width: `calc(${reviewRespDto.ratingRatio[5]}/${reviewRespDto.reviewCnt}*100%)`,
+                        }
+                      : {
+                          width: "0",
+                        }
+                  }
                 >
                   <></>
                 </div>
@@ -202,9 +210,16 @@ const ValleyReview: FC<Props> = ({ reviewRespDto, setValleyReview }) => {
               <span>4점</span>
               <div>
                 <div
-                  style={{
-                    width: `calc(${reviewRespDto.ratingRatio[4]}/${reviewRespDto.reviewCnt}*100%)`,
-                  }}
+                  style={
+                    reviewRespDto.reviewCnt !== 0 ||
+                    reviewRespDto.ratingRatio[4] !== 0
+                      ? {
+                          width: `calc(${reviewRespDto.ratingRatio[4]}/${reviewRespDto.reviewCnt}*100%)`,
+                        }
+                      : {
+                          width: "0",
+                        }
+                  }
                 >
                   <></>
                 </div>
@@ -215,9 +230,16 @@ const ValleyReview: FC<Props> = ({ reviewRespDto, setValleyReview }) => {
               <span>3점</span>
               <div>
                 <div
-                  style={{
-                    width: `calc(${reviewRespDto.ratingRatio[3]}/${reviewRespDto.reviewCnt}*100%)`,
-                  }}
+                  style={
+                    reviewRespDto.reviewCnt !== 0 ||
+                    reviewRespDto.ratingRatio[3] !== 0
+                      ? {
+                          width: `calc(${reviewRespDto.ratingRatio[3]}/${reviewRespDto.reviewCnt}*100%)`,
+                        }
+                      : {
+                          width: "0",
+                        }
+                  }
                 >
                   <></>
                 </div>
@@ -228,9 +250,16 @@ const ValleyReview: FC<Props> = ({ reviewRespDto, setValleyReview }) => {
               <span>2점</span>
               <div>
                 <div
-                  style={{
-                    width: `calc(${reviewRespDto.ratingRatio[2]}/${reviewRespDto.reviewCnt}*100%)`,
-                  }}
+                  style={
+                    reviewRespDto.reviewCnt !== 0 ||
+                    reviewRespDto.ratingRatio[2] !== 0
+                      ? {
+                          width: `calc(${reviewRespDto.ratingRatio[2]}/${reviewRespDto.reviewCnt}*100%)`,
+                        }
+                      : {
+                          width: "0",
+                        }
+                  }
                 >
                   <></>
                 </div>
@@ -241,9 +270,16 @@ const ValleyReview: FC<Props> = ({ reviewRespDto, setValleyReview }) => {
               <span>1점</span>
               <div>
                 <div
-                  style={{
-                    width: `calc(${reviewRespDto.ratingRatio[1]}/${reviewRespDto.reviewCnt}*100%)`,
-                  }}
+                  style={
+                    reviewRespDto.reviewCnt !== 0 ||
+                    reviewRespDto.ratingRatio[1] !== 0
+                      ? {
+                          width: `calc(${reviewRespDto.ratingRatio[1]}/${reviewRespDto.reviewCnt}*100%)`,
+                        }
+                      : {
+                          width: "0",
+                        }
+                  }
                 >
                   <></>
                 </div>

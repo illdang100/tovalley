@@ -41,6 +41,8 @@ const ControlDate = ({
   tripPlanToWaterPlace,
   setPeopleCnt,
 }: Props) => {
+  const { id } = useParams();
+
   const changeYear = (change: number) => {
     const date = new Date(nowDate.getTime());
     date.setFullYear(date.getFullYear() + change);
@@ -53,14 +55,38 @@ const ControlDate = ({
     setNowDate(date);
   };
 
+  const getMonthTripSchedule = (change: number) => {
+    const date = new Date(nowDate.getTime());
+    date.setMonth(date.getMonth() + change);
+
+    const nowMonth =
+      date.getMonth() + 1 < 10
+        ? `0${date.getMonth() + 1}`
+        : `${date.getMonth() + 1}`;
+
+    const yearMonth = `${nowDate.getFullYear()}-${nowMonth}`;
+
+    const config = {
+      params: {
+        yearMonth: yearMonth,
+      },
+    };
+
+    axiosInstance
+      .get(`/api/auth/water-places/${id}/trip-schedules`, config)
+      .then((res) => {
+        setPeopleCnt({ tripPlanToWaterPlace: res.data.data });
+      });
+  };
+
   const [scheduleInfo, setScheduleInfo] = useState(false);
   const [yearDropdown, setYearDropdown] = useState(false);
 
   const congestionInfo = [
-    { peopleCnt: "15명", color: "#FA7F64" },
-    { peopleCnt: "10명", color: "#FFD874" },
-    { peopleCnt: "5명", color: "#8EBBFF" },
-    { peopleCnt: "1명", color: "#E0E0E0" },
+    { peopleCnt: "60명", color: "#FA7F64" },
+    { peopleCnt: "45명", color: "#FFD874" },
+    { peopleCnt: "30명", color: "#8EBBFF" },
+    { peopleCnt: "15명", color: "#E0E0E0" },
   ];
 
   return (
@@ -95,7 +121,10 @@ const ControlDate = ({
                 nowDate.getFullYear() < new Date().getFullYear() &&
                 nowDate.getMonth() + 1 === 1
               ) {
-              } else changeMonth(-1);
+              } else {
+                changeMonth(-1);
+                getMonthTripSchedule(-1);
+              }
             }}
           >
             <MdNavigateBefore color="#D9D9D9" size="40px" />
@@ -108,7 +137,10 @@ const ControlDate = ({
                 nowDate.getFullYear() === new Date().getFullYear() &&
                 nowDate.getMonth() + 1 === 12
               ) {
-              } else changeMonth(+1);
+              } else {
+                changeMonth(+1);
+                getMonthTripSchedule(+1);
+              }
             }}
           >
             <MdNavigateNext color="#D9D9D9" size="40px" />
@@ -197,11 +229,11 @@ const ScheduleInfo = ({
   const [peopleCount, setPeopleCount] = useState(0);
 
   const dateFormat = (day: Date) => {
-    if (nowDate.getMonth() < 10 && day.getDate() < 10) {
+    if (nowDate.getMonth() + 1 < 10 && day.getDate() < 10) {
       return `${day.getFullYear()}-0${day.getMonth() + 1}-0${day.getDate()}`;
-    } else if (nowDate.getMonth() < 10 && day.getDate() >= 10) {
+    } else if (nowDate.getMonth() + 1 < 10 && day.getDate() >= 10) {
       return `${day.getFullYear()}-0${day.getMonth() + 1}-${day.getDate()}`;
-    } else if (nowDate.getMonth() >= 10 && day.getDate() < 10) {
+    } else if (nowDate.getMonth() + 1 >= 10 && day.getDate() < 10) {
       return `${day.getFullYear()}-${day.getMonth() + 1}-0${day.getDate()}`;
     } else return `${day.getFullYear()}-${day.getMonth() + 1}-${day.getDate()}`;
   };

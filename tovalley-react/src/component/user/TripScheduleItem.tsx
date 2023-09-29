@@ -10,6 +10,7 @@ import {
 import { FaVest } from "react-icons/fa";
 import { LuUtilityPole } from "react-icons/lu";
 import WriteReview from "./WriteReview";
+import { useNavigate } from "react-router-dom";
 
 type schedule = {
   tripScheduleId: number;
@@ -66,6 +67,7 @@ const TripScheduleItem: FC<Props> = ({
 }) => {
   const [writeReviewView, setWriteReviewView] = useState(false);
   const [check, setCheck] = useState(false);
+  const navigation = useNavigate();
 
   return (
     <div className={styles.scheduleItem}>
@@ -91,7 +93,10 @@ const TripScheduleItem: FC<Props> = ({
         alt="계곡 사진"
         width="180px"
       />
-      <div className={styles.scheduleInfo}>
+      <div
+        className={styles.scheduleInfo}
+        onClick={() => navigation(`/valley/${schedule.waterPlaceId}`)}
+      >
         <h4>{schedule.waterPlaceName}</h4>
         <span>{schedule.waterPlaceAddr}</span>
         <span>

@@ -74,6 +74,7 @@
 .congestionInfo > div > span {
   font-weight: 500;
   margin-right: 0.5em;
+  min-width: 50px;
 }
 
 .congestionInfo > div > div {

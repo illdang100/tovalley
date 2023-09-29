@@ -7,8 +7,8 @@ interface Props {
   waterPlaceDetails: {
     waterPlaceImage: string | null;
     waterPlaceName: string;
-    latitude: number;
-    longitude: number;
+    latitude: string;
+    longitude: string;
     managementType: string;
     detailAddress: string;
     town: string;
