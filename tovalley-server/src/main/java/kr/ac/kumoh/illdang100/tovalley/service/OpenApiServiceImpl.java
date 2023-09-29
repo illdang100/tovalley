@@ -160,6 +160,13 @@ public class OpenApiServiceImpl implements OpenApiService {
             String description = weather.getString("description");
             String climateIcon = weather.getString("icon");
 
+            int humidity = weatherData.optInt("humidity", 0);
+            double windSpeed = weatherData.optDouble("speed", 0);
+            int clouds = weatherData.optInt("clouds", 0);
+
+            JSONObject feelsLike = weatherData.getJSONObject("feels_like");
+            double dayFeelsLike = feelsLike.getDouble("day");
+
             nationalWeatherList.add(NationalWeather.builder()
                     .nationalRegion(nationalRegion)
                     .climate(climate)
@@ -169,6 +176,10 @@ public class OpenApiServiceImpl implements OpenApiService {
                     .highestTemperature(max)
                     .weatherDate(weatherDate)
                     .rainPrecipitation(rainPrecipitation)
+                    .humidity(humidity)
+                    .windSpeed(windSpeed)
+                    .clouds(clouds)
+                    .dayFeelsLike(dayFeelsLike)
                     .build());
         }
         return nationalWeatherList;
@@ -484,7 +495,7 @@ public class OpenApiServiceImpl implements OpenApiService {
     @Transactional
     public void fetchAndSaveWaterPlacesData() {
 
-        log.debug("행정안전부 물놀이관리지역 open api 시작!!");
+        log.info("행정안전부 물놀이관리지역 open api 시작!!");
 
         JSONObject waterPlacesData = fetchWaterPlacesData();
 
@@ -503,7 +514,8 @@ public class OpenApiServiceImpl implements OpenApiService {
             String wpName = waterPlaceName.replaceAll("\\s", "");
 
             if (!isWaterPlaceExist(waterPlaceName)) {
-                ImageFile waterPlaceImage = saveWaterPlaceImage(wpName);
+//                ImageFile waterPlaceImage = saveWaterPlaceImage(wpName);
+                ImageFile waterPlaceImage = null;
                 WaterPlace waterPlace = createWaterPlace(item, waterPlaceImage);
 
                 WaterPlaceDetail waterPlaceDetail = createWaterPlaceDetail(item, waterPlace);
@@ -517,7 +529,7 @@ public class OpenApiServiceImpl implements OpenApiService {
 
         saveWaterPlaceData(waterPlaceList, waterPlaceDetailList, rescueSupplyList);
 
-        log.debug("행정안전부 물놀이관리지역 open api 종료!!");
+        log.info("행정안전부 물놀이관리지역 open api 종료!!");
     }
 
     private boolean isWaterPlaceExist(String waterPlaceName) {
@@ -650,6 +662,7 @@ public class OpenApiServiceImpl implements OpenApiService {
 
     /**
      * 물놀이 장소 사진 저장
+     *
      * @param waterPlaceName
      * @return
      */

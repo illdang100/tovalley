@@ -4,6 +4,7 @@ import kr.ac.kumoh.illdang100.tovalley.handler.ex.CustomOAuth2AuthenticationExce
 import kr.ac.kumoh.illdang100.tovalley.util.CustomResponseUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.DefaultRedirectStrategy;
@@ -23,10 +24,11 @@ import static kr.ac.kumoh.illdang100.tovalley.util.CustomResponseUtil.addCookie;
 @Component
 public class OAuth2FailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
-
+    @Value("${oauth2.defaultUrl}")
+    private String defaultUrl;
+  
     private final String cookieName = "social_login_error";
     private final String cookieValue = "email_already_registered";
-    private final String DEFAULT_URL = "http://localhost:3000";
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
@@ -47,7 +49,7 @@ public class OAuth2FailureHandler extends SimpleUrlAuthenticationFailureHandler 
     }
 
     private void resultRedirectStrategy(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String loginUrl = DEFAULT_URL + "/login";
+        String loginUrl = defaultUrl + "/login";
 
         RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
         redirectStrategy.sendRedirect(request, response, loginUrl);
