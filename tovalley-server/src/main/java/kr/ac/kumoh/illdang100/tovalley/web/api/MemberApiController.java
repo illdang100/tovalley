@@ -69,7 +69,7 @@ public class MemberApiController {
         return new ResponseEntity<>(new ResponseDto<>(1, "회원가입을 성공했습니다", null), HttpStatus.CREATED);
     }
 
-    @DeleteMapping(value = "/auth/logout")
+    @DeleteMapping(value = "/logout")
     public ResponseEntity<?> logout(@CookieValue(JwtVO.REFRESH_TOKEN) String refreshToken,
                                     HttpServletResponse response) {
         memberService.logout(response, refreshToken);

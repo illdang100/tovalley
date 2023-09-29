@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping
+@RequestMapping("/th")
 @Slf4j
 public class AdminController {
     private final MemberService memberService;
@@ -22,7 +22,7 @@ public class AdminController {
      * @param model
      * @return 관리자용 로그인 페이지
      */
-    @GetMapping("/th/admin-login")
+    @GetMapping("/admin-login")
     public String loginForm(Model model) {
 
         model.addAttribute("loginForm", new LoginForm());
@@ -33,7 +33,7 @@ public class AdminController {
      * 관리자 로그아웃
      * @return 관리자용 로그인 페이지
      */
-    @GetMapping("/th/admin/logout")
+    @GetMapping("/logout")
     public String logOut(@CookieValue(JwtVO.REFRESH_TOKEN) String refreshToken,
                          HttpServletResponse response) {
         memberService.logout(response, refreshToken);

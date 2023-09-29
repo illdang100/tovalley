@@ -24,7 +24,7 @@ const Header = () => {
 
   const handleLogout = () => {
     axiosInstance
-      .delete(`/api/auth/logout`)
+      .delete(`/api/logout`)
       .then((res) => {
         console.log(res);
         if (res.status === 200) {
