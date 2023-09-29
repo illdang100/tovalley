@@ -366,25 +366,13 @@ const MyPage = () => {
     };
 
     axiosInstance
-      .post("/api/members/set-nickname", data)
+      .post("/api/auth/members/set-nickname", data)
       .then((res) => {
         console.log(res);
         setNickUpdate({ ...nickUpdate, click: false });
       })
       .catch((err) => console.log(err));
   };
-
-  //   const handleDeleteSchedule = () => {
-  //     deleteScheduleArr = user.myUpcomingTripSchedules;
-
-  //     for (let i = 0; i < deleteSchedule.length; i++) {
-  //       deleteScheduleArr = deleteScheduleArr.filter(
-  //         (schedule) => schedule.tripScheduleId !== deleteSchedule[i].id
-  //       );
-  //     }
-
-  //     setUser({ ...user, myUpcomingTripSchedules: deleteScheduleArr });
-  //   };
 
   const getPreSchedule = () => {
     axiosInstance
@@ -444,7 +432,12 @@ const MyPage = () => {
               <span>기본정보</span>
               <form encType="multipart/form-data">
                 <div className={styles.profileImg}>
-                  <div className={styles.profileUser}>
+                  <div
+                    className={styles.profileUser}
+                    onClick={() =>
+                      setChangeImg({ ...changeImg, modal: !changeImg.modal })
+                    }
+                  >
                     <img
                       src={
                         userImg === null || userImg === ""

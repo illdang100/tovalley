@@ -1,6 +1,7 @@
 import React, { FC, useEffect, useState } from "react";
 import TripScheduleItem from "./TripScheduleItem";
 import useDidMountEffect from "../../useDidMountEffect";
+import axiosInstance from "../../axios_interceptor";
 
 type preSchedule = {
   content: {
@@ -131,30 +132,51 @@ const TripSchedule: FC<Props> = ({
   setDeleteBtn,
   setUpCommingSchedule,
   setPreSchedule,
+  preSchedule,
 }) => {
-  const [checkedItems, setCheckedItems] = useState(new Set());
-  let checkedItemsArr: schedule = [];
+  const [checkedItems, setCheckedItems] = useState<schedule>([]);
 
   const checkedItemHandler = (id: scheduleItem, isChecked: boolean) => {
-    // if (isChecked) {
-    //   checkedItems.add(id);
-    //   checkedItemsArr = Array.from(checkedItems);
-    //   console.log(checkedItemsArr);
-    // } else if (!isChecked && checkedItems.has(id)) {
-    //   checkedItems.delete(id);
-    //   setCheckedItems(checkedItems);
-    //   checkedItemsArr = Array.from(checkedItems);
-    //   console.log(checkedItemsArr);
-    // }
+    if (isChecked) {
+      checkedItems.push(id);
+    } else if (!isChecked && checkedItems.indexOf(id) !== -1) {
+      checkedItems.splice(checkedItems.indexOf(id), 1);
+      setCheckedItems(checkedItems);
+    }
   };
 
   useDidMountEffect(() => {
-    // if (deleteBtn) {
-    //   scheduleBtn === "앞으로의 일정"
-    //     ? setUpCommingSchedule(checkedItemsArr)
-    //     : setPreSchedule(checkedItemsArr);
-    //   setDeleteBtn(false);
-    // }
+    const params = new URLSearchParams();
+    checkedItems.map((item) =>
+      params.append("tripScheduleIds", `${item.tripScheduleId}`)
+    );
+
+    if (deleteBtn) {
+      axiosInstance
+        .delete("/api/auth/trip-schedules", { params: params })
+        .then((res) => {
+          console.log(res);
+          if (scheduleBtn === "앞으로의 일정") {
+            axiosInstance
+              .get("/api/auth/my-page/upcoming-schedules")
+              .then((res) => {
+                console.log(res);
+                setUpCommingSchedule(res.data.data);
+              })
+              .catch((err) => console.log(err));
+          } else {
+            axiosInstance
+              .get("/api/auth/my-page/pre-schedules")
+              .then((res) => {
+                console.log(res);
+                setPreSchedule(res.data.data);
+              })
+              .catch((err) => console.log(err));
+          }
+        });
+
+      setDeleteBtn(false);
+    }
   }, [deleteBtn]);
 
   return (

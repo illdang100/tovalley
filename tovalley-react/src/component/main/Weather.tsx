@@ -48,6 +48,7 @@ const getDayOfWeek = (day: string) => {
 const Weather: FC<Props> = ({ nationalWeather }) => {
   let dateArr = nationalWeather;
 
+  const [loading, setLoading] = useState(false);
   const [clicked, setClicked] = useState(nationalWeather[0]);
   const [hover, setHover] = useState("");
   const region = [
@@ -71,6 +72,7 @@ const Weather: FC<Props> = ({ nationalWeather }) => {
   ];
 
   useEffect(() => {
+    setLoading(true);
     for (let i = 0; i < dateArr.length; i++) {
       for (let j = 0; j < dateArr.length - 1; j++) {
         if (
@@ -85,7 +87,12 @@ const Weather: FC<Props> = ({ nationalWeather }) => {
     }
 
     setClicked(dateArr[0]);
+    setLoading(false);
   }, []);
+
+  if (loading) {
+    return <div>loading</div>;
+  }
 
   return (
     <div className={styles.weather}>
