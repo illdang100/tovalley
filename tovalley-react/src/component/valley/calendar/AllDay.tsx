@@ -147,11 +147,11 @@ const Container = styled.div<ContainerProps>`
     left: 10px;
     border-radius: 10px;
     background-color: ${({ peopleCnt }) =>
-      peopleCnt >= 15
+      peopleCnt >= 60
         ? `#FA7F64`
-        : peopleCnt >= 10
+        : peopleCnt >= 40
         ? `#FFD874`
-        : peopleCnt >= 5
+        : peopleCnt >= 30
         ? `#8EBBFF`
         : `#E0E0E0`};
   }
@@ -182,17 +182,17 @@ const dateFormat = (
     [key: string]: number;
   }
 ) => {
-  if (nowDate.getMonth() < 10 && day.getDate() < 10) {
+  if (nowDate.getMonth() + 1 < 10 && day.getDate() < 10) {
     formatedDate =
       tripPlanToWaterPlace[
         `${nowDate.getFullYear()}-0${nowDate.getMonth() + 1}-0${day.getDate()}`
       ];
-  } else if (nowDate.getMonth() < 10 && day.getDate() >= 10) {
+  } else if (nowDate.getMonth() + 1 < 10 && day.getDate() >= 10) {
     formatedDate =
       tripPlanToWaterPlace[
         `${nowDate.getFullYear()}-0${nowDate.getMonth() + 1}-${day.getDate()}`
       ];
-  } else if (nowDate.getMonth() >= 10 && day.getDate() < 10) {
+  } else if (nowDate.getMonth() + 1 >= 10 && day.getDate() < 10) {
     formatedDate =
       tripPlanToWaterPlace[
         `${nowDate.getFullYear()}-${nowDate.getMonth() + 1}-0${day.getDate()}`

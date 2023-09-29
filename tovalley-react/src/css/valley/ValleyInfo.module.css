@@ -190,8 +190,8 @@
 
 .valleyAccident > span,
 .rescueSupplies > span {
-  color: #8b8b8b;
-  font-size: small;
+  color: #6c6c6c;
+  font-weight: bold;
 }
 
 .graph {
@@ -251,7 +251,7 @@
 }
 
 .rescueItem > span:nth-child(2) {
-  color: #cccccc;
+  color: #828282;
   font-size: small;
 }
 

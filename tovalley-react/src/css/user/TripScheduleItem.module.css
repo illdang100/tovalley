@@ -23,6 +23,7 @@
 
 .scheduleInfo {
   width: 100%;
+  cursor: pointer;
 }
 
 /* 계곡 이름 */

@@ -62,9 +62,9 @@ const SignupPage = () => {
     };
   }, [timeLeft]);
 
-  const KAKAO_AUTH_URL = `http://13.125.136.237/oauth2/authorization/kakao`;
-  const GOOGLE_AUTH_URL = `http://13.125.136.237/oauth2/authorization/google`;
-  const NAVER_AUTH_URL = `http://13.125.136.237/oauth2/authorization/naver`;
+  const KAKAO_AUTH_URL = `${localhost}/oauth2/authorization/kakao`;
+  const GOOGLE_AUTH_URL = `${localhost}/oauth2/authorization/google`;
+  const NAVER_AUTH_URL = `${localhost}/oauth2/authorization/naver`;
 
   const kakaoLogin = () => {
     window.location.href = KAKAO_AUTH_URL;
@@ -199,7 +199,7 @@ const SignupPage = () => {
         .post(`${localhost}/api/members`, data)
         .then((res) => {
           console.log(res);
-          res.status === 200 && window.location.replace("/");
+          res.status === 201 && window.location.replace("/login");
         })
         .catch((err) => console.log(err));
     } else {
@@ -212,7 +212,7 @@ const SignupPage = () => {
       <Header />
       {/* 회원가입 컨테이너 */}
       <div className={styles.body}>
-        <form className={styles.signupContainer}>
+        <div className={styles.signupContainer}>
           <span>회원가입</span>
           <div className={styles.signupInput}>
             <div>
@@ -384,7 +384,7 @@ const SignupPage = () => {
           <div className={styles.signupBtn}>
             <button onClick={() => handleSignUp()}>가입하기</button>
           </div>
-        </form>
+        </div>
         <div className={styles.socialSignup}>
           <div className={styles.socialSignupTitle}>
             <hr />

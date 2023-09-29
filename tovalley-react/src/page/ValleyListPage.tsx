@@ -516,7 +516,9 @@ const ValleyListPage = () => {
                         <span>
                           {item.waterPlaceRating === ""
                             ? 0
-                            : item.waterPlaceRating}
+                            : Number(item.waterPlaceRating) === 0
+                            ? 0
+                            : Number(item.waterPlaceRating).toFixed(1)}
                         </span>
                         <span>/5</span>
                       </span>
