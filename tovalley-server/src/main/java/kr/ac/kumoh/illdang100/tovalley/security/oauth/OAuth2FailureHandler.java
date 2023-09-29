@@ -17,6 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static kr.ac.kumoh.illdang100.tovalley.util.CustomResponseUtil.addCookie;
+
 @Slf4j
 @RequiredArgsConstructor
 @Component
@@ -24,6 +26,9 @@ public class OAuth2FailureHandler extends SimpleUrlAuthenticationFailureHandler 
 
     @Value("${oauth2.defaultUrl}")
     private String defaultUrl;
+  
+    private final String cookieName = "social_login_error";
+    private final String cookieValue = "email_already_registered";
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
@@ -38,6 +43,7 @@ public class OAuth2FailureHandler extends SimpleUrlAuthenticationFailureHandler 
             errorMessage = "인증 실패";
         }
 
+        addCookie(response, cookieName, cookieValue, false);
         resultRedirectStrategy(request, response);
         CustomResponseUtil.fail(response, errorMessage, HttpStatus.BAD_REQUEST);
     }
