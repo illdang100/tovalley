@@ -229,6 +229,10 @@ public class DummyObject {
                 .highestTemperature(35.9)
                 .weatherDate(weatherDate)
                 .rainPrecipitation(0.78)
+                .humidity(11)
+                .windSpeed(1.4)
+                .clouds(11)
+                .dayFeelsLike(30.0)
                 .build();
     }
 
