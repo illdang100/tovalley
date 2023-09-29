@@ -6,6 +6,7 @@ import axios from "axios";
 import ConfirmModal from "../component/common/ConfirmModal";
 
 const localhost = process.env.REACT_APP_HOST;
+const social_localhost = process.env.REACT_APP_SOCIAL_HOST;
 
 const SignupPage = () => {
   const [inputInfo, setInputInfo] = useState({
@@ -62,9 +63,9 @@ const SignupPage = () => {
     };
   }, [timeLeft]);
 
-  const KAKAO_AUTH_URL = `${localhost}/oauth2/authorization/kakao`;
-  const GOOGLE_AUTH_URL = `${localhost}/oauth2/authorization/google`;
-  const NAVER_AUTH_URL = `${localhost}/oauth2/authorization/naver`;
+  const KAKAO_AUTH_URL = `${social_localhost}/oauth2/authorization/kakao`;
+  const GOOGLE_AUTH_URL = `${social_localhost}/oauth2/authorization/google`;
+  const NAVER_AUTH_URL = `${social_localhost}/oauth2/authorization/naver`;
 
   const kakaoLogin = () => {
     window.location.href = KAKAO_AUTH_URL;
