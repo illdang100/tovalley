@@ -30,19 +30,43 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
+
+        log.info("CustomOAuth2UserService.loadUser() Start!!");
+
         OAuth2User oAuth2User = super.loadUser(userRequest);
-        return  processOAuth2User(userRequest, oAuth2User);
+        OAuth2User result = processOAuth2User(userRequest, oAuth2User);
+
+        log.info("CustomOAuth2UserService.loadUser() End!!");
+
+        return result;
     }
 
     private OAuth2User processOAuth2User(OAuth2UserRequest userRequest, OAuth2User oAuth2User) {
+
+        log.info("-- CustomOAuth2UserService.processOAuth2User() Start!!");
+
         Map<String, Object> attributes = oAuth2User.getAttributes();
+
+        for (String s : attributes.keySet()) {
+            log.info("---- attributes.key={}, value={}", s, attributes.get(s));
+        }
+
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
 
+        log.info("---- registrationId={}", registrationId);
+
         String username = getUsername(oAuth2User, registrationId, attributes);
+
+        log.info("---- username={}", username);
+
         OAuth2UserInfo oAuth2UserInfo = getOAuth2UserInfo(registrationId, attributes);
 
+        log.info("---- member 생성 시작!!");
         Member member = memberRepository.findByUsername(username)
                 .orElseGet(() -> createNewMember(username, oAuth2UserInfo.getEmail(), oAuth2UserInfo.getName()));
+        log.info("---- member 생성 종료!!");
+
+        log.info("-- CustomOAuth2UserService.processOAuth2User() End!!");
 
         return new PrincipalDetails(member, attributes);
     }
