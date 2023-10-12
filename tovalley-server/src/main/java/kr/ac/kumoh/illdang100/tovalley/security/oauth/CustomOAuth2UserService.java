@@ -34,6 +34,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         log.info("CustomOAuth2UserService.loadUser() Start!!");
 
         OAuth2User oAuth2User = super.loadUser(userRequest);
+
+        log.info("oAuth2User={}", oAuth2User);
+
         OAuth2User result = processOAuth2User(userRequest, oAuth2User);
 
         log.info("CustomOAuth2UserService.loadUser() End!!");
