@@ -99,42 +99,28 @@ const ReportContent = styled.div<ReportProps>`
   font-size: 0.9rem;
   text-align: justify;
   line-height: 1.4em;
+  height: 20vh;
+  min-height: 10em;
+  overflow-y: scroll;
 `;
 
 const Report: FC<Props> = ({ alert }) => {
-  const [report, setReport] = useState("특보");
+  const [report, setReport] = useState(true);
 
   return (
     <div className={styles.report}>
       <div className={styles.menu}>
-        <span
-          style={
-            report === "특보"
-              ? {
-                  backgroundColor: "#66A5FC",
-                  color: "white",
-                }
-              : {}
-          }
-          onClick={() => setReport("특보")}
+        <div
+          className={styles.toggleBtn}
+          onClick={() => {
+            setReport((prev) => !prev);
+          }}
         >
-          특보
-        </span>
-        <span
-          style={
-            report === "예비특보"
-              ? {
-                  backgroundColor: "#66A5FC",
-                  color: "white",
-                }
-              : {}
-          }
-          onClick={() => setReport("예비특보")}
-        >
-          예비특보
-        </span>
+          <div />
+        </div>
+        <span>{report ? "특보" : "예비 특보"}</span>
       </div>
-      {report === "특보" ? (
+      {report ? (
         <div className={styles.reportList}>
           {alert.weatherAlerts.length === 0 ? (
             <div className={styles.defaultAlert}>

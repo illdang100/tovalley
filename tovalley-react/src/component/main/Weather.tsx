@@ -2,6 +2,8 @@ import React, { FC, useEffect, useState } from "react";
 import styles from "../../css/main/Weather.module.css";
 import { FaTemperatureEmpty } from "react-icons/fa6";
 import { BsCloudRainHeavyFill } from "react-icons/bs";
+import Report from "./Report";
+import WeatherDetail from "./WeatherDetail";
 
 interface Props {
   nationalWeather: {
@@ -15,6 +17,24 @@ interface Props {
       rainPrecipitation: number;
     }[];
   }[];
+
+  alert: {
+    weatherAlerts: {
+      weatherAlertType: string;
+      title: string;
+      announcementTime: string;
+      effectiveTime: string;
+      content: string;
+    }[];
+    weatherPreAlerts: {
+      announcementTime: string;
+      title: string;
+      weatherAlertType: string;
+      contents: {
+        content: string;
+      }[];
+    }[];
+  };
 }
 
 const dateFormat = (date: string) => {
@@ -45,7 +65,7 @@ const getDayOfWeek = (day: string) => {
   return dayOfWeek;
 };
 
-const Weather: FC<Props> = ({ nationalWeather }) => {
+const Weather: FC<Props> = ({ nationalWeather, alert }) => {
   let dateArr = nationalWeather;
 
   const [loading, setLoading] = useState(false);
@@ -138,89 +158,100 @@ const Weather: FC<Props> = ({ nationalWeather }) => {
           );
         })}
       </div>
-      <div className={styles.weatherMap}>
-        <div className={styles.weatherMapContainer}>
-          <img
-            src={process.env.PUBLIC_URL + "/img/map_img.png"}
-            alt="지도 이미지"
-          ></img>
-          {region.map((item, index) => {
-            return (
-              <div
-                className={
-                  index === 0
-                    ? styles.baengnyeong
-                    : index === 1
-                    ? styles.seoul
-                    : index === 2
-                    ? styles.chuncheon
-                    : index === 3
-                    ? styles.gangneung
-                    : index === 4
-                    ? styles.suwon
-                    : index === 5
-                    ? styles.cheongju
-                    : index === 6
-                    ? styles.ulleung
-                    : index === 7
-                    ? styles.daejeon
-                    : index === 8
-                    ? styles.andong
-                    : index === 9
-                    ? styles.jeonju
-                    : index === 10
-                    ? styles.daegu
-                    : index === 11
-                    ? styles.ulsan
-                    : index === 12
-                    ? styles.gwangju
-                    : index === 13
-                    ? styles.mokpo
-                    : index === 14
-                    ? styles.busan
-                    : index === 15
-                    ? styles.jeju
-                    : styles.yeosu
-                }
-                onMouseOver={() => setHover(item)}
-                onMouseLeave={() => setHover("")}
-              >
-                {clicked.dailyNationalWeather[0].weatherIcon !== "" && (
-                  <img
-                    src={`https://openweathermap.org/img/wn/${clicked.dailyNationalWeather[index].weatherIcon}@2x.png`}
-                    alt="날씨 아이콘"
-                    width="70px"
-                  />
-                )}
-                <span>{item}</span>
-                {hover === item && (
-                  <div className={styles.weatherDetail}>
-                    <div>
-                      <span>
-                        <FaTemperatureEmpty />
-                      </span>
-                      <span>
-                        {clicked.dailyNationalWeather[index].minTemp.toFixed()}
-                        °/
-                        {clicked.dailyNationalWeather[index].maxTemp.toFixed()}°
-                      </span>
+      <div className={styles.weatherInfo}>
+        <div className={styles.weatherMap}>
+          <div className={styles.weatherMapContainer}>
+            <img
+              src={process.env.PUBLIC_URL + "/img/map_img.png"}
+              alt="지도 이미지"
+            ></img>
+            {region.map((item, index) => {
+              return (
+                <div
+                  className={
+                    index === 0
+                      ? styles.baengnyeong
+                      : index === 1
+                      ? styles.seoul
+                      : index === 2
+                      ? styles.chuncheon
+                      : index === 3
+                      ? styles.gangneung
+                      : index === 4
+                      ? styles.suwon
+                      : index === 5
+                      ? styles.cheongju
+                      : index === 6
+                      ? styles.ulleung
+                      : index === 7
+                      ? styles.daejeon
+                      : index === 8
+                      ? styles.andong
+                      : index === 9
+                      ? styles.jeonju
+                      : index === 10
+                      ? styles.daegu
+                      : index === 11
+                      ? styles.ulsan
+                      : index === 12
+                      ? styles.gwangju
+                      : index === 13
+                      ? styles.mokpo
+                      : index === 14
+                      ? styles.busan
+                      : index === 15
+                      ? styles.jeju
+                      : styles.yeosu
+                  }
+                  onMouseOver={() => setHover(item)}
+                  onMouseLeave={() => setHover("")}
+                >
+                  {clicked.dailyNationalWeather[0].weatherIcon !== "" && (
+                    <img
+                      src={`https://openweathermap.org/img/wn/${clicked.dailyNationalWeather[index].weatherIcon}@2x.png`}
+                      alt="날씨 아이콘"
+                      width="70px"
+                    />
+                  )}
+                  <span>{item}</span>
+                  {hover === item && (
+                    <div className={styles.weatherDetail}>
+                      <div>
+                        <span>
+                          <FaTemperatureEmpty />
+                        </span>
+                        <span>
+                          {clicked.dailyNationalWeather[
+                            index
+                          ].minTemp.toFixed()}
+                          °/
+                          {clicked.dailyNationalWeather[
+                            index
+                          ].maxTemp.toFixed()}
+                          °
+                        </span>
+                      </div>
+                      <div>
+                        <span>
+                          <BsCloudRainHeavyFill />
+                        </span>
+                        <span>
+                          {clicked.dailyNationalWeather[
+                            index
+                          ].rainPrecipitation.toFixed()}
+                          %
+                        </span>
+                      </div>
                     </div>
-                    <div>
-                      <span>
-                        <BsCloudRainHeavyFill />
-                      </span>
-                      <span>
-                        {clicked.dailyNationalWeather[
-                          index
-                        ].rainPrecipitation.toFixed()}
-                        %
-                      </span>
-                    </div>
-                  </div>
-                )}
-              </div>
-            );
-          })}
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+        <div className={styles.weatherInfoDetail}>
+          <Report alert={alert} />
+          <WeatherDetail />
         </div>
       </div>
     </div>

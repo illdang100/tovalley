@@ -139,6 +139,7 @@ const ValleyInfo: FC<Props> = ({
               );
             })}
           </div>
+          {mapMenu !== "계곡위치" && <span>반경 10km 이내로 조회됩니다.</span>}
           <div className={styles.valleyPlace}>
             <ValleyMap
               latitude={Number(waterPlaceDetails.latitude)}
