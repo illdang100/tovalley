@@ -61,7 +61,7 @@
 }
 
 .congestionInfo {
-  width: 120px;
+  width: 140px;
 }
 
 .congestionInfo > div {
@@ -73,12 +73,14 @@
 
 .congestionInfo > div > span {
   font-weight: 500;
-  margin-right: 0.5em;
-  min-width: 50px;
+  margin-right: 0.8em;
+  min-width: 60px;
+  text-align: right;
+  font-size: 0.9rem;
 }
 
 .congestionInfo > div > div {
-  width: 50px;
+  width: 100%;
   height: 9px;
   border-radius: 4px;
   color: rgb(212, 212, 212);

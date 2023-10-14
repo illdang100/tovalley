@@ -678,16 +678,12 @@ const Profile: FC<ProfileProp> = ({
       setChangeImg({ imgFile: "", modal: false });
     }
 
-    // const formData = new FormData();
-    //   formData.append("image", file);
-
-    //   axiosInstance
-    //     .post("/api/auth/members/profile-image", formData)
-    //     .then((res) => {
-    //       console.log(res);
-    //     })
-    //     .catch((err) => console.log(err));
-    // }
+    axiosInstance
+      .post("/api/auth/members/profile-image")
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => console.log(err));
   };
 
   return (

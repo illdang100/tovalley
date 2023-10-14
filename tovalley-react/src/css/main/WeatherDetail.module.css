@@ -1,0 +1,102 @@
+.weatherDetail {
+  margin-top: 1em;
+  border: 1px solid #d3d3d3;
+  border-radius: 10px;
+  padding: 1em;
+  min-width: 12em;
+  margin-left: 0.3em;
+  margin-right: 0.3em;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.region {
+  display: flex;
+  align-items: center;
+}
+
+.region > span:last-child {
+  font-weight: bold;
+  margin-left: 0.2em;
+  font-size: 1.1rem;
+  color: #383838;
+}
+
+.detailMain {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.detailMainInfo > div > span:first-child {
+  color: #646464;
+  font-weight: bold;
+  margin-right: 0.4em;
+  font-size: 0.9rem;
+}
+
+.detailMainInfo > div > span:last-child {
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.temperature {
+  display: flex;
+  justify-content: center;
+  border-top: 1px solid #d3d3d3;
+  padding: 0.8em 0 0.3em 0;
+}
+
+.temperature > div:first-child {
+  margin-right: 1em;
+}
+
+.temperature > div > span:first-child {
+  font-weight: bold;
+  margin-right: 0.3em;
+}
+
+.temperature > div > span:last-child {
+  font-weight: bold;
+  font-size: 1.4rem;
+}
+
+.weatherAddList {
+  display: flex;
+  margin-top: 0.8em;
+  justify-content: center;
+}
+
+.weatherAdd {
+  border: 1px solid #88b6e7;
+  background-color: #e7f0fa;
+  border-radius: 5px;
+  padding: 0.8em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: calc((100% - 3em) / 4);
+}
+
+.weatherAdd:not(:last-of-type) {
+  margin-right: 0.5em;
+}
+
+.weatherAdd > span:first-child {
+  font-size: small;
+}
+
+.weatherAdd > div > span:first-child {
+  font-weight: bold;
+  color: #66a5fc;
+  font-size: 1.2rem;
+  margin-right: 0.1em;
+}
+
+.weatherAdd > div > span:last-child {
+  font-weight: bold;
+  color: #66a5fc;
+  font-size: 0.9rem;
+}

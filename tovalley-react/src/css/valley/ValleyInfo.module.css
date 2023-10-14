@@ -44,9 +44,12 @@
 
 .valleyMap {
   width: 100%;
-
   margin-right: 2.5em;
   min-width: 400px;
+}
+
+.valleyPlaceMenu {
+  margin-bottom: 1.5em;
 }
 
 .placeMenu {
@@ -70,8 +73,14 @@
   cursor: pointer;
 }
 
+.valleyMap > span {
+  color: #717171;
+  font-size: 0.9rem;
+  margin-left: 0.5em;
+}
+
 .valleyPlace {
-  margin-top: 1.5em;
+  margin-top: 0.5em;
 }
 
 .valleyDetail {
