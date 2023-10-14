@@ -1,6 +1,13 @@
 import React, { useState } from "react";
-import { GoogleMap, useJsApiLoader, Marker } from "@react-google-maps/api";
+import {
+  GoogleMap,
+  useJsApiLoader,
+  Marker,
+  InfoWindow,
+} from "@react-google-maps/api";
 import useDidMountEffect from "../../../useDidMountEffect";
+import RatingStar from "../../common/RatingStar";
+import styled from "styled-components";
 
 interface Place {
   name: string;
@@ -10,6 +17,9 @@ interface Place {
       lng: number;
     };
   };
+  formatted_address: string;
+  rating: number;
+  user_ratings_total: number;
 }
 
 const containerStyle = {
@@ -39,6 +49,29 @@ interface Props {
   menu: string;
 }
 
+const InfoWindowCustom = styled.div`
+  div {
+    display: flex;
+    margin-bottom: 0.3em;
+
+    span:first-child {
+      font-weight: bold;
+      margin-right: 0.3em;
+    }
+
+    span:last-child,
+    span:nth-child(2) {
+      margin: 0 0.5em 0 0.5em;
+      font-size: 0.7rem;
+      color: #717171;
+    }
+  }
+
+  span:last-child {
+    font-size: 0.7rem;
+  }
+`;
+
 const ValleyMap = ({ latitude, longitude, menu }: Props) => {
   const center = {
     lat: latitude,
@@ -51,6 +84,7 @@ const ValleyMap = ({ latitude, longitude, menu }: Props) => {
   });
   const [map, setMap] = React.useState(null);
   const [place, setPlace] = useState<any>([]);
+  const [selectedMarker, setSelectedMarker] = useState<Place>();
 
   const onLoad = React.useCallback(function callback(map: any) {
     const bounds = new window.google.maps.LatLngBounds(center);
@@ -115,8 +149,30 @@ const ValleyMap = ({ latitude, longitude, menu }: Props) => {
               url: process.env.PUBLIC_URL + "/img/marker/hospital-marker.png",
               scaledSize: new window.google.maps.Size(26, 32),
             }}
+            onClick={() => {
+              setSelectedMarker(place);
+            }}
           />
         ))}
+      {menu !== "계곡위치" && place && selectedMarker && (
+        <InfoWindow
+          position={selectedMarker.geometry.location}
+          onCloseClick={() => setSelectedMarker(undefined)}
+          options={{
+            pixelOffset: new window.google.maps.Size(0, -25),
+          }}
+        >
+          <InfoWindowCustom>
+            <div>
+              <span>{selectedMarker.name}</span>
+              <span>{selectedMarker.rating}</span>
+              <RatingStar rating={selectedMarker.rating} size="13px" />
+              <span>({selectedMarker.user_ratings_total})</span>
+            </div>
+            <span>{selectedMarker.formatted_address}</span>
+          </InfoWindowCustom>
+        </InfoWindow>
+      )}
     </GoogleMap>
   ) : (
     <></>

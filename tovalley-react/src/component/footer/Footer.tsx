@@ -1,7 +1,10 @@
 import React from "react";
 import styles from "../../css/footer/Footer.module.css";
+import { useNavigate } from "react-router-dom";
 
 const Footer = () => {
+  const navigation = useNavigate();
+
   return (
     <div className={styles.footer}>
       <img
@@ -13,7 +16,7 @@ const Footer = () => {
         <span>이용약관</span>
         <span>개인정보 처리방침</span>
         <span>문의사항</span>
-        <span>관리자 로그인</span>
+        <span onClick={() => navigation("/th/admin-login")}>관리자 로그인</span>
       </div>
       <div className={styles.engineerInfo}>
         <span>BackEnd</span>

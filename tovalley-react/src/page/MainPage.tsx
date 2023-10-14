@@ -1,7 +1,6 @@
 import styles from "../css/main/MainPage.module.css";
 import Header from "../component/header/Header";
 import Weather from "../component/main/Weather";
-import Report from "../component/main/Report";
 import Accident from "../component/main/Accident/Accident";
 import PopularValley from "../component/main/PopularValley";
 import Footer from "../component/footer/Footer";
@@ -177,8 +176,10 @@ const MainPage = () => {
       <Header />
       <div className={styles.body}>
         <div className={styles.top}>
-          <Weather nationalWeather={main.nationalWeather} />
-          <Report alert={main.weatherAlert} />
+          <Weather
+            nationalWeather={main.nationalWeather}
+            alert={main.weatherAlert}
+          />
           <Accident
             accident={regionAccident}
             setRegionAccident={setRegionAccident}

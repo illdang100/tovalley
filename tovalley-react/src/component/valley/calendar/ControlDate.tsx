@@ -83,10 +83,10 @@ const ControlDate = ({
   const [yearDropdown, setYearDropdown] = useState(false);
 
   const congestionInfo = [
-    { peopleCnt: "60명", color: "#FA7F64" },
-    { peopleCnt: "45명", color: "#FFD874" },
-    { peopleCnt: "30명", color: "#8EBBFF" },
-    { peopleCnt: "15명", color: "#E0E0E0" },
+    { peopleCnt: "46 ~ 60", color: "#FA7F64" },
+    { peopleCnt: "31 ~ 45", color: "#FFD874" },
+    { peopleCnt: "16 ~ 30", color: "#8EBBFF" },
+    { peopleCnt: "1 ~ 15", color: "#E0E0E0" },
   ];
 
   return (
@@ -167,7 +167,7 @@ const ControlDate = ({
         {congestionInfo.map((item) => {
           return (
             <div>
-              <span>{item.peopleCnt}↑</span>
+              <span>{item.peopleCnt}</span>
               <div style={{ backgroundColor: item.color }} />
             </div>
           );
