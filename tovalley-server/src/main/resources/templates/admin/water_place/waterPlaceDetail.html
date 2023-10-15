@@ -181,40 +181,40 @@
                         </nav>
                     </div>
                 </div>
-                </div>
-                <div th:class="accident-register">
-                    <div> <!--사고 등록 했을 때 일회성!!으로 보여지는 태그-->
-                        <!--사고 등록이 정상적으로 처리된 경우-->
-                        <div th:if="${successMessage}" class="alert alert-success">
-                            <p th:text="${successMessage}"></p>
-                        </div>
-
-                        <!--사고 등록이 실패한 경우-->
-                        <div th:if="${errorMessage}" class="alert alert-danger">
-                            <p th:text="${errorMessage}"></p>
-                        </div>
+            </div>
+            <div th:class="accident-register">
+                <div> <!--사고 등록 했을 때 일회성!!으로 보여지는 태그-->
+                    <!--사고 등록이 정상적으로 처리된 경우-->
+                    <div th:if="${successMessage}" class="alert alert-success">
+                        <p th:text="${successMessage}"></p>
                     </div>
-                    <form th:action="@{/th/admin/water-places/{id}/accidents/new (id=${waterPlace.waterPlaceId})}"
-                          th:object="${addAccidentCond}" method="post">
-                        <label for="accidentDate">날짜</label>
-                        <input type="date" id="accidentDate" th:field="*{accidentDate}" required
-                               th:max="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}">
-                        <label for="accidentCondition">상태</label>
-                        <select id="accidentCondition" th:field="*{accidentCondition}">
-                            <option th:each="status : ${accidentStatus}"
-                                    th:value="${status}"
-                                    th:text="${status.value}"
-                                    th:required>option
-                            </option>
-                        </select>
-                        <label for="peopleNum">인원</label>
-                        <input type="number" id="peopleNum" th:field="*{peopleNum}" required min="1"/>
-                        <button type="submit">등록</button>
-                    </form>
+
+                    <!--사고 등록이 실패한 경우-->
+                    <div th:if="${errorMessage}" class="alert alert-danger">
+                        <p th:text="${errorMessage}"></p>
+                    </div>
                 </div>
+                <form th:action="@{/th/admin/water-places/{id}/accidents/new (id=${waterPlace.waterPlaceId})}"
+                      th:object="${addAccidentCond}" method="post">
+                    <label for="accidentDate">날짜</label>
+                    <input type="date" id="accidentDate" th:field="*{accidentDate}" required
+                           th:max="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}">
+                    <label for="accidentCondition">상태</label>
+                    <select id="accidentCondition" th:field="*{accidentCondition}">
+                        <option th:each="status : ${accidentStatus}"
+                                th:value="${status}"
+                                th:text="${status.value}"
+                                th:required>option
+                        </option>
+                    </select>
+                    <label for="peopleNum">인원</label>
+                    <input type="number" id="peopleNum" th:field="*{peopleNum}" required min="1"/>
+                    <button type="submit">등록</button>
+                </form>
             </div>
         </div>
     </div>
+</div>
 </div>
 </body>
 <script th:inline="javascript">
