@@ -5,34 +5,10 @@
   <link rel="stylesheet" th:href="@{/css/admin-valley-info.css}" />
 </head>
 <style>
-  .pagination {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    list-style: none;
-    padding: 0;
-  }
-  .pagination li {
-    margin: 0 5px;
-  }
-  .pagination li.active a {
-    font-weight: bold;
-  }
   .water-place-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 30px;
-  }
-   .water-place-item {
-     text-align: center;
-     border: 1px solid #ccc;
-     padding: 10px;
-   }
-  .water-place-item img {
-    max-width: 200px;
-    max-height: 200px;
-    min-width: 200px;
-    min-height: 200px;
   }
 </style>
   <body>
@@ -55,7 +31,7 @@
           <span><a th:href="@{/th/logout}">로그아웃</a></span>
         </div>
         <div class="valley-search-container">
-          <form th:action="@{/th/admin/water-place-list}" th:object="${waterPlaceCond}">
+          <form class="valley-search-form" th:action="@{/th/admin/water-place-list}" th:object="${waterPlaceCond}">
             <input id="searchWord" type="text" th:field="*{searchWord}" placeholder="계곡을 검색하세요" />
             <button>검색</button>
 
@@ -71,10 +47,14 @@
                        alt="기본 이미지" />
                   <h4 th:text="${waterPlace.waterPlaceName}">물놀이 장소 이름</h4>
                   <p th:text="${waterPlace.province+' '+waterPlace.city}">주소</p>
-                  <p th:text="${waterPlace.waterPlaceCategory}">물놀이 장소 구분</p>
-                  <p th:text="${waterPlace.managementType}">안전관리유형</p>
-                  <p th:text="${waterPlace.rating}+'/5'"></p>
-                  <p th:text="'리뷰 '+${waterPlace.reviewCnt}+'개'"></p>
+                  <div class="water-place-category">
+                    <p th:text="${waterPlace.waterPlaceCategory}">물놀이 장소 구분</p>
+                    <p th:text="${waterPlace.managementType}">안전관리유형</p>
+                  </div>
+                  <div class="water-place-review">
+                    <p th:text="${waterPlace.rating}+'/5'"></p>
+                    <p th:text="'리뷰 '+${waterPlace.reviewCnt}+'개'"></p>
+                  </div>
                   <p></p>
                 </a>
               </div>
@@ -87,14 +67,14 @@
                   th:with="start=${T(java.lang.Math).floor(waterPlaceList.number/10)*10 + 1}, last=(${start + 9 < waterPlaceList.totalPages ? start + 9 : waterPlaceList.totalPages}), currentPage=${waterPlaceList.number}">
                 <li class="disabled">
                   <a th:href="@{/th/admin/water-place-list(page=0, size=12)}" aria-label="First">
-                    <span aria-hidden="true">First</span>
+                    <span aria-hidden="true"><<</span>
                   </a>
                 </li>
                 <li th:class="${waterPlaceList.first} ? 'disabled'">
                   <a th:if="${not waterPlaceList.first}"
                      th:href="@{/th/admin/water-place-list(page=${waterPlaceList.number - 1}, size=12)}"
-                     aria-label="Previous">Previous</a>
-                  <span aria-hidden="true">&lt;</span>
+                     aria-label="Previous">&lt;</a>
+                  <span aria-hidden="true"></span>
                   </a>
                 </li>
                 <li th:each="page: ${#numbers.sequence(start, last)}" th:class="${page - 1 == currentPage} ? 'active'">
@@ -105,14 +85,14 @@
                 <li th:class="${waterPlaceList.last} ? 'disabled'">
                   <a th:if="${not waterPlaceList.last}"
                      th:href="@{/th/admin/water-place-list(page=${waterPlaceList.number + 1}, size=12)}"
-                     aria-label="Next">Next</a>
-                  <span aria-hidden="true">&gt;</span>
+                     aria-label="Next">&gt;</a>
+                  <span aria-hidden="true"></span>
                   </a>
                 </li>
                 <li>
                   <a th:if="${waterPlaceList.totalPages > 0}"
                      th:href="@{/th/admin/water-place-list(page=${waterPlaceList.totalPages - 1}, size=12)}"
-                     aria-label="Last">Last</a>
+                     aria-label="Last">>></a>
                   <span aria-hidden="true"></span>
                   </a>
                 </li>

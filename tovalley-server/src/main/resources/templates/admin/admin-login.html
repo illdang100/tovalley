@@ -16,8 +16,8 @@
     <img src="./img/투계곡-logo.png" th:src="@{/images/투계곡-logo.png}" alt="tovalley logo" width="120px"/>
     <h1>ADMIN</h1>
   </div>
-  <form action="/api/login" th:object="${loginForm}" method="post">
-    <div th:class="admin-login-container">
+  <form th:class="admin-login-container" action="/api/login" th:object="${loginForm}" method="post">
+    <div>
       <h4>관리자 로그인</h4>
       <div>
         <input id="username" type="email" th:field="*{username}" placeholder="아이디" />

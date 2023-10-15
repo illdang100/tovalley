@@ -2,6 +2,10 @@ body {
   margin: 0;
 }
 
+a {
+    text-decoration: none;
+}
+
 .admin-valley-info {
   display: flex;
 }
@@ -10,7 +14,7 @@ body {
 .admin-header {
   width: 18em;
   background-color: #5a5a5a;
-  height: 130vh;
+  flex-grow: 1;
   padding: 1em 0;
 }
 
@@ -35,15 +39,18 @@ body {
 
 .admin-category div {
   background-color: #4b4b4b;
-  color: white;
   margin: 0.8em 0;
   padding: 1em 2em;
   cursor: pointer;
   font-weight: 600;
 }
 
-.admin-category > div:nth-child(1) {
-  color: #66a5fc;
+.admin-category div a:link, .admin-category div a:visited {
+    color: white;
+}
+
+.admin-category div:first-child a {
+    color: #66A5FC;
 }
 
 /* 계곡 정보 관리 페이지 */
@@ -72,17 +79,117 @@ body {
   cursor: pointer;
 }
 
+.admin-title span a:link, .admin-title span a:visited {
+    color: black
+}
+
+/* 계곡 검색 */
 .valley-search-container {
   padding: 4em 5%;
 }
 
-.valley-item {
+.valley-search-form > input {
+   border: 1px solid #CCCCCC;
+   padding: 0.8em;
+   border-radius: 5px;
+   width: 20em;
+   margin-right: 0.5em;
+}
+
+.valley-search-form > input:focus {
+    outline: none;
+}
+
+.valley-search-form > button {
+    background-color: #66A5FC;
+    color: white;
+    border: none;
+    padding: 0.8em 1em;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.water-place-grid {
+    margin-top: 1.2em;
+}
+
+.water-place-item {
   margin-top: 1em;
-  border: 1px solid gray;
-  width: 200px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgb(194, 194, 194);
   cursor: pointer;
 }
 
-.valley-item > img {
+.water-place-item img {
   width: 100%;
+  max-height: 200px;
+  border-radius: 10px 10px 0px 0px;
+}
+
+.water-place-item a:link, .water-place-item a:visited {
+    color: black;
+}
+
+.water-place-item h4 {
+    margin: 0.8em 0 0.5em 0.8em;
+    font-size: 1.1rem;
+}
+
+.water-place-item > a > p {
+    color: #7D7D7D;
+    margin: 0 0 0 0.8em;
+}
+
+.water-place-category {
+    display: flex;
+    margin-left: 0.8em;
+}
+
+.water-place-category p {
+    border: 1px solid #66A5FC;
+    border-radius: 20px;
+    color: #66A5FC;
+    padding: 0.3em 0.8em;
+    margin-right: 0.5em;
+    font-size: small;
+    display: flex;
+    align-items: center;
+}
+
+.water-place-review {
+    display: flex;
+    margin-left: 0.8em;
+}
+
+.water-place-review p {
+    margin: 0 0.5em 0.8em 0;
+    font-weight: bold;
+    color: #717171;
+}
+
+/* 페이징 버튼 */
+.paging {
+    margin-top: 3em;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    list-style: none;
+    padding: 0;
+}
+
+.pagination li {
+    margin: 0 10px;
+    font-size: 1.1rem;
+}
+
+.pagination li a:link, .pagination li a:visited {
+    color: #A7A7A7;
+}
+
+.pagination li.active a {
+    font-weight: bold;
+    color: #66A5FC;
 }

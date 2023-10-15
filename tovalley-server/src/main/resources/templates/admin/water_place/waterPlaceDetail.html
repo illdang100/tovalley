@@ -48,10 +48,12 @@
                         <span th:text="${waterPlace.waterPlaceCategory} == '' ? '-' : ${waterPlace.waterPlaceCategory}">계곡</span>
                         <span th:text="${waterPlace.managementType}">중점 관리 지역</span>
                     </div>
-                    <span><a th:href="@{/th/admin/water-places/{id}/edit (id=${waterPlace.waterPlaceId})}">수정하기</a></span>
+                    <div>
+                        <span><a th:href="@{/th/admin/water-places/{id}/edit (id=${waterPlace.waterPlaceId})}">수정하기</a></span>
+                    </div>
                 </div>
             </div>
-            <div>
+            <div class="safety-notice">
                 <span><b>안전조치사항: </b></span>
                 <span th:text="${waterPlace.safetyMeasures} == '' ? '없음' : ${waterPlace.safetyMeasures}"></span>
             </div>
