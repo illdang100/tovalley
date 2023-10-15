@@ -18,7 +18,7 @@
         </div>
         <div th:class="admin-category">
             <div><a th:href="@{/th/admin/water-place-list}">계곡 정보 관리</a></div>
-            <div><a th:href="@{/th/admin/water-places/new}">계곡 등록</a></div>
+            <div><a class="category-register" th:href="@{/th/admin/water-places/new}">계곡 등록</a></div>
         </div>
     </div>
     <div class="valley-register-page">
@@ -30,7 +30,7 @@
               enctype="multipart/form-data"
               th:action="@{/th/admin/water-places/new}"
               th:object="${form}">
-            <div class="register-page">
+            <div class="valley-create-page">
                 <div class="valley-info-register">
 
                     <div th:class="valley-img">
@@ -271,6 +271,9 @@
             imgTag.className = "";
         }
     }
+
+    const category = document.querySelector(".category-register");
+    category.style.color = "#66A5FC";
 
 </script>
 </html>

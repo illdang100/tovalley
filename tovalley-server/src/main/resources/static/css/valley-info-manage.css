@@ -1,27 +1,108 @@
+body {
+  margin: 0;
+}
+
+a {
+    text-decoration: none;
+}
+
+a:link, a:visited {
+    color: white;
+}
+
 .admin-valley-info {
   display: flex;
 }
 
+/* 헤더 */
 .admin-header {
-  width: 20em;
+    background-color: #5a5a5a;
+    width: 18em;
+    padding: 1em 0;
+    flex-grow: 1;
+}
+
+.admin-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.admin-logo img {
+  margin-right: 1em;
+}
+
+.admin-logo h1 {
+  color: white;
+}
+
+/* 헤더 카테고리 */
+.admin-category {
+  margin-top: 1em;
+}
+
+.admin-category div {
+  background-color: #4b4b4b;
+  margin: 0.8em 0;
+  padding: 1em 2em;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.admin-category div a:link, .admin-category div a:visited {
+    color: white;
+}
+
+.admin-category div:first-child a {
+    color: #66A5FC;
 }
 
 .valley-info-page {
-  width: 100%;
+  width: 80%;
 }
 
 .admin-title {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  box-shadow: 0 2px 2px rgb(225, 225, 225);
+  height: 5em;
+  padding: 0 3em;
 }
 
+.admin-title h1 {
+  font-size: 1.4rem;
+}
+
+.admin-title span {
+  border: 1px solid #dadada;
+  border-radius: 20px;
+  padding: 0.5em 1em;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.admin-title span a:link, .admin-title span a:visited {
+    color: black
+}
+
+/* 페이지 메인 */
+.valley-info-page-main {
+    padding: 5%;
+}
+
+/* 계곡 기본 정보 */
 .valley-info {
   display: flex;
 }
 
 .valley-img {
   width: 250px;
+  margin-right: 1.5em;
+}
+
+.valley-img img {
+    border-radius: 8px;
 }
 
 .img-none {
@@ -34,14 +115,137 @@
   justify-content: space-between;
 }
 
+.valley-info-text h2 {
+    margin: 0.5em 0 0 0;
+}
+
+.valley-info-text p:nth-child(2) {
+    margin: 1em 0 1em 0;
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #7D7D7D;
+}
+
+.valley-info-text p:nth-child(3), .valley-info-text p:nth-child(4) {
+    margin: 0.3em 0 0 0;
+    color: #7D7D7D;
+    font-size: 1.1rem;
+}
+
+.valley-info-text p:nth-child(4) {
+    margin-bottom: 1em;
+}
+
+/* 수정하기 버튼 */
+.valley-info-text span {
+    color: #66A5FC;
+    border: 1px solid #66A5FC;
+    padding: 0.3em 0.8em;
+    border-radius: 30px;
+    margin-right: 0.5em;
+}
+
+.valley-info-update > div:last-child span {
+    background-color: #66A5FC;
+    color: white;
+    font-weight: bold;
+    padding: 0.8em 1.5em;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 2px 2px rgb(208, 208, 208);
+}
+
+.safety-notice {
+    border-top: 1px solid #C3C3C3;
+    margin-top: 3em;
+    padding-top: 3em;
+}
+
+.safety-notice span {
+    font-size: 1.1rem;
+}
+
+.rescue-supplies {
+    margin-top: 3em;
+}
+
+h4 {
+    font-size: 1.1rem;
+    margin: 0 0 1em 0;
+}
+
+table {
+    border: 1px solid #A0A0A0;
+    border-collapse: collapse;
+    text-align: center;
+}
+
+.rescue-supplies table tr:first-child td {
+    color: #606060;
+    padding: 0.8em;
+    font-size: 1.1rem;
+    width: calc(100%/6);
+}
+
+.rescue-supplies table tr:last-child td,
+.valley-quality table tr:last-child td,
+.valley-detail-info table tr:nth-child(2) td
+ {
+    color: #717171;
+    padding: 0.8em;
+    font-size: 1.3rem;
+    font-weight: bold;
+}
+
+.valley-quality, .valley-detail-info {
+    margin-top: 3em;
+}
+
+.valley-quality table tr:first-child td {
+    color: #606060;
+    padding: 0.8em;
+    font-size: 1.1rem;
+    width: calc(100%/2);
+}
+
+.valley-detail-info table tr:first-child td {
+    color: #606060;
+    padding: 0.8em;
+    font-size: 1.1rem;
+    width: calc(100%/6);
+}
+
+.valley-detail-info table tr:nth-child(2) td:first-child,
+.valley-detail-info table tr:last-child td:first-child
+ {
+    color: #606060;
+    padding: 0.8em;
+    font-size: 1.1rem;
+    font-weight: normal;
+}
+
+.valley-detail-info table tr:nth-child(2) td:nth-child(2),
+.valley-detail-info table tr:last-child td:last-child
+ {
+    color: #717171;
+    padding: 0.8em;
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
 .valley-accident {
-  margin-top: 2em;
+  margin-top: 8em;
 }
 
 .accident-title {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  border-bottom: 1px solid #C3C3C3;
+}
+
+.accident-title h4 {
+    font-size: 1.3rem;
 }
 
 .accident-search {
@@ -97,8 +301,20 @@
 .dropdown-content.show {
   display: block;
 }
+
 .accident-total {
   display: flex;
+  margin: 1.5em 0;
+}
+
+.accident-total h4 {
+    color: #8B8B8B;
+    font-size: 1rem;
+}
+
+.accident-total > h4 {
+    margin-right: 2em;
+    font-size: 1rem;
 }
 
 .accident-total div {
@@ -106,18 +322,45 @@
   margin: 0 0.5em;
 }
 
+.accident-total div > h4:first-child {
+    margin-right: 0.8em;
+    font-size: 1rem;
+}
+
+.accident-total div > h4:nth-child(2) {
+    color: black;
+    margin-right: 0.3em;
+    font-size: 1rem;
+}
+
+/* 사고 리스트 */
 .accident-item {
   display: flex;
   align-items: center;
+  margin-bottom: 2em;
 }
 
 .accident-item h4 {
   margin: 0 0.5em;
+  font-size: 1rem;
+}
+
+.accident-item h4:first-child {
+    color: #8B8B8B;
+    margin-right: 2em;
+    font-size: 1rem;
 }
 
 .accident-register {
-  display: flex;
   align-items: center;
+  border-top: 1px solid #C3C3C3;
+  padding-top: 2em;
+}
+
+/* 사고 등록 성공 시 보이는 태그 */
+.accident-register > div div p {
+    margin: 0 0 1em 0;
+    color: #3378FC;
 }
 
 .accident-register h4,
@@ -125,8 +368,68 @@
   margin: 2em 1em;
 }
 
+.accident-register label {
+    color: #8B8B8B;
+    font-weight: bold;
+    font-size: 1rem;
+    margin-right: 1em;
+}
+
+.accident-register input {
+    border: 1px solid #A0A0A0;
+    padding: 0.8em;
+    border-radius: 8px;
+    margin-right: 1.5em;
+}
+
+.accident-register input:focus, .accident-register select:focus {
+    outline: none;
+}
+
+.accident-register select {
+    border: 1px solid #A0A0A0;
+    padding: 0.8em;
+    border-radius: 8px;
+    margin-right: 1.8em;
+}
+
+.accident-register button {
+    border: none;
+    background-color: #66A5FC;
+    color: white;
+    font-weight: bold;
+    padding: 0.8em 1.5em;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 2px 2px rgb(208, 208, 208);
+    margin-left: 1em;
+}
+
+/* 페이징 버튼 */
+.paging {
+    margin-top: 3em;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    list-style: none;
+    padding: 0;
+}
+
+.pagination li {
+    margin: 0 10px;
+    font-size: 0.9rem;
+    list-style-type: none;
+}
+
+.pagination li a:link, .pagination li a:visited {
+    color: #A7A7A7;
+}
+
 .paging a {
-  font-size: 1.5rem;
+  font-size: 1rem;
 }
 
 .paging a.on {
@@ -135,16 +438,7 @@
   font-weight: bold;
 }
 
-.pagination {
-  display: flex;
-  margin-top: 2em;
-}
-
-.pagination li {
-  list-style-type: none;
-}
-
-.pagination a {
-  font-size: 1rem;
-  margin: 0 1em;
+.pagination li.active a {
+    font-weight: bold;
+    color: #66A5FC;
 }

@@ -154,7 +154,7 @@ public class DummyDevInit extends DummyObject {
             reviewRepository.save(newReview(b, tripSchedule9, "content4", 5, WaterQualityReviewEnum.CLEAN, waterPlaceRepository));
             reviewRepository.save(newReview(b, tripSchedule10, "content6", 4, WaterQualityReviewEnum.DIRTY, waterPlaceRepository));
             reviewRepository.save(newReview(b, tripSchedule11, "content1", 1, WaterQualityReviewEnum.DIRTY, waterPlaceRepository));
-            reviewRepository.save(newReview(b, tripSchedule12, "content5", 5, WaterQualityReviewEnum.FINE, waterPlaceRepository));*/
+            reviewRepository.save(newReview(b, tripSchedule12, "content5", 5, WaterQualityReviewEnum.FINE, waterPlaceRepository)); */
         };
     }
 
