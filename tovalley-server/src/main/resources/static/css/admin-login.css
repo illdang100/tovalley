@@ -30,22 +30,28 @@ body {
   background-color: white;
   min-width: 400px;
   width: 35%;
-  height: 50vh;
+  border-radius: 10px;
+  padding: 0em 2.5em 2em 2.5em;
+  box-sizing: border-box;
+  margin-top: 1em;
+}
+
+.admin-login-container > div {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border-radius: 10px;
-  padding: 0 2em;
-  box-sizing: border-box;
-  margin-top: 1em;
 }
 
 .admin-login-container h4 {
   font-size: 1.4rem;
 }
 
-.admin-login-container input {
+.admin-login-container > div > div {
+    width: 100%
+}
+
+.admin-login-container  input {
   width: 100%;
   padding: 0;
   border: 1px solid #9c9c9c;
@@ -53,13 +59,14 @@ body {
   padding: 1em;
   box-sizing: border-box;
   margin: 0.3em 0;
+  font-size: 1rem;
 }
 
-.admin-login-container input::placeholder {
+.admin-login-container  input::placeholder {
   color: #9c9c9c;
 }
 
-.admin-login-container input:focus {
+.admin-login-container  input:focus {
   outline: none;
 }
 
@@ -70,9 +77,9 @@ body {
   border: none;
   color: white;
   border-radius: 5px;
-  padding: 0.8em;
+  padding: 1em;
   font-weight: bold;
   font-size: 1rem;
-  margin: 1.5em 0 2.5em 0;
+  margin: 1.5em 0 1.5em 0;
   cursor: pointer;
 }
