@@ -1,7 +1,5 @@
 import React, { FC, useEffect, useState } from "react";
 import styles from "../../css/main/Weather.module.css";
-import { FaTemperatureEmpty } from "react-icons/fa6";
-import { BsCloudRainHeavyFill } from "react-icons/bs";
 import Report from "./Report";
 import WeatherDetail from "./WeatherDetail";
 
@@ -9,6 +7,10 @@ interface Props {
   nationalWeather: {
     weatherDate: string;
     dailyNationalWeather: {
+      clouds: number;
+      dayFeelsLike: number;
+      humidity: number;
+      windSpeed: number;
       region: string;
       weatherIcon: string;
       weatherDesc: string;
@@ -70,7 +72,9 @@ const Weather: FC<Props> = ({ nationalWeather, alert }) => {
 
   const [loading, setLoading] = useState(false);
   const [clicked, setClicked] = useState(nationalWeather[0]);
-  const [hover, setHover] = useState("");
+  const [regionClicked, setRegionClicked] = useState(
+    nationalWeather[0].dailyNationalWeather[0]
+  );
   const region = [
     "백령",
     "서울",
@@ -107,6 +111,7 @@ const Weather: FC<Props> = ({ nationalWeather, alert }) => {
     }
 
     setClicked(dateArr[0]);
+    setRegionClicked(nationalWeather[0].dailyNationalWeather[1]);
     setLoading(false);
   }, []);
 
@@ -168,6 +173,15 @@ const Weather: FC<Props> = ({ nationalWeather, alert }) => {
             {region.map((item, index) => {
               return (
                 <div
+                  onClick={() =>
+                    setRegionClicked(clicked.dailyNationalWeather[index])
+                  }
+                  style={
+                    regionClicked.region === item
+                      ? { borderColor: "#66A5FC" }
+                      : {}
+                  }
+                  id={styles.regionContainer}
                   className={
                     index === 0
                       ? styles.baengnyeong
@@ -203,46 +217,37 @@ const Weather: FC<Props> = ({ nationalWeather, alert }) => {
                       ? styles.jeju
                       : styles.yeosu
                   }
-                  onMouseOver={() => setHover(item)}
-                  onMouseLeave={() => setHover("")}
                 >
+                  <span
+                    style={
+                      regionClicked.region === item && index === 6
+                        ? { color: "#66A5FC", fontSize: "0.6rem" }
+                        : regionClicked.region === item
+                        ? { color: "#66A5FC" }
+                        : index === 6
+                        ? { fontSize: "0.6rem" }
+                        : {}
+                    }
+                  >
+                    {item}
+                  </span>
                   {clicked.dailyNationalWeather[0].weatherIcon !== "" && (
                     <img
                       src={`https://openweathermap.org/img/wn/${clicked.dailyNationalWeather[index].weatherIcon}@2x.png`}
                       alt="날씨 아이콘"
-                      width="70px"
+                      width="50px"
                     />
                   )}
-                  <span>{item}</span>
-                  {hover === item && (
-                    <div className={styles.weatherDetail}>
-                      <div>
-                        <span>
-                          <FaTemperatureEmpty />
-                        </span>
-                        <span>
-                          {clicked.dailyNationalWeather[
-                            index
-                          ].minTemp.toFixed()}
-                          °/
-                          {clicked.dailyNationalWeather[
-                            index
-                          ].maxTemp.toFixed()}
-                          °
-                        </span>
-                      </div>
-                      <div>
-                        <span>
-                          <BsCloudRainHeavyFill />
-                        </span>
-                        <span>
-                          {clicked.dailyNationalWeather[
-                            index
-                          ].rainPrecipitation.toFixed()}
-                          %
-                        </span>
-                      </div>
-                    </div>
+                  {clicked.dailyNationalWeather[0].weatherIcon !== "" && (
+                    <span>
+                      <span style={{ fontSize: "0.7rem", color: "#3378FC" }}>
+                        {clicked.dailyNationalWeather[index].minTemp.toFixed()}°
+                      </span>
+                      /
+                      <span style={{ color: "#fd4848" }}>
+                        {clicked.dailyNationalWeather[index].maxTemp.toFixed()}°
+                      </span>
+                    </span>
                   )}
                 </div>
               );
@@ -251,7 +256,7 @@ const Weather: FC<Props> = ({ nationalWeather, alert }) => {
         </div>
         <div className={styles.weatherInfoDetail}>
           <Report alert={alert} />
-          <WeatherDetail />
+          <WeatherDetail dailyNationalWeather={regionClicked} />
         </div>
       </div>
     </div>

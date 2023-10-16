@@ -13,6 +13,10 @@ type main = {
   nationalWeather: {
     weatherDate: string;
     dailyNationalWeather: {
+      clouds: number;
+      dayFeelsLike: number;
+      humidity: number;
+      windSpeed: number;
       region: string;
       weatherIcon: string;
       weatherDesc: string;
@@ -68,6 +72,10 @@ const MainPage = () => {
         weatherDate: "",
         dailyNationalWeather: [
           {
+            clouds: 0,
+            dayFeelsLike: 0,
+            humidity: 0,
+            windSpeed: 0,
             region: "",
             weatherIcon: "",
             weatherDesc: "",
@@ -169,32 +177,31 @@ const MainPage = () => {
 
   if (loading) {
     return <div>loading</div>;
-  }
-
-  return (
-    <div>
-      <Header />
-      <div className={styles.body}>
-        <div className={styles.top}>
-          <Weather
-            nationalWeather={main.nationalWeather}
-            alert={main.weatherAlert}
-          />
-          <Accident
-            accident={regionAccident}
-            setRegionAccident={setRegionAccident}
-          />
+  } else
+    return (
+      <div>
+        <Header />
+        <div className={styles.body}>
+          <div className={styles.top}>
+            <Weather
+              nationalWeather={main.nationalWeather}
+              alert={main.weatherAlert}
+            />
+            <Accident
+              accident={regionAccident}
+              setRegionAccident={setRegionAccident}
+            />
+          </div>
+          <div>
+            <PopularValley
+              place={popularValley}
+              setPopularValley={setPopularValley}
+            />
+          </div>
         </div>
-        <div>
-          <PopularValley
-            place={popularValley}
-            setPopularValley={setPopularValley}
-          />
-        </div>
+        <Footer />
       </div>
-      <Footer />
-    </div>
-  );
+    );
 };
 
 export default MainPage;

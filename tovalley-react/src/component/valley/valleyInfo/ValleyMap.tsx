@@ -39,7 +39,7 @@ const myStyles = [
 const OPTIONS = {
   disableDefaultUI: true,
   styles: myStyles,
-  minZoom: 13,
+  minZoom: 5,
   maxZoom: 13,
 };
 

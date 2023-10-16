@@ -47,16 +47,22 @@ const ValleyQuality: FC<Props> = ({ waterPlaceDetails }) => {
               <div className={styles.bodGauge}>
                 <span>BOD(mg/L)</span>
                 <div className={styles.bodGaugeDetail}>
-                  <div className={styles.bodGaugeBar}></div>
+                  <div className={styles.bodGaugeBar}>
+                    <div />
+                  </div>
                   <span>10</span>
+                  <span>7</span>
                   <span>0</span>
                 </div>
               </div>
               <div className={styles.ntuGauge}>
                 <span>탁도(NTU)</span>
                 <div className={styles.ntuGaugeDetail}>
-                  <div className={styles.ntuGaugeBar}></div>
+                  <div className={styles.ntuGaugeBar}>
+                    <div />
+                  </div>
                   <span>101</span>
+                  <span>80</span>
                   <span>0</span>
                 </div>
               </div>
