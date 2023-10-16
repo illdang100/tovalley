@@ -1,8 +1,23 @@
-import React from "react";
+import React, { FC } from "react";
 import styles from "../../css/main/WeatherDetail.module.css";
 import { FaMapMarkerAlt } from "react-icons/fa";
 
-const WeatherDetail = () => {
+interface Props {
+  dailyNationalWeather: {
+    clouds: number;
+    dayFeelsLike: number;
+    humidity: number;
+    windSpeed: number;
+    region: string;
+    weatherIcon: string;
+    weatherDesc: string;
+    minTemp: number;
+    maxTemp: number;
+    rainPrecipitation: number;
+  };
+}
+
+const WeatherDetail: FC<Props> = ({ dailyNationalWeather }) => {
   const detailMenu = ["강수량", "습도", "풍속"];
   return (
     <div className={styles.weatherDetail}>
@@ -10,7 +25,7 @@ const WeatherDetail = () => {
         <span>
           <FaMapMarkerAlt color="#383838" size="18px" />
         </span>
-        <span>서울</span>
+        <span>{dailyNationalWeather.region}</span>
       </div>
       <div className={styles.detailBox}>
         <div className={styles.detailMain}>
@@ -23,23 +38,38 @@ const WeatherDetail = () => {
           </div>
           <div className={styles.detailMainInfo}>
             <div>
-              <span>주간 체감온도</span>
-              <span>23.7°</span>
+              <span
+                style={
+                  dailyNationalWeather.weatherDesc.length > 6
+                    ? { fontSize: "0.8rem" }
+                    : { fontSize: "1rem" }
+                }
+              >
+                {dailyNationalWeather.weatherDesc}
+              </span>
+            </div>
+            <div>
+              <span>체감온도</span>
+              <span>{dailyNationalWeather.dayFeelsLike.toFixed()}°</span>
             </div>
             <div>
               <span>흐림</span>
-              <span>10%</span>
+              <span>{dailyNationalWeather.clouds}%</span>
             </div>
           </div>
         </div>
         <div className={styles.temperature}>
           <div>
             <span>최저</span>
-            <span style={{ color: "#3378FC" }}>19°</span>
+            <span style={{ color: "#3378FC" }}>
+              {dailyNationalWeather.minTemp.toFixed()}°
+            </span>
           </div>
           <div>
             <span>최고</span>
-            <span style={{ color: "#FD4848" }}>28°</span>
+            <span style={{ color: "#FD4848" }}>
+              {dailyNationalWeather.maxTemp.toFixed()}°
+            </span>
           </div>
         </div>
         <div className={styles.weatherAddList}>
@@ -48,7 +78,13 @@ const WeatherDetail = () => {
               <div className={styles.weatherAdd}>
                 <span>{item}</span>
                 <div>
-                  <span>10</span>
+                  <span>
+                    {index === 0
+                      ? dailyNationalWeather.rainPrecipitation.toFixed()
+                      : index === 1
+                      ? dailyNationalWeather.humidity
+                      : dailyNationalWeather.windSpeed.toFixed()}
+                  </span>
                   <span>{index === 0 ? "mm" : index === 1 ? "%" : "m/s"}</span>
                 </div>
               </div>

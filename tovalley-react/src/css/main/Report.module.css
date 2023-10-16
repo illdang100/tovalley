@@ -1,6 +1,5 @@
 .report {
   margin-top: 1.5em;
-  width: 100%;
   flex-grow: 1;
 }
 
@@ -27,14 +26,25 @@
   padding: 0.2em;
   box-sizing: border-box;
   cursor: pointer;
-  justify-content: right;
+  transition: all 2s;
 }
 
-.toggleBtn > div {
+.toggleSwitchOn,
+.toggleSwitchOff {
   background-color: white;
   width: 10px;
   height: 10px;
   border-radius: 100%;
+}
+
+.toggleSwitchOn {
+  transform: translateX(14px);
+  transition: all 0.2s;
+}
+
+.toggleSwitchOff {
+  transform: translateX(-0.5px);
+  transition: all 0.2s;
 }
 
 .defaultAlert {
@@ -62,7 +72,6 @@
 }
 
 .reportList {
-  min-width: 14em;
   display: flex;
   overflow: hidden;
   margin-top: 0.3em;
@@ -70,19 +79,13 @@
   align-items: center;
 }
 
-.reportItem > div::-webkit-scrollbar {
+.reportItemContainer > div::-webkit-scrollbar {
   display: none;
 }
 
-.reportItem:not(:last-of-type) {
-  margin-right: 0.5em;
-}
-
 .reportItem {
-  width: 100%;
-  min-width: 14em;
-  box-shadow: 0 2px 4px rgb(159, 159, 159);
-  border-radius: 12px;
+  min-width: 100%;
+  margin-right: 0.3em;
 }
 
 .presentation > span:first-child {

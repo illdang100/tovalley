@@ -72,11 +72,36 @@ const ControlDate = ({
       },
     };
 
-    axiosInstance
-      .get(`/api/auth/water-places/${id}/trip-schedules`, config)
-      .then((res) => {
-        setPeopleCnt({ tripPlanToWaterPlace: res.data.data });
-      });
+    // axiosInstance
+    //   .get(`/api/auth/water-places/${id}/trip-schedules`, config)
+    //   .then((res) => {
+    //     setPeopleCnt({ tripPlanToWaterPlace: res.data.data });
+    //   });
+    setPeopleCnt({
+      tripPlanToWaterPlace: {
+        "2023-08-02": 31,
+        "2023-08-03": 31,
+        "2023-08-05": 46,
+        "2023-08-06": 46,
+        "2023-08-07": 34,
+        "2023-08-08": 16,
+        "2023-08-11": 17,
+        "2023-08-12": 17,
+        "2023-08-13": 25,
+        "2023-08-15": 3,
+        "2023-08-16": 8,
+        "2023-08-18": 10,
+        "2023-08-19": 18,
+        "2023-08-20": 16,
+        "2023-08-24": 3,
+        "2023-08-25": 7,
+        "2023-08-26": 35,
+        "2023-08-27": 35,
+        "2023-08-28": 16,
+        "2023-08-29": 16,
+        "2023-08-30": 3,
+      },
+    });
   };
 
   const [scheduleInfo, setScheduleInfo] = useState(false);
