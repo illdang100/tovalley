@@ -36,6 +36,7 @@
 }
 
 .gaugeTitle > span:first-child {
+  font-size: 1.1rem;
   font-weight: bold;
   color: #707070;
   margin-right: 0.3em;
@@ -62,6 +63,12 @@
   margin-right: 0.7em;
 }
 
+.bodGauge > span {
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: #848484;
+}
+
 .bodGaugeDetail {
   position: relative;
 }
@@ -70,6 +77,12 @@
   position: absolute;
   left: 20px;
   top: 5px;
+}
+
+.bodGaugeDetail > span:nth-child(3) {
+  position: absolute;
+  left: 23px;
+  top: 30px;
 }
 
 .bodGaugeDetail > span:last-child {
@@ -85,7 +98,21 @@
   margin: 0.3em 0 0 0.2em;
 }
 
+.bodGaugeBar div {
+  width: 14px;
+  height: 3px;
+  background-color: #f19797;
+  position: absolute;
+  top: 33px;
+}
+
 /* 탁도 게이지 */
+.ntuGauge > span {
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: #848484;
+}
+
 .ntuGaugeDetail {
   position: relative;
 }
@@ -94,6 +121,12 @@
   position: absolute;
   left: 20px;
   top: 5px;
+}
+
+.ntuGaugeDetail > span:nth-child(3) {
+  position: absolute;
+  left: 20px;
+  top: 26px;
 }
 
 .ntuGaugeDetail > span:last-child {
@@ -106,6 +139,14 @@
   width: 14px;
   height: 100px;
   margin: 0.3em 0 0 0.2em;
+}
+
+.ntuGaugeBar div {
+  width: 14px;
+  height: 3px;
+  background-color: #f19797;
+  position: absolute;
+  top: 30px;
 }
 
 .valleyWaterInfo {
@@ -169,23 +210,23 @@
 
 .waterTemperature {
   margin-top: 3em;
-  background-color: rgba(255, 255, 255, 0.439);
-  width: 120px;
-  height: 120px;
+  background-color: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.505);
+  width: 140px;
+  height: 140px;
   border-radius: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   color: white;
-  box-shadow: 0 2px 2px rgba(193, 193, 193, 0.631);
   text-shadow: 0 1px 1px rgba(174, 174, 174, 0.71);
 }
 
 .waterTemperature > span {
-  color: rgba(255, 255, 255, 0.724);
+  color: white;
   font-weight: bold;
-  font-size: 1.2rem;
+  font-size: 1.6rem;
 }
 
 .waterTemperature > div {
@@ -193,13 +234,13 @@
 }
 
 .waterTemperature > div > span:first-child {
-  font-size: 1.7rem;
-  font-weight: 400;
+  font-size: 2.4rem;
+  font-weight: 500;
 }
 
 .waterTemperature > div > span:last-child {
-  font-size: 1.7rem;
-  font-weight: 400;
+  font-size: 2.4rem;
+  font-weight: 500;
 }
 
 .avgDepth,

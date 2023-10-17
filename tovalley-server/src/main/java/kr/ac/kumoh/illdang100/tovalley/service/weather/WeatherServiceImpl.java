@@ -44,7 +44,12 @@ public class WeatherServiceImpl implements WeatherService {
 
         Map<LocalDate, List<DailyNationalWeatherDto>> weatherByDate = groupWeatherDataByDate(nationalWeatherWithNationalRegion);
 
-        return createNationalWeatherRespDtoList(weatherByDate);
+        List<NationalWeatherRespDto> nationalWeatherRespDtoList = createNationalWeatherRespDtoList(weatherByDate);
+
+        List<NationalWeatherRespDto> sortedNationalWeatherRespDtoList = nationalWeatherRespDtoList.stream()
+                .sorted(Comparator.comparing(NationalWeatherRespDto::getWeatherDate))
+                .collect(Collectors.toList());
+        return sortedNationalWeatherRespDtoList;
     }
 
     private Map<LocalDate, List<DailyNationalWeatherDto>> groupWeatherDataByDate(List<NationalWeather> nationalWeathers) {
