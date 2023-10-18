@@ -12,24 +12,68 @@ interface Props {
   };
 }
 
-const labels = ["깨끗해요", "괜찮아요", "더러워요"];
-
 const ValleyQualityChart: FC<Props> = ({ waterQualityReviews }) => {
+  const labels =
+    waterQualityReviews.깨끗해요 === undefined &&
+    waterQualityReviews.괜찮아요 === undefined &&
+    waterQualityReviews.더러워요 === undefined
+      ? []
+      : ["깨끗해요", "괜찮아요", "더러워요"];
+
   const data = {
     labels,
     datasets: [
       {
         data: [
-          waterQualityReviews.깨끗해요,
-          waterQualityReviews.괜찮아요,
-          waterQualityReviews.더러워요,
+          waterQualityReviews.깨끗해요 === undefined &&
+          waterQualityReviews.괜찮아요 === undefined &&
+          waterQualityReviews.더러워요 === undefined
+            ? -1
+            : waterQualityReviews.깨끗해요,
+          waterQualityReviews.깨끗해요 === undefined &&
+          waterQualityReviews.괜찮아요 === undefined &&
+          waterQualityReviews.더러워요 === undefined
+            ? 0
+            : waterQualityReviews.괜찮아요,
+          waterQualityReviews.깨끗해요 === undefined &&
+          waterQualityReviews.괜찮아요 === undefined &&
+          waterQualityReviews.더러워요 === undefined
+            ? 0
+            : waterQualityReviews.더러워요,
         ],
-        backgroundColor: ["#FF7DAC", "#FEC807", "#9396DB"],
+        backgroundColor: [
+          waterQualityReviews.깨끗해요 === undefined &&
+          waterQualityReviews.괜찮아요 === undefined &&
+          waterQualityReviews.더러워요 === undefined
+            ? "#b8b8b8"
+            : "#AADCF2",
+          "#82BEF5",
+          "#C7B9B1",
+        ],
       },
     ],
   };
 
-  return <Doughnut data={data} />;
+  const options = {
+    plugins: {
+      tooltip: {
+        enabled: false,
+      },
+    },
+  };
+
+  return (
+    <Doughnut
+      data={data}
+      options={
+        waterQualityReviews.깨끗해요 === undefined &&
+        waterQualityReviews.괜찮아요 === undefined &&
+        waterQualityReviews.더러워요 === undefined
+          ? options
+          : {}
+      }
+    />
+  );
 };
 
 export default ValleyQualityChart;

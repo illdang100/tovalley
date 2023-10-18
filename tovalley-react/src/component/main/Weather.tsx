@@ -115,6 +115,10 @@ const Weather: FC<Props> = ({ nationalWeather, alert }) => {
     setLoading(false);
   }, []);
 
+  useEffect(() => {
+    setRegionClicked(clicked.dailyNationalWeather[1]);
+  }, [clicked]);
+
   if (loading) {
     return <div>loading</div>;
   }

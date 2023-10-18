@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useState } from "react";
 import styles from "../../css/valley/ValleyReview.module.css";
 import { MdOutlineChatBubble } from "react-icons/md";
 import { FaUserCircle } from "react-icons/fa";
@@ -27,6 +27,7 @@ type valleyReview = {
       createdReviewDate: string;
       content: string;
       reviewImages: string[];
+      waterQuality: string;
     }[];
     pageable: {
       sort: {
@@ -76,6 +77,7 @@ interface Props {
         createdReviewDate: string;
         content: string;
         reviewImages: string[];
+        waterQuality: string;
       }[];
       pageable: {
         sort: {
@@ -151,7 +153,7 @@ const ValleyReview: FC<Props> = ({ reviewRespDto, setValleyReview }) => {
     console.log(config);
 
     axiosInstance
-      .get(`/api/water-places/${id}/reviews`, config)
+      .get(`/api/auth/water-places/${id}/reviews`, config)
       .then((res) => {
         console.log(res);
         setValleyReview(res.data.data);
@@ -329,7 +331,6 @@ const ValleyReview: FC<Props> = ({ reviewRespDto, setValleyReview }) => {
                         : `${item.reviewImages[0]}`
                     }
                     alt="계곡 이미지"
-                    width="140px"
                   />
                   {item.reviewImages.length > 1 && (
                     <span>{item.reviewImages.length}</span>
@@ -338,9 +339,15 @@ const ValleyReview: FC<Props> = ({ reviewRespDto, setValleyReview }) => {
                 <div className={styles.reviewDetail}>
                   <div className={styles.reviewInfo}>
                     <div className={styles.userInfo}>
-                      <span>
-                        <FaUserCircle size="30px" color="#B7B7B7" />
-                      </span>
+                      {item.memberProfileImg === null ? (
+                        <span>
+                          <FaUserCircle size="30px" color="#B7B7B7" />
+                        </span>
+                      ) : (
+                        <div>
+                          <img src={item.memberProfileImg} alt="profileImg" />
+                        </div>
+                      )}
                       <span>{item.nickname}</span>
                     </div>
                     <span>{item.createdReviewDate}</span>
@@ -350,6 +357,7 @@ const ValleyReview: FC<Props> = ({ reviewRespDto, setValleyReview }) => {
                       <RatingStar rating={item.rating} size="20px" />
                     </span>
                     <span>{item.rating}</span>
+                    <span>{item.waterQuality}</span>
                   </div>
                   <span>{item.content}</span>
                 </div>

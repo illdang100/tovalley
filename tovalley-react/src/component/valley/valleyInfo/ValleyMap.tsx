@@ -24,7 +24,7 @@ interface Place {
 
 const containerStyle = {
   width: "100%",
-  height: "95vh",
+  height: "40em",
   borderRadius: "10px",
 };
 
@@ -57,18 +57,19 @@ const InfoWindowCustom = styled.div`
     span:first-child {
       font-weight: bold;
       margin-right: 0.3em;
+      font-size: 1rem;
     }
 
     span:last-child,
     span:nth-child(2) {
       margin: 0 0.5em 0 0.5em;
-      font-size: 0.7rem;
+      font-size: 0.8rem;
       color: #717171;
     }
   }
 
   span:last-child {
-    font-size: 0.7rem;
+    font-size: 0.8rem;
   }
 `;
 
@@ -166,7 +167,7 @@ const ValleyMap = ({ latitude, longitude, menu }: Props) => {
             <div>
               <span>{selectedMarker.name}</span>
               <span>{selectedMarker.rating}</span>
-              <RatingStar rating={selectedMarker.rating} size="13px" />
+              <RatingStar rating={selectedMarker.rating} size="15px" />
               <span>({selectedMarker.user_ratings_total})</span>
             </div>
             <span>{selectedMarker.formatted_address}</span>

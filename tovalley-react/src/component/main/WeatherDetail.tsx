@@ -31,7 +31,7 @@ const WeatherDetail: FC<Props> = ({ dailyNationalWeather }) => {
         <div className={styles.detailMain}>
           <div>
             <img
-              src={`https://openweathermap.org/img/wn/10d@2x.png`}
+              src={`https://openweathermap.org/img/wn/${dailyNationalWeather.weatherIcon}@2x.png`}
               alt="날씨 아이콘"
               width="90px"
             />
