@@ -64,6 +64,7 @@ const ReportTitle = styled.div<ReportProps>`
   font-size: 0.9rem;
   display: flex;
   align-items: center;
+  box-sizing: border-box;
 
   span:first-child {
     margin-right: 0.3em;
@@ -102,6 +103,7 @@ const ReportContent = styled.div<ReportProps>`
   height: 20vh;
   min-height: 10em;
   overflow-y: scroll;
+  box-sizing: border-box;
 `;
 
 const Report: FC<Props> = ({ alert }) => {

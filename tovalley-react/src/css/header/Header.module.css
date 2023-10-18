@@ -1,6 +1,6 @@
 .header {
   border-bottom: 1px solid #dadada;
-  padding: 1em 10% 0;
+  padding: 1em 7% 0;
   z-index: 4;
   position: relative;
   background-color: white;
@@ -22,6 +22,9 @@
   border-radius: 30px;
   font-size: 0.8rem;
   cursor: pointer;
+}
+
+.login span:first-child {
   margin-right: 1em;
 }
 

@@ -1,10 +1,10 @@
 .valleyReview {
-  margin-top: 6em;
+  margin-top: 5em;
 }
 
 .valleyReview > span {
   font-weight: bold;
-  font-size: 1.4em;
+  font-size: 1.6em;
 }
 
 .reviewStatistics {
@@ -134,11 +134,15 @@
 
 .valleyImg {
   position: relative;
+  width: 200px;
+  height: 140px;
 }
 
 .valleyImg img {
   border-radius: 5px;
+  width: 100%;
   height: 100%;
+  object-fit: cover;
 }
 
 .valleyImg > span:nth-child(2) {
@@ -180,6 +184,22 @@
   font-size: 1.1rem;
 }
 
+.userInfo > div {
+  width: 30px;
+  height: 30px;
+  overflow: hidden;
+  border-radius: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.userInfo > div img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .reviewInfo > span:last-child {
   font-size: 0.9rem;
   color: #696969;
@@ -189,11 +209,23 @@
   display: flex;
   margin-top: 0.3em;
   margin-bottom: 1em;
+  align-items: center;
+}
+
+.reviewItemRating > span:nth-child(2) {
+  font-weight: bold;
+  margin-left: 0.5em;
+  display: block;
+  padding-bottom: 0.3em;
 }
 
 .reviewItemRating > span:last-child {
-  font-weight: bold;
-  margin-left: 0.5em;
+  border: 1px solid #66a5fc;
+  color: #66a5fc;
+  border-radius: 30px;
+  padding: 0.3em 0.8em;
+  margin-left: 1.5em;
+  font-size: 0.9rem;
 }
 
 .reviewDetail > span:last-child {

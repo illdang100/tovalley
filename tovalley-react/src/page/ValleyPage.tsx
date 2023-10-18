@@ -30,7 +30,7 @@ type valley = {
     managementType: string;
     detailAddress: string;
     town: string;
-    annualVisitors: number;
+    annualVisitors: string;
     safetyMeasures: number | string;
     waterPlaceSegment: number;
     dangerSegments: number | string;
@@ -81,6 +81,7 @@ type valley = {
         createdReviewDate: string;
         content: string;
         reviewImages: string[];
+        waterQuality: string;
       }[];
       pageable: {
         sort: {
@@ -130,6 +131,7 @@ type valleyReview = {
       createdReviewDate: string;
       content: string;
       reviewImages: string[];
+      waterQuality: string;
     }[];
     pageable: {
       sort: {
@@ -189,7 +191,7 @@ const ValleyPage = () => {
       managementType: "",
       detailAddress: "",
       town: "",
-      annualVisitors: 0,
+      annualVisitors: "",
       safetyMeasures: "",
       waterPlaceSegment: 0,
       dangerSegments: "",
@@ -241,6 +243,7 @@ const ValleyPage = () => {
             createdReviewDate: "",
             content: "",
             reviewImages: [],
+            waterQuality: "",
           },
           {
             reviewId: 0,
@@ -250,6 +253,7 @@ const ValleyPage = () => {
             createdReviewDate: "",
             content: "",
             reviewImages: [],
+            waterQuality: "",
           },
         ],
         pageable: {
@@ -301,6 +305,7 @@ const ValleyPage = () => {
           createdReviewDate: "",
           content: "",
           reviewImages: [],
+          waterQuality: "",
         },
         {
           reviewId: 0,
@@ -310,6 +315,7 @@ const ValleyPage = () => {
           createdReviewDate: "",
           content: "",
           reviewImages: [],
+          waterQuality: "",
         },
       ],
       pageable: {
@@ -383,6 +389,7 @@ const ValleyPage = () => {
           setPeopleCnt={setPeopleCnt}
           waterPlaceName={valley.waterPlaceDetails.waterPlaceName}
           detailAddress={valley.waterPlaceDetails.detailAddress}
+          annualVisitors={valley.waterPlaceDetails.annualVisitors}
         />
         <ValleyReview
           reviewRespDto={valleyReview}
