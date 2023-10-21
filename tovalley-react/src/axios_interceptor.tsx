@@ -30,6 +30,8 @@ axiosInstance.interceptors.response.use(
         } else if (errMsg === "로그인 실패") {
           alert("등록되지 않은 회원입니다.");
           window.location.reload();
+        } else if (errMsg === "사용 불가능한 닉네임입니다.") {
+          alert("사용 불가능한 닉네임입니다.");
         }
       } else if (errResponseStatus === 401) {
         console.log("인증 실패");

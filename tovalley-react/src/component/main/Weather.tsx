@@ -123,6 +123,68 @@ const Weather: FC<Props> = ({ nationalWeather, alert }) => {
     return <div>loading</div>;
   }
 
+  const testAlert = {
+    weatherAlerts: [
+      {
+        weatherAlertType: "폭염",
+        title: "폭염경보",
+        announcementTime: "2023-08-14 16:00:00",
+        effectiveTime: "2023-08-14 16:00:00",
+        content:
+          "경기도(양주, 안성, 양평), 강원도(홍천평지), 전라남도(담양, 곡성, 구례, 화순, 순천, 영암), 광주",
+      },
+      {
+        weatherAlertType: "폭염",
+        title: "폭염주의보",
+        announcementTime: "2023-08-14 16:00:00",
+        effectiveTime: "2023-08-14 16:00:00",
+        content:
+          "경기도(양주, 안성, 양평 제외), 강원도(영월, 정선평지, 횡성, 원주, 철원, 화천, 춘천, 인제평지, 강원북부산지), 충청남도(서천 제외), 충청북도, 전라남도(나주, 장성, 고흥, 보성, 여수, 광양, 장흥, 강진, 해남, 완도, 무안, 함평, 영광, 목포, 신안(흑산면제외), 진도, 흑산도.홍도, 거문도.초도), 전라북도, 경상북도(구미, 영천, 경산, 군위, 청도, 고령, 성주, 칠곡, 김천, 상주, 예천, 안동, 영주, 의성), 경상남도(거창 제외), 제주도(제주도서부, 제주도북부, 제주도동부), 서울, 인천(옹진군 제외), 대전, 대구, 부산, 세종",
+      },
+      {
+        weatherAlertType: "폭염",
+        title: "폭염주의보",
+        announcementTime: "2023-08-14 16:00:00",
+        effectiveTime: "2023-08-14 16:00:00",
+        content:
+          "경기도(양주, 안성, 양평 제외), 강원도(영월, 정선평지, 횡성, 원주, 철원, 화천, 춘천, 인제평지, 강원북부산지), 충청남도(서천 제외), 충청북도, 전라남도(나주, 장성, 고흥, 보성, 여수, 광양, 장흥, 강진, 해남, 완도, 무안, 함평, 영광, 목포, 신안(흑산면제외), 진도, 흑산도.홍도, 거문도.초도), 전라북도, 경상북도(구미, 영천, 경산, 군위, 청도, 고령, 성주, 칠곡, 김천, 상주, 예천, 안동, 영주, 의성), 경상남도(거창 제외), 제주도(제주도서부, 제주도북부, 제주도동부), 서울, 인천(옹진군 제외), 대전, 대구, 부산, 세종",
+      },
+    ],
+    weatherPreAlerts: [
+      {
+        announcementTime: "2023-08-14 16:00:00",
+        title: "강풍 예비특보",
+        weatherAlertType: "강풍",
+        contents: [
+          {
+            content: "08월 15일 새벽(00시~06시) : 울릉도.독도",
+          },
+        ],
+      },
+      {
+        announcementTime: "2023-08-14 16:00:00",
+        title: "풍랑 예비특보",
+        weatherAlertType: "풍랑",
+        contents: [
+          {
+            content: "08월 14일 밤(21시~24시) : 동해중부바깥먼바다",
+          },
+          {
+            content:
+              "08월 15일 새벽(00시~06시) : 동해남부남쪽안쪽먼바다, 동해남부남쪽바깥먼바다, 동해남부북쪽안쪽먼바다, 동해남부북쪽바깥먼바다, 동해중부안쪽먼바다",
+          },
+          {
+            content:
+              "08월 15일 오전(06시~12시) : 동해남부앞바다, 동해중부앞바다, 남해동부안쪽먼바다",
+          },
+          {
+            content: "08월 15일 오후(12시~18시) : 남해동부앞바다(부산앞바다)",
+          },
+        ],
+      },
+    ],
+  };
+
   return (
     <div className={styles.weather}>
       <h4>전국날씨</h4>
@@ -259,7 +321,7 @@ const Weather: FC<Props> = ({ nationalWeather, alert }) => {
           </div>
         </div>
         <div className={styles.weatherInfoDetail}>
-          <Report alert={alert} />
+          <Report alert={testAlert} />
           <WeatherDetail dailyNationalWeather={regionClicked} />
         </div>
       </div>

@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useState } from "react";
 import TripScheduleItem from "./TripScheduleItem";
 import useDidMountEffect from "../../useDidMountEffect";
 import axiosInstance from "../../axios_interceptor";
@@ -187,6 +187,7 @@ const TripSchedule: FC<Props> = ({
             schedule={item}
             scheduleBtn={scheduleBtn}
             checkItemHandler={checkedItemHandler}
+            checkedItems={checkedItems}
           />
         );
       })}

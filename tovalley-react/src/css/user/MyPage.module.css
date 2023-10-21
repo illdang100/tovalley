@@ -75,11 +75,8 @@
 .userEmail > span:first-child {
   color: #66a5fc;
   font-size: 1.1rem;
+  min-width: 50px;
   margin-right: 3em;
-}
-
-.userEmail > span:first-child {
-  margin-right: 4em;
 }
 
 .userNickname > input {

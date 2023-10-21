@@ -247,7 +247,7 @@ const ValleyInfo: FC<Props> = ({
                 <span>구명환</span>
                 <span>
                   {rescueSupplies.lifeRingNum === -1
-                    ? 0
+                    ? "-"
                     : rescueSupplies.lifeRingNum}
                 </span>
               </div>
@@ -258,7 +258,7 @@ const ValleyInfo: FC<Props> = ({
                 <span>구명로프</span>
                 <span>
                   {rescueSupplies.rescueRopeNum === -1
-                    ? 0
+                    ? "-"
                     : rescueSupplies.rescueRopeNum}
                 </span>
               </div>
@@ -269,7 +269,7 @@ const ValleyInfo: FC<Props> = ({
                 <span>인명구조함</span>
                 <span>
                   {rescueSupplies.lifeBoatNum === -1
-                    ? 0
+                    ? "-"
                     : rescueSupplies.lifeBoatNum}
                 </span>
               </div>
@@ -280,7 +280,7 @@ const ValleyInfo: FC<Props> = ({
                 <span>구명조끼</span>
                 <span>
                   {rescueSupplies.lifeJacketNum === -1
-                    ? 0
+                    ? "-"
                     : rescueSupplies.lifeJacketNum}
                 </span>
               </div>
@@ -291,7 +291,7 @@ const ValleyInfo: FC<Props> = ({
                 <span>이동식 거치대</span>
                 <span>
                   {rescueSupplies.portableStandNum === -1
-                    ? 0
+                    ? "-"
                     : rescueSupplies.portableStandNum}
                 </span>
               </div>
@@ -302,7 +302,7 @@ const ValleyInfo: FC<Props> = ({
                 <span>구명봉</span>
                 <span>
                   {rescueSupplies.rescueRodNum === -1
-                    ? 0
+                    ? "-"
                     : rescueSupplies.rescueRodNum}
                 </span>
               </div>
