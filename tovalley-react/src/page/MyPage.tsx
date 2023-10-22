@@ -327,6 +327,7 @@ const MyPage = () => {
     }
   };
 
+  // 닉네임 중복 체크
   const checkDuplication = () => {
     const data = {
       nickname: nickUpdate.inputNick,
@@ -345,21 +346,14 @@ const MyPage = () => {
               setNickUpdate({ ...nickUpdate, duplicateCheck: true });
             }
           })
-          .catch((err) => {
-            console.log(err);
-            if (err.response.status === 400) {
-              setConfirmView({
-                view: true,
-                content: "사용 불가능한 닉네임입니다.",
-              });
-            }
-          })
+          .catch((err) => console.log(err))
       : setConfirmView({
           view: true,
           content: "한/영, 숫자 포함 20자 이내로 작성해주세요.",
         });
   };
 
+  // 닉네임 수정
   const handleResetNicname = () => {
     const data = {
       nickname: nickUpdate.inputNick,
@@ -491,36 +485,60 @@ const MyPage = () => {
                 ) : (
                   <span>{user.userProfile.memberNick}</span>
                 )}
-                <span
-                  onClick={() => {
-                    if (nickUpdate.click && !nickUpdate.duplicateCheck) {
-                      checkDuplication();
-                    } else if (nickUpdate.duplicateCheck) {
-                      handleResetNicname();
-                      setUser({
-                        ...user,
-                        userProfile: {
-                          ...user.userProfile,
-                          memberNick: nickUpdate.inputNick,
-                        },
-                      });
-                    } else {
-                      setNickUpdate({ ...nickUpdate, click: true });
+                {!nickUpdate.click && (
+                  <span
+                    onClick={() => {
+                      if (nickUpdate.inputNick === "") {
+                        setNickUpdate({
+                          ...nickUpdate,
+                          inputNick: user.userProfile.memberNick,
+                          click: true,
+                        });
+                      } else {
+                        setNickUpdate({
+                          ...nickUpdate,
+                          duplicateCheck: false,
+                          click: true,
+                        });
+                      }
+                    }}
+                    style={
+                      user.userProfile.memberNick === ""
+                        ? { marginLeft: "0" }
+                        : {}
                     }
-                  }}
-                >
-                  {nickUpdate.click
-                    ? nickUpdate.duplicateCheck
-                      ? "저장"
-                      : "중복검사"
-                    : "수정"}
-                </span>
+                  >
+                    수정
+                  </span>
+                )}
+                {nickUpdate.click && (
+                  <span
+                    onClick={() => {
+                      if (!nickUpdate.duplicateCheck) {
+                        checkDuplication();
+                      } else {
+                        handleResetNicname();
+                        setUser({
+                          ...user,
+                          userProfile: {
+                            ...user.userProfile,
+                            memberNick: nickUpdate.inputNick,
+                          },
+                        });
+                      }
+                    }}
+                  >
+                    {nickUpdate.duplicateCheck ? "저장" : "중복검사"}
+                  </span>
+                )}
                 {nickUpdate.click && (
                   <span
                     onClick={() => {
                       if (nickUpdate.click) {
                         setNickUpdate({
                           ...nickUpdate,
+                          inputNick: user.userProfile.memberNick,
+                          duplicateCheck: false,
                           click: false,
                         });
                       }

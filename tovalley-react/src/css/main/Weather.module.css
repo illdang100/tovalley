@@ -54,7 +54,7 @@
 }
 
 .weatherInfoDetail {
-  width: 100%;
+  max-width: 42%;
   display: flex;
   flex-direction: column;
 }

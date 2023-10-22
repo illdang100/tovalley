@@ -1,0 +1,151 @@
+.safetyGuide {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.body {
+  padding: 0 2em;
+  margin: 4.5em 0;
+  min-height: 50vh;
+}
+
+.category span {
+  border: 1.5px solid #66a5fc;
+  color: #66a5fc;
+  font-weight: bold;
+  padding: 0.6em 1.2em;
+  border-radius: 30px;
+  font-size: 1.2rem;
+  margin-right: 0.8em;
+  cursor: pointer;
+}
+
+.guideContainer {
+  margin-top: 2.5em;
+  min-width: 1050px;
+}
+
+.detailCategory {
+  margin-bottom: 1.5em;
+  display: flex;
+}
+
+.detailCategory div {
+  padding: 0 1em;
+}
+
+.detailCategory div:not(:last-of-type) {
+  border-right: 1px solid #b9b9b9;
+}
+
+.detailCategory span {
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  color: #9a9a9a;
+}
+
+.guide {
+  border: 1.5px solid #66a5fc;
+  padding: 0.5em 1.5em 1em 1.5em;
+  border-radius: 10px;
+}
+
+.guide > p {
+  margin: 1.1em 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  display: flex;
+  align-items: end;
+  color: #4b4b4b;
+}
+
+.guide p > span:first-child {
+  font-size: 1.8rem;
+  font-weight: 400;
+  color: #66a5fc;
+  margin-right: 0.5em;
+  min-width: 35px;
+  text-align: right;
+}
+
+.guide > div {
+  margin: -0.5em 0 0 3em;
+}
+
+.guide > div span {
+  font-size: 1.1rem;
+  display: block;
+  margin: 0.5em 0;
+  color: #4b4b4b;
+}
+
+/* 사고 행동 요령 */
+.behaviorTips {
+  border: 1.5px solid #66a5fc;
+  padding: 2em;
+  border-radius: 10px;
+  width: 900px;
+  margin-top: 2.5em;
+}
+
+.iconContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.iconsList {
+  display: flex;
+  margin-top: 1em;
+}
+
+.iconsList > div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 1.5em;
+  cursor: pointer;
+}
+
+.iconsList > div > span:first-child {
+  width: 180px;
+  height: 180px;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #a0a0a0;
+  border-radius: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.iconsList > div > span {
+  color: #a0a0a0;
+  display: block;
+  margin-bottom: 0.8em;
+}
+
+.iconsList > div > span:last-child {
+  font-weight: bold;
+}
+
+.behaviorTipsContent {
+  margin-top: 2em;
+  padding: 0 2em;
+}
+
+.behaviorTipsContent > p {
+  font-weight: 600;
+  font-size: 1.2rem;
+  color: #4b4b4b;
+  line-height: 1.7em;
+  display: flex;
+  margin: 0;
+  margin-top: 0.5em;
+}
+
+.behaviorTipsContent > p > p {
+  margin: 0;
+  margin-left: 0.5em;
+}

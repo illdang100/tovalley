@@ -6,6 +6,7 @@ import ValleyPage from "./page/ValleyPage";
 import LoginPage from "./page/LoginPage";
 import SignupPage from "./page/SignupPage";
 import MyPage from "./page/MyPage";
+import SafetyGuidePage from "./page/SafetyGuidePage";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="/valleylist" element={<ValleyListPage />} />
         <Route path="/valley/:id" element={<ValleyPage />} />
         <Route path="/mypage" element={<MyPage />} />
+        <Route path="/safety-guide" element={<SafetyGuidePage />} />
       </Routes>
     </div>
   );

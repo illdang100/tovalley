@@ -64,10 +64,10 @@ const WriteReview: FC<Props> = ({ setWriteReviewView, valleyInfo }) => {
         : "DIRTY";
 
     let rating;
-    if (star.five === true) rating = 5;
-    else if (star.four === true) rating = 4;
-    else if (star.three === true) rating = 3;
-    else if (star.two === true) rating = 2;
+    if (star.five) rating = 5;
+    else if (star.four) rating = 4;
+    else if (star.three) rating = 3;
+    else if (star.two) rating = 2;
     else rating = 1;
 
     formData.append("tripScheduleId", `${valleyInfo.id}`);
