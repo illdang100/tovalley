@@ -21,7 +21,7 @@ const Container = styled.div<ContainerProps>`
   padding: 0 1.2em;
   position: relative;
   cursor: ${({ sameMonth, addScheduleBtn, afterToday }) =>
-    sameMonth && addScheduleBtn ? `pointer` : ``};
+    sameMonth && addScheduleBtn && afterToday ? `pointer` : ``};
 
   &:nth-child(7n) {
     border-right: none;
@@ -39,7 +39,7 @@ const Container = styled.div<ContainerProps>`
     text-align: center;
     font-weight: ${({ sameMonth }) => (sameMonth ? `700` : `500`)};
     color: ${({ sameMonth, addScheduleBtn, afterToday }) =>
-      sameMonth && addScheduleBtn
+      sameMonth && addScheduleBtn && afterToday
         ? ``
         : sameMonth && !addScheduleBtn
         ? `black`
@@ -76,7 +76,7 @@ const Container = styled.div<ContainerProps>`
       position: relative;
       z-index: 2;
       color: ${({ sameMonth, addScheduleBtn, afterToday }) =>
-        sameMonth && addScheduleBtn
+        sameMonth && addScheduleBtn && afterToday
           ? `#F52E2E`
           : sameMonth && !addScheduleBtn
           ? `#F52E2E`
@@ -110,7 +110,7 @@ const Container = styled.div<ContainerProps>`
       position: relative;
       z-index: 2;
       color: ${({ sameMonth, addScheduleBtn, afterToday }) =>
-        sameMonth && addScheduleBtn
+        sameMonth && addScheduleBtn && afterToday
           ? `#567BFD`
           : sameMonth && !addScheduleBtn
           ? `#567BFD`
@@ -245,7 +245,7 @@ const allDay = ({
 
   return (
     <Container
-      onClick={() => clickDate()}
+      onClick={() => afterToday && clickDate()}
       sameMonth={sameMonth}
       sameDay={sameDay}
       clickDay={clickDay}

@@ -91,10 +91,10 @@ const Header = () => {
         </span>
         <span
           onClick={() => {
-            navigation("/guide");
+            navigation("/safety-guide");
           }}
           className={
-            location.pathname === "/guide"
+            location.pathname === "/safety-guide"
               ? styles.navMenuClicked
               : styles.navMenu
           }

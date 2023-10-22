@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import styles from "../../css/user/TripScheduleItem.module.css";
 import { TbChartDonut4, TbJumpRope } from "react-icons/tb";
 import {
@@ -35,35 +35,17 @@ type schedule = {
 };
 
 interface Props {
-  schedule: {
-    tripScheduleId: number;
-    waterPlaceId: number;
-    waterPlaceName: string;
-    waterPlaceImg: string | null;
-    waterPlaceAddr: string;
-    waterPlaceRating: number | string;
-    waterPlaceReviewCnt: number | string;
-    waterPlaceTraffic: number;
-    tripDate: string;
-    tripPartySize: number;
-    rescueSupplies: {
-      lifeBoatNum: number;
-      portableStandNum: number;
-      lifeJacketNum: number;
-      lifeRingNum: number;
-      rescueRopeNum: number;
-      rescueRodNum: number;
-    };
-    hasReview: boolean;
-  };
+  schedule: schedule;
   scheduleBtn: string;
   checkItemHandler: (id: schedule, isChecked: boolean) => void;
+  checkedItems: schedule[];
 }
 
 const TripScheduleItem: FC<Props> = ({
   schedule,
   scheduleBtn,
   checkItemHandler,
+  checkedItems,
 }) => {
   const [writeReviewView, setWriteReviewView] = useState(false);
   const [check, setCheck] = useState(false);
@@ -78,7 +60,7 @@ const TripScheduleItem: FC<Props> = ({
           setCheck(!check);
         }}
       >
-        {check ? (
+        {checkedItems.includes(schedule) ? (
           <MdCheckBox color="#66A5FC" size="25px" />
         ) : (
           <MdCheckBoxOutlineBlank color="#66A5FC" size="25px" />
@@ -161,37 +143,61 @@ const TripScheduleItem: FC<Props> = ({
             <span>
               <TbChartDonut4 size="40px" color="#66A5FC" />
             </span>
-            <span>{schedule.rescueSupplies.lifeRingNum}</span>
+            <span>
+              {schedule.rescueSupplies.lifeRingNum === -1
+                ? "-"
+                : schedule.rescueSupplies.lifeRingNum}
+            </span>
           </div>
           <div className={styles.rescueItem}>
             <span>
               <TbJumpRope size="40px" color="#66A5FC" />
             </span>
-            <span>{schedule.rescueSupplies.rescueRopeNum}</span>
+            <span>
+              {schedule.rescueSupplies.rescueRopeNum === -1
+                ? "-"
+                : schedule.rescueSupplies.rescueRopeNum}
+            </span>
           </div>
           <div className={styles.rescueItem}>
             <span>
               <MdEmojiPeople size="40px" color="#66A5FC" />
             </span>
-            <span>{schedule.rescueSupplies.lifeBoatNum}</span>
+            <span>
+              {schedule.rescueSupplies.lifeBoatNum === -1
+                ? "-"
+                : schedule.rescueSupplies.lifeBoatNum}
+            </span>
           </div>
           <div className={styles.rescueItem}>
             <span>
               <FaVest size="40px" color="#66A5FC" />
             </span>
-            <span>{schedule.rescueSupplies.lifeJacketNum}</span>
+            <span>
+              {schedule.rescueSupplies.lifeJacketNum === -1
+                ? "-"
+                : schedule.rescueSupplies.lifeJacketNum}
+            </span>
           </div>
           <div className={styles.rescueItem}>
             <span>
               <MdHomeRepairService size="40px" color="#66A5FC" />
             </span>
-            <span>{schedule.rescueSupplies.portableStandNum}</span>
+            <span>
+              {schedule.rescueSupplies.portableStandNum === -1
+                ? "-"
+                : schedule.rescueSupplies.portableStandNum}
+            </span>
           </div>
           <div className={styles.rescueItem}>
             <span>
               <LuUtilityPole size="40px" color="#66A5FC" />
             </span>
-            <span>{schedule.rescueSupplies.rescueRodNum}</span>
+            <span>
+              {schedule.rescueSupplies.rescueRodNum === -1
+                ? "-"
+                : schedule.rescueSupplies.rescueRodNum}
+            </span>
           </div>
         </div>
         {scheduleBtn === "지난 일정" && (

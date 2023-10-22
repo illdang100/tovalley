@@ -98,7 +98,6 @@
 
 .infoBox {
   width: 460px;
-  height: 50vh;
   border-radius: 15px;
   background-color: #ffffff;
   position: absolute;
@@ -167,6 +166,7 @@
 }
 
 .addBtn {
+  margin-top: 1.5em;
   display: flex;
   justify-content: center;
 }

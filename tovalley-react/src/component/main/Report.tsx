@@ -64,6 +64,7 @@ const ReportTitle = styled.div<ReportProps>`
   font-size: 0.9rem;
   display: flex;
   align-items: center;
+  box-sizing: border-box;
 
   span:first-child {
     margin-right: 0.3em;
@@ -102,6 +103,7 @@ const ReportContent = styled.div<ReportProps>`
   height: 20vh;
   min-height: 10em;
   overflow-y: scroll;
+  box-sizing: border-box;
 `;
 
 const Report: FC<Props> = ({ alert }) => {
@@ -115,6 +117,11 @@ const Report: FC<Props> = ({ alert }) => {
     ...alert.weatherAlerts,
     alert.weatherAlerts[0],
   ]);
+  const [currPreAlertList, setCurrPreAlertList] = useState([
+    alert.weatherPreAlerts[alert.weatherPreAlerts.length - 1],
+    ...alert.weatherPreAlerts,
+    alert.weatherPreAlerts[0],
+  ]);
 
   useEffect(() => {
     if (alert.weatherAlerts.length !== 0) {
@@ -122,6 +129,14 @@ const Report: FC<Props> = ({ alert }) => {
         alert.weatherAlerts[alert.weatherAlerts.length - 1],
         ...alert.weatherAlerts,
         alert.weatherAlerts[0],
+      ]);
+    }
+
+    if (alert.weatherPreAlerts.length !== 0) {
+      setCurrPreAlertList([
+        alert.weatherPreAlerts[alert.weatherPreAlerts.length - 1],
+        ...alert.weatherPreAlerts,
+        alert.weatherPreAlerts[0],
       ]);
     }
   }, [alert]);
@@ -139,6 +154,7 @@ const Report: FC<Props> = ({ alert }) => {
 
   useEffect(() => {
     if (num === alert.weatherAlerts.length) handleOriginSlide(0);
+    if (num === alert.weatherPreAlerts.length) handleOriginSlide(0);
   }, [num]);
 
   function handleOriginSlide(index: number) {
@@ -236,50 +252,58 @@ const Report: FC<Props> = ({ alert }) => {
               <div />
             </div>
           ) : (
-            alert.weatherPreAlerts.map((item) => {
+            currPreAlertList.map((item) => {
               return (
-                <div className={styles.reportItem}>
-                  <ReportTitle category={item.title}>
-                    <span>
-                      {item.title.includes("폭염") ? (
-                        <HiSun size="20px" />
-                      ) : item.title.includes("호우") ? (
-                        <BsFillCloudRainHeavyFill size="20px" />
-                      ) : item.title.includes("황사") ? (
-                        <GiDustCloud size="20px" />
-                      ) : item.title.includes("강풍") ? (
-                        <FaWind size="18px" />
-                      ) : item.title.includes("태풍") ? (
-                        <RiTyphoonFill size="20px" />
-                      ) : item.title.includes("대설") ? (
-                        <FaRegSnowflake size="20px" />
-                      ) : item.title.includes("풍랑") ? (
-                        <TiWaves size="23px" />
-                      ) : item.title.includes("한파") ? (
-                        <PiThermometerColdFill size="20px" />
-                      ) : item.title.includes("건조") ? (
-                        <MdDry size="20px" />
-                      ) : item.title.includes("폭풍해일") ? (
-                        <RiThunderstormsFill size="20px" />
-                      ) : (
-                        ""
-                      )}
-                    </span>
-                    <span>{item.title}</span>
-                  </ReportTitle>
-                  <ReportContent category={item.title}>
-                    <div className={styles.presentation}>
-                      <span>발표</span>
-                      <span>{item.announcementTime}</span>
-                    </div>
-                    {item.contents.map((content) => {
-                      return (
-                        <div className={styles.region}>
-                          <span>{content.content}</span>
-                        </div>
-                      );
-                    })}
-                  </ReportContent>
+                <div
+                  className={styles.reportItem}
+                  style={{
+                    transition: `${carouselTransition}`,
+                    transform: `translateX(-${num}00%)`,
+                  }}
+                >
+                  <div className={styles.reportItemContainer}>
+                    <ReportTitle category={item.title}>
+                      <span>
+                        {item.title.includes("폭염") ? (
+                          <HiSun size="20px" />
+                        ) : item.title.includes("호우") ? (
+                          <BsFillCloudRainHeavyFill size="20px" />
+                        ) : item.title.includes("황사") ? (
+                          <GiDustCloud size="20px" />
+                        ) : item.title.includes("강풍") ? (
+                          <FaWind size="18px" />
+                        ) : item.title.includes("태풍") ? (
+                          <RiTyphoonFill size="20px" />
+                        ) : item.title.includes("대설") ? (
+                          <FaRegSnowflake size="20px" />
+                        ) : item.title.includes("풍랑") ? (
+                          <TiWaves size="23px" />
+                        ) : item.title.includes("한파") ? (
+                          <PiThermometerColdFill size="20px" />
+                        ) : item.title.includes("건조") ? (
+                          <MdDry size="20px" />
+                        ) : item.title.includes("폭풍해일") ? (
+                          <RiThunderstormsFill size="20px" />
+                        ) : (
+                          ""
+                        )}
+                      </span>
+                      <span>{item.title}</span>
+                    </ReportTitle>
+                    <ReportContent category={item.title}>
+                      <div className={styles.presentation}>
+                        <span>발표</span>
+                        <span>{item.announcementTime}</span>
+                      </div>
+                      {item.contents.map((content) => {
+                        return (
+                          <div className={styles.region}>
+                            <span>{content.content}</span>
+                          </div>
+                        );
+                      })}
+                    </ReportContent>
+                  </div>
                 </div>
               );
             })
