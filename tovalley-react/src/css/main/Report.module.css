@@ -50,7 +50,7 @@
 .defaultAlert {
   border-radius: 10px;
   box-shadow: 0 2px 4px rgb(232, 232, 232);
-  width: 100%;
+  min-width: 100%;
 }
 
 .defaultAlert > div:first-child {
@@ -95,4 +95,34 @@
 
 .region {
   margin-top: 0.5em;
+}
+
+@media screen and (max-width: 700px) {
+  .reportItemContainer > div:last-child {
+    min-height: 13em;
+  }
+
+  .defaultAlert > div:last-child {
+    min-height: 13em;
+  }
+
+  .reportList {
+    padding: 0.3em 0.3em 0 0;
+    align-items: center;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .reportItemContainer > div:last-child {
+    min-height: 10em;
+  }
+
+  .defaultAlert > div:last-child {
+    min-height: 10em;
+  }
+
+  .reportList {
+    padding: 0.3em 0.3em 0 0.3em;
+    align-items: center;
+  }
 }

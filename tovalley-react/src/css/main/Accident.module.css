@@ -59,7 +59,7 @@
   height: 1.3em;
   cursor: pointer;
   position: absolute;
-  top: 6px;
+  top: 9px;
 }
 
 .regionNextBtn {
@@ -116,4 +116,73 @@
   width: calc(100% / 3);
   text-align: center;
   font-size: 1.8em;
+}
+
+@media screen and (max-width: 1000px) {
+  .accident {
+    min-width: 100%;
+  }
+
+  .regionNextBtn,
+  .regionPrevBtn {
+    display: none;
+  }
+
+  .regionMenu {
+    justify-content: space-around;
+  }
+}
+
+@media screen and (max-width: 850px) {
+  .accident {
+    min-width: 695px;
+    width: 100%;
+  }
+
+  .regionNextBtn,
+  .regionPrevBtn {
+    display: none;
+  }
+
+  .regionMenu {
+    justify-content: space-around;
+  }
+
+  .regionMenu > div:not(:last-of-type) {
+    padding-right: 0.9em;
+  }
+
+  .regionMenu > div:not(:first-of-type) {
+    padding-left: 0.9em;
+  }
+}
+
+@media screen and (max-width: 700px) {
+  .accident {
+    min-width: 100%;
+  }
+
+  .regionNextBtn,
+  .regionPrevBtn {
+    display: flex;
+  }
+
+  .regionMenu {
+    justify-content: flex-start;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .regionMenu {
+    padding: 0.5em 0;
+  }
+
+  .regionMenu span {
+    font-size: 0.8rem;
+  }
+
+  .regionNextBtn,
+  .regionPrevBtn {
+    top: 6px;
+  }
 }

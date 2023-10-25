@@ -112,19 +112,13 @@ const Report: FC<Props> = ({ alert }) => {
   const [carouselTransition, setCarouselTransition] = useState(
     "transform 600ms ease-in-out"
   );
-  const [currAlertList, setCurrAlertList] = useState([
-    alert.weatherAlerts[alert.weatherAlerts.length - 1],
-    ...alert.weatherAlerts,
-    alert.weatherAlerts[0],
-  ]);
+  const [currAlertList, setCurrAlertList] = useState([...alert.weatherAlerts]);
   const [currPreAlertList, setCurrPreAlertList] = useState([
-    alert.weatherPreAlerts[alert.weatherPreAlerts.length - 1],
     ...alert.weatherPreAlerts,
-    alert.weatherPreAlerts[0],
   ]);
 
   useEffect(() => {
-    if (alert.weatherAlerts.length !== 0) {
+    if (alert.weatherAlerts.length > 1) {
       setCurrAlertList([
         alert.weatherAlerts[alert.weatherAlerts.length - 1],
         ...alert.weatherAlerts,
@@ -132,7 +126,7 @@ const Report: FC<Props> = ({ alert }) => {
       ]);
     }
 
-    if (alert.weatherPreAlerts.length !== 0) {
+    if (alert.weatherPreAlerts.length > 1) {
       setCurrPreAlertList([
         alert.weatherPreAlerts[alert.weatherPreAlerts.length - 1],
         ...alert.weatherPreAlerts,
@@ -191,10 +185,14 @@ const Report: FC<Props> = ({ alert }) => {
               return (
                 <div
                   className={styles.reportItem}
-                  style={{
-                    transition: `${carouselTransition}`,
-                    transform: `translateX(-${num}00%)`,
-                  }}
+                  style={
+                    currAlertList.length > 1
+                      ? {
+                          transition: `${carouselTransition}`,
+                          transform: `translateX(-${num}00%)`,
+                        }
+                      : {}
+                  }
                 >
                   <div className={styles.reportItemContainer}>
                     <ReportTitle category={item.title}>
@@ -256,10 +254,14 @@ const Report: FC<Props> = ({ alert }) => {
               return (
                 <div
                   className={styles.reportItem}
-                  style={{
-                    transition: `${carouselTransition}`,
-                    transform: `translateX(-${num}00%)`,
-                  }}
+                  style={
+                    currPreAlertList.length > 1
+                      ? {
+                          transition: `${carouselTransition}`,
+                          transform: `translateX(-${num}00%)`,
+                        }
+                      : {}
+                  }
                 >
                   <div className={styles.reportItemContainer}>
                     <ReportTitle category={item.title}>
