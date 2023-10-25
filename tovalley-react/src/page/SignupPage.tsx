@@ -32,14 +32,14 @@ const SignupPage = () => {
     resendView: false,
   });
 
+  const [confirmModal, setConfirmModal] = useState({
+    view: false,
+    content: "",
+  });
+
   const MINUTES_IN_MS = 3 * 60 * 1000;
   const INTERVAL = 1000;
   const [timeLeft, setTimeLeft] = useState<number>(MINUTES_IN_MS);
-
-  const [mailBoxView, setMailBoxView] = useState({
-    view: false,
-    content: "확인",
-  });
 
   const minutes = String(Math.floor((timeLeft / (1000 * 60)) % 60)).padStart(
     2,
@@ -154,9 +154,7 @@ const SignupPage = () => {
       .catch((err) => {
         console.log(err);
         if (err.response.status === 400) {
-          setTimeLeft(0);
-          setMailBoxView({ ...mailBoxView, view: true });
-          setAuthSubmit({ ...authSubmit, resendView: true });
+          setConfirmModal({ view: true, content: "메일 수신함을 확인하세요." });
         }
       });
   };
@@ -173,12 +171,17 @@ const SignupPage = () => {
       .get(`${localhost}/api/email-code`, config)
       .then((res) => {
         console.log(res);
-        res.status === 200 &&
+        if (res.status === 200) {
           setAuthSubmit({
             ...authSubmit,
             authConfirm: false,
             emailAvailable: true,
           });
+          setConfirmModal({
+            view: true,
+            content: "이메일 인증이 완료되었습니다.",
+          });
+        }
       })
       .catch((err) => console.log(err));
   };
@@ -192,6 +195,14 @@ const SignupPage = () => {
     };
 
     if (
+      inputInfo.name === "" ||
+      inputInfo.email === "" ||
+      inputInfo.nickName === "" ||
+      password.password === "" ||
+      password.confirmPassword === ""
+    ) {
+      setConfirmModal({ view: true, content: "모두 입력하세요." });
+    } else if (
       password.password === password.confirmPassword &&
       available.available === 1 &&
       authSubmit.emailAvailable
@@ -200,11 +211,19 @@ const SignupPage = () => {
         .post(`${localhost}/api/members`, data)
         .then((res) => {
           console.log(res);
-          res.status === 201 && window.location.replace("/login");
+          if (res.status === 201) {
+            setConfirmModal({
+              view: true,
+              content: "회원가입이 완료되었습니다.",
+            });
+            window.location.replace("/login");
+          }
         })
         .catch((err) => console.log(err));
+    } else if (available.available !== 1 && !authSubmit.emailAvailable) {
+      setConfirmModal({ view: true, content: "중복 확인이 필요합니다." });
     } else {
-      console.log("가입 불가");
+      setConfirmModal({ view: true, content: "비밀번호 확인이 필요합니다." });
     }
   };
 
@@ -259,7 +278,7 @@ const SignupPage = () => {
                 {authSubmit.emailDuplication !== 1
                   ? "중복확인"
                   : authSubmit.emailAvailable
-                  ? "사용가능"
+                  ? "인증완료"
                   : "인증"}
               </span>
               {authSubmit.emailDuplication !== 0 && (
@@ -290,7 +309,7 @@ const SignupPage = () => {
                     setInputInfo({ ...inputInfo, code: e.target.value });
                   }}
                 />
-                {!authSubmit.resendView ? (
+                {authSubmit.resendView ? (
                   <span className={styles.authBtn} onClick={authCode}>
                     확인
                   </span>
@@ -308,10 +327,10 @@ const SignupPage = () => {
                 )}
               </div>
             )}
-            {mailBoxView.view && (
+            {confirmModal.view && (
               <ConfirmModal
-                content="메일 수신함을 확인하세요"
-                handleModal={setMailBoxView}
+                content={confirmModal.content}
+                handleModal={setConfirmModal}
               />
             )}
             <div>
@@ -414,6 +433,12 @@ const SignupPage = () => {
           </div>
         </div>
       </div>
+      {confirmModal.view && (
+        <ConfirmModal
+          content={confirmModal.content}
+          handleModal={setConfirmModal}
+        />
+      )}
       <Footer />
     </>
   );

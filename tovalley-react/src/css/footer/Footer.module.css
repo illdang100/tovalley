@@ -5,6 +5,9 @@
   color: #f1f1f1;
   padding: 1.5em 0;
   font-size: 0.9rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .terms {
@@ -30,17 +33,47 @@
   margin-top: 1.5em;
 }
 
-.engineerInfo > div span {
-  display: block;
+.engineerInfo > div {
   margin-right: 1em;
-  font-weight: lighter;
+}
+
+.backend {
+  display: flex;
+}
+
+.backend > div span:first-child {
+  display: block;
   margin-bottom: 0.5em;
 }
 
-.engineerInfo > span:nth-child(odd) {
+.backend > span,
+.frontend > span:first-child {
   margin-right: 1em;
+  min-width: 60px;
 }
 
-.engineerInfo > span:last-child {
+.backend > div > span,
+.frontend > span:last-child {
   font-weight: lighter;
+}
+
+@media screen and (max-width: 550px) {
+  .engineerInfo {
+    flex-direction: column;
+    align-items: start;
+  }
+  .frontend {
+    margin-top: 0.8em;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .terms span:not(:last-of-type) {
+    margin-right: 0.8em;
+    font-size: 0.8rem;
+  }
+
+  .engineerInfo span {
+    font-size: 0.8rem;
+  }
 }

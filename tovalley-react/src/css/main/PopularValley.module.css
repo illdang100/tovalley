@@ -4,7 +4,7 @@
   box-shadow: 0 3px 2px rgb(217, 217, 217);
   margin-bottom: 5em;
   padding: 2em 2.5em 0.5em 2.5em;
-  min-width: 52em;
+  min-width: 980px;
 }
 
 .popularValley h4 {
@@ -43,6 +43,7 @@
   min-width: calc((100% - 4.5em) / 4);
   position: relative;
   padding-right: 1.5em;
+  overflow: hidden;
 }
 
 .valleyItemImg {
@@ -121,4 +122,120 @@
   color: #3378fc;
   font-weight: bold;
   font-size: 0.9em;
+}
+
+.mobilePopularValley {
+  display: none;
+  background-color: white;
+  margin-bottom: 0.8em;
+  border-radius: 8px;
+  box-shadow: 0 2px 2px rgb(220, 220, 220);
+  align-items: center;
+  padding: 0.8em 1em;
+  cursor: pointer;
+}
+
+.ranking {
+  font-weight: bold;
+  color: #66a5fc;
+  font-size: 1.5rem;
+  margin-right: 0.5em;
+}
+
+.mobilePopularValley > div:first-child {
+  display: flex;
+}
+
+.valleyName span:first-child {
+  font-weight: bold;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.valleyName span:last-child {
+  color: #7d7d7d;
+}
+
+@media screen and (max-width: 1000px) {
+  .popularValley {
+    padding: 2em 2em 1em 2.5em;
+    min-width: 625px;
+  }
+  .popularItem {
+    min-width: calc((100% - 4.5em) / 3);
+  }
+  .popularValley h4 {
+    font-size: 1.3rem;
+  }
+}
+
+@media screen and (max-width: 700px) {
+  .popularValley {
+    padding: 2em 2em 1em 2.5em;
+    min-width: 300px;
+  }
+  .popularItem {
+    min-width: calc((100% - 2em) / 2);
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .popularValley {
+    padding: 1.5em;
+  }
+
+  .popularItem {
+    display: none;
+  }
+
+  .popularList {
+    display: block;
+  }
+
+  .mobilePopularValley {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .valleyReview {
+    margin-top: 0;
+    align-items: center;
+    padding-bottom: 0;
+  }
+
+  .valleyReview > span:first-child {
+    padding: 0.5em 0.8em;
+    margin-right: 0.5em;
+  }
+
+  .valleyReview > span:last-child {
+    font-size: 0.9rem;
+  }
+
+  .valleyReview > span:last-child {
+    min-width: 60px;
+  }
+}
+
+@media screen and (max-width: 470px) {
+  .popularValley {
+    padding: 2em 1.3em 1em;
+    min-width: 250px;
+  }
+
+  .valleyName span:first-child {
+    max-width: 150px;
+  }
+}
+
+@media screen and (max-width: 440px) {
+  .valleyName span:first-child {
+    max-width: 110px;
+  }
+
+  .valleyName span:last-child {
+    font-size: 0.8rem;
+  }
 }

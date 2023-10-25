@@ -149,3 +149,8 @@
   margin: 0;
   margin-left: 0.5em;
 }
+
+.source {
+  margin-top: 1.5em;
+  color: rgb(129, 129, 129);
+}

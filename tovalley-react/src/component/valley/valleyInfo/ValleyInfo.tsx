@@ -6,6 +6,8 @@ import { FaVest } from "react-icons/fa";
 import { LuUtilityPole } from "react-icons/lu";
 import { BiImage } from "react-icons/bi";
 import { IoMdClose } from "react-icons/io";
+import { BsFillClipboardCheckFill } from "react-icons/bs";
+import { RiMegaphoneLine } from "react-icons/ri";
 import ValleyMap from "./ValleyMap";
 
 interface Props {
@@ -109,7 +111,7 @@ const ValleyInfo: FC<Props> = ({
       <div
         className={styles.title}
         style={{
-          backgroundImage: "url('/img/default-waterfall.jpg')",
+          backgroundImage: "url('/img/dummy/계곡이미지3.jpeg')",
         }}
       >
         <div className={styles.valleyName}>
@@ -238,7 +240,12 @@ const ValleyInfo: FC<Props> = ({
             </div>
           </div>
           <div className={styles.rescueSupplies}>
-            <span>구조용품 현황</span>
+            <div className={styles.rescueSuppliesTitle}>
+              <span>구조용품 및 안내표지판 현황</span>
+              <span>
+                <RiMegaphoneLine size="20px" />
+              </span>
+            </div>
             <div className={styles.rescueList}>
               <div className={styles.rescueItem}>
                 <span>
@@ -304,6 +311,17 @@ const ValleyInfo: FC<Props> = ({
                   {rescueSupplies.rescueRodNum === -1
                     ? "-"
                     : rescueSupplies.rescueRodNum}
+                </span>
+              </div>
+              <div className={styles.rescueItem}>
+                <span>
+                  <BsFillClipboardCheckFill size="30px" color="#66A5FC" />
+                </span>
+                <span>위험구역 안내표지판</span>
+                <span>
+                  {waterPlaceDetails.dangerSignboardsNum === ""
+                    ? "-"
+                    : waterPlaceDetails.dangerSignboardsNum}
                 </span>
               </div>
             </div>

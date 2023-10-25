@@ -22,13 +22,17 @@ const Footer = () => {
         </span>
       </div>
       <div className={styles.engineerInfo}>
-        <span>BackEnd</span>
-        <div>
-          <span>정연준 jyj000217@gmail.com</span>
-          <span>손지민 wl2258@kumoh.ac.kr</span>
+        <div className={styles.backend}>
+          <span>BackEnd</span>
+          <div>
+            <span>정연준 jyj000217@gmail.com</span>
+            <span>손지민 wl2258@kumoh.ac.kr</span>
+          </div>
         </div>
-        <span>FrontEnd</span>
-        <span>장윤정 yunej27@gmail.com</span>
+        <div className={styles.frontend}>
+          <span>FrontEnd</span>
+          <span>장윤정 yunej27@gmail.com</span>
+        </div>
       </div>
     </div>
   );
