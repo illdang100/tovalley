@@ -179,7 +179,7 @@ const MainPage = () => {
     return <div>loading</div>;
   } else
     return (
-      <div>
+      <div className={styles.mainPage}>
         <Header />
         <div className={styles.body}>
           <div className={styles.top}>

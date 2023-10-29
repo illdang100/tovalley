@@ -1,15 +1,27 @@
 .header {
-  border-bottom: 1px solid #dadada;
-  padding: 1em 7% 0;
   z-index: 4;
   position: relative;
+  box-sizing: border-box;
+}
+
+.headerWrapper {
+  padding: 1em 7% 0;
+  border-bottom: 1px solid #dadada;
+  z-index: 6;
+  position: relative;
   background-color: white;
+  box-sizing: border-box;
 }
 
 .headertop {
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+.hamburger {
+  display: none;
+  cursor: pointer;
 }
 
 .logo {
@@ -26,11 +38,13 @@
 
 .login span:first-child {
   margin-right: 1em;
-}
-
-.login > span:first-child {
   border: 1px solid #66a5fc;
   color: #66a5fc;
+}
+
+.myPageIcon,
+.logOutIcon {
+  display: none;
 }
 
 .signup span {
@@ -47,9 +61,17 @@
   color: #66a5fc;
 }
 
-.nav {
-  padding: 0 8%;
+.nav,
+.mobileNav {
+  padding: 0 10%;
   display: flex;
+}
+
+.mobileNav {
+  border-bottom: 1px solid #dadada;
+  position: relative;
+  z-index: 5;
+  display: none;
 }
 
 .navMenu {
@@ -70,4 +92,88 @@
   color: #66a5fc;
   font-weight: bold;
   font-size: 1.1em;
+}
+
+.mobileNavMenu {
+  cursor: pointer;
+  display: block;
+  padding: 0.8em 0;
+  margin-right: 3em;
+  font-size: 0.9em;
+  font-weight: bold;
+}
+
+.mobileNavMenuClicked {
+  cursor: pointer;
+  display: block;
+  padding: 0.8em 0;
+  margin-right: 3em;
+  color: #66a5fc;
+  font-weight: bold;
+  font-size: 0.9em;
+}
+
+@media screen and (max-width: 500px) {
+  .headerWrapper {
+    padding: 1em 7% 0;
+    border: none;
+  }
+
+  .hamburger {
+    display: block;
+  }
+
+  .nav {
+    display: none;
+  }
+
+  .signup {
+    display: flex;
+    justify-content: end;
+  }
+
+  .signup span {
+    border: 1px solid #dadada;
+    padding: 0.8em 1.2em;
+    border-radius: 30px;
+    font-size: 0.6rem;
+    cursor: pointer;
+  }
+
+  .signup span:last-child {
+    margin-right: 0;
+  }
+
+  .headertop > div {
+    width: calc(100% / 3);
+  }
+
+  .login {
+    display: flex;
+    justify-content: end;
+  }
+
+  .login span:first-child,
+  .login span:nth-child(2) {
+    display: none;
+  }
+
+  .login span {
+    border: none;
+    padding: 0;
+    border-radius: 0;
+  }
+
+  .myPageIcon,
+  .logOutIcon {
+    display: block;
+  }
+
+  .myPageIcon {
+    margin-right: 1.2em;
+  }
+
+  .mobileNav {
+    display: flex;
+  }
 }

@@ -48,14 +48,7 @@ const PopularValley: FC<Props> = ({ place, setPopularValley }) => {
 
   useEffect(() => {
     if (place.length !== 0) {
-      setCurrList([
-        place[place.length - 1],
-        ...place,
-        place[0],
-        place[1],
-        place[2],
-        place[3],
-      ]);
+      setCurrList([...place, place[0], place[1], place[2], place[3]]);
     }
   }, [place]);
 
@@ -160,6 +153,28 @@ const PopularValley: FC<Props> = ({ place, setPopularValley }) => {
                   <span>{`${item.rating}/5`}</span>
                   <span>{`리뷰 ${item.reviewCnt}개`}</span>
                 </div>
+              </div>
+            </div>
+          );
+        })}
+        {place.map((item, index) => {
+          return (
+            <div
+              className={styles.mobilePopularValley}
+              onClick={() => {
+                navigation(`/valley/${item.waterPlaceId}`);
+              }}
+            >
+              <div>
+                <span className={styles.ranking}>{index + 1}</span>
+                <div className={styles.valleyName}>
+                  <span>{item.waterPlaceName}</span>
+                  <span>{item.location}</span>
+                </div>
+              </div>
+              <div className={styles.valleyReview}>
+                <span>{`${item.rating}/5`}</span>
+                <span>{`리뷰 ${item.reviewCnt}개`}</span>
               </div>
             </div>
           );

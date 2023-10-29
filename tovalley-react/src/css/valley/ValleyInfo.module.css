@@ -245,7 +245,7 @@
 }
 
 .valleyAccident > span,
-.rescueSupplies > span {
+.rescueSuppliesTitle span {
   color: #6c6c6c;
   font-weight: bold;
 }
@@ -293,6 +293,17 @@
 
 .rescueSupplies {
   flex-grow: 1;
+}
+
+.rescueSuppliesTitle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.rescueSuppliesTitle span:last-child {
+  cursor: pointer;
+  margin-right: 0.5em;
 }
 
 .rescueList {

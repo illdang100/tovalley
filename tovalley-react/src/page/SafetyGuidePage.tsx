@@ -530,6 +530,10 @@ const SafetyGuidePage = () => {
               </div>
             </div>
           )}
+          <div className={styles.source}>
+            출처 : 행정안전부
+            (http://mepv2.safekorea.go.kr/waterPlay/showSafetyMenualList.do)
+          </div>
         </div>
       </div>
       <Footer />
