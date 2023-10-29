@@ -59,6 +59,15 @@ const ValleyListPage = () => {
   let firstNum = currPage - (currPage % 5) + 1;
   let lastNum = currPage - (currPage % 5) + 5;
 
+  const [innerWidth, setInnerWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const resizeListener = () => {
+      setInnerWidth(window.innerWidth);
+    };
+    window.addEventListener("resize", resizeListener);
+  });
+
   const [list, setList] = useState<List>({
     content: [
       {
@@ -370,7 +379,7 @@ const ValleyListPage = () => {
   ];
 
   return (
-    <div>
+    <div className={styles.valleyListPage}>
       <Header />
       <div className={styles.body}>
         <div className={styles.category}>
@@ -561,7 +570,7 @@ const ValleyListPage = () => {
             >
               {firstNum}
             </button>
-            {Array(4)
+            {Array(innerWidth <= 500 ? 2 : 4)
               .fill(0)
               .map((_, i) => {
                 if (firstNum + 1 + i > list.totalPages) {
@@ -606,7 +615,6 @@ const ValleyListPage = () => {
           </div>
         </div>
       </div>
-
       <Footer />
     </div>
   );
