@@ -38,6 +38,8 @@ axiosInstance.interceptors.response.use(
         return Axios.request(prevRequest);
       } else if (errResponseStatus === 403) {
         alert("권한이 없습니다.");
+      } else {
+        console.log(error);
       }
     } catch (e) {
       return Promise.reject(e);
