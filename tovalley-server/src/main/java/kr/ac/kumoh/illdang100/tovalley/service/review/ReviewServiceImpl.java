@@ -94,17 +94,30 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     private void saveReviewImages(Review review, List<MultipartFile> reviewImages) {
-        reviewImages.forEach(profileImage -> {
-            try {
-                ImageFile reviewImgFile = s3Service.upload(profileImage, FileRootPathVO.REVIEW_PATH);
-                reviewImageRepository.save(ReviewImage.builder()
-                        .review(review)
-                        .imageFile(reviewImgFile)
-                        .build());
-            } catch (Exception e) {
-                throw new CustomApiException(e.getMessage());
-            }
-        });
+        if (reviewImages != null && !reviewImages.isEmpty()) {
+            reviewImages.forEach(image -> processReviewImage(review, image));
+        }
+    }
+
+    private void processReviewImage(Review review, MultipartFile image) {
+        try {
+            ImageFile reviewImgFile = uploadImageFile(image);
+            saveReviewImage(review, reviewImgFile);
+        } catch (Exception e) {
+            throw new CustomApiException(e.getMessage());
+        }
+    }
+
+    private ImageFile uploadImageFile(MultipartFile image) throws Exception {
+        return s3Service.upload(image, FileRootPathVO.REVIEW_PATH);
+    }
+
+    private void saveReviewImage(Review review, ImageFile imageFile) {
+        ReviewImage reviewImage = ReviewImage.builder()
+                .review(review)
+                .imageFile(imageFile)
+                .build();
+        reviewImageRepository.save(reviewImage);
     }
 
     @Override
