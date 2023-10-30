@@ -1,8 +1,13 @@
+.valleyListPage {
+  min-width: 360px;
+}
+
 .body {
-  padding: 0 8%;
-  margin-top: 4em;
+  padding: 0 7%;
+  margin: 4em 0 6em 0;
   display: flex;
-  max-width: 95em;
+  height: 47em;
+  justify-content: center;
 }
 
 .category {
@@ -10,7 +15,6 @@
   width: 16%;
   min-width: 130px;
   padding: 0.5em 0 1em 0;
-  height: 80vh;
   overflow-y: scroll;
 }
 
@@ -42,13 +46,18 @@
   color: #616161;
 }
 
+.regionList span:hover {
+  background-color: #e9e9e9;
+}
+
 .regionList span:not(:first-of-type) {
   margin: 0.3em 0;
 }
 
 .valleyContainer {
   width: 100%;
-  margin-left: 2em;
+  margin-left: 1em;
+  max-width: 90em;
 }
 
 .top {
@@ -114,6 +123,7 @@
   margin-bottom: 1.5em;
   margin-left: 1.2em;
   max-width: calc(100% / 3 - 1.2em);
+  width: 100%;
   min-width: 310px;
   cursor: pointer;
   position: relative;
@@ -145,7 +155,7 @@
   font-weight: bold;
   font-size: 1.2rem;
   display: block;
-  max-width: 6em;
+  max-width: 13em;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -155,7 +165,7 @@
   display: block;
   color: #505050;
   margin: 0.5em 0 0.5em 0;
-  max-width: 9em;
+  max-width: 15em;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -214,7 +224,7 @@
 .paging {
   display: flex;
   justify-content: center;
-  margin-top: 3em;
+  margin-top: 1em;
 }
 
 .paging > button {
@@ -233,4 +243,262 @@
   font-weight: bold;
   color: #66a5fc;
   cursor: pointer;
+}
+
+@media screen and (max-width: 1900px) {
+  .valleyName {
+    max-width: 11em;
+  }
+
+  .valleyRegion {
+    max-width: 13em;
+  }
+}
+
+@media screen and (max-width: 1750px) {
+  .valleyName {
+    max-width: 9em;
+  }
+
+  .valleyRegion {
+    max-width: 10em;
+  }
+}
+
+@media screen and (max-width: 1550px) {
+  .valleyName {
+    max-width: 7em;
+  }
+
+  .valleyRegion {
+    max-width: 9em;
+  }
+}
+
+@media screen and (max-width: 1400px) {
+  .body {
+    height: auto;
+  }
+
+  .category {
+    height: fit-content;
+  }
+
+  .valleyItem {
+    max-width: calc(100% / 2 - 1.2em);
+  }
+
+  .valleyName {
+    max-width: 13em;
+  }
+
+  .valleyRegion {
+    max-width: 15em;
+  }
+}
+
+@media screen and (max-width: 1250px) {
+  .valleyName {
+    max-width: 11em;
+  }
+
+  .valleyRegion {
+    max-width: 13em;
+  }
+}
+
+@media screen and (max-width: 1100px) {
+  .valleyName {
+    max-width: 9em;
+  }
+
+  .valleyRegion {
+    max-width: 10em;
+  }
+}
+
+@media screen and (max-width: 1050px) {
+  .valleyName {
+    max-width: 7em;
+  }
+
+  .valleyRegion {
+    max-width: 9em;
+  }
+}
+
+@media screen and (max-width: 950px) {
+  .valleyItem {
+    max-width: 100%;
+  }
+
+  .valleyName {
+    max-width: 100%;
+  }
+
+  .valleyRegion {
+    max-width: 100%;
+  }
+}
+
+@media screen and (max-width: 850px) {
+  .valleyContainer {
+    width: 80%;
+  }
+
+  .search input {
+    min-width: 200px;
+  }
+}
+
+@media screen and (max-width: 750px) {
+  .valleyName {
+    max-width: 13em;
+  }
+
+  .valleyRegion {
+    max-width: 15em;
+  }
+}
+
+@media screen and (max-width: 700px) {
+  .valleyName {
+    max-width: 11em;
+  }
+
+  .valleyRegion {
+    max-width: 13em;
+  }
+}
+
+@media screen and (max-width: 650px) {
+  .valleyContainer {
+    margin-left: 0em;
+  }
+
+  .top {
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    margin-left: 1.2em;
+  }
+
+  .search {
+    margin-top: 1em;
+    width: 100%;
+  }
+
+  .search input {
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
+
+@media screen and (max-width: 620px) {
+  .valleyName {
+    max-width: 9em;
+  }
+
+  .valleyRegion {
+    max-width: 10em;
+  }
+}
+
+@media screen and (max-width: 550px) {
+  .valleyName {
+    max-width: 7em;
+  }
+
+  .valleyRegion {
+    max-width: 9em;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .body {
+    margin-top: 2em;
+  }
+
+  .valleyItem {
+    flex-direction: column;
+    height: auto;
+    min-width: 0px;
+  }
+
+  .valleyItem > div:first-child {
+    width: 100%;
+    min-width: 0px;
+    height: 180px;
+    box-sizing: border-box;
+  }
+
+  .valleyItem > div > img {
+    border-radius: 10px 10px 0 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .valleyInfo {
+    border: 1px solid #cccccc;
+    border-top: none;
+    border-radius: 0 0 10px 10px;
+    padding: 1em 0.5em 0.8em 1em;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .valleyName {
+    max-width: 13em;
+  }
+
+  .valleyRegion {
+    max-width: 15em;
+  }
+
+  .reviewContainer {
+    position: static;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .valleyContainer {
+    width: 70%;
+  }
+
+  .valleyName {
+    max-width: 11em;
+  }
+
+  .valleyRegion {
+    max-width: 13em;
+  }
+}
+
+@media screen and (max-width: 450px) {
+  .valleyContainer {
+    width: 65%;
+  }
+
+  .valleyName {
+    max-width: 9em;
+  }
+
+  .valleyRegion {
+    max-width: 10em;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .valleyName {
+    max-width: 7em;
+  }
+
+  .valleyRegion {
+    max-width: 9em;
+  }
+
+  .search input {
+    min-width: 0px;
+  }
 }
