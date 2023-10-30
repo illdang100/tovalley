@@ -351,6 +351,11 @@ table {
     font-size: 1rem;
 }
 
+.accident-item a:link, .accident-item a:visited {
+    color: black;
+    margin-left: 1em;
+}
+
 .accident-register {
   align-items: center;
   border-top: 1px solid #C3C3C3;
