@@ -1,3 +1,7 @@
+.myPageContainer {
+  min-width: 360px;
+}
+
 .body {
   padding: 0 12%;
   margin-top: 4em;
@@ -10,6 +14,7 @@
 
 .userInfo {
   display: flex;
+  height: 27em;
 }
 
 .userBasicInfo {
@@ -19,8 +24,7 @@
   border-radius: 10px;
   box-shadow: 0px 2px 2px rgb(210, 210, 210);
   padding: 1em 1.5em 0.5em 1.5em;
-  min-width: 300px;
-  max-width: 600px;
+  box-sizing: border-box;
 }
 
 .userBasicInfo > span {
@@ -71,7 +75,17 @@
   padding-left: 2.5em;
 }
 
-.userNickname > span:first-child,
+.userNickname {
+  justify-content: space-between;
+}
+
+.nicknameInput {
+  display: flex;
+  align-items: center;
+  width: 60%;
+}
+
+.nicknameInput > span:first-child,
 .userEmail > span:first-child {
   color: #66a5fc;
   font-size: 1.1rem;
@@ -79,27 +93,32 @@
   margin-right: 3em;
 }
 
-.userNickname > input {
+.nicknameInput > input {
   border: none;
   font-size: 1.1rem;
   font-weight: bold;
-  width: 30%;
+  box-sizing: border-box;
+  width: 100%;
 }
 
-.userNickname > input:focus {
+.nicknameInput > input:focus {
   outline: none;
 }
 
 /* 유저 닉네임 */
-.userNickname > span:nth-child(2) {
+.nicknameInput > span:last-child {
   font-weight: bold;
   font-size: 1.1rem;
   margin-right: 1.8em;
 }
 
+.nicknameBtn {
+  min-width: 130px;
+  margin-left: 0.5em;
+}
+
 /* 유저 닉네임 수정 */
-.userNickname > span:nth-child(3),
-.userNickname > span:nth-child(4) {
+.nicknameBtn > span {
   background-color: #e6e6e6;
   color: #828282;
   padding: 0.3em 0.8em;
@@ -107,6 +126,7 @@
   font-size: 0.8rem;
   cursor: pointer;
   margin-right: 0.5em;
+  min-width: fit-content;
 }
 
 .myReview {
@@ -120,7 +140,7 @@
 }
 
 .reviewContainer {
-  height: 54vh;
+  height: 24em;
   overflow-y: scroll;
 }
 
@@ -128,14 +148,27 @@
   display: none;
 }
 
-.reivewList {
+.reviewTitle {
+  border: 1px solid #bcbcbc;
+  border-radius: 5px 5px 0 0;
+  padding: 0.6em 0.8em;
+  cursor: pointer;
+}
+
+.reviewTitle span {
+  font-weight: 600;
+  font-size: 1rem;
+  color: #333333;
+}
+
+.reviewContent {
   display: flex;
   margin-bottom: 1em;
   position: relative;
 }
 
-.reivewList img {
-  border-radius: 5px 0 0 5px;
+.reviewContent img {
+  border-radius: 0 0 0 5px;
 }
 
 .reivewList > span {
@@ -151,39 +184,61 @@
   padding: 0.1em;
 }
 
-.reviewItem {
+.reviewInfo {
   width: 100%;
-  border: 1px solid #bcbcbc;
-  border-left: none;
-  border-radius: 0 5px 5px 0;
-  padding: 1em 0.8em 1em 1.2em;
+  border-right: 1px solid #bcbcbc;
+  border-bottom: 1px solid #bcbcbc;
+  border-radius: 0 0 5px 0;
+  padding: 0.8em;
 }
 
 /* 리뷰 별점, 리뷰 날짜 */
-.reviewInfo {
+.reviewRating {
   display: flex;
-  justify-content: space-between;
+  align-items: center;
 }
 
-.reviewInfo > div {
+.reviewRating > div {
   display: flex;
-  margin-bottom: 1em;
+  margin-right: 0.8em;
 }
 
 /* 리뷰 별점 */
-.reviewInfo > div > span:nth-child(2) {
+.reviewRating > div > span:nth-child(2) {
   font-weight: bold;
   margin-left: 0.5em;
 }
 
+/* 리뷰 퀄리티 */
+.reviewRating > span {
+  color: #66a5fc;
+  border: 1px solid #66a5fc;
+  padding: 0.3em 0.5em;
+  font-size: 0.8rem;
+  border-radius: 30px;
+  margin-bottom: 0.5em;
+}
+
 /* 리뷰 날짜 */
-.reviewInfo > span {
+.reviewInfo > span:nth-child(2) {
   color: #696969;
+  display: block;
+  width: fit-content;
+  font-size: 0.9rem;
+  margin-left: 0.2em;
+  margin-bottom: 0.8em;
 }
 
 /* 리뷰 내용 */
-.reviewItem > span {
+.reviewInfo > div:last-child {
+  height: 40px;
+  overflow-y: scroll;
   color: #696969;
+  margin-left: 0.1em;
+}
+
+.reviewInfo > div:last-child::-webkit-scrollbar {
+  display: none;
 }
 
 .schedule {
@@ -222,13 +277,19 @@
 }
 
 /* 일정 삭제 버튼 */
-.scheduleControl > span {
+.deleteButton {
   background-color: #66a5fc;
   color: white;
   cursor: pointer;
   padding: 0.4em 1em;
   border-radius: 8px;
-  margin-right: 1.5em;
+  margin-right: 0.5em;
+}
+
+.deleteIcon {
+  display: none;
+  margin-right: 0.5em;
+  cursor: pointer;
 }
 
 .modalContainer {
@@ -311,4 +372,96 @@
   cursor: pointer;
   margin: 12px 15px 0;
   font-size: 15px;
+}
+
+@media screen and (max-width: 1040px) {
+  .userInfo {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .myReview {
+    margin-top: 3em;
+  }
+
+  .schedule {
+    margin-top: 4em;
+  }
+
+  .scheduleBtn > div > span {
+    font-size: 1.4rem;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .userNickname {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .nicknameBtn {
+    margin-top: 0.8em;
+    margin-left: 0;
+  }
+
+  .nicknameInput {
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .nicknameInput > span:first-child,
+  .userEmail > span:first-child {
+    margin-right: 1em;
+  }
+}
+
+@media screen and (max-width: 460px) {
+  .myReview > h4 {
+    font-size: 1.2rem;
+  }
+
+  .scheduleBtn > div {
+    padding: 0 0.8em;
+  }
+
+  .scheduleBtn > div > span {
+    font-size: 1.2rem;
+  }
+
+  .reviewContent {
+    flex-direction: column;
+  }
+
+  .reviewInfo {
+    border: 1px solid #bcbcbc;
+    border-top: none;
+    box-sizing: border-box;
+  }
+
+  .reviewContent img {
+    border-radius: 0;
+    width: 100%;
+    height: 130px;
+    object-fit: cover;
+  }
+
+  .userNickname,
+  .userEmail {
+    padding-left: 1em;
+  }
+
+  .deleteButton {
+    display: none;
+  }
+
+  .deleteIcon {
+    display: block;
+  }
+}
+
+@media screen and (max-width: 380px) {
+  .scheduleBtn > div > span {
+    font-size: 1.1rem;
+  }
 }

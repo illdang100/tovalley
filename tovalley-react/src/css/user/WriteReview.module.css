@@ -11,6 +11,7 @@
 .modalBox {
   width: 500px;
   height: 95vh;
+  max-height: 57em;
   border-radius: 5px;
   background-color: #ffffff;
   position: absolute;
@@ -256,4 +257,64 @@
   width: 100%;
   cursor: pointer;
   font-size: 1rem;
+}
+
+@media screen and (max-width: 600px) {
+  .modalBox {
+    width: 400px;
+    margin-left: -200px;
+  }
+
+  .writeQuality > div > div {
+    padding: 0.5em 1em;
+  }
+
+  .writeQuality > div > div > span:last-child {
+    font-size: 0.8rem;
+  }
+
+  .reviewBtn {
+    margin: 1em 0 1.5em 0;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .modalBox {
+    width: 340px;
+    margin-left: -170px;
+  }
+
+  .writeDetail {
+    padding: 1em 1.5em;
+  }
+
+  .valleyInfoDetail > h4 {
+    font-size: 0.9rem;
+  }
+
+  .valleyInfoDetail > span {
+    font-size: 0.8rem;
+  }
+
+  .valleyInfoDetail > div > span:first-child {
+    font-size: 0.8rem;
+    margin-right: 0.5em;
+  }
+
+  .valleyInfoDetail > div > span:last-child {
+    font-size: 0.8rem;
+  }
+
+  .writeQuality > div > div {
+    padding: 0.5em 0.8em;
+  }
+
+  .writeQuality > div > div > span:last-child {
+    font-size: 0.8rem;
+  }
+
+  .reviewBtn {
+    margin: 0.8em 0 1.5em 0;
+    padding: 0 1.5em;
+  }
 }
