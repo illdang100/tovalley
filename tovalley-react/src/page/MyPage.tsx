@@ -6,6 +6,8 @@ import RatingStar from "../component/common/RatingStar";
 import axiosInstance from "../axios_interceptor";
 import ConfirmModal from "../component/common/ConfirmModal";
 import TripSchedule from "../component/user/TripSchedule";
+import { useNavigate } from "react-router-dom";
+import { RiDeleteBin6Line } from "react-icons/ri";
 
 type user = {
   userProfile: {
@@ -164,6 +166,7 @@ const MyPage = () => {
   const [scheduleBtn, setScheduleBtn] = useState("앞으로의 일정");
   const [userImg, setUserImg] = useState("");
   const [deleteBtn, setDeleteBtn] = useState(false);
+  const navigation = useNavigate();
 
   const [user, setUser] = useState<user>({
     userProfile: {
@@ -416,7 +419,7 @@ const MyPage = () => {
   };
 
   return (
-    <div>
+    <div className={styles.myPageContainer}>
       <Header />
       <div className={styles.body}>
         <div className={styles.myPage}>
@@ -468,85 +471,90 @@ const MyPage = () => {
                 )}
               </form>
               <div className={styles.userNickname}>
-                <span>닉네임</span>
-                {nickUpdate.click ? (
-                  <input
-                    placeholder="닉네임"
-                    value={nickUpdate.inputNick}
-                    onChange={(e) =>
-                      setNickUpdate({
-                        ...nickUpdate,
-                        inputNick: e.target.value,
-                      })
-                    }
-                    onBlur={checkNickname}
-                    maxLength={20}
-                  />
-                ) : (
-                  <span>{user.userProfile.memberNick}</span>
-                )}
-                {!nickUpdate.click && (
-                  <span
-                    onClick={() => {
-                      if (nickUpdate.inputNick === "") {
+                <div className={styles.nicknameInput}>
+                  <span>닉네임</span>
+                  {nickUpdate.click ? (
+                    <input
+                      placeholder="닉네임"
+                      value={nickUpdate.inputNick}
+                      onChange={(e) =>
                         setNickUpdate({
                           ...nickUpdate,
-                          inputNick: user.userProfile.memberNick,
-                          click: true,
-                        });
-                      } else {
-                        setNickUpdate({
-                          ...nickUpdate,
-                          duplicateCheck: false,
-                          click: true,
-                        });
+                          inputNick: e.target.value,
+                        })
                       }
-                    }}
-                    style={
-                      user.userProfile.memberNick === ""
-                        ? { marginLeft: "0" }
-                        : {}
-                    }
-                  >
-                    수정
-                  </span>
-                )}
-                {nickUpdate.click && (
-                  <span
-                    onClick={() => {
-                      if (!nickUpdate.duplicateCheck) {
-                        checkDuplication();
-                      } else {
-                        handleResetNicname();
-                        setUser({
-                          ...user,
-                          userProfile: {
-                            ...user.userProfile,
-                            memberNick: nickUpdate.inputNick,
-                          },
-                        });
+                      onBlur={checkNickname}
+                      maxLength={20}
+                    />
+                  ) : (
+                    <span>{user.userProfile.memberNick}</span>
+                  )}
+                </div>
+                <div className={styles.nicknameBtn}>
+                  {!nickUpdate.click && (
+                    <span
+                      onClick={() => {
+                        if (nickUpdate.inputNick === "") {
+                          setNickUpdate({
+                            ...nickUpdate,
+                            inputNick: user.userProfile.memberNick,
+                            click: true,
+                          });
+                        } else {
+                          setNickUpdate({
+                            ...nickUpdate,
+                            duplicateCheck: false,
+                            click: true,
+                          });
+                        }
+                      }}
+                      style={
+                        user.userProfile.memberNick === ""
+                          ? { marginLeft: "0" }
+                          : {}
                       }
-                    }}
-                  >
-                    {nickUpdate.duplicateCheck ? "저장" : "중복검사"}
-                  </span>
-                )}
-                {nickUpdate.click && (
-                  <span
-                    onClick={() => {
-                      if (nickUpdate.click) {
-                        setNickUpdate({
-                          ...nickUpdate,
-                          inputNick: user.userProfile.memberNick,
-                          duplicateCheck: false,
-                          click: false,
-                        });
-                      }
-                    }}
-                  >
-                    취소
-                  </span>
-                )}
+                    >
+                      수정
+                    </span>
+                  )}
+                  {nickUpdate.click && (
+                    <span
+                      onClick={() => {
+                        if (!nickUpdate.duplicateCheck) {
+                          checkDuplication();
+                        } else {
+                          handleResetNicname();
+                          setUser({
+                            ...user,
+                            userProfile: {
+                              ...user.userProfile,
+                              memberNick: nickUpdate.inputNick,
+                            },
+                          });
+                        }
+                      }}
+                    >
+                      {nickUpdate.duplicateCheck ? "저장" : "중복검사"}
+                    </span>
+                  )}
+                  {nickUpdate.click && (
+                    <span
+                      onClick={() => {
+                        if (nickUpdate.click) {
+                          setNickUpdate({
+                            ...nickUpdate,
+                            inputNick: user.userProfile.memberNick,
+                            duplicateCheck: false,
+                            click: false,
+                          });
+                        }
+                      }}
+                    >
+                      취소
+                    </span>
+                  )}
+                </div>
+
                 {confirmView.view && (
                   <ConfirmModal
                     content={confirmView.content}
@@ -564,28 +572,51 @@ const MyPage = () => {
               <div className={styles.reviewContainer}>
                 {user.myReviews.content.map((item) => {
                   return (
-                    <div className={styles.reivewList}>
-                      <img
-                        src={
-                          item.reviewImages === null
-                            ? process.env.PUBLIC_URL + "/img/default-image.png"
-                            : item.reviewImages
+                    <div className={styles.reviewItem}>
+                      <div
+                        className={styles.reviewTitle}
+                        onClick={() =>
+                          navigation(`/valley/${item.waterPlaceId}`)
                         }
-                        alt="리뷰 이미지"
-                        width="120px"
-                      />
-                      {item.reviewImages !== null && <span>1</span>}
-                      <div className={styles.reviewItem}>
-                        <div className={styles.reviewInfo}>
-                          <div>
-                            <span>
-                              <RatingStar rating={item.rating} size="20px" />
-                            </span>
-                            <span>{item.rating}</span>
+                      >
+                        <span>{item.waterPlaceName}</span>
+                      </div>
+                      <div className={styles.reviewContent}>
+                        {item.reviewImages !== null && (
+                          <img
+                            src={item.reviewImages}
+                            alt="리뷰 이미지"
+                            width="130px"
+                          />
+                        )}
+                        {item.reviewImages !== null && (
+                          <span>{item.reviewImages.length}</span>
+                        )}
+                        <div
+                          className={styles.reviewInfo}
+                          style={
+                            item.reviewImages === null
+                              ? {
+                                  borderRadius: "0 0 5px 5px",
+                                  borderLeft: "1px solid #bcbcbc",
+                                }
+                              : {}
+                          }
+                        >
+                          <div className={styles.reviewRating}>
+                            <div>
+                              <span>
+                                <RatingStar rating={item.rating} size="20px" />
+                              </span>
+                              <span>{item.rating}</span>
+                            </div>
+                            <span>{item.waterQuality}</span>
                           </div>
                           <span>{item.createdReviewDate}</span>
+                          <div>
+                            <span>{item.content}</span>
+                          </div>
                         </div>
-                        <span>{item.content}</span>
                       </div>
                     </div>
                   );
@@ -622,7 +653,22 @@ const MyPage = () => {
                 </span>
               </div>
             </div>
-            <span onClick={() => setDeleteBtn(true)}>삭제</span>
+            {scheduleBtn === "앞으로의 일정" && (
+              <span
+                onClick={() => setDeleteBtn(true)}
+                className={styles.deleteButton}
+              >
+                삭제
+              </span>
+            )}
+            {scheduleBtn === "앞으로의 일정" && (
+              <span
+                onClick={() => setDeleteBtn(true)}
+                className={styles.deleteIcon}
+              >
+                <RiDeleteBin6Line color="#66a5fc" size="25px" />
+              </span>
+            )}
           </div>
           <div className={styles.scheduleList}>
             {scheduleBtn === "앞으로의 일정" ? (

@@ -51,55 +51,92 @@ const TripScheduleItem: FC<Props> = ({
   const [check, setCheck] = useState(false);
   const navigation = useNavigate();
 
+  const [innerWidth, setInnerWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const resizeListener = () => {
+      setInnerWidth(window.innerWidth);
+    };
+    window.addEventListener("resize", resizeListener);
+  });
+
   return (
     <div className={styles.scheduleItem}>
-      <span
-        className={styles.scheduleCheck}
-        onClick={() => {
-          checkItemHandler(schedule, !check);
-          setCheck(!check);
-        }}
-      >
-        {checkedItems.includes(schedule) ? (
-          <MdCheckBox color="#66A5FC" size="25px" />
-        ) : (
-          <MdCheckBoxOutlineBlank color="#66A5FC" size="25px" />
-        )}
-      </span>
-      <img
-        src={
-          schedule.waterPlaceImg === null
-            ? process.env.PUBLIC_URL + "/img/default-image.png"
-            : schedule.waterPlaceImg
-        }
-        alt="계곡 사진"
-        width="180px"
-      />
-      <div
-        className={styles.scheduleInfo}
-        onClick={() => navigation(`/valley/${schedule.waterPlaceId}`)}
-      >
-        <h4>{schedule.waterPlaceName}</h4>
-        <span>{schedule.waterPlaceAddr}</span>
-        <span>
-          {schedule.waterPlaceRating === "" ? 0 : schedule.waterPlaceRating}
+      {scheduleBtn === "앞으로의 일정" && (
+        <span
+          className={styles.scheduleCheck}
+          onClick={() => {
+            checkItemHandler(schedule, !check);
+            setCheck(!check);
+          }}
+        >
+          {checkedItems.includes(schedule) ? (
+            <MdCheckBox color="#66A5FC" size="25px" />
+          ) : (
+            <MdCheckBoxOutlineBlank color="#66A5FC" size="25px" />
+          )}
         </span>
-        <span>/5</span>
-        <span>
-          리뷰{" "}
-          {schedule.waterPlaceReviewCnt === ""
-            ? 0
-            : schedule.waterPlaceReviewCnt}
-          개
-        </span>
-        <div className={styles.reservationInfo}>
-          <div>
-            <span>날짜</span>
-            <span>{schedule.tripDate}</span>
-          </div>
-          <div>
-            <span>인원</span>
-            <span>{schedule.tripPartySize}</span>
+      )}
+      <div className={styles.scheduleValleyInfo}>
+        <div>
+          {scheduleBtn === "지난 일정" && (
+            <div className={styles.responsiveWriteReviewBtn}>
+              {!schedule.hasReview && (
+                <span onClick={() => setWriteReviewView(true)}>리뷰 쓰기</span>
+              )}
+              {writeReviewView && (
+                <WriteReview
+                  setWriteReviewView={setWriteReviewView}
+                  valleyInfo={{
+                    id: schedule.tripScheduleId,
+                    title: schedule.waterPlaceName,
+                    addr: schedule.waterPlaceAddr,
+                    tripDate: schedule.tripDate,
+                    people: schedule.tripPartySize,
+                    img: schedule.waterPlaceImg,
+                  }}
+                />
+              )}
+            </div>
+          )}
+        </div>
+        <div>
+          <img
+            src={
+              schedule.waterPlaceImg === null
+                ? process.env.PUBLIC_URL + "/img/default-image.png"
+                : schedule.waterPlaceImg
+            }
+            alt="계곡 사진"
+            width="180px"
+          />
+          <div
+            className={styles.scheduleInfo}
+            onClick={() => navigation(`/valley/${schedule.waterPlaceId}`)}
+          >
+            <h4>{schedule.waterPlaceName}</h4>
+            <span>{schedule.waterPlaceAddr}</span>
+            <span>
+              {schedule.waterPlaceRating === "" ? 0 : schedule.waterPlaceRating}
+            </span>
+            <span>/5</span>
+            <span>
+              리뷰{" "}
+              {schedule.waterPlaceReviewCnt === ""
+                ? 0
+                : schedule.waterPlaceReviewCnt}
+              개
+            </span>
+            <div className={styles.reservationInfo}>
+              <div>
+                <span>날짜</span>
+                <span>{schedule.tripDate}</span>
+              </div>
+              <div>
+                <span>인원</span>
+                <span>{schedule.tripPartySize}</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -122,7 +159,9 @@ const TripScheduleItem: FC<Props> = ({
         )}
         {scheduleBtn === "지난 일정" && (
           <div className={styles.writeReviewBtn}>
-            <span onClick={() => setWriteReviewView(true)}>리뷰 쓰기</span>
+            {!schedule.hasReview && (
+              <span onClick={() => setWriteReviewView(true)}>리뷰 쓰기</span>
+            )}
             {writeReviewView && (
               <WriteReview
                 setWriteReviewView={setWriteReviewView}
@@ -138,10 +177,33 @@ const TripScheduleItem: FC<Props> = ({
             )}
           </div>
         )}
+        <div className={styles.responsiveCongestion}>
+          <span>계곡 혼잡도</span>
+          <div
+            style={
+              schedule.waterPlaceTraffic >= 15
+                ? { backgroundColor: "#FA7F64" }
+                : schedule.waterPlaceTraffic >= 10
+                ? { backgroundColor: "#FFD874" }
+                : schedule.waterPlaceTraffic >= 5
+                ? { backgroundColor: "#8EBBFF" }
+                : { backgroundColor: "#E0E0E0" }
+            }
+          ></div>
+        </div>
         <div className={styles.rescueList}>
           <div className={styles.rescueItem}>
             <span>
-              <TbChartDonut4 size="40px" color="#66A5FC" />
+              <TbChartDonut4
+                size={
+                  innerWidth <= 400
+                    ? "25px"
+                    : innerWidth <= 520
+                    ? "30px"
+                    : "40px"
+                }
+                color="#66A5FC"
+              />
             </span>
             <span>
               {schedule.rescueSupplies.lifeRingNum === -1
@@ -151,7 +213,16 @@ const TripScheduleItem: FC<Props> = ({
           </div>
           <div className={styles.rescueItem}>
             <span>
-              <TbJumpRope size="40px" color="#66A5FC" />
+              <TbJumpRope
+                size={
+                  innerWidth <= 400
+                    ? "25px"
+                    : innerWidth <= 520
+                    ? "30px"
+                    : "40px"
+                }
+                color="#66A5FC"
+              />
             </span>
             <span>
               {schedule.rescueSupplies.rescueRopeNum === -1
@@ -161,7 +232,16 @@ const TripScheduleItem: FC<Props> = ({
           </div>
           <div className={styles.rescueItem}>
             <span>
-              <MdEmojiPeople size="40px" color="#66A5FC" />
+              <MdEmojiPeople
+                size={
+                  innerWidth <= 400
+                    ? "25px"
+                    : innerWidth <= 520
+                    ? "30px"
+                    : "40px"
+                }
+                color="#66A5FC"
+              />
             </span>
             <span>
               {schedule.rescueSupplies.lifeBoatNum === -1
@@ -171,7 +251,16 @@ const TripScheduleItem: FC<Props> = ({
           </div>
           <div className={styles.rescueItem}>
             <span>
-              <FaVest size="40px" color="#66A5FC" />
+              <FaVest
+                size={
+                  innerWidth <= 400
+                    ? "25px"
+                    : innerWidth <= 520
+                    ? "30px"
+                    : "40px"
+                }
+                color="#66A5FC"
+              />
             </span>
             <span>
               {schedule.rescueSupplies.lifeJacketNum === -1
@@ -181,7 +270,16 @@ const TripScheduleItem: FC<Props> = ({
           </div>
           <div className={styles.rescueItem}>
             <span>
-              <MdHomeRepairService size="40px" color="#66A5FC" />
+              <MdHomeRepairService
+                size={
+                  innerWidth <= 400
+                    ? "25px"
+                    : innerWidth <= 520
+                    ? "30px"
+                    : "40px"
+                }
+                color="#66A5FC"
+              />
             </span>
             <span>
               {schedule.rescueSupplies.portableStandNum === -1
@@ -191,7 +289,16 @@ const TripScheduleItem: FC<Props> = ({
           </div>
           <div className={styles.rescueItem}>
             <span>
-              <LuUtilityPole size="40px" color="#66A5FC" />
+              <LuUtilityPole
+                size={
+                  innerWidth <= 400
+                    ? "25px"
+                    : innerWidth <= 520
+                    ? "30px"
+                    : "40px"
+                }
+                color="#66A5FC"
+              />
             </span>
             <span>
               {schedule.rescueSupplies.rescueRodNum === -1

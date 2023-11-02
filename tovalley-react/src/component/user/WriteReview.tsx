@@ -43,6 +43,8 @@ const WriteReview: FC<Props> = ({ setWriteReviewView, valleyInfo }) => {
     content: "",
   });
   const [uploadImg, setUploadImg] = useState<String[]>([]);
+  const [imgFiles, setImgFiles] = useState<File[]>([]);
+  const [confirm, setConfirm] = useState(false);
 
   const [star, setStar] = useState({
     one: false,
@@ -50,6 +52,15 @@ const WriteReview: FC<Props> = ({ setWriteReviewView, valleyInfo }) => {
     three: false,
     four: false,
     five: false,
+  });
+
+  const [innerWidth, setInnerWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const resizeListener = () => {
+      setInnerWidth(window.innerWidth);
+    };
+    window.addEventListener("resize", resizeListener);
   });
 
   const handleWriteReview = (e: any) => {
@@ -74,43 +85,51 @@ const WriteReview: FC<Props> = ({ setWriteReviewView, valleyInfo }) => {
     formData.append("waterQuality", quality);
     formData.append("rating", `${rating}`);
     formData.append("content", review.content);
+    imgFiles.length !== 0 && formData.append("reviewImages", imgFiles[0]);
 
-    //formData.append("imageContainer", uploadImg)
-
-    axiosInstance
-      .post("/api/auth/reviews", formData)
-      .then((res) => {
-        console.log(res);
-        res.status === 200 && setWriteReviewView(false);
-      })
-      .catch((err) => console.log(err));
+    review.quality !== "" &&
+      review.content !== "" &&
+      axiosInstance
+        .post("/api/auth/reviews", formData)
+        .then((res) => {
+          console.log(res);
+          res.status === 201 && setConfirm(true);
+        })
+        .catch((err) => console.log(err));
   };
 
   const saveImgFile = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files!;
+    if (e.target.files) {
+      const files = e.target.files;
 
-    if (!files[0]) return;
+      if (!files[0]) return;
 
-    let imgUrlList = [...uploadImg];
+      let imgUrlList = [...uploadImg];
+      let imgList = [...imgFiles];
 
-    for (let i = 0; i < files.length; i++) {
-      const currentImageUrl = URL.createObjectURL(files[i]);
-      imgUrlList.push(currentImageUrl);
-    }
+      for (let i = 0; i < files.length; i++) {
+        const currentImageUrl = URL.createObjectURL(files[i]);
+        imgUrlList.push(currentImageUrl);
+        imgList.push(files[i]);
+      }
 
-    if (imgUrlList.length > 5) {
-      imgUrlList = imgUrlList.slice(0, 5);
-    }
+      if (imgUrlList.length > 5) {
+        imgUrlList = imgUrlList.slice(0, 5);
+        imgList = imgList.slice(0, 5);
+      }
 
-    setUploadImg(imgUrlList);
+      setUploadImg(imgUrlList);
+      setImgFiles(imgList);
 
-    if (uploadImg.length + files.length > 5) {
-      return alert("최대 5개 사진만 첨부할 수 있습니다.");
+      if (uploadImg.length + files.length > 5) {
+        return alert("최대 5개 사진만 첨부할 수 있습니다.");
+      }
     }
   };
 
   const handleDeleteImage = (id: number) => {
     setUploadImg(uploadImg.filter((_, index) => index !== id));
+    setImgFiles(imgFiles.filter((_, index) => index !== id));
   };
 
   return (
@@ -165,9 +184,9 @@ const WriteReview: FC<Props> = ({ setWriteReviewView, valleyInfo }) => {
                 onChange={(e) =>
                   setReview({ ...review, content: e.target.value })
                 }
-                maxLength={5000}
+                maxLength={256}
               />
-              <span>{review.content.length}/5000</span>
+              <span>{review.content.length}/256</span>
             </div>
             <label htmlFor="input-file">
               <div className={styles.pictureBtn}>
@@ -219,11 +238,17 @@ const WriteReview: FC<Props> = ({ setWriteReviewView, valleyInfo }) => {
                       }
                     >
                       {index === 0 ? (
-                        <FaRegFaceGrinSquint />
+                        <FaRegFaceGrinSquint
+                          size={innerWidth <= 600 ? "13px" : ""}
+                        />
                       ) : index === 1 ? (
-                        <FaRegFaceSmile />
+                        <FaRegFaceSmile
+                          size={innerWidth <= 600 ? "13px" : ""}
+                        />
                       ) : (
-                        <FaRegFaceFrown />
+                        <FaRegFaceFrown
+                          size={innerWidth <= 600 ? "13px" : ""}
+                        />
                       )}
                     </span>
                     <span
@@ -246,6 +271,7 @@ const WriteReview: FC<Props> = ({ setWriteReviewView, valleyInfo }) => {
           <button>등록</button>
         </div>
       </form>
+      {confirm && <ConfirmModal content="리뷰가 정상적으로 등록되었습니다." />}
     </div>
   );
 };
@@ -357,6 +383,37 @@ const StarItem: FC<StarProps> = ({ num, item, setStar }) => {
         <MdOutlineStar color="#B5B5B5" size="40px" />
       )}
     </span>
+  );
+};
+
+const ConfirmModal: FC<{ content: string }> = ({ content }) => {
+  useEffect(() => {
+    document.body.style.cssText = `
+          position: fixed; 
+          top: -${window.scrollY}px;
+          overflow-y: scroll;
+          width: 100%;`;
+    return () => {
+      const scrollY = document.body.style.top;
+      document.body.style.cssText = "";
+      window.scrollTo(0, parseInt(scrollY || "0", 10) * -1);
+    };
+  }, []);
+
+  return (
+    <div className={styles.modalContainer}>
+      <div className={styles.modalBox}>
+        <div className={styles.modalContent}>
+          <span>{content}</span>
+        </div>
+        <div
+          className={styles.confirm}
+          onClick={() => window.location.reload()}
+        >
+          확인
+        </div>
+      </div>
+    </div>
   );
 };
 
