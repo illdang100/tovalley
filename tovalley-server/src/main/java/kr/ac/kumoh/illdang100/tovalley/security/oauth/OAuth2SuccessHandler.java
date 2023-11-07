@@ -32,10 +32,12 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
     private  final RefreshTokenRedisRepository refreshTokenRedisRepository;
 
-
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException {
+
+        log.info("OAuth2SuccessHandler.onAuthenticationSuccess() Start!!");
+
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
 
         Member member = principalDetails.getMember();
@@ -44,10 +46,15 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         String refreshToken = saveRefreshToken(jwtProcess, refreshTokenRedisRepository, member);
 
+        log.info("-- Access Token 추가={}", accessToken);
         addCookie(response, JwtVO.ACCESS_TOKEN, accessToken);
+        log.info("-- Refresh Token 추가={}", refreshToken);
         addCookie(response, JwtVO.REFRESH_TOKEN, refreshToken);
+        log.info("-- ISLOGIN 추가={}", true);
         addCookie(response, ISLOGIN, "true", false);
 
+        log.info("redirectUrl={}", redirectUrl);
+        log.info("OAuth2SuccessHandler.onAuthenticationSuccess() End!!");
         getRedirectStrategy().sendRedirect(request, response, redirectUrl);
     }
 }

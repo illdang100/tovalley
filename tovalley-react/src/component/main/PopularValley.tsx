@@ -25,6 +25,7 @@ interface Props {
     >
   >;
 }
+
 const localhost = process.env.REACT_APP_HOST;
 
 const PopularValley: FC<Props> = ({ place, setPopularValley }) => {
