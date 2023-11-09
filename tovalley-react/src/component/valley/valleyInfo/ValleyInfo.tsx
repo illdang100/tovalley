@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import styles from "../../../css/valley/ValleyInfo.module.css";
 import { TbChartDonut4, TbJumpRope } from "react-icons/tb";
 import { MdEmojiPeople, MdHomeRepairService } from "react-icons/md";
@@ -7,7 +7,6 @@ import { LuUtilityPole } from "react-icons/lu";
 import { BiImage } from "react-icons/bi";
 import { IoMdClose } from "react-icons/io";
 import { BsFillClipboardCheckFill } from "react-icons/bs";
-import { RiMegaphoneLine } from "react-icons/ri";
 import ValleyMap from "./ValleyMap";
 
 interface Props {
@@ -105,6 +104,14 @@ const ValleyInfo: FC<Props> = ({
   const [mapMenu, setMapMenu] = useState("계곡위치");
   const [clickImg, setClickImg] = useState(false);
   const menu = ["계곡위치", "병원", "약국"];
+  const [innerWidth, setInnerWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const resizeListener = () => {
+      setInnerWidth(window.innerWidth);
+    };
+    window.addEventListener("resize", resizeListener);
+  });
 
   return (
     <div>
@@ -223,6 +230,67 @@ const ValleyInfo: FC<Props> = ({
                 );
               })}
             </div>
+            <div className={styles.mobileWeatherList}>
+              {weatherList.map((item, index) => {
+                return (
+                  <div className={styles.mobileWeatherItem}>
+                    <div className={styles.dayInfo}>
+                      {dateFormat(item.weatherDate) === "오늘" ? (
+                        <>
+                          <span style={{ color: "#66A5FC" }}>
+                            {getDayOfWeek(item.weatherDate)}
+                          </span>
+                          <span style={{ color: "#66A5FC" }}>
+                            {dateFormat(item.weatherDate)}
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          <span>{getDayOfWeek(item.weatherDate)}</span>
+                          <span>{dateFormat(item.weatherDate)}</span>
+                        </>
+                      )}
+                    </div>
+                    <div className={styles.weatherInfo}>
+                      <div className={styles.weatherInfoIcon}>
+                        <span>
+                          <img
+                            src={`https://openweathermap.org/img/wn/${item.climateIcon}@2x.png`}
+                            alt="날씨 아이콘"
+                            width="45px"
+                          />
+                        </span>
+                      </div>
+                      <div className={styles.temperature}>
+                        <span>{item.lowestTemperature.toFixed()}°</span>
+                        <span> / </span>
+                        <span>{item.highestTemperature.toFixed()}°</span>
+                      </div>
+                    </div>
+                    <div className={styles.mobileWeatherDetail}>
+                      <div className={styles.moblieWeatherItemDetail}>
+                        {weatherDetail[index].map((detail) => {
+                          return (
+                            <div>
+                              <span>{detail.value}</span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                      <div className={styles.mobileWeatherDesc}>
+                        {weatherDetail[index].map((detail) => {
+                          return (
+                            <div>
+                              <span>{detail.name}</span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
           <div className={styles.valleyAccident}>
             <span>최근 5년간 사고 수</span>
@@ -242,14 +310,14 @@ const ValleyInfo: FC<Props> = ({
           <div className={styles.rescueSupplies}>
             <div className={styles.rescueSuppliesTitle}>
               <span>구조용품 및 안내표지판 현황</span>
-              <span>
-                <RiMegaphoneLine size="20px" />
-              </span>
             </div>
             <div className={styles.rescueList}>
               <div className={styles.rescueItem}>
                 <span>
-                  <TbChartDonut4 size="30px" color="#66A5FC" />
+                  <TbChartDonut4
+                    size={innerWidth <= 540 ? "22px" : "30px"}
+                    color="#66A5FC"
+                  />
                 </span>
                 <span>구명환</span>
                 <span>
@@ -260,7 +328,10 @@ const ValleyInfo: FC<Props> = ({
               </div>
               <div className={styles.rescueItem}>
                 <span>
-                  <TbJumpRope size="30px" color="#66A5FC" />
+                  <TbJumpRope
+                    size={innerWidth <= 540 ? "22px" : "30px"}
+                    color="#66A5FC"
+                  />
                 </span>
                 <span>구명로프</span>
                 <span>
@@ -271,7 +342,10 @@ const ValleyInfo: FC<Props> = ({
               </div>
               <div className={styles.rescueItem}>
                 <span>
-                  <MdEmojiPeople size="30px" color="#66A5FC" />
+                  <MdEmojiPeople
+                    size={innerWidth <= 540 ? "22px" : "30px"}
+                    color="#66A5FC"
+                  />
                 </span>
                 <span>인명구조함</span>
                 <span>
@@ -282,7 +356,10 @@ const ValleyInfo: FC<Props> = ({
               </div>
               <div className={styles.rescueItem}>
                 <span>
-                  <FaVest size="30px" color="#66A5FC" />
+                  <FaVest
+                    size={innerWidth <= 540 ? "22px" : "30px"}
+                    color="#66A5FC"
+                  />
                 </span>
                 <span>구명조끼</span>
                 <span>
@@ -293,7 +370,10 @@ const ValleyInfo: FC<Props> = ({
               </div>
               <div className={styles.rescueItem}>
                 <span>
-                  <MdHomeRepairService size="30px" color="#66A5FC" />
+                  <MdHomeRepairService
+                    size={innerWidth <= 540 ? "22px" : "30px"}
+                    color="#66A5FC"
+                  />
                 </span>
                 <span>이동식 거치대</span>
                 <span>
@@ -304,7 +384,10 @@ const ValleyInfo: FC<Props> = ({
               </div>
               <div className={styles.rescueItem}>
                 <span>
-                  <LuUtilityPole size="30px" color="#66A5FC" />
+                  <LuUtilityPole
+                    size={innerWidth <= 540 ? "22px" : "30px"}
+                    color="#66A5FC"
+                  />
                 </span>
                 <span>구명봉</span>
                 <span>
@@ -315,7 +398,10 @@ const ValleyInfo: FC<Props> = ({
               </div>
               <div className={styles.rescueItem}>
                 <span>
-                  <BsFillClipboardCheckFill size="30px" color="#66A5FC" />
+                  <BsFillClipboardCheckFill
+                    size={innerWidth <= 540 ? "22px" : "30px"}
+                    color="#66A5FC"
+                  />
                 </span>
                 <span>위험구역 안내표지판</span>
                 <span>

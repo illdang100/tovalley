@@ -109,6 +109,8 @@
   .reportList {
     padding: 0.3em 0.3em 0 0;
     align-items: center;
+    max-width: 330px;
+    min-width: 100%;
   }
 }
 
@@ -124,5 +126,6 @@
   .reportList {
     padding: 0.3em 0.3em 0 0.3em;
     align-items: center;
+    max-width: 100%;
   }
 }

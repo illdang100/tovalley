@@ -374,27 +374,29 @@ const ValleyPage = () => {
   }, []);
 
   return (
-    <div>
+    <div className={styles.valleyPageContainer}>
       <Header />
-      <ValleyInfo
-        waterPlaceDetails={valley.waterPlaceDetails}
-        weatherList={valley.waterPlaceWeathers}
-        accidents={valley.accidents}
-        rescueSupplies={valley.rescueSupplies}
-      />
-      <div style={{ padding: "0 10% 8em 10%" }}>
-        <ValleyQuality waterPlaceDetails={valley.waterPlaceDetails} />
-        <ValleySchedule
-          tripPlanToWaterPlace={peopleCnt}
-          setPeopleCnt={setPeopleCnt}
-          waterPlaceName={valley.waterPlaceDetails.waterPlaceName}
-          detailAddress={valley.waterPlaceDetails.detailAddress}
-          annualVisitors={valley.waterPlaceDetails.annualVisitors}
+      <div className={styles.valleyPageMain}>
+        <ValleyInfo
+          waterPlaceDetails={valley.waterPlaceDetails}
+          weatherList={valley.waterPlaceWeathers}
+          accidents={valley.accidents}
+          rescueSupplies={valley.rescueSupplies}
         />
-        <ValleyReview
-          reviewRespDto={valleyReview}
-          setValleyReview={setValleyReview}
-        />
+        <div className={styles.valleyPage}>
+          <ValleyQuality waterPlaceDetails={valley.waterPlaceDetails} />
+          <ValleySchedule
+            tripPlanToWaterPlace={peopleCnt}
+            setPeopleCnt={setPeopleCnt}
+            waterPlaceName={valley.waterPlaceDetails.waterPlaceName}
+            detailAddress={valley.waterPlaceDetails.detailAddress}
+            annualVisitors={valley.waterPlaceDetails.annualVisitors}
+          />
+          <ValleyReview
+            reviewRespDto={valleyReview}
+            setValleyReview={setValleyReview}
+          />
+        </div>
       </div>
       {loginModal && <LoginModal />}
       <Footer />

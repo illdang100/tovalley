@@ -155,6 +155,31 @@ const Container = styled.div<ContainerProps>`
         ? `#8EBBFF`
         : `#E0E0E0`};
   }
+
+  @media screen and (max-width: 950px) {
+    .peopleCnt {
+      width: 80%;
+      height: 5px;
+    }
+  }
+
+  @media screen and (max-width: 700px) {
+    .peopleCnt {
+      width: 70%;
+    }
+  }
+
+  @media screen and (max-width: 550px) {
+    padding: 0 0.8em;
+  }
+
+  @media screen and (max-width: 450px) {
+    padding: 0 0.6em;
+
+    p {
+      font-size: 0.8rem;
+    }
+  }
 `;
 
 type tripPeopleCnt = {

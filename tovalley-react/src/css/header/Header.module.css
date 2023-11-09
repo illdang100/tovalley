@@ -175,5 +175,22 @@
 
   .mobileNav {
     display: flex;
+    background-color: white;
+  }
+}
+
+@media screen and (max-width: 470px) {
+  .logo img {
+    width: 100px;
+  }
+
+  .signup span {
+    padding: 0.4em 1em;
+  }
+}
+
+@media screen and (max-width: 430px) {
+  .signup span:first-child {
+    display: none;
   }
 }

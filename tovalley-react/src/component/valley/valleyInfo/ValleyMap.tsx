@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   GoogleMap,
   useJsApiLoader,
@@ -25,6 +25,12 @@ interface Place {
 const containerStyle = {
   width: "100%",
   height: "40em",
+  borderRadius: "10px",
+};
+
+const responsiveStyle = {
+  width: "100%",
+  height: "20em",
   borderRadius: "10px",
 };
 
@@ -86,6 +92,14 @@ const ValleyMap = ({ latitude, longitude, menu }: Props) => {
   const [map, setMap] = React.useState(null);
   const [place, setPlace] = useState<any>([]);
   const [selectedMarker, setSelectedMarker] = useState<Place>();
+  const [innerWidth, setInnerWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const resizeListener = () => {
+      setInnerWidth(window.innerWidth);
+    };
+    window.addEventListener("resize", resizeListener);
+  });
 
   const onLoad = React.useCallback(function callback(map: any) {
     const bounds = new window.google.maps.LatLngBounds(center);
@@ -125,7 +139,7 @@ const ValleyMap = ({ latitude, longitude, menu }: Props) => {
 
   return isLoaded ? (
     <GoogleMap
-      mapContainerStyle={containerStyle}
+      mapContainerStyle={innerWidth <= 1260 ? responsiveStyle : containerStyle}
       center={center}
       onLoad={onLoad}
       onUnmount={onUnmount}
