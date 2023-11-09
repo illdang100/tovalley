@@ -2,9 +2,8 @@
 .body {
   margin: auto;
   margin-top: 4em;
-  width: 30%;
+  width: 70%;
   max-width: 25em;
-  min-width: 18em;
 }
 
 /* 회원가입 창 */
@@ -173,4 +172,19 @@
   border-radius: 5px;
   box-shadow: 0 2px 2px rgb(208, 208, 208);
   margin: 0 0.3em;
+}
+
+@media screen and (max-width: 500px) {
+  .confirmBtn,
+  .authBtn {
+    font-size: 0.6rem;
+    padding: 0.6em 0.5em;
+    margin: 0.8em 0 0 1em;
+  }
+
+  .disableBtn {
+    font-size: 0.6rem;
+    padding: 0.6em 0.5em;
+    margin: 0.8em 0 0 1em;
+  }
 }

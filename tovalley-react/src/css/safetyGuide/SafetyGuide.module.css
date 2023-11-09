@@ -1,11 +1,14 @@
+.safetyGuidePage {
+  min-width: 360px;
+}
+
 .safetyGuide {
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  justify-content: center;
 }
 
 .body {
-  padding: 0 2em;
+  padding: 0 8%;
   margin: 4.5em 0;
   min-height: 50vh;
 }
@@ -23,7 +26,6 @@
 
 .guideContainer {
   margin-top: 2.5em;
-  min-width: 1050px;
 }
 
 .detailCategory {
@@ -48,7 +50,7 @@
 
 .guide {
   border: 1.5px solid #66a5fc;
-  padding: 0.5em 1.5em 1em 1.5em;
+  padding: 0.5em 2em 1em 1.5em;
   border-radius: 10px;
 }
 
@@ -57,8 +59,9 @@
   font-size: 1.2rem;
   font-weight: 600;
   display: flex;
-  align-items: end;
+  align-items: center;
   color: #4b4b4b;
+  text-align: justify;
 }
 
 .guide p > span:first-child {
@@ -79,6 +82,7 @@
   display: block;
   margin: 0.5em 0;
   color: #4b4b4b;
+  text-align: justify;
 }
 
 /* 사고 행동 요령 */
@@ -86,8 +90,8 @@
   border: 1.5px solid #66a5fc;
   padding: 2em;
   border-radius: 10px;
-  width: 900px;
   margin-top: 2.5em;
+  max-width: 900px;
 }
 
 .iconContainer {
@@ -107,6 +111,12 @@
   align-items: center;
   margin: 0 1.5em;
   cursor: pointer;
+  width: calc(100% / 3);
+}
+
+.iconsList > div > span {
+  color: #a0a0a0;
+  display: block;
 }
 
 .iconsList > div > span:first-child {
@@ -118,16 +128,13 @@
   border-radius: 100%;
   justify-content: center;
   align-items: center;
-}
-
-.iconsList > div > span {
-  color: #a0a0a0;
-  display: block;
-  margin-bottom: 0.8em;
+  font-size: 70px;
+  margin-bottom: 0.3em;
 }
 
 .iconsList > div > span:last-child {
   font-weight: bold;
+  margin-bottom: 0.5em;
 }
 
 .behaviorTipsContent {
@@ -143,6 +150,7 @@
   display: flex;
   margin: 0;
   margin-top: 0.5em;
+  text-align: justify;
 }
 
 .behaviorTipsContent > p > p {
@@ -153,4 +161,253 @@
 .source {
   margin-top: 1.5em;
   color: rgb(129, 129, 129);
+}
+
+@media screen and (max-width: 870px) {
+  .detailCategory span {
+    font-size: 1rem;
+  }
+
+  .guide > p {
+    font-size: 1rem;
+  }
+}
+
+@media screen and (max-width: 850px) {
+  .category span {
+    font-size: 1rem;
+  }
+
+  .guideContainer {
+    margin-top: 2em;
+  }
+
+  .detailCategory {
+    margin-bottom: 1em;
+  }
+
+  .detailCategory div {
+    padding: 0 0.6em;
+  }
+
+  .detailCategory span {
+    font-size: 0.9rem;
+  }
+
+  .guide p > span:first-child {
+    font-size: 1.5rem;
+    min-width: 28px;
+  }
+
+  .guide > div span {
+    font-size: 0.8rem;
+  }
+
+  .iconsList > div > span:first-child {
+    width: 130px;
+    height: 130px;
+    font-size: 55px;
+  }
+
+  .iconsList > div > span:last-child {
+    font-size: 0.7rem;
+  }
+
+  .behaviorTipsContent > p {
+    font-size: 1rem;
+  }
+}
+
+@media screen and (max-width: 630px) {
+  .body {
+    padding: 0 5%;
+    margin: 4em 0;
+  }
+
+  .safetyGuide {
+    display: inline;
+  }
+
+  .category span {
+    font-size: 0.9rem;
+  }
+
+  .detailCategory span {
+    font-size: 0.8rem;
+  }
+
+  .detailCategory div {
+    padding: 0 0.4em;
+  }
+
+  .guide > p {
+    font-size: 0.9rem;
+  }
+
+  .behaviorTips {
+    padding: 1.5em 0.5em;
+  }
+
+  .iconsList > div {
+    margin: 0 1em;
+  }
+
+  .iconsList > div > span:first-child {
+    width: 110px;
+    height: 110px;
+    font-size: 45px;
+  }
+
+  .iconsList > div > span:last-child {
+    font-size: 0.6rem;
+  }
+
+  .behaviorTipsContent > p {
+    font-size: 0.9rem;
+  }
+}
+
+@media screen and (max-width: 550px) {
+  .guide {
+    padding: 0.5em 5% 1em 4%;
+  }
+
+  .source {
+    margin-top: 0.8em;
+    padding-left: 0.5em;
+  }
+
+  .source span {
+    font-size: 0.7rem;
+  }
+}
+
+@media screen and (max-width: 520px) {
+  .guideContainer {
+    margin-top: 1.5em;
+  }
+
+  .detailCategory {
+    margin-bottom: 0.8em;
+  }
+
+  .detailCategory div:not(:last-of-type) {
+    border-right: none;
+  }
+
+  .detailCategory span {
+    font-size: 0.7rem;
+  }
+
+  .guide p > span:first-child {
+    font-size: 1.3rem;
+    min-width: 25px;
+  }
+
+  .guide > p {
+    font-size: 0.8rem;
+  }
+
+  .iconsList > div {
+    margin: 0 0.6em;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .body {
+    margin: 2em 0;
+  }
+
+  .iconsList > div > span:first-child {
+    width: 90px;
+    height: 90px;
+    font-size: 40px;
+  }
+
+  .iconsList > div > span:last-child {
+    font-size: 0.6rem;
+  }
+
+  .iconsList > div > span:last-child {
+    font-size: 0.5rem;
+  }
+
+  .behaviorTipsContent {
+    margin-top: 1.5em;
+  }
+
+  .behaviorTipsContent > p {
+    font-size: 0.8rem;
+  }
+}
+
+@media screen and (max-width: 460px) {
+  .guideContainer {
+    margin-top: 1.2em;
+  }
+
+  .detailCategory {
+    margin-bottom: 0.6em;
+  }
+
+  .detailCategory div {
+    padding: 0 0.2em;
+  }
+
+  .category span {
+    font-size: 0.8rem;
+  }
+
+  .detailCategory span {
+    font-size: 0.6rem;
+  }
+
+  .guide > p {
+    font-size: 0.7rem;
+  }
+
+  .behaviorTips {
+    padding: 1em 0.5em 1.5em 0.5em;
+  }
+
+  .iconsList > div {
+    margin: 0 0.4em;
+  }
+
+  .iconsList > div > span:first-child {
+    width: 85px;
+    height: 85px;
+    font-size: 35px;
+  }
+
+  .iconsList > div > span:last-child {
+    font-size: 0.48rem;
+  }
+
+  .behaviorTipsContent > p {
+    font-size: 0.7rem;
+  }
+
+  .source {
+    margin-top: 0.5em;
+    padding-left: 0.3em;
+  }
+
+  .source span {
+    font-size: 0.6rem;
+  }
+}
+
+@media screen and (max-width: 375px) {
+  .detailCategory div {
+    padding: 0 0.3em;
+  }
+
+  .detailCategory span {
+    font-size: 0.55rem;
+  }
+
+  .iconsList > div {
+    margin: 0 0.2em;
+  }
 }

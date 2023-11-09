@@ -73,7 +73,7 @@ const LoginPage = () => {
   };
 
   return (
-    <>
+    <div className={styles.loginPage}>
       <Header />
       {/* 로그인 컨테이너 */}
       <div className={styles.body}>
@@ -180,7 +180,7 @@ const LoginPage = () => {
         )}
       </div>
       <Footer />
-    </>
+    </div>
   );
 };
 
@@ -199,6 +199,7 @@ interface Props {
 
 const FindInfo: FC<Props> = ({ setFindView, info }) => {
   useEffect(() => {
+    setView({ ...view, codeView: false });
     document.body.style.cssText = `
       position: fixed; 
       top: -${window.scrollY}px;
@@ -228,11 +229,6 @@ const FindInfo: FC<Props> = ({ setFindView, info }) => {
   const MINUTES_IN_MS = 3 * 60 * 1000;
   const INTERVAL = 1000;
   const [timeLeft, setTimeLeft] = useState<number>(MINUTES_IN_MS);
-
-  const [mailBoxView, setMailBoxView] = useState({
-    view: false,
-    content: "확인",
-  });
 
   const minutes = String(Math.floor((timeLeft / (1000 * 60)) % 60)).padStart(
     2,
@@ -267,11 +263,14 @@ const FindInfo: FC<Props> = ({ setFindView, info }) => {
       .get(`${localhost}/api/members/find-id`, config)
       .then((res) => {
         console.log(res);
-        res.status === 200
-          ? setView({ ...view, emailConfirm: 1 })
-          : setView({ ...view, emailConfirm: 2 });
+        res.status === 200 && setView({ ...view, emailConfirm: 1 });
       })
-      .then((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+        if (err.response.status === 400) {
+          setView({ ...view, emailConfirm: 2 });
+        }
+      });
   };
 
   const authEmail = () => {
@@ -279,19 +278,26 @@ const FindInfo: FC<Props> = ({ setFindView, info }) => {
       email: inputInfo.email,
     };
 
-    setView({ ...view, codeView: true });
+    setInputInfo({ ...inputInfo, code: "" });
+    setView({ ...view, codeView: true, resendView: false });
 
     axios
       .post(`${localhost}/api/email-code`, data)
       .then((res) => {
         console.log(res);
+        setTimeLeft(MINUTES_IN_MS);
       })
       .catch((err) => {
         console.log(err);
         if (err.response.status === 400) {
-          setTimeLeft(0);
-          setMailBoxView({ ...mailBoxView, view: true });
-          setView({ ...view, resendView: true });
+          if (err.response.data.msg === "유효성검사 실패") {
+            alert("이메일 형식을 맞춰주세요.");
+          } else if (err.response.data.msg === "이메일 수신함을 확인하세요") {
+            alert(err.response.data.msg);
+          } else {
+            setTimeLeft(0);
+            setView({ ...view, resendView: true });
+          }
         }
       });
   };
@@ -310,7 +316,13 @@ const FindInfo: FC<Props> = ({ setFindView, info }) => {
         console.log(res);
         res.status === 200 && setView({ ...view, passwordReset: true });
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+        if (err.response.status === 400) {
+          setInputInfo({ ...inputInfo, code: "" });
+          alert("잠시 후 다시 시도해주세요.");
+        }
+      });
   };
 
   const handleResetPassword = () => {
@@ -371,7 +383,7 @@ const FindInfo: FC<Props> = ({ setFindView, info }) => {
                   : "등록된 이메일이 아닙니다."}
               </span>
             </div>
-            {!view.codeView && (
+            {view.codeView && (
               <div className={styles.confirmCode}>
                 <span>인증 코드가 메일로 전송되었습니다.</span>
                 <span className={styles.timer}>
@@ -390,6 +402,7 @@ const FindInfo: FC<Props> = ({ setFindView, info }) => {
                   ) : (
                     <button
                       onClick={() => {
+                        setInputInfo({ ...inputInfo, code: "" });
                         setTimeLeft(MINUTES_IN_MS);
                         authEmail();
                         setView({ ...view, resendView: false });
