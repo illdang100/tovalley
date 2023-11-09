@@ -192,3 +192,137 @@
   background-color: #66a5fc;
   color: white;
 }
+
+@media screen and (max-width: 880px) {
+  .controlYear {
+    margin-right: 0.5em;
+  }
+
+  .controlMonth h1 {
+    font-size: 1.8rem;
+  }
+
+  .controlMonth h2 {
+    font-size: 1.6rem;
+  }
+
+  .addSchedule {
+    margin-left: 1em;
+  }
+
+  .addSchedule span {
+    padding: 0.6em 1em;
+    font-size: 0.8rem;
+  }
+}
+
+@media screen and (max-width: 760px) {
+  .controlYear h1 {
+    font-size: 1.2rem;
+  }
+
+  .controlMonth h1 {
+    font-size: 1.4rem;
+    margin: 0 0 0.1em 0.2em;
+  }
+
+  .controlMonth h2 {
+    font-size: 1.3rem;
+    margin: 0 0.2em 0.1em 0.1em;
+  }
+
+  .controlCalendar {
+    margin: 0 1em;
+  }
+}
+
+@media screen and (max-width: 580px) {
+  .controlYear {
+    margin-right: 0;
+  }
+
+  .addSchedule {
+    margin-left: 0.3em;
+  }
+
+  .addSchedule span {
+    font-size: 0.7rem;
+  }
+
+  .congestionInfo {
+    width: 110px;
+  }
+
+  .congestionInfo > div {
+    margin-right: 0.5em;
+  }
+
+  .congestionInfo > div > span {
+    min-width: 50px;
+    text-align: right;
+    font-size: 0.7rem;
+  }
+
+  .congestionInfo > div > div {
+    height: 5px;
+  }
+}
+
+@media screen and (max-width: 510px) {
+  .addSchedule span {
+    padding: 0.6em 0.7em;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+  }
+
+  .infoBox {
+    width: 340px;
+    margin-left: -170px;
+  }
+
+  .infoBox > div > h1 {
+    font-size: 1.6rem;
+    margin-bottom: 0.8em;
+  }
+}
+
+@media screen and (max-width: 450px) {
+  .controlYear h1 {
+    font-size: 1rem;
+  }
+
+  .controlMonth h1 {
+    font-size: 1.2rem;
+    margin: 0 0 0.1em 0;
+  }
+
+  .controlMonth h2 {
+    font-size: 1.2rem;
+    margin: 0 0 0.1em 0.1em;
+  }
+
+  .controlCalendar {
+    margin: 0 0.2em;
+  }
+
+  .congestionInfo > div > span {
+    min-width: 50px;
+    font-size: 0.6rem;
+  }
+}
+
+@media screen and (max-width: 390px) {
+  .congestionInfo > div > span {
+    min-width: 40px;
+  }
+
+  .addSchedule {
+    margin-right: 0.3em;
+  }
+
+  .addSchedule span {
+    padding: 0.6em 0.8em;
+    font-size: 0.5rem;
+  }
+}

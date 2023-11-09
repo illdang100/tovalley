@@ -219,13 +219,18 @@
   padding-bottom: 0.3em;
 }
 
-.reviewItemRating > span:last-child {
+.reviewItemRating > span:nth-child(3) {
   border: 1px solid #66a5fc;
   color: #66a5fc;
   border-radius: 30px;
   padding: 0.3em 0.8em;
-  margin-left: 1.5em;
+  margin: 0 1.2em;
   font-size: 0.9rem;
+}
+
+.reviewItemRating > span:nth-child(4) {
+  cursor: pointer;
+  display: none;
 }
 
 .reviewDetail > span:last-child {
@@ -254,4 +259,162 @@
   font-weight: bold;
   color: #66a5fc;
   cursor: pointer;
+}
+
+@media screen and (max-width: 880px) {
+  .totalRating > span:first-child {
+    font-weight: bold;
+    font-size: 1.1rem;
+  }
+
+  .totalReview > span:first-child {
+    font-size: 1.1rem;
+    margin-bottom: 1.3em;
+  }
+
+  .totalRatio > span:first-child {
+    font-size: 1.1rem;
+  }
+
+  .ratingNum span {
+    font-size: 1.5rem;
+  }
+
+  .totalReview > span:last-child {
+    font-size: 1.5rem;
+    margin-top: 0.8em;
+  }
+
+  .ratioItem span {
+    font-size: 0.9rem;
+  }
+
+  .ratioItem div {
+    height: 10px;
+    margin: 0.2em 0.8em 0 0.3em;
+  }
+
+  .ratioItem div > div {
+    height: 10px;
+  }
+}
+
+@media screen and (max-width: 730px) {
+  .valleyReview {
+    margin-top: 4em;
+  }
+
+  .valleyReview > span {
+    font-size: 1.3em;
+  }
+
+  .reviewStatistics {
+    padding: 2em;
+  }
+
+  .totalRating > span:first-child {
+    font-size: 0.9rem;
+  }
+
+  .ratingNum span {
+    font-size: 1.3rem;
+  }
+
+  .totalReview > span:first-child {
+    font-size: 0.9rem;
+    margin-bottom: 1.6em;
+  }
+
+  .totalReview > span:last-child {
+    font-size: 1.3rem;
+    margin-top: 1.2em;
+  }
+
+  .totalRatio > span:first-child {
+    font-size: 0.9rem;
+  }
+
+  .ratioItem span {
+    font-size: 0.7rem;
+  }
+
+  .ratioItem div {
+    height: 6px;
+    margin: 0.3em 0.6em 0 0.2em;
+  }
+
+  .ratioItem div > div {
+    height: 6px;
+  }
+
+  .valleyImg {
+    height: 120px;
+  }
+
+  .reviewDetail {
+    padding: 1em 1.2em;
+  }
+
+  .userInfo > div {
+    width: 25px;
+    height: 25px;
+  }
+
+  .userInfo > span:last-child {
+    font-size: 0.9rem;
+  }
+
+  .reviewInfo > span:last-child {
+    font-size: 0.6rem;
+  }
+
+  .reviewItemRating > span:nth-child(3) {
+    font-size: 0.6rem;
+  }
+
+  .reviewDetail > span:last-child {
+    font-size: 0.9rem;
+  }
+
+  .reviewItemRating {
+    margin-bottom: 0.5em;
+  }
+}
+
+@media screen and (max-width: 470px) {
+  .valleyImg {
+    display: none;
+  }
+
+  .reviewDetail {
+    margin-left: 0;
+  }
+
+  .reviewItemRating > span:nth-child(4) {
+    display: block;
+  }
+}
+
+@media screen and (max-width: 440px) {
+  .reviewStatistics {
+    padding: 1.5em 0.5em 1em 1em;
+  }
+
+  .totalRatio {
+    margin-left: 0.8em;
+  }
+
+  .reviewSort {
+    display: flex;
+    justify-content: right;
+    margin: 2em 0 1em 0;
+  }
+
+  .reviewSort div {
+    padding: 0 0.8em;
+  }
+
+  .reviewSort div > span {
+    font-size: 0.9rem;
+  }
 }

@@ -17,6 +17,14 @@ interface Props {
   annualVisitors: string;
 }
 
+const Wrapper = styled.div`
+  margin-top: 5em;
+
+  @media screen and (max-width: 1000px) {
+    margin-top: 0em;
+  }
+`;
+
 const Container = styled.div`
   width: 100%;
   display: flex;
@@ -25,6 +33,15 @@ const Container = styled.div`
   border-radius: 10px;
   padding-bottom: 1em;
   margin-top: 1em;
+`;
+
+const Title = styled.span`
+  font-weight: bold;
+  font-size: 1.6rem;
+
+  @media screen and (max-width: 730px) {
+    font-size: 1.3rem;
+  }
 `;
 
 const AnnualVisitors = styled.div`
@@ -61,8 +78,8 @@ const ValleySchedule: FC<Props> = ({
   const [addScheduleBtn, setAddScheduleBtn] = useState(false);
 
   return (
-    <div style={{ marginTop: "5em" }}>
-      <span style={{ fontWeight: "bold", fontSize: "1.6em" }}>계곡 혼잡도</span>
+    <Wrapper>
+      <Title>계곡 혼잡도</Title>
       <Container>
         <ControlDate
           nowDate={nowDate}
@@ -91,7 +108,7 @@ const ValleySchedule: FC<Props> = ({
           </AnnualVisitors>
         )}
       </Container>
-    </div>
+    </Wrapper>
   );
 };
 

@@ -38,10 +38,10 @@ const DetailReviewImg: FC<Props> = ({ detailReview, setDetailReview }) => {
           className={styles.close}
           onClick={() => setDetailReview({ ...detailReview, view: false })}
         >
-          <IoCloseOutline color="#FFFFFF" size="40px" />
+          <IoCloseOutline color="#FFFFFF" />
         </span>
         <div className={styles.reviewImg}>
-          <img src={imgUrl} alt="리뷰 이미지" width="60%" height="380px" />
+          <img src={imgUrl} alt="리뷰 이미지" width="60%" />
           <div className={styles.imgList}>
             {detailReview.images.map((item, index) => {
               return (

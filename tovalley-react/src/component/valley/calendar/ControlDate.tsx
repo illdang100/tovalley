@@ -9,6 +9,8 @@ import {
 import axiosInstance from "../../../axios_interceptor";
 import { useParams } from "react-router-dom";
 import { AiFillPlusCircle, AiFillMinusCircle } from "react-icons/ai";
+import { BsFillFileEarmarkPostFill } from "react-icons/bs";
+import { BiCheck } from "react-icons/bi";
 
 type tripPeopleCnt = {
   tripPlanToWaterPlace: {
@@ -81,6 +83,14 @@ const ControlDate = ({
 
   const [scheduleInfo, setScheduleInfo] = useState(false);
   const [yearDropdown, setYearDropdown] = useState(false);
+  const [innerWidth, setInnerWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const resizeListener = () => {
+      setInnerWidth(window.innerWidth);
+    };
+    window.addEventListener("resize", resizeListener);
+  });
 
   const congestionInfo = [
     { peopleCnt: "46 ~", color: "#FA7F64" },
@@ -101,7 +111,10 @@ const ControlDate = ({
                 changeYear(-1);
               }}
             >
-              <MdArrowDropDown color="#D9D9D9" size="45px" />
+              <MdArrowDropDown
+                color="#D9D9D9"
+                size={innerWidth <= 760 ? "35px" : "45px"}
+              />
             </span>
           ) : (
             <span
@@ -110,7 +123,10 @@ const ControlDate = ({
                 changeYear(+1);
               }}
             >
-              <MdArrowDropUp color="#D9D9D9" size="45px" />
+              <MdArrowDropUp
+                color="#D9D9D9"
+                size={innerWidth <= 760 ? "35px" : "45px"}
+              />
             </span>
           )}
         </div>
@@ -127,7 +143,10 @@ const ControlDate = ({
               }
             }}
           >
-            <MdNavigateBefore color="#D9D9D9" size="40px" />
+            <MdNavigateBefore
+              color="#D9D9D9"
+              size={innerWidth <= 760 ? "30px" : "40px"}
+            />
           </span>
           <h1>{`${nowDate.getMonth() + 1}`}</h1>
           <h2>월</h2>
@@ -143,7 +162,10 @@ const ControlDate = ({
               }
             }}
           >
-            <MdNavigateNext color="#D9D9D9" size="40px" />
+            <MdNavigateNext
+              color="#D9D9D9"
+              size={innerWidth <= 760 ? "30px" : "40px"}
+            />
           </span>
         </div>
         <div className={styles.addSchedule}>
@@ -156,10 +178,12 @@ const ControlDate = ({
                   : { backgroundColor: "#D3D3D3", cursor: "auto" }
               }
             >
-              등록하기
+              {innerWidth <= 510 ? <BiCheck /> : "등록하기"}
             </span>
           ) : (
-            <span onClick={() => setAddScheduleBtn(true)}>일정 추가</span>
+            <span onClick={() => setAddScheduleBtn(true)}>
+              {innerWidth <= 510 ? <BsFillFileEarmarkPostFill /> : "일정 추가"}
+            </span>
           )}
         </div>
       </div>

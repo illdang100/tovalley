@@ -1,6 +1,6 @@
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import styles from "../../css/valley/ValleyReview.module.css";
-import { MdOutlineChatBubble } from "react-icons/md";
+import { MdOutlineChatBubble, MdImage } from "react-icons/md";
 import { FaUserCircle } from "react-icons/fa";
 import RatingStar from "../common/RatingStar";
 import axiosInstance from "../../axios_interceptor";
@@ -118,6 +118,14 @@ const ValleyReview: FC<Props> = ({ reviewRespDto, setValleyReview }) => {
     view: boolean;
     images: string[];
   }>({ view: false, images: [] });
+  const [innerWidth, setInnerWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const resizeListener = () => {
+      setInnerWidth(window.innerWidth);
+    };
+    window.addEventListener("resize", resizeListener);
+  });
 
   let firstNum = currPage - (currPage % 5) + 1;
   let lastNum = currPage - (currPage % 5) + 5;
@@ -169,7 +177,16 @@ const ValleyReview: FC<Props> = ({ reviewRespDto, setValleyReview }) => {
           <span>총 평점</span>
           <div className={styles.ratingStar}>
             <span>
-              <RatingStar rating={reviewRespDto.waterPlaceRating} size="30px" />
+              <RatingStar
+                rating={reviewRespDto.waterPlaceRating}
+                size={
+                  innerWidth <= 730
+                    ? "20px"
+                    : innerWidth <= 880
+                    ? "25px"
+                    : "30px"
+                }
+              />
             </span>
           </div>
           <div className={styles.ratingNum}>
@@ -181,7 +198,12 @@ const ValleyReview: FC<Props> = ({ reviewRespDto, setValleyReview }) => {
         <div className={styles.totalReview}>
           <span>전체 리뷰 수</span>
           <span>
-            <MdOutlineChatBubble size="70px" color="#999999" />
+            <MdOutlineChatBubble
+              size={
+                innerWidth <= 730 ? "40px" : innerWidth <= 880 ? "50px" : "70px"
+              }
+              color="#999999"
+            />
           </span>
           <span>{reviewRespDto.reviewCnt}개</span>
         </div>
@@ -341,7 +363,10 @@ const ValleyReview: FC<Props> = ({ reviewRespDto, setValleyReview }) => {
                     <div className={styles.userInfo}>
                       {item.memberProfileImg === null ? (
                         <span>
-                          <FaUserCircle size="30px" color="#B7B7B7" />
+                          <FaUserCircle
+                            size={innerWidth <= 730 ? "25px" : "30px"}
+                            color="#B7B7B7"
+                          />
                         </span>
                       ) : (
                         <div>
@@ -354,10 +379,29 @@ const ValleyReview: FC<Props> = ({ reviewRespDto, setValleyReview }) => {
                   </div>
                   <div className={styles.reviewItemRating}>
                     <span>
-                      <RatingStar rating={item.rating} size="20px" />
+                      <RatingStar
+                        rating={item.rating}
+                        size={innerWidth <= 730 ? "16px" : "20px"}
+                      />
                     </span>
                     <span>{item.rating}</span>
                     <span>{item.waterQuality}</span>
+                    {item.reviewImages?.length !== 0 && (
+                      <span
+                        onClick={() =>
+                          item.reviewImages?.length !== 0 &&
+                          setDetailReview({
+                            view: true,
+                            images: item.reviewImages,
+                          })
+                        }
+                      >
+                        <MdImage
+                          color="#696969"
+                          size={innerWidth <= 730 ? "20px" : "28px"}
+                        />
+                      </span>
+                    )}
                   </div>
                   <span>{item.content}</span>
                 </div>

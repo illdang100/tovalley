@@ -10,6 +10,7 @@
 .valleyQualityContent {
   display: flex;
   align-items: center;
+  position: relative;
 }
 
 .qualityDetail {
@@ -66,13 +67,15 @@
 
 .helpInfo {
   position: absolute;
-  top: 0px;
-  left: 90px;
+  top: 40px;
+  left: 110px;
   z-index: 3;
   background-color: white;
   border-radius: 10px;
   box-shadow: 0px 2px 2px rgb(221, 221, 221);
   padding: 1em;
+  max-height: 420px;
+  overflow-y: scroll;
 }
 
 .helpInfo div span:first-child {
@@ -308,4 +311,133 @@
   height: 100%;
   width: 3px;
   background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='white' stroke-width='10' stroke-dasharray='5%2c 29' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");
+}
+
+@media screen and (max-width: 1110px) {
+  .average > span:first-child {
+    font-size: 0.8rem;
+  }
+
+  .average > span:nth-child(2) {
+    font-size: 1rem;
+  }
+
+  .danger > span:first-child {
+    font-size: 0.8rem;
+  }
+
+  .danger > span:nth-child(2) {
+    font-size: 1rem;
+  }
+}
+
+@media screen and (max-width: 1110px) {
+  .qualityDetail {
+    min-width: 0;
+  }
+
+  .waterTemperature {
+    width: 100px;
+    height: 100px;
+  }
+
+  .waterTemperature > span {
+    font-size: 1.2rem;
+  }
+
+  .waterTemperature > div > span:first-child,
+  .waterTemperature > div > span:last-child {
+    font-size: 1.5rem;
+  }
+}
+
+@media screen and (max-width: 1000px) {
+  .average > span:first-child {
+    font-size: 1rem;
+  }
+
+  .average > span:nth-child(2) {
+    font-size: 1.2rem;
+  }
+
+  .danger > span:first-child {
+    font-size: 1rem;
+  }
+
+  .danger > span:nth-child(2) {
+    font-size: 1.2rem;
+  }
+
+  .valleyQualityContent {
+    flex-direction: column;
+  }
+
+  .waterTemperature {
+    width: 140px;
+    height: 140px;
+  }
+
+  .waterTemperature > span {
+    font-size: 1.6rem;
+  }
+
+  .waterTemperature > div > span:first-child,
+  .waterTemperature > div > span:last-child {
+    font-size: 2.4rem;
+  }
+
+  .qualityDetail {
+    margin-top: 1em;
+    margin-right: 0;
+  }
+}
+
+@media screen and (max-width: 730px) {
+  .valleyQuality {
+    margin-top: 3.5em;
+  }
+
+  .valleyQuality > span {
+    font-size: 1.3em;
+  }
+
+  .average > span:first-child {
+    font-size: 0.7rem;
+  }
+
+  .average > span:nth-child(2) {
+    font-size: 0.9rem;
+  }
+
+  .danger > span:first-child {
+    font-size: 0.7rem;
+  }
+
+  .danger > span:nth-child(2) {
+    font-size: 0.9rem;
+  }
+
+  .waterTemperature {
+    width: 100px;
+    height: 100px;
+  }
+
+  .waterTemperature > span {
+    font-size: 1.2rem;
+  }
+
+  .waterTemperature > div > span:first-child,
+  .waterTemperature > div > span:last-child {
+    font-size: 1.8rem;
+  }
+}
+
+@media screen and (max-width: 540px) {
+  .average > span:nth-child(2) {
+    min-width: 60px;
+  }
+
+  .danger > span:nth-child(2) {
+    min-width: 80px;
+  }
 }

@@ -1,3 +1,11 @@
+.valleyPageContainer {
+  min-width: 360px;
+}
+
+.valleyPage {
+  padding: 0 10% 2em 10%;
+}
+
 .modalContainer {
   z-index: 3;
   position: fixed;
@@ -47,4 +55,16 @@
   display: flex;
   justify-content: center;
   font-weight: bold;
+}
+
+@media screen and (max-width: 730px) {
+  .valleyPage {
+    padding: 0 7% 2em 7%;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .valleyPageMain {
+    margin-top: -2.2em;
+  }
 }

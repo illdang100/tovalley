@@ -18,6 +18,10 @@ const Container = styled.div<ContainerProps>`
     color: ${({ weekend }) =>
       weekend === "일" ? `#F52E2E` : weekend === "토" ? `#567BFD` : ``};
   }
+
+  @media screen and (max-width: 450px) {
+    padding: 0 0.6em;
+  }
 `;
 
 interface Props {

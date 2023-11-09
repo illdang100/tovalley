@@ -37,6 +37,7 @@ const ValleyQuality: FC<Props> = ({ waterPlaceDetails }) => {
     <div className={styles.valleyQuality}>
       <span>계곡 수질</span>
       <div className={styles.valleyQualityContent}>
+        {helpInfo && <HelpInfo />}
         <div className={styles.qualityDetail}>
           <div className={styles.qualityGauge}>
             <div className={styles.gaugeTitle}>
@@ -44,7 +45,6 @@ const ValleyQuality: FC<Props> = ({ waterPlaceDetails }) => {
               <span onClick={() => setHelpInfo(!helpInfo)}>
                 <AiOutlineInfoCircle color="#7BA5F6" />
               </span>
-              {helpInfo && <HelpInfo />}
             </div>
             <div className={styles.gaugeBarList}>
               <div className={styles.bodGauge}>
