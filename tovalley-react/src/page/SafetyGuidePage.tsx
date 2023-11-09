@@ -35,7 +35,7 @@ const SafetyGuidePage = () => {
   ];
 
   return (
-    <div>
+    <div className={styles.safetyGuidePage}>
       <Header />
       <div className={styles.safetyGuide}>
         <div className={styles.body}>
@@ -305,11 +305,11 @@ const SafetyGuidePage = () => {
                           }
                         >
                           {index === 0 ? (
-                            <FaPlantWilt size="70px" />
+                            <FaPlantWilt />
                           ) : index === 1 ? (
-                            <FaSwimmer size="70px" />
+                            <FaSwimmer />
                           ) : (
-                            <FaBridgeWater size="70px" />
+                            <FaBridgeWater />
                           )}
                         </span>
                         <span
@@ -339,11 +339,11 @@ const SafetyGuidePage = () => {
                           }
                         >
                           {index === 0 ? (
-                            <GiWaterSplash size="70px" />
+                            <GiWaterSplash />
                           ) : index === 1 ? (
-                            <FaHouseFloodWater size="70px" />
+                            <FaHouseFloodWater />
                           ) : (
-                            <FaCampground size="70px" />
+                            <FaCampground />
                           )}
                         </span>
                         <span
@@ -531,8 +531,10 @@ const SafetyGuidePage = () => {
             </div>
           )}
           <div className={styles.source}>
-            출처 : 행정안전부
-            (http://mepv2.safekorea.go.kr/waterPlay/showSafetyMenualList.do)
+            <span>
+              출처 : 행정안전부
+              (http://mepv2.safekorea.go.kr/waterPlay/showSafetyMenualList.do)
+            </span>
           </div>
         </div>
       </div>
