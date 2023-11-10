@@ -143,7 +143,6 @@ const SignupPage = () => {
       email: inputInfo.email,
     };
 
-    console.log(data);
     setAuthSubmit({ ...authSubmit, authConfirm: true });
 
     axios
@@ -183,7 +182,10 @@ const SignupPage = () => {
           });
         }
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+        setConfirmModal({ view: true, content: err.response.data.msg });
+      });
   };
 
   const handleSignUp = () => {
@@ -219,10 +221,29 @@ const SignupPage = () => {
             window.location.replace("/login");
           }
         })
-        .catch((err) => console.log(err));
-    } else if (available.available !== 1 && !authSubmit.emailAvailable) {
-      setConfirmModal({ view: true, content: "중복 확인이 필요합니다." });
-    } else {
+        .catch((err) => {
+          console.log(err);
+          setConfirmModal({
+            view: true,
+            content: err.response.data.msg,
+          });
+        });
+    } else if (authSubmit.emailDuplication !== 1) {
+      setConfirmModal({
+        view: true,
+        content: "이메일 중복 확인이 필요합니다.",
+      });
+    } else if (!authSubmit.emailAvailable) {
+      setConfirmModal({
+        view: true,
+        content: "이메일 인증이 필요합니다.",
+      });
+    } else if (available.available !== 1) {
+      setConfirmModal({
+        view: true,
+        content: "닉네임 중복 확인이 필요합니다.",
+      });
+    } else if (password.password !== password.confirmPassword) {
       setConfirmModal({ view: true, content: "비밀번호 확인이 필요합니다." });
     }
   };
@@ -309,7 +330,7 @@ const SignupPage = () => {
                     setInputInfo({ ...inputInfo, code: e.target.value });
                   }}
                 />
-                {authSubmit.resendView ? (
+                {!authSubmit.resendView ? (
                   <span className={styles.authBtn} onClick={authCode}>
                     확인
                   </span>
@@ -326,12 +347,6 @@ const SignupPage = () => {
                   </span>
                 )}
               </div>
-            )}
-            {confirmModal.view && (
-              <ConfirmModal
-                content={confirmModal.content}
-                handleModal={setConfirmModal}
-              />
             )}
             <div>
               <span>닉네임</span>
