@@ -7,6 +7,7 @@ import LoginPage from "./page/LoginPage";
 import SignupPage from "./page/SignupPage";
 import MyPage from "./page/MyPage";
 import SafetyGuidePage from "./page/SafetyGuidePage";
+import SocialLoginException from "./page/SocialLoginException";
 
 function App() {
   return (
@@ -19,6 +20,10 @@ function App() {
         <Route path="/valley/:id" element={<ValleyPage />} />
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/safety-guide" element={<SafetyGuidePage />} />
+        <Route
+          path="/social-login-exception"
+          element={<SocialLoginException />}
+        />
       </Routes>
     </div>
   );
