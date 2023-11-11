@@ -4,11 +4,13 @@ import Footer from "../component/footer/Footer";
 import styles from "../css/user/SignupPage.module.css";
 import axios from "axios";
 import ConfirmModal from "../component/common/ConfirmModal";
+import { useNavigate } from "react-router-dom";
 
 const localhost = process.env.REACT_APP_HOST;
 const social_localhost = process.env.REACT_APP_SOCIAL_HOST;
 
 const SignupPage = () => {
+  const navigation = useNavigate();
   const [inputInfo, setInputInfo] = useState({
     name: "",
     email: "",
@@ -431,19 +433,22 @@ const SignupPage = () => {
               src={process.env.PUBLIC_URL + "/img/login/kakao-logo.png"}
               alt="kakao logo"
               width="40px"
-              onClick={kakaoLogin}
+              // onClick={kakaoLogin}
+              onClick={() => navigation("/social-login-exception")}
             />
             <img
               src={process.env.PUBLIC_URL + "/img/login/naver-logo.png"}
               alt="naver logo"
               width="40px"
-              onClick={naverLogin}
+              // onClick={naverLogin}
+              onClick={() => navigation("/social-login-exception")}
             />
             <img
               src={process.env.PUBLIC_URL + "/img/login/google-logo.png"}
               alt="google logo"
               width="40px"
-              onClick={googleLogin}
+              // onClick={googleLogin}
+              onClick={() => navigation("/social-login-exception")}
             />
           </div>
         </div>
