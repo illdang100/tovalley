@@ -72,7 +72,7 @@ const SafetyGuidePage = () => {
               <div className={styles.detailCategory}>
                 {categoryArr.map((item) => {
                   return (
-                    <div>
+                    <div key={item}>
                       <span
                         onClick={() => setDetailCategory(item)}
                         style={
@@ -293,6 +293,7 @@ const SafetyGuidePage = () => {
                   {tipArr1.map((item, index) => {
                     return (
                       <div
+                        key={item}
                         onClick={() => {
                           setTipCategory(item);
                         }}
@@ -327,6 +328,7 @@ const SafetyGuidePage = () => {
                   {tipArr2.map((item, index) => {
                     return (
                       <div
+                        key={item}
                         onClick={() => {
                           setTipCategory(item);
                         }}

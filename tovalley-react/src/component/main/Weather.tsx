@@ -127,9 +127,10 @@ const Weather: FC<Props> = ({ nationalWeather, alert }) => {
     <div className={styles.weather}>
       <h4>전국날씨</h4>
       <div className={styles.dayContainer}>
-        {dateArr.map((item) => {
+        {dateArr.map((item, index) => {
           return (
             <div
+              key={index}
               onClick={() => {
                 setClicked(item);
                 console.log(item);
@@ -177,6 +178,7 @@ const Weather: FC<Props> = ({ nationalWeather, alert }) => {
             {region.map((item, index) => {
               return (
                 <div
+                  key={item}
                   onClick={() =>
                     setRegionClicked(clicked.dailyNationalWeather[index])
                   }

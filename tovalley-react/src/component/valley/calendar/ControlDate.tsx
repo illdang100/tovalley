@@ -188,9 +188,9 @@ const ControlDate = ({
         </div>
       </div>
       <div className={styles.congestionInfo}>
-        {congestionInfo.map((item) => {
+        {congestionInfo.map((item, index) => {
           return (
-            <div>
+            <div key={index}>
               <span>{item.peopleCnt}</span>
               <div style={{ backgroundColor: item.color }} />
             </div>

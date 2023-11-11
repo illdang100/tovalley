@@ -120,7 +120,6 @@ const ValleyListPage = () => {
     sort: string,
     search: string
   ) => {
-    console.log(province, city);
     const config =
       search === ""
         ? city === "전체" || province === "전국"
@@ -158,7 +157,6 @@ const ValleyListPage = () => {
             },
           };
 
-    console.log(config);
     axios
       .get(`${localhost}/api/water-place/list`, config)
       .then((res) => {
@@ -403,7 +401,7 @@ const ValleyListPage = () => {
           </div>
           {category.map((area) => {
             return (
-              <div>
+              <div key={area.name}>
                 <div
                   className={styles.categoryList}
                   style={
@@ -430,6 +428,7 @@ const ValleyListPage = () => {
                     {area.region.map((region) => {
                       return (
                         <span
+                          key={region.ko}
                           onClick={() => {
                             setRegionClick(region);
                           }}
@@ -484,9 +483,10 @@ const ValleyListPage = () => {
             </div>
           </div>
           <div className={styles.valleyList}>
-            {list.content.map((item) => {
+            {list.content.map((item, index) => {
               return (
                 <div
+                  key={`${index}-${item.waterPlaceId}`}
                   className={styles.valleyItem}
                   onClick={() => navigation(`/valley/${item.waterPlaceId}`)}
                 >

@@ -10,6 +10,7 @@ import { MdClose } from "react-icons/md";
 import { MdOutlineStar } from "react-icons/md";
 import axiosInstance from "../../axios_interceptor";
 import { IoIosCloseCircle } from "react-icons/io";
+import ConfirmModal from "../common/ConfirmModal";
 
 interface Props {
   setWriteReviewView: React.Dispatch<React.SetStateAction<boolean>>;
@@ -44,7 +45,7 @@ const WriteReview: FC<Props> = ({ setWriteReviewView, valleyInfo }) => {
   });
   const [uploadImg, setUploadImg] = useState<String[]>([]);
   const [imgFiles, setImgFiles] = useState<File[]>([]);
-  const [confirm, setConfirm] = useState(false);
+  const [confirm, setConfirm] = useState({ view: false, content: "" });
 
   const [star, setStar] = useState({
     one: false,
@@ -85,17 +86,31 @@ const WriteReview: FC<Props> = ({ setWriteReviewView, valleyInfo }) => {
     formData.append("waterQuality", quality);
     formData.append("rating", `${rating}`);
     formData.append("content", review.content);
-    imgFiles.length !== 0 && formData.append("reviewImages", imgFiles[0]);
+    if (imgFiles.length !== 0) {
+      for (let i = 0; i < imgFiles.length; i++) {
+        formData.append("reviewImages", imgFiles[i]);
+      }
+    }
 
-    review.quality !== "" &&
+    if (
+      review.quality !== "" &&
       review.content !== "" &&
+      (star.one || star.two || star.three || star.four || star.five)
+    ) {
       axiosInstance
         .post("/api/auth/reviews", formData)
         .then((res) => {
           console.log(res);
-          res.status === 201 && setConfirm(true);
+          res.status === 201 &&
+            setConfirm({
+              view: true,
+              content: "리뷰가 정상적으로 등록되었습니다.",
+            });
         })
         .catch((err) => console.log(err));
+    } else {
+      setConfirm({ view: true, content: "항목을 모두 입력해주세요." });
+    }
   };
 
   const saveImgFile = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -207,8 +222,8 @@ const WriteReview: FC<Props> = ({ setWriteReviewView, valleyInfo }) => {
             {uploadImg.length !== 0 && (
               <div className={styles.previewImg}>
                 {uploadImg.map((image, id) => (
-                  <div className={styles.imageContainer}>
-                    <div key={id}>
+                  <div key={id} className={styles.imageContainer}>
+                    <div>
                       <img src={`${image}`} alt={`${image}-${id}`} />
                     </div>
                     <span onClick={() => handleDeleteImage(id)}>
@@ -225,6 +240,7 @@ const WriteReview: FC<Props> = ({ setWriteReviewView, valleyInfo }) => {
               {qualityBtn.map((item, index) => {
                 return (
                   <div
+                    key={index}
                     onClick={() => setReview({ ...review, quality: item })}
                     style={
                       review.quality === item ? { borderColor: "#66A5FC" } : {}
@@ -271,7 +287,13 @@ const WriteReview: FC<Props> = ({ setWriteReviewView, valleyInfo }) => {
           <button>등록</button>
         </div>
       </form>
-      {confirm && <ConfirmModal content="리뷰가 정상적으로 등록되었습니다." />}
+      {confirm.view && confirm.content === "항목을 모두 입력해주세요." && (
+        <ConfirmModal content={confirm.content} handleModal={setConfirm} />
+      )}
+      {confirm.view &&
+        confirm.content === "리뷰가 정상적으로 등록되었습니다." && (
+          <ConfirmModal content={confirm.content} />
+        )}
     </div>
   );
 };
@@ -383,37 +405,6 @@ const StarItem: FC<StarProps> = ({ num, item, setStar }) => {
         <MdOutlineStar color="#B5B5B5" size="40px" />
       )}
     </span>
-  );
-};
-
-const ConfirmModal: FC<{ content: string }> = ({ content }) => {
-  useEffect(() => {
-    document.body.style.cssText = `
-          position: fixed; 
-          top: -${window.scrollY}px;
-          overflow-y: scroll;
-          width: 100%;`;
-    return () => {
-      const scrollY = document.body.style.top;
-      document.body.style.cssText = "";
-      window.scrollTo(0, parseInt(scrollY || "0", 10) * -1);
-    };
-  }, []);
-
-  return (
-    <div className={styles.modalContainer}>
-      <div className={styles.modalBox}>
-        <div className={styles.modalContent}>
-          <span>{content}</span>
-        </div>
-        <div
-          className={styles.confirm}
-          onClick={() => window.location.reload()}
-        >
-          확인
-        </div>
-      </div>
-    </div>
   );
 };
 

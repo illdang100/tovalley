@@ -75,7 +75,7 @@ const WeatherDetail: FC<Props> = ({ dailyNationalWeather }) => {
         <div className={styles.weatherAddList}>
           {detailMenu.map((item, index) => {
             return (
-              <div className={styles.weatherAdd}>
+              <div className={styles.weatherAdd} key={`${index}-${item}`}>
                 <span>{item}</span>
                 <div>
                   <span>

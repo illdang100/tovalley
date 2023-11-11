@@ -181,9 +181,10 @@ const Report: FC<Props> = ({ alert }) => {
               <div />
             </div>
           ) : (
-            currAlertList.map((item) => {
+            currAlertList.map((item, index) => {
               return (
                 <div
+                  key={index}
                   className={styles.reportItem}
                   style={
                     currAlertList.length > 1
@@ -250,9 +251,10 @@ const Report: FC<Props> = ({ alert }) => {
               <div />
             </div>
           ) : (
-            currPreAlertList.map((item) => {
+            currPreAlertList.map((item, index) => {
               return (
                 <div
+                  key={index}
                   className={styles.reportItem}
                   style={
                     currPreAlertList.length > 1

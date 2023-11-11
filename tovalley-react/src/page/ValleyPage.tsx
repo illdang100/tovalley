@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import Header from "../component/header/Header";
 import Footer from "../component/footer/Footer";
 import ValleyInfo from "../component/valley/valleyInfo/ValleyInfo";
@@ -8,6 +8,7 @@ import ValleyReview from "../component/valley/ValleyReview";
 import axiosInstance from "../axios_interceptor";
 import { useNavigate, useParams } from "react-router-dom";
 import styles from "../css/valley/ValleyPage.module.css";
+import { IoClose } from "react-icons/io5";
 
 type valley = {
   waterPlaceWeathers: {
@@ -33,7 +34,7 @@ type valley = {
     annualVisitors: string;
     safetyMeasures: number | string;
     waterPlaceSegment: number;
-    dangerSegments: number | string;
+    dangerSegments: string;
     dangerSignboardsNum: number | string;
     deepestDepth: number;
     avgDepth: number;
@@ -353,6 +354,7 @@ const ValleyPage = () => {
   });
 
   const [loginModal, setLoginModal] = useState(false);
+  const [dangerSegmentsView, setDangerSegmentsView] = useState(true);
 
   const { id } = useParams();
 
@@ -398,8 +400,34 @@ const ValleyPage = () => {
           />
         </div>
       </div>
+      {valley.waterPlaceDetails.dangerSegments !== "" && dangerSegmentsView && (
+        <DangerSegments
+          contents={valley.waterPlaceDetails.dangerSegments}
+          handleModal={setDangerSegmentsView}
+        />
+      )}
       {loginModal && <LoginModal />}
       <Footer />
+    </div>
+  );
+};
+
+const DangerSegments: FC<{
+  contents: string;
+  handleModal: React.Dispatch<React.SetStateAction<boolean>>;
+}> = ({ contents, handleModal }) => {
+  return (
+    <div className={styles.dangerSegments}>
+      <span onClick={() => handleModal(false)}>
+        <IoClose />
+      </span>
+      <div className={styles.title}>
+        <span>🚨</span>
+        <span>안전안내사항</span>
+      </div>
+      <div className={styles.contents}>
+        <span>{contents}</span>
+      </div>
     </div>
   );
 };

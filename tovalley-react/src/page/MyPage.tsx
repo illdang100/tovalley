@@ -572,7 +572,7 @@ const MyPage = () => {
               <div className={styles.reviewContainer}>
                 {user.myReviews.content.map((item) => {
                   return (
-                    <div className={styles.reviewItem}>
+                    <div key={item.reviewId} className={styles.reviewItem}>
                       <div
                         className={styles.reviewTitle}
                         onClick={() =>

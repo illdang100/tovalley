@@ -132,7 +132,7 @@ const Accident: FC<Props> = ({ accident, setRegionAccident }) => {
         <div className={styles.regionMenu}>
           {region.map((item, index) => {
             return (
-              <div>
+              <div key={index}>
                 {index === 0 && (
                   <span ref={scrollPrev} className={styles.blank}>
                     ㅤ

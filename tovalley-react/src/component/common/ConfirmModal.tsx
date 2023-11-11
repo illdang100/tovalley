@@ -3,7 +3,7 @@ import styles from "../../css/common/ConfirmModal.module.css";
 
 interface Props {
   content: string;
-  handleModal: React.Dispatch<
+  handleModal?: React.Dispatch<
     React.SetStateAction<{
       view: boolean;
       content: string;
@@ -33,7 +33,11 @@ const ConfirmModal: FC<Props> = ({ content, handleModal }) => {
         </div>
         <div
           className={styles.confirm}
-          onClick={() => handleModal({ view: false, content: content })}
+          onClick={() =>
+            handleModal
+              ? handleModal({ view: false, content: content })
+              : window.location.reload()
+          }
         >
           확인
         </div>

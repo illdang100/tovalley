@@ -159,6 +159,7 @@ const PopularValley: FC<Props> = ({ place, setPopularValley }) => {
         {place.map((item, index) => {
           return (
             <div
+              key={index}
               className={styles.mobilePopularValley}
               onClick={() => {
                 navigation(`/valley/${item.waterPlaceId}`);

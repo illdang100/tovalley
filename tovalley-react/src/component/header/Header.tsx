@@ -17,7 +17,6 @@ const Header = () => {
 
   useEffect(() => {
     const loginStatus = cookies.get("ISLOGIN");
-    console.log("loginStatus : ", loginStatus);
 
     if (loginStatus === true) {
       setLogin(true);
