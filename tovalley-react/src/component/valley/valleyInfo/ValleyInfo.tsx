@@ -148,6 +148,7 @@ const ValleyInfo: FC<Props> = ({
             {menu.map((item) => {
               return (
                 <span
+                  key={item}
                   onClick={() => setMapMenu(item)}
                   className={
                     item === mapMenu ? styles.clickedMenu : styles.placeMenu
@@ -173,7 +174,7 @@ const ValleyInfo: FC<Props> = ({
             <div className={styles.weatherList}>
               {weatherList.map((item, index) => {
                 return (
-                  <div className={styles.weatherItem}>
+                  <div key={index} className={styles.weatherItem}>
                     <div>
                       <div className={styles.weatherInfoIcon}>
                         <span>
@@ -201,7 +202,10 @@ const ValleyInfo: FC<Props> = ({
                         </div>
                         {weatherDetail[index].map((detail) => {
                           return (
-                            <div className={styles.weatherItemDetail}>
+                            <div
+                              key={detail.name}
+                              className={styles.weatherItemDetail}
+                            >
                               <span>{detail.name}</span>
                               <span>{detail.value}</span>
                             </div>
@@ -233,7 +237,7 @@ const ValleyInfo: FC<Props> = ({
             <div className={styles.mobileWeatherList}>
               {weatherList.map((item, index) => {
                 return (
-                  <div className={styles.mobileWeatherItem}>
+                  <div key={index} className={styles.mobileWeatherItem}>
                     <div className={styles.dayInfo}>
                       {dateFormat(item.weatherDate) === "오늘" ? (
                         <>
@@ -271,7 +275,7 @@ const ValleyInfo: FC<Props> = ({
                       <div className={styles.moblieWeatherItemDetail}>
                         {weatherDetail[index].map((detail) => {
                           return (
-                            <div>
+                            <div key={detail.name}>
                               <span>{detail.value}</span>
                             </div>
                           );
@@ -280,7 +284,7 @@ const ValleyInfo: FC<Props> = ({
                       <div className={styles.mobileWeatherDesc}>
                         {weatherDetail[index].map((detail) => {
                           return (
-                            <div>
+                            <div key={detail.name}>
                               <span>{detail.name}</span>
                             </div>
                           );

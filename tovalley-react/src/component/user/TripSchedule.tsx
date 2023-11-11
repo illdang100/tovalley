@@ -184,6 +184,7 @@ const TripSchedule: FC<Props> = ({
       {tripSchedules.map((item) => {
         return (
           <TripScheduleItem
+            key={item.tripScheduleId}
             schedule={item}
             scheduleBtn={scheduleBtn}
             checkItemHandler={checkedItemHandler}

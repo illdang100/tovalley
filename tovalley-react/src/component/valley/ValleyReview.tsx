@@ -317,7 +317,7 @@ const ValleyReview: FC<Props> = ({ reviewRespDto, setValleyReview }) => {
         <div className={styles.reviewSort}>
           {sortMenu.map((item) => {
             return (
-              <div>
+              <div key={item}>
                 <span
                   onClick={() => setSort(item)}
                   style={
@@ -335,7 +335,7 @@ const ValleyReview: FC<Props> = ({ reviewRespDto, setValleyReview }) => {
         <div className={styles.reviewContainer}>
           {reviewRespDto.reviews.content.map((item) => {
             return (
-              <div className={styles.reviewItem}>
+              <div key={item.reviewId} className={styles.reviewItem}>
                 <div
                   className={styles.valleyImg}
                   onClick={() =>
