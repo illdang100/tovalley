@@ -46,7 +46,7 @@ public class ReviewApiController {
     @GetMapping("/water-places/{id}/reviews")
     @Operation(summary = "물놀이 장소별 리뷰 조회", description = "물놀이 장소별 리뷰 정보를 반환합니다.")
     public ResponseEntity<?> getWaterPlaceReviews(@PathVariable("id") Long waterPlaceId,
-                                                  @PageableDefault(size = 5, sort = "createdDate", direction = Sort.Direction.ASC) Pageable pageable) {
+                                                  @PageableDefault(size = 5, sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable) {
 
         WaterPlaceReviewDetailRespDto result = reviewService.getReviewsByWaterPlaceId(waterPlaceId, pageable);  
 
