@@ -139,7 +139,7 @@ const ValleyReview: FC<Props> = ({ reviewRespDto, setValleyReview }) => {
             params: {
               sort: "createdDate,desc",
               page: page - 1,
-              size: 10,
+              size: 5,
             },
           }
         : sort === "평점 높은 순"
@@ -147,14 +147,14 @@ const ValleyReview: FC<Props> = ({ reviewRespDto, setValleyReview }) => {
             params: {
               sort: "rating,desc",
               page: page - 1,
-              size: 10,
+              size: 5,
             },
           }
         : {
             params: {
               sort: "rating,asc",
               page: page - 1,
-              size: 10,
+              size: 5,
             },
           };
 
