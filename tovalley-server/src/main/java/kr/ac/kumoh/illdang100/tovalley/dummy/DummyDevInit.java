@@ -82,78 +82,8 @@ public class DummyDevInit extends DummyObject {
             initializeAdminMember();
 
             fetchAndSaveData();
-            myPageDummyData();
+            saveDummyData();
         };
-    }
-
-    private void myPageDummyData() {
-
-        // 경기도 계곡
-        WaterPlace a = waterPlaceRepository.findById(20L).get();
-        WaterPlace b = waterPlaceRepository.findById(21L).get();
-        WaterPlace c = waterPlaceRepository.findById(22L).get();
-        WaterPlace d = waterPlaceRepository.findById(26L).get();
-        WaterPlace e = waterPlaceRepository.findById(28L).get();
-
-        // 세종시 계곡
-        WaterPlace f = waterPlaceRepository.findById(1122L).get();
-        WaterPlace g = waterPlaceRepository.findById(1117L).get();
-        WaterPlace h = waterPlaceRepository.findById(18L).get();
-        WaterPlace i = waterPlaceRepository.findById(550L).get();
-        WaterPlace j = waterPlaceRepository.findById(1119L).get();
-
-        // 충북 계곡
-        WaterPlace k = waterPlaceRepository.findById(476L).get();
-        WaterPlace l = waterPlaceRepository.findById(1210L).get();
-        WaterPlace m = waterPlaceRepository.findById(479L).get();
-        WaterPlace n = waterPlaceRepository.findById(478L).get();
-        WaterPlace o = waterPlaceRepository.findById(475L).get();
-
-        // 강원도 계곡
-        WaterPlace p = waterPlaceRepository.findById(112L).get();
-        WaterPlace q = waterPlaceRepository.findById(114L).get();
-        WaterPlace r = waterPlaceRepository.findById(125L).get();
-        WaterPlace s = waterPlaceRepository.findById(145L).get();
-        WaterPlace t = waterPlaceRepository.findById(147L).get();
-
-        // 경북 계곡
-        WaterPlace u = waterPlaceRepository.findById(763L).get();
-        WaterPlace v = waterPlaceRepository.findById(723L).get();
-        WaterPlace w = waterPlaceRepository.findById(731L).get();
-        WaterPlace x = waterPlaceRepository.findById(781L).get();
-        WaterPlace y = waterPlaceRepository.findById(839L).get();
-
-        Member me = memberRepository.findByUsername("kakao_3094640543").get();
-
-        LocalDate now = LocalDate.now();
-        List<TripSchedule> tripScheduleList = new ArrayList<>();
-        TripSchedule tripSchedule1 = newTripSchedule(me, a, LocalDate.of(2023, 8, 1), 5);
-        TripSchedule tripSchedule2 = newTripSchedule(me, b, LocalDate.of(2023, 8, 2), 2);
-        TripSchedule tripSchedule3 = newTripSchedule(me, c, LocalDate.of(2023, 8, 3), 8);
-        TripSchedule tripSchedule4 = newTripSchedule(me, d, LocalDate.of(2023, 8, 4), 10);
-        TripSchedule tripSchedule5 = newTripSchedule(me, e, LocalDate.of(2023, 8, 5), 4);
-        TripSchedule tripSchedule6 = newTripSchedule(me, f, LocalDate.of(2023, 8, 6), 3);
-        TripSchedule tripSchedule7 = newTripSchedule(me, g, LocalDate.of(2023, 8, 7), 5);
-        TripSchedule tripSchedule8 = newTripSchedule(me, h, LocalDate.of(2023, 8, 8), 5);
-        TripSchedule tripSchedule9 = newTripSchedule(me, i, LocalDate.of(2023, 8, 9), 6);
-        TripSchedule tripSchedule10 = newTripSchedule(me, j, now.plusDays(3), 7);
-        TripSchedule tripSchedule11 = newTripSchedule(me, k, now.plusDays(5), 8);
-        TripSchedule tripSchedule12 = newTripSchedule(me, l, now.plusDays(7), 11);
-
-        tripScheduleList.add(tripSchedule1);
-        tripScheduleList.add(tripSchedule2);
-        tripScheduleList.add(tripSchedule3);
-        tripScheduleList.add(tripSchedule4);
-        tripScheduleList.add(tripSchedule5);
-        tripScheduleList.add(tripSchedule6);
-        tripScheduleList.add(tripSchedule7);
-        tripScheduleList.add(tripSchedule8);
-        tripScheduleList.add(tripSchedule9);
-        tripScheduleList.add(tripSchedule10);
-        tripScheduleList.add(tripSchedule11);
-        tripScheduleList.add(tripSchedule12);
-
-        tripScheduleRepository.saveAll(tripScheduleList);
     }
 
     private void initializeAdminMember() {
@@ -1086,5 +1016,75 @@ public class DummyDevInit extends DummyObject {
                 WaterQualityReviewEnum.CLEAN, waterPlaceRepository));
         reviewRepository.save(newReview(y, tripSchedule175, "이곳은 자연 그대로의 아름다움이 담긴 곳이에요. 푸른 물고기와 맑은 물이 인상적이었습니다.", 3,
                 WaterQualityReviewEnum.FINE, waterPlaceRepository));
+    }
+
+    private void myPageDummyData() {
+
+        // 경기도 계곡
+        WaterPlace a = waterPlaceRepository.findById(20L).get();
+        WaterPlace b = waterPlaceRepository.findById(21L).get();
+        WaterPlace c = waterPlaceRepository.findById(22L).get();
+        WaterPlace d = waterPlaceRepository.findById(26L).get();
+        WaterPlace e = waterPlaceRepository.findById(28L).get();
+
+        // 세종시 계곡
+        WaterPlace f = waterPlaceRepository.findById(1122L).get();
+        WaterPlace g = waterPlaceRepository.findById(1117L).get();
+        WaterPlace h = waterPlaceRepository.findById(18L).get();
+        WaterPlace i = waterPlaceRepository.findById(550L).get();
+        WaterPlace j = waterPlaceRepository.findById(1119L).get();
+
+        // 충북 계곡
+        WaterPlace k = waterPlaceRepository.findById(476L).get();
+        WaterPlace l = waterPlaceRepository.findById(1210L).get();
+        WaterPlace m = waterPlaceRepository.findById(479L).get();
+        WaterPlace n = waterPlaceRepository.findById(478L).get();
+        WaterPlace o = waterPlaceRepository.findById(475L).get();
+
+        // 강원도 계곡
+        WaterPlace p = waterPlaceRepository.findById(112L).get();
+        WaterPlace q = waterPlaceRepository.findById(114L).get();
+        WaterPlace r = waterPlaceRepository.findById(125L).get();
+        WaterPlace s = waterPlaceRepository.findById(145L).get();
+        WaterPlace t = waterPlaceRepository.findById(147L).get();
+
+        // 경북 계곡
+        WaterPlace u = waterPlaceRepository.findById(763L).get();
+        WaterPlace v = waterPlaceRepository.findById(723L).get();
+        WaterPlace w = waterPlaceRepository.findById(731L).get();
+        WaterPlace x = waterPlaceRepository.findById(781L).get();
+        WaterPlace y = waterPlaceRepository.findById(839L).get();
+
+        Member me = memberRepository.findByUsername("kakao_3094640543").get();
+
+        LocalDate now = LocalDate.now();
+        List<TripSchedule> tripScheduleList = new ArrayList<>();
+        TripSchedule tripSchedule1 = newTripSchedule(me, a, LocalDate.of(2023, 8, 1), 5);
+        TripSchedule tripSchedule2 = newTripSchedule(me, b, LocalDate.of(2023, 8, 2), 2);
+        TripSchedule tripSchedule3 = newTripSchedule(me, c, LocalDate.of(2023, 8, 3), 8);
+        TripSchedule tripSchedule4 = newTripSchedule(me, d, LocalDate.of(2023, 8, 4), 10);
+        TripSchedule tripSchedule5 = newTripSchedule(me, e, LocalDate.of(2023, 8, 5), 4);
+        TripSchedule tripSchedule6 = newTripSchedule(me, f, LocalDate.of(2023, 8, 6), 3);
+        TripSchedule tripSchedule7 = newTripSchedule(me, g, LocalDate.of(2023, 8, 7), 5);
+        TripSchedule tripSchedule8 = newTripSchedule(me, h, LocalDate.of(2023, 8, 8), 5);
+        TripSchedule tripSchedule9 = newTripSchedule(me, i, LocalDate.of(2023, 8, 9), 6);
+        TripSchedule tripSchedule10 = newTripSchedule(me, j, now.plusDays(3), 7);
+        TripSchedule tripSchedule11 = newTripSchedule(me, k, now.plusDays(5), 8);
+        TripSchedule tripSchedule12 = newTripSchedule(me, l, now.plusDays(7), 11);
+
+        tripScheduleList.add(tripSchedule1);
+        tripScheduleList.add(tripSchedule2);
+        tripScheduleList.add(tripSchedule3);
+        tripScheduleList.add(tripSchedule4);
+        tripScheduleList.add(tripSchedule5);
+        tripScheduleList.add(tripSchedule6);
+        tripScheduleList.add(tripSchedule7);
+        tripScheduleList.add(tripSchedule8);
+        tripScheduleList.add(tripSchedule9);
+        tripScheduleList.add(tripSchedule10);
+        tripScheduleList.add(tripSchedule11);
+        tripScheduleList.add(tripSchedule12);
+
+        tripScheduleRepository.saveAll(tripScheduleList);
     }
 }
