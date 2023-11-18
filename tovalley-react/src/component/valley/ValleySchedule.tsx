@@ -104,7 +104,7 @@ const ValleySchedule: FC<Props> = ({
         {annualVisitors !== "" && (
           <AnnualVisitors>
             <span>연평균 방문자 수</span>
-            <span>{annualVisitors}</span>
+            <span>{(Number(annualVisitors) * 1000).toLocaleString()}</span>
           </AnnualVisitors>
         )}
       </Container>
