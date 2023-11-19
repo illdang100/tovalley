@@ -82,7 +82,7 @@ public class DummyDevInit extends DummyObject {
             initializeAdminMember();
 
             fetchAndSaveData();
-            saveDummyData();
+//            saveDummyData();
         };
     }
 
