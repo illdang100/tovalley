@@ -5,7 +5,7 @@
 ## 💡 매뉴얼 (youtube)
 
 
-## ☑️ 핵심기능 설명
+## ☑️ 핵심 기능 설명
 <a href="https://github.com/wl2258/tovalley/wiki/%EA%B8%B0%EB%8A%A5-%EC%86%8C%EA%B0%9C">🔗 핵심 기능 설명 링크</a>
 <br/><br/>
 
