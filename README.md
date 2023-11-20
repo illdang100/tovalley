@@ -1,11 +1,13 @@
-![image](https://github.com/wl2258/tovalley/assets/77067383/430b5e05-628a-4409-82ee-b02c62db2549)# tovalley
+# tovalley
 물놀이 인명사고를 예방하기 위해 물놀이 장소의 안전 정보를 제공하고, 리뷰 및 평점 작성 기능을 통해 사용자들의 경험을 공유할 수 있는 웹사이트
 <p align="center"><img src="https://github.com/illdang100/molly/assets/77067383/a005dbdd-79ac-4bdc-b94c-2ecec6fa4400" width="100%"/></p>
 
 ## 💡 매뉴얼 (youtube)
 
-## ☑️ 핵심기능 설명
 
+## ☑️ 핵심기능 설명
+<a href="https://github.com/wl2258/tovalley/wiki/%EA%B8%B0%EB%8A%A5-%EC%86%8C%EA%B0%9C">🔗 핵심 기능 설명 링크</a>
+<br/><br/>
 
 ## 🐾 개발 일정
 <p align="center"><img src="" width=100% /></p>
@@ -13,7 +15,7 @@
 ## 🌈 전체 시스템 구조
 <p align="center"><img src="https://github.com/illdang100/tovalley/assets/97449471/914a7993-3f24-40c2-8f48-35f445e35d24" width=600 height=300 /></p>
 
-## 📃 데이터베이스 구조
+## 📃 데이터베이스 구조🔗
 <p align="center"><img src="https://github.com/illdang100/tovalley/assets/77067383/3f1fbd3f-130f-4432-8b7d-2dfdb92e029b" width=600 height=350 /></p>
 
 ## 🖨️ Api 명세서
