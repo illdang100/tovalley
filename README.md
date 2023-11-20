@@ -1,13 +1,14 @@
-# tovalley
+![image](https://github.com/wl2258/tovalley/assets/77067383/430b5e05-628a-4409-82ee-b02c62db2549)# tovalley
 물놀이 인명사고를 예방하기 위해 물놀이 장소의 안전 정보를 제공하고, 리뷰 및 평점 작성 기능을 통해 사용자들의 경험을 공유할 수 있는 웹사이트
 <p align="center"><img src="https://github.com/illdang100/molly/assets/77067383/a005dbdd-79ac-4bdc-b94c-2ecec6fa4400" width="100%"/></p>
 
 ## 💡 매뉴얼 (youtube)
 
 ## ☑️ 핵심기능 설명
-#### ✔️ 소셜 로그인
-간편한 로그인 기능을 제공합니다.. </br>
-구글, 카카오, 네이버 중 원하는 소셜로 로그인 가능합니다. </br>
+#### ✔️ 홈 페이지
+- 지역별 사고 발생수를 그래프를 통해 확인할 수 있다.
+<p align="center"><img src="https://github.com/wl2258/tovalley/assets/77067383/4904001c-4568-4c4a-87a5-14af4b1a2861"/></p>
+
 
 #### ✔️ 주변 의료시설 정보 기능
 
