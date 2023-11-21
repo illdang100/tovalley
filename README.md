@@ -103,8 +103,10 @@
 ```
 <br/><br/>
 #### Open api 
-- 기상청_기상특보 조회서비스
-- 행정안전부_생활안전지도 물놀이관리지역
+- 기상청
+  - 기상특보 조회서비스
+- 행정안전부
+  - 생활안전지도 물놀이관리지역
 - Google Maps API
   - Place Photo API
     - Place Search API
