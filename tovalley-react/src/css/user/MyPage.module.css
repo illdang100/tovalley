@@ -374,6 +374,57 @@
   font-size: 15px;
 }
 
+.modalContainer {
+  z-index: 3;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ffffffbd;
+  backdrop-filter: blur(2px);
+  background-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgb(255, 255, 255) 100%
+  );
+}
+
+.modalBox {
+  width: 280px;
+  height: 110px;
+  border-radius: 15px;
+  background-color: #ffffff;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -130px;
+  margin-top: -90px;
+  box-shadow: 0px 2px 4px #b5b5b5;
+}
+
+.modalContent {
+  height: 70px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  font-size: 0.8rem;
+  padding: 1em;
+  box-sizing: border-box;
+}
+
+.confirm {
+  border-top: 1px solid rgb(231, 231, 231);
+  color: #66a5fc;
+  padding: 0.4em;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  font-weight: bold;
+}
+
 @media screen and (max-width: 1040px) {
   .myPage > h1 {
     font-size: 1.4rem;

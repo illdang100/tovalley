@@ -308,16 +308,6 @@ const ValleyPage = () => {
           reviewImages: [],
           waterQuality: "",
         },
-        {
-          reviewId: 0,
-          memberProfileImg: null,
-          nickname: "",
-          rating: 0,
-          createdReviewDate: "",
-          content: "",
-          reviewImages: [],
-          waterQuality: "",
-        },
       ],
       pageable: {
         sort: {

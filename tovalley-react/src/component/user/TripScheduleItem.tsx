@@ -101,15 +101,16 @@ const TripScheduleItem: FC<Props> = ({
           )}
         </div>
         <div>
-          <img
-            src={
-              schedule.waterPlaceImg === null
-                ? process.env.PUBLIC_URL + "/img/default-image.png"
-                : schedule.waterPlaceImg
-            }
-            alt="계곡 사진"
-            width="180px"
-          />
+          <div className={styles.imageContainer}>
+            <img
+              src={
+                schedule.waterPlaceImg === null
+                  ? process.env.PUBLIC_URL + "/img/default-image.png"
+                  : schedule.waterPlaceImg
+              }
+              alt="계곡 사진"
+            />
+          </div>
           <div
             className={styles.scheduleInfo}
             onClick={() => navigation(`/valley/${schedule.waterPlaceId}`)}
