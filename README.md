@@ -126,3 +126,8 @@
 #### 💭 협업 및 버전관리
 <span><img src="https://img.shields.io/badge/GitHub-000000?style=flat-square&logo=GitHub&logoColor=white"/></span>
 <span><img src="https://img.shields.io/badge/Slack-4A154B?style=flat-square&logo=Slack&logoColor=white"/></span>
+
+#### 🛜 배포
+<span><img src="https://img.shields.io/badge/Amazon AWS-232F3E?style=flat-square&logo=amazonaws&logoColor=white"/></span>
+<span><img src="https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=Docker&logoColor=white"/></span>
+<span><img src="https://img.shields.io/badge/nginx-009639?style=flat-square&logo=nginx&logoColor=white"/></span>
