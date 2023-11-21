@@ -19,7 +19,7 @@
 <p align="center"><img src="https://github.com/illdang100/tovalley/assets/97449471/914a7993-3f24-40c2-8f48-35f445e35d24" width=600 height=300 /></p>
 <br/><br/>
 
-## 📃 데이터베이스 구조🔗
+## 📃 데이터베이스 구조
 <p align="center"><img src="https://github.com/illdang100/tovalley/assets/77067383/3f1fbd3f-130f-4432-8b7d-2dfdb92e029b" width=600 height=350 /></p>
 <br/><br/>
 
