@@ -166,6 +166,7 @@ const MyPage = () => {
   const [scheduleBtn, setScheduleBtn] = useState("앞으로의 일정");
   const [userImg, setUserImg] = useState("");
   const [deleteBtn, setDeleteBtn] = useState(false);
+  const [loginModal, setLoginModal] = useState(false);
   const navigation = useNavigate();
 
   const [user, setUser] = useState<user>({
@@ -318,7 +319,10 @@ const MyPage = () => {
         setUserImg(res.data.data.userProfile.memberProfileImg);
         setUpCommingSchedule(res.data.data.myUpcomingTripSchedules);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+        err.response.status === 401 && setLoginModal(true);
+      });
   }, []);
 
   const checkNickname = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -695,6 +699,7 @@ const MyPage = () => {
           </div>
         </div>
       </div>
+      {loginModal && <LoginModal />}
       <Footer />
     </div>
   );
@@ -768,6 +773,36 @@ const Profile: FC<ProfileProp> = ({
           <p onClick={() => setChangeImg({ ...changeImg, modal: false })}>
             취소
           </p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const LoginModal = () => {
+  useEffect(() => {
+    document.body.style.cssText = `
+          position: fixed; 
+          top: -${window.scrollY}px;
+          overflow-y: scroll;
+          width: 100%;`;
+    return () => {
+      const scrollY = document.body.style.top;
+      document.body.style.cssText = "";
+      window.scrollTo(0, parseInt(scrollY || "0", 10) * -1);
+    };
+  }, []);
+
+  const navigation = useNavigate();
+
+  return (
+    <div className={styles.modalContainer}>
+      <div className={styles.modalBox}>
+        <div className={styles.modalContent}>
+          <span>로그인이 필요합니다.</span>
+        </div>
+        <div className={styles.confirm} onClick={() => navigation("/login")}>
+          로그인
         </div>
       </div>
     </div>

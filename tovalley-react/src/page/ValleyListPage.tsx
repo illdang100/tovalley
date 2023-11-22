@@ -449,110 +449,102 @@ const ValleyListPage = () => {
           })}
         </div>
         <div className={styles.valleyContainer}>
-          <div className={styles.top}>
-            <div className={styles.sort}>
-              <span
-                onClick={() => setSort("평점")}
-                className={sort === "평점" ? styles.clickedSort : ""}
-              >
-                평점
-              </span>
-              <span
-                onClick={() => setSort("리뷰")}
-                className={sort === "리뷰" ? styles.clickedSort : ""}
-              >
-                리뷰
-              </span>
-            </div>
-            <div className={styles.search}>
-              <input
-                value={search}
-                placeholder="계곡을 검색해보세요"
-                onChange={(e) => {
-                  setSearch(e.target.value);
-                }}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    setSearchValley((prev) => !prev);
-                  }
-                }}
-              />
-              <span onClick={() => setSearchValley((prev) => !prev)}>
-                <BiSearchAlt2 size="22px" color="#838383" />
-              </span>
-            </div>
-          </div>
-          <div className={styles.valleyList}>
-            {list.content.map((item, index) => {
-              return (
-                <div
-                  key={`${index}-${item.waterPlaceId}`}
-                  className={styles.valleyItem}
-                  onClick={() => navigation(`/valley/${item.waterPlaceId}`)}
+          <div>
+            <div className={styles.top}>
+              <div className={styles.sort}>
+                <span
+                  onClick={() => setSort("평점")}
+                  className={sort === "평점" ? styles.clickedSort : ""}
                 >
-                  <div>
-                    <img
-                      src={
-                        item.waterPlaceImageUrl === null ||
-                        item.waterPlaceImageUrl === ""
-                          ? process.env.PUBLIC_URL + "/img/default-image.png"
-                          : item.waterPlaceImageUrl
-                      }
-                      alt="계곡 이미지"
-                    />
-                  </div>
-                  <div className={styles.valleyInfo}>
-                    <span className={styles.valleyName}>
-                      {item.waterPlaceName}
-                    </span>
-                    <span className={styles.valleyRegion}>
-                      {item.waterPlaceAddr}
-                    </span>
-                    <div className={styles.valleyType}>
-                      {item.waterPlaceCategory !== "" && (
-                        <span className={styles.valleyCategory}>
-                          {item.waterPlaceCategory}
-                        </span>
-                      )}
-                      {item.managementType !== "" && (
-                        <span className={styles.valleyCategory}>
-                          {item.managementType}
-                        </span>
-                      )}
+                  평점
+                </span>
+                <span
+                  onClick={() => setSort("리뷰")}
+                  className={sort === "리뷰" ? styles.clickedSort : ""}
+                >
+                  리뷰
+                </span>
+              </div>
+              <div className={styles.search}>
+                <input
+                  value={search}
+                  placeholder="계곡을 검색해보세요"
+                  onChange={(e) => {
+                    setSearch(e.target.value);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      setSearchValley((prev) => !prev);
+                    }
+                  }}
+                />
+                <span onClick={() => setSearchValley((prev) => !prev)}>
+                  <BiSearchAlt2 size="22px" color="#838383" />
+                </span>
+              </div>
+            </div>
+            <div className={styles.valleyList}>
+              {list.content.map((item, index) => {
+                return (
+                  <div
+                    key={`${index}-${item.waterPlaceId}`}
+                    className={styles.valleyItem}
+                    onClick={() => navigation(`/valley/${item.waterPlaceId}`)}
+                  >
+                    <div>
+                      <img
+                        src={
+                          item.waterPlaceImageUrl === null ||
+                          item.waterPlaceImageUrl === ""
+                            ? process.env.PUBLIC_URL + "/img/default-image.png"
+                            : item.waterPlaceImageUrl
+                        }
+                        alt="계곡 이미지"
+                      />
                     </div>
-                    <div className={styles.reviewContainer}>
-                      <span className={styles.valleyRating}>
-                        <span>
-                          {item.waterPlaceRating === ""
-                            ? 0
-                            : Number(item.waterPlaceRating) === 0
-                            ? 0
-                            : Number(item.waterPlaceRating).toFixed(1)}
+                    <div className={styles.valleyInfo}>
+                      <span className={styles.valleyName}>
+                        {item.waterPlaceName}
+                      </span>
+                      <span className={styles.valleyRegion}>
+                        {item.waterPlaceAddr}
+                      </span>
+                      <div className={styles.valleyType}>
+                        {item.waterPlaceCategory !== "" && (
+                          <span className={styles.valleyCategory}>
+                            {item.waterPlaceCategory}
+                          </span>
+                        )}
+                        {item.managementType !== "" && (
+                          <span className={styles.valleyCategory}>
+                            {item.managementType}
+                          </span>
+                        )}
+                      </div>
+                      <div className={styles.reviewContainer}>
+                        <span className={styles.valleyRating}>
+                          <span>
+                            {item.waterPlaceRating === ""
+                              ? 0
+                              : Number(item.waterPlaceRating) === 0
+                              ? 0
+                              : Number(item.waterPlaceRating).toFixed(1)}
+                          </span>
+                          <span>/5</span>
                         </span>
-                        <span>/5</span>
-                      </span>
-                      <span className={styles.valleyReview}>
-                        리뷰{" "}
-                        {item.waterPlaceReviewCnt === ""
-                          ? 0
-                          : item.waterPlaceReviewCnt}
-                        개
-                      </span>
+                        <span className={styles.valleyReview}>
+                          리뷰{" "}
+                          {item.waterPlaceReviewCnt === ""
+                            ? 0
+                            : item.waterPlaceReviewCnt}
+                          개
+                        </span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
-            {list.content.length % 3 === 1 ? (
-              <>
-                <div className={styles.valleyBlank} />
-                <div className={styles.valleyBlank} />
-              </>
-            ) : list.content.length % 3 === 2 ? (
-              <div className={styles.valleyBlank} />
-            ) : (
-              <></>
-            )}
+                );
+              })}
+            </div>
           </div>
           <div className={styles.paging}>
             <button
