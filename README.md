@@ -61,38 +61,67 @@
 #### Dependencies Module (package.json) 
 ```javascript
 {
-  "name": "molly-react",
+  "name": "tovalley-react",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@ckeditor/ckeditor5-build-classic": "^37.1.0",
-    "@ckeditor/ckeditor5-react": "^6.0.0",
-    "@googlemaps/react-wrapper": "^1.1.35",
-    "@react-google-maps/api": "^2.18.1",
-    "@reduxjs/toolkit": "^1.9.5",
-    "@testing-library/jest-dom": "^5.16.5",
+    "@react-google-maps/api": "^2.19.2",
+    "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
-    "axios": "^1.3.4",
-    "date-fns": "^2.29.3",
-    "google-map-react": "^2.2.1",
+    "@types/googlemaps": "^3.43.3",
+    "@types/jest": "^27.5.2",
+    "@types/node": "^16.18.39",
+    "@types/react": "^18.2.18",
+    "@types/react-dom": "^18.2.7",
+    "@types/react-router-dom": "^5.3.3",
+    "chart.js": "^4.3.3",
     "moment": "^2.29.4",
     "react": "^18.2.0",
-    "react-datepicker": "^4.10.0",
+    "react-chartjs-2": "^5.2.0",
+    "react-cookie": "^6.0.1",
+    "react-cookies": "^0.1.1",
     "react-dom": "^18.2.0",
-    "react-icons": "^4.8.0",
-    "react-redux": "^8.0.5",
-    "react-router-dom": "^6.9.0",
+    "react-icons": "^4.10.1",
+    "react-router-dom": "^6.14.2",
     "react-scripts": "5.0.1",
-    "react-spinners": "^0.13.8",
-    "redux": "^4.2.1",
-    "redux-persist": "^6.0.0",
-    "styled-components": "^5.3.8",
+    "styled-components": "^6.0.7",
+    "typescript": "^4.9.5",
     "web-vitals": "^2.1.4"
-  }
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@types/styled-components": "^5.1.26"
+  },
+  "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
+  "main": "index.js",
+  "author": "",
+  "license": "ISC"
 }
 ```
-<br/><br/>
 #### Open api 
 - 기상청
   - 기상특보 조회서비스
