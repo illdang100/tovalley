@@ -27,15 +27,6 @@
 <p align="center"><img src="https://github.com/illdang100/molly/assets/77067383/48a1a1e3-6b40-435e-a065-03c85147aa32" width=700 /></p>
 <br/><br/>
 
-## 👥 역할 분담
-#### Back-end
-- 정연준(PM) : 배포, 
-- 손지민 : 소셜 로그인, 자체 로그인, 회원가입, 전국 물놀이 지역 리스트 조회, 관리자 기능 - 전국 물놀이 지역 리스트 조회
-  
-#### Front-end
-- 장윤정 : 웹 디자인, 프론트엔드 기능
-<br/><br/>
-
 ## 📦 Packages
 #### SERVER 주요 OPENSOURCE
 | Name | Description |
