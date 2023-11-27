@@ -1,6 +1,6 @@
 # tovalley
 물놀이 인명사고를 예방하기 위해 물놀이 장소의 안전 정보를 제공하고, 리뷰 및 평점 작성 기능을 통해 사용자들의 경험을 공유할 수 있는 웹사이트
-<p align="center"><img src="https://github.com/illdang100/molly/assets/77067383/a005dbdd-79ac-4bdc-b94c-2ecec6fa4400" width="100%"/></p>
+<p align="center"><img src="https://github.com/illdang100/molly/assets/77067383/a005dbdd-79ac-4bdc-b94c-2ecec6fa4400" width="80%"/></p>
 <br/><br/>
 
 ## 💡 매뉴얼 (youtube)
