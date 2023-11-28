@@ -52,7 +52,7 @@
                 <p th:text="${waterPlace.managementType}">안전관리유형</p>
               </div>
               <div class="water-place-review">
-                <p th:text="${waterPlace.rating}+'/5'"></p>
+                <p th:text="${#numbers.formatDecimal(waterPlace.rating,1, 1)}+'/5'"></p>
                 <p th:text="'리뷰 '+${waterPlace.reviewCnt}+'개'"></p>
               </div>
               <p></p>

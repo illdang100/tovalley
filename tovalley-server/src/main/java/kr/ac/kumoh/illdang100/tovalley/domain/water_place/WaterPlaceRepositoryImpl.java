@@ -4,7 +4,6 @@ import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.PathBuilder;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.ac.kumoh.illdang100.tovalley.domain.CityEnum;
@@ -47,7 +46,7 @@ public class WaterPlaceRepositoryImpl implements WaterPlaceRepositoryCustom {
                 ))
                 .from(waterPlace)
                 .where(provinceEq(province),
-                        cityEq(city),
+                        cityContains(city),
                         searchWordContain(searchWord))
                 .orderBy(addSorting(pageable))
                 .offset(pageable.getOffset())
@@ -59,7 +58,7 @@ public class WaterPlaceRepositoryImpl implements WaterPlaceRepositoryCustom {
                 .select(waterPlace.count())
                 .from(waterPlace)
                 .where(provinceEq(province),
-                        cityEq(city),
+                        cityContains(city),
                         searchWordContain(searchWord));
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
@@ -99,8 +98,8 @@ public class WaterPlaceRepositoryImpl implements WaterPlaceRepositoryCustom {
         return province.equals("전국") ? null : waterPlace.province.eq(province);
     }
 
-    private BooleanExpression cityEq(CityEnum city) {
-        return (city == null) ? null : waterPlace.city.eq(city.toString());
+    private BooleanExpression cityContains(CityEnum city) {
+        return (city == null) ? null : waterPlace.city.contains(city.toString());
     }
 
     private BooleanExpression searchWordContain (String searchWord) {
