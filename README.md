@@ -3,8 +3,12 @@
 <p align="center"><img src="https://github.com/illdang100/molly/assets/77067383/a005dbdd-79ac-4bdc-b94c-2ecec6fa4400" width="80%"/></p>
 <br/><br/>
 
-## 💡 매뉴얼 (youtube)
+##  ↗️ 사이트 바로가기
+https://tovalley.site/
+<br/><br/>
 
+## 💡 매뉴얼 (youtube)
+(예정)
 <br/><br/>
 
 ## ☑️ 핵심 기능 설명
