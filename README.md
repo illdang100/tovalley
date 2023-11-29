@@ -20,7 +20,7 @@ https://tovalley.site/
 <br/><br/>
 
 ## 🌈 전체 시스템 구조
-<p align="center"><img src="https://github.com/illdang100/tovalley/assets/97449471/914a7993-3f24-40c2-8f48-35f445e35d24" width=600 height=300 /></p>
+<p align="center"><img src="https://github.com/wl2258/tovalley/assets/77067383/0266d291-b160-4cb6-b5de-2753310c565c" width=600 height=300 /></p>
 <br/><br/>
 
 ## 📃 데이터베이스 구조
