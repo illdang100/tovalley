@@ -1,0 +1,552 @@
+.title {
+  background-repeat: no-repeat;
+  background-size: cover;
+  padding: 0 10%;
+  height: 170px;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+}
+
+.valleyName {
+  display: flex;
+  align-items: center;
+}
+
+.valleyName > span:first-child {
+  color: white;
+  font-weight: bold;
+  font-size: 2.2rem;
+  margin-right: 0.6em;
+  text-shadow: 0 4px 4px rgba(0, 0, 0, 0.731);
+}
+
+.valleyName > span:nth-child(2) {
+  cursor: pointer;
+  margin-right: 0.8em;
+}
+
+.valleyName > span:last-child {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: white;
+  border: 1.5px solid white;
+  border-radius: 20px;
+  padding: 0.3em 0.7em;
+  text-shadow: 0 3px 3px rgba(0, 0, 0, 0.731);
+}
+
+.valleyDetailImg {
+  position: absolute;
+  z-index: 3;
+  max-width: 600px;
+  top: 10em;
+  left: 30%;
+}
+
+.valleyDetailImg img {
+  border-radius: 10px;
+  width: 100%;
+}
+
+.valleyDetailImg span {
+  position: absolute;
+  right: 15px;
+  top: 15px;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.716);
+}
+
+.valleyAddress {
+  margin: 1em 0 1.2em 0;
+}
+
+.valleyAddress > span {
+  color: white;
+  font-size: 1.2rem;
+  font-weight: 600;
+  text-shadow: 0 2px 2px rgba(0, 0, 0, 0.731);
+}
+
+.valleyInfo {
+  padding: 0 10%;
+  display: flex;
+  margin-top: 3em;
+}
+
+.valleyMap {
+  width: 70%;
+  margin-right: 2.5em;
+  min-width: 400px;
+  flex-grow: 1;
+}
+
+.valleyPlaceMenu {
+  margin-bottom: 1.5em;
+}
+
+.placeMenu {
+  border: 1px solid #66a5fc;
+  color: #66a5fc;
+  padding: 0.5em 0.7em;
+  border-radius: 8px;
+  margin-right: 0.5em;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.clickedMenu {
+  border: 1px solid #66a5fc;
+  background-color: #66a5fc;
+  color: white;
+  padding: 0.5em 0.7em;
+  border-radius: 8px;
+  margin-right: 0.5em;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.valleyMap > span {
+  color: #717171;
+  font-size: 0.9rem;
+  margin-left: 0.5em;
+}
+
+.valleyPlace {
+  margin-top: 0.5em;
+}
+
+.valleyDetail {
+  width: 100%;
+  margin-top: 0.5em;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.valleyWeather {
+  flex-grow: 1;
+}
+
+.valleyWeather > span {
+  font-weight: bold;
+  font-size: 1.3rem;
+}
+
+/* 날씨 리스트 */
+.weatherList {
+  margin-top: 0.5em;
+  display: flex;
+  border: 1px solid #cccccc;
+  border-radius: 8px;
+  padding: 1em 0;
+  min-width: 400px;
+  overflow: hidden;
+}
+
+.weatherItem:not(:last-of-type) {
+  border-right: 1px solid #cccccc;
+}
+
+.mobileWeatherList {
+  margin-top: 0.5em;
+  border: 1px solid #cccccc;
+  border-radius: 8px;
+  padding: 0 0.8em;
+  display: none;
+}
+
+.mobileWeatherItem {
+  padding: 0.5em 0.7em;
+}
+
+.mobileWeatherItem:not(:last-of-type) {
+  border-bottom: 1px solid #cccccc;
+}
+
+/* 각 날씨 */
+.weatherItem {
+  flex-grow: 1;
+  padding: 0 0.6em;
+  display: flex;
+  justify-content: center;
+}
+
+.weatherItem > div {
+  min-width: 95px;
+  width: 80%;
+}
+
+.weatherItem > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.mobileWeatherItem {
+  display: flex;
+}
+
+.weatherInfo {
+  margin: 0.2em 0.8em 0 1em;
+}
+
+.weatherInfoIcon {
+  min-height: 4em;
+}
+
+.weatherInfoIcon > span {
+  display: block;
+  text-align: center;
+  margin-top: -0.5em;
+}
+
+.weatherInfoIcon > span:nth-child(2) {
+  font-weight: bold;
+  color: #5a5a5a;
+  margin-top: -0.5em;
+  font-size: 0.8rem;
+}
+
+/* 온도 */
+.temperature {
+  position: relative;
+  margin-bottom: 0.6em;
+  text-align: center;
+}
+
+.temperature > span {
+  font-weight: bold;
+}
+
+.temperature > span:first-child {
+  color: #3378fc;
+}
+
+.temperature > span:nth-child(2) {
+  color: #c7c7c7;
+}
+
+.temperature > span:last-child {
+  color: #fd4848;
+  font-size: 1.4rem;
+}
+
+/* 날씨 자세한 정보 */
+.weatherItemDetail {
+  display: flex;
+  justify-content: space-between;
+  margin: 0.5em 0;
+  align-items: center;
+}
+
+.mobileWeatherDetail {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+.weatherItemDetail > span:first-child {
+  color: #656565;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.weatherItemDetail > span:last-child,
+.moblieWeatherItemDetail span {
+  color: #727272;
+  font-size: 0.7rem;
+  border: 1px solid #a5a5a5;
+  padding: 0.2em 0.6em;
+  border-radius: 20px;
+}
+
+.moblieWeatherItemDetail,
+.mobileWeatherDesc {
+  display: flex;
+  justify-content: space-between;
+}
+
+.moblieWeatherItemDetail div,
+.mobileWeatherDesc div {
+  width: calc(100% / 5);
+  text-align: center;
+}
+
+.moblieWeatherItemDetail span {
+  font-size: 0.6rem;
+}
+
+.mobileWeatherDesc span {
+  font-size: 0.6rem;
+  color: #656565;
+  font-weight: 600;
+}
+
+/* 날씨 날짜 */
+.dayInfo {
+  margin-top: 0.7em;
+}
+.dayInfo span {
+  display: block;
+  text-align: center;
+}
+
+.dayInfo > span:first-child {
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+/* 계곡 상세보기 사고 수 */
+.valleyAccident {
+  margin-top: 1.5em;
+  flex-grow: 1;
+}
+
+.valleyAccident > span,
+.rescueSuppliesTitle span {
+  color: #6c6c6c;
+  font-weight: bold;
+}
+
+.graph {
+  margin-top: 0.5em;
+  margin-bottom: 1.5em;
+}
+
+.graphTitle {
+  background: linear-gradient(to right, #66a5fc, #95ae94);
+  border-radius: 10px 10px 0 0;
+  display: flex;
+}
+
+.graphTitle span {
+  color: white;
+  font-weight: bold;
+  display: block;
+  padding: 0.7em;
+  flex-grow: 1;
+  text-align: center;
+  font-size: 1.1rem;
+}
+
+.graphTitle > span:not(:last-of-type),
+.graphContent > span:not(:last-of-type) {
+  border-right: 1px solid #efefef;
+}
+
+.graphContent {
+  border-radius: 0 0 10px 10px;
+  box-shadow: 0 2px 2px rgb(201, 201, 201);
+  display: flex;
+}
+
+.graphContent span {
+  font-weight: bold;
+  display: block;
+  padding: 0.6em 0;
+  width: calc(100% / 3);
+  text-align: center;
+  font-size: 1.5rem;
+}
+
+.rescueSupplies {
+  flex-grow: 1;
+}
+
+.rescueSuppliesTitle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.rescueSuppliesTitle span:last-child {
+  cursor: pointer;
+  margin-right: 0.5em;
+}
+
+.rescueList {
+  display: flex;
+  border: 1px solid #66a5fc;
+  padding: 1em 0.5em;
+  border-radius: 8px;
+  justify-content: space-around;
+  margin-top: 0.5em;
+}
+
+.rescueItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.rescueItem > span:nth-child(2) {
+  color: #828282;
+  font-size: small;
+}
+
+.rescueItem > span:nth-child(3) {
+  color: #717171;
+  font-weight: bold;
+  font-size: 1.4em;
+}
+
+@media screen and (max-width: 1260px) {
+  .valleyInfo {
+    flex-direction: column;
+  }
+
+  .valleyMap {
+    width: 100%;
+    margin-right: 0;
+    min-width: 0;
+  }
+
+  .valleyDetail {
+    margin-top: 2.5em;
+  }
+}
+
+@media screen and (max-width: 730px) {
+  .valleyName > span:first-child {
+    font-size: 1.6rem;
+  }
+
+  .valleyName > span:last-child {
+    font-size: 0.9rem;
+  }
+
+  .valleyAddress {
+    margin: 0.6em 0 1.2em 0;
+  }
+
+  .valleyAddress > span {
+    font-size: 1rem;
+  }
+
+  .valleyInfo {
+    padding: 0 7%;
+  }
+
+  .valleyWeather > span {
+    font-size: 1rem;
+  }
+
+  .weatherItem > div {
+    min-width: 50px;
+    width: 100%;
+  }
+
+  .weatherItemDetail > span:first-child {
+    font-size: 0.7rem;
+  }
+
+  .weatherItemDetail > span:last-child {
+    font-size: 0.5rem;
+  }
+
+  .temperature > span {
+    font-size: 0.8rem;
+  }
+
+  .temperature > span:last-child {
+    font-size: 1rem;
+  }
+}
+
+@media screen and (max-width: 540px) {
+  .weatherInfoIcon > span:nth-child(2) {
+    display: none;
+  }
+
+  .weatherInfoIcon {
+    min-height: 0;
+  }
+
+  .weatherItemDetail > span:first-child {
+    font-size: 0.5rem;
+  }
+
+  .rescueItem > span:nth-child(2) {
+    font-size: 0.6rem;
+  }
+
+  .rescueItem > span:nth-child(3) {
+    font-size: 1rem;
+  }
+}
+
+@media screen and (max-width: 470px) {
+  .weatherList {
+    display: none;
+  }
+
+  .temperature {
+    margin-bottom: 0;
+    margin-top: -0.8em;
+  }
+
+  .mobileWeatherList {
+    display: block;
+  }
+
+  .dayInfo {
+    margin-top: 0.5em;
+  }
+}
+
+@media screen and (max-width: 440px) {
+  .moblieWeatherItemDetail span {
+    font-size: 0.5rem;
+  }
+}
+
+@media screen and (max-width: 410px) {
+  .title {
+    height: 145px;
+  }
+
+  .valleyName > span:first-child {
+    font-size: 1.4rem;
+  }
+
+  .valleyName > span:last-child {
+    font-size: 0.8rem;
+  }
+
+  .valleyAddress > span {
+    font-size: 0.8rem;
+  }
+
+  .temperature > span {
+    font-size: 0.6rem;
+  }
+
+  .temperature > span:last-child {
+    font-size: 0.8rem;
+  }
+
+  .dayInfo > span:last-child {
+    font-size: 0.8rem;
+  }
+}
+
+@media screen and (max-width: 390px) {
+  .mobileWeatherList {
+    padding: 0 0.5em;
+  }
+
+  .mobileWeatherItem {
+    padding: 0.5em 0.5em;
+  }
+
+  .weatherInfoIcon img {
+    margin-top: 0.2em;
+    width: 35px;
+  }
+
+  .rescueItem > span:nth-child(2) {
+    font-size: 0.5rem;
+  }
+}

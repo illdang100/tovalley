@@ -1,0 +1,362 @@
+/* 일정 리스트 */
+.scheduleItem {
+  border: 1px solid #bcbcbc;
+  border-radius: 10px;
+  margin-top: 1em;
+  position: relative;
+  padding: 2em 2.5em 2em 1.5em;
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+}
+
+.scheduleCheck {
+  position: absolute;
+  top: 1em;
+  left: 1em;
+  cursor: pointer;
+}
+
+.scheduleValleyInfo > div:first-child {
+  display: none;
+  margin-top: 0.3em;
+}
+
+.scheduleValleyInfo > div:last-child {
+  display: flex;
+}
+
+.imageContainer {
+  width: 300px;
+  height: 180px;
+  overflow: hidden;
+  margin: 0 2em 0 2em;
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+
+.imageContainer > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.scheduleInfo {
+  width: 100%;
+  cursor: pointer;
+}
+
+/* 계곡 이름 */
+.scheduleInfo > h4 {
+  margin: 0;
+  margin-top: 0.3em;
+  font-size: 1.5rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 계곡 주소 */
+.scheduleInfo > span:nth-child(2) {
+  color: #828282;
+  display: block;
+  margin: 0.3em 0;
+  font-size: 1.2rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 계곡 별점 */
+.scheduleInfo > span:nth-child(3) {
+  color: #66a5fc;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.scheduleInfo > span:nth-child(4) {
+  color: #b8b8b8;
+  font-weight: bold;
+  margin-right: 1.8em;
+  font-size: 1.1rem;
+}
+
+/* 게곡 리뷰 개수 */
+.scheduleInfo > span:nth-child(5) {
+  color: #66a5fc;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+/* 예약 정보 */
+.reservationInfo {
+  margin-top: 1.6em;
+  min-width: 200px;
+}
+
+.reservationInfo > div {
+  margin-top: 0.3em;
+}
+
+.reservationInfo > div > span {
+  font-size: 1.1rem;
+}
+
+.reservationInfo > div > span:first-child {
+  color: #a3a3a3;
+  margin-right: 1.5em;
+}
+
+.valleyInfo {
+  margin-right: 2em;
+  width: 40%;
+}
+
+.writeReviewBtn {
+  display: flex;
+  justify-content: right;
+}
+
+.responsiveWriteReviewBtn {
+  position: absolute;
+  right: 2em;
+}
+
+.writeReviewBtn > span,
+.responsiveWriteReviewBtn > span {
+  background-color: #66a5fc;
+  color: white;
+  font-weight: bold;
+  padding: 0.5em 1em;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+/* 계곡 혼잡도 */
+.congestion,
+.preCongestion {
+  display: flex;
+  justify-content: right;
+  align-items: center;
+}
+
+.responsiveCongestion {
+  align-items: center;
+  margin-top: 2em;
+  margin-right: 0.1em;
+  display: none;
+}
+
+.preCongestion {
+  margin: 1em 1em 0 0;
+}
+
+.congestion > span:first-child,
+.preCongestion > span:first-child,
+.responsiveCongestion > span:first-child {
+  color: #666666;
+  font-weight: bold;
+  font-size: 1.2em;
+  margin-right: 0.5em;
+}
+
+.preCongestion > span:first-child,
+.responsiveCongestion > span:first-child {
+  font-size: 1rem;
+}
+
+.congestion > div:nth-child(2),
+.preCongestion > div:nth-child(2),
+.responsiveCongestion > div:nth-child(2) {
+  width: 40px;
+  height: 16px;
+  border-radius: 3px;
+  background-color: #fa7f64;
+  margin-bottom: 0.3em;
+}
+
+.preCongestion > div:nth-child(2) {
+  margin-bottom: 0.2em;
+}
+
+.rescueList {
+  display: flex;
+  border: 1.5px solid #66a5fc;
+  padding: 1em;
+  border-radius: 10px;
+  justify-content: space-between;
+  min-width: 300px;
+  margin-top: 1em;
+}
+
+.rescueItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.rescueItem > span:nth-child(2) {
+  color: #66a5fc;
+  font-weight: bold;
+}
+
+@media screen and (max-width: 1250px) {
+  .scheduleInfo > h4 {
+    max-width: 13em;
+  }
+
+  .scheduleInfo > span:nth-child(2) {
+    max-width: 12.5em;
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  .scheduleInfo > h4 {
+    max-width: 10em;
+  }
+
+  .scheduleInfo > span:nth-child(2) {
+    max-width: 10em;
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  .scheduleInfo > h4 {
+    max-width: 9em;
+  }
+}
+
+@media screen and (max-width: 1130px) {
+  .scheduleItem {
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+
+  .scheduleInfo > h4 {
+    max-width: 100%;
+  }
+
+  .scheduleInfo > span:nth-child(2) {
+    max-width: 100%;
+  }
+
+  .valleyInfo {
+    margin-left: 2em;
+    width: 70%;
+  }
+
+  .scheduleValleyInfo > div:last-child {
+    display: block;
+  }
+
+  .responsiveCongestion {
+    display: flex;
+  }
+
+  .congestion {
+    display: none;
+  }
+
+  .preCongestion {
+    display: none;
+  }
+
+  .writeReviewBtn {
+    display: none;
+  }
+
+  .scheduleValleyInfo > div:first-child {
+    display: block;
+    margin-top: 0.3em;
+  }
+
+  .scheduleValleyInfo > div:last-child {
+    display: flex;
+  }
+}
+
+@media screen and (max-width: 1040px) {
+  .responsiveWriteReviewBtn {
+    position: static;
+    margin: 0 0 1em 2em;
+  }
+}
+
+@media screen and (max-width: 780px) {
+  .scheduleInfo > h4 {
+    max-width: 10em;
+  }
+
+  .scheduleInfo > span:nth-child(2) {
+    max-width: 12em;
+  }
+}
+
+@media screen and (max-width: 710px) {
+  .scheduleInfo > h4 {
+    max-width: 8em;
+  }
+
+  .scheduleInfo > span:nth-child(2) {
+    max-width: 10em;
+  }
+}
+
+@media screen and (max-width: 680px) {
+  .scheduleInfo > h4 {
+    max-width: 6em;
+  }
+
+  .scheduleInfo > span:nth-child(2) {
+    max-width: 8em;
+  }
+}
+
+@media screen and (max-width: 610px) {
+  .scheduleValleyInfo > div:last-child {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .scheduleInfo > h4 {
+    max-width: 100%;
+  }
+
+  .scheduleInfo > span:nth-child(2) {
+    max-width: 100%;
+  }
+
+  .scheduleInfo {
+    width: auto;
+    text-align: center;
+    margin-top: 1em;
+  }
+
+  .reservationInfo {
+    text-align: start;
+    width: fit-content;
+    margin: 1em auto 0;
+  }
+
+  .valleyInfo {
+    margin: 0 0 0 0.5em;
+    width: 100%;
+  }
+
+  .rescueList {
+    min-width: 0;
+  }
+}
+
+@media screen and (max-width: 440px) {
+  .scheduleInfo > span:nth-child(2) {
+    max-width: 13em;
+  }
+}
+
+@media screen and (max-width: 410px) {
+  .scheduleInfo > span:nth-child(2) {
+    max-width: 10em;
+  }
+}

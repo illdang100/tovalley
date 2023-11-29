@@ -1,0 +1,34 @@
+version: "3.2"
+
+services:
+
+  redis:
+    container_name: redis
+    image: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - mynetwork
+
+  server:
+    image: jeongyeonjun/tovalley-server
+    ports:
+      - "8080:8080"
+    depends_on:
+      - redis
+    restart: always
+    networks:
+      - mynetwork
+
+  react:
+    image: jeongyeonjun/tovalley-react
+    ports:
+      - 80:80
+    depends_on:
+      - server
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+    driver: bridge

@@ -1,0 +1,328 @@
+.container {
+  width: 100%;
+  height: 15%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1em 1em 0em 1em;
+  box-sizing: border-box;
+}
+
+/* 월 선택 */
+.controlCalendar {
+  display: flex;
+  align-items: center;
+  margin: 0 2em;
+}
+
+.controlYear {
+  display: flex;
+  align-items: center;
+  margin-right: 2em;
+}
+
+.controlMonth {
+  display: flex;
+  align-items: center;
+}
+
+.controlYear span,
+.controlMonth span {
+  cursor: pointer;
+}
+
+.controlYear h1 {
+  font-size: 1.6rem;
+}
+
+.controlMonth h1 {
+  font-size: 2.3rem;
+  margin-left: 0.5em;
+}
+
+.controlMonth h2 {
+  font-size: 2rem;
+  margin: 0 0.5em 0 0.1em;
+}
+
+/* 일정추가 */
+.addSchedule {
+  margin-left: 2.5em;
+}
+
+.addSchedule span {
+  background-color: #3378fc;
+  color: white;
+  font-weight: bold;
+  padding: 0.6em 1.6em;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.congestionInfo {
+  width: 140px;
+}
+
+.congestionInfo > div {
+  display: flex;
+  align-items: center;
+  justify-content: right;
+  margin-right: 1em;
+}
+
+.congestionInfo > div > span {
+  font-weight: 500;
+  margin-right: 0.8em;
+  min-width: 60px;
+  text-align: right;
+  font-size: 0.9rem;
+}
+
+.congestionInfo > div > div {
+  width: 100%;
+  height: 9px;
+  border-radius: 4px;
+  color: rgb(212, 212, 212);
+}
+
+.infoContainer {
+  z-index: 5;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #eeeeeebd;
+}
+
+.infoBox {
+  width: 460px;
+  border-radius: 15px;
+  background-color: #ffffff;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin-left: -230px;
+  margin-top: -30vh;
+  padding: 2em 1em;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.infoBox > div > h1 {
+  font-size: 1.8rem;
+  text-align: center;
+  margin: 0;
+  margin-bottom: 1em;
+}
+
+.valleyInfo {
+  border-top: 1px solid #cdcdcd;
+  border-bottom: 1px solid #cdcdcd;
+  padding: 1em;
+  margin-bottom: 1.5em;
+}
+
+.valleyInfo > h4 {
+  margin: 0;
+  font-size: 1.3rem;
+  margin-bottom: 0.5em;
+}
+
+.valleyInfo > span {
+  color: #949494;
+}
+
+.peopleCnt {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.peopleCnt > span:first-child {
+  font-weight: bold;
+  margin-left: -2em;
+  margin-right: 1em;
+  font-size: 1.2rem;
+}
+
+.peopleCnt > span:not(:first-of-type) {
+  cursor: pointer;
+}
+
+.peopleCnt > input {
+  border: none;
+  font-size: 1.8rem;
+  font-weight: bold;
+  width: 2em;
+  text-align: center;
+}
+
+.peopleCnt > input:focus {
+  outline: none;
+}
+
+.addBtn {
+  margin-top: 1.5em;
+  display: flex;
+  justify-content: center;
+}
+
+.addBtn > span:first-child,
+.addBtn > span:last-child {
+  width: 100%;
+  border-radius: 8px;
+  font-weight: bold;
+  padding: 0.7em;
+  display: flex;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.addBtn > span:first-child {
+  border: 1px solid #b5b5b5;
+  margin-right: 0.5em;
+  color: #5e5e5e;
+}
+
+.addBtn > span:last-child {
+  background-color: #66a5fc;
+  color: white;
+}
+
+@media screen and (max-width: 880px) {
+  .controlYear {
+    margin-right: 0.5em;
+  }
+
+  .controlMonth h1 {
+    font-size: 1.8rem;
+  }
+
+  .controlMonth h2 {
+    font-size: 1.6rem;
+  }
+
+  .addSchedule {
+    margin-left: 1em;
+  }
+
+  .addSchedule span {
+    padding: 0.6em 1em;
+    font-size: 0.8rem;
+  }
+}
+
+@media screen and (max-width: 760px) {
+  .controlYear h1 {
+    font-size: 1.2rem;
+  }
+
+  .controlMonth h1 {
+    font-size: 1.4rem;
+    margin: 0 0 0.1em 0.2em;
+  }
+
+  .controlMonth h2 {
+    font-size: 1.3rem;
+    margin: 0 0.2em 0.1em 0.1em;
+  }
+
+  .controlCalendar {
+    margin: 0 1em;
+  }
+}
+
+@media screen and (max-width: 580px) {
+  .controlYear {
+    margin-right: 0;
+  }
+
+  .addSchedule {
+    margin-left: 0.3em;
+  }
+
+  .addSchedule span {
+    font-size: 0.7rem;
+  }
+
+  .congestionInfo {
+    width: 110px;
+  }
+
+  .congestionInfo > div {
+    margin-right: 0.5em;
+  }
+
+  .congestionInfo > div > span {
+    min-width: 50px;
+    text-align: right;
+    font-size: 0.7rem;
+  }
+
+  .congestionInfo > div > div {
+    height: 5px;
+  }
+}
+
+@media screen and (max-width: 510px) {
+  .addSchedule span {
+    padding: 0.6em 0.7em;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+  }
+
+  .infoBox {
+    width: 340px;
+    margin-left: -170px;
+  }
+
+  .infoBox > div > h1 {
+    font-size: 1.6rem;
+    margin-bottom: 0.8em;
+  }
+}
+
+@media screen and (max-width: 450px) {
+  .controlYear h1 {
+    font-size: 1rem;
+  }
+
+  .controlMonth h1 {
+    font-size: 1.2rem;
+    margin: 0 0 0.1em 0;
+  }
+
+  .controlMonth h2 {
+    font-size: 1.2rem;
+    margin: 0 0 0.1em 0.1em;
+  }
+
+  .controlCalendar {
+    margin: 0 0.2em;
+  }
+
+  .congestionInfo > div > span {
+    min-width: 50px;
+    font-size: 0.6rem;
+  }
+}
+
+@media screen and (max-width: 390px) {
+  .congestionInfo > div > span {
+    min-width: 40px;
+  }
+
+  .addSchedule {
+    margin-right: 0.3em;
+  }
+
+  .addSchedule span {
+    padding: 0.6em 0.8em;
+    font-size: 0.5rem;
+  }
+}

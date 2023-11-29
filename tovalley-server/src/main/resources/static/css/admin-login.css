@@ -1,0 +1,85 @@
+body {
+  margin: 0;
+  background-color: #5a5a5a;
+}
+
+.admin-login {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* 로고 */
+.admin-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 4em;
+}
+
+.admin-logo img {
+  margin-right: 1em;
+}
+
+.admin-logo h1 {
+  color: white;
+}
+
+/* 로그인 입력창 */
+.admin-login-container {
+  background-color: white;
+  min-width: 400px;
+  width: 35%;
+  border-radius: 10px;
+  padding: 0em 2.5em 2em 2.5em;
+  box-sizing: border-box;
+  margin-top: 1em;
+}
+
+.admin-login-container > div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.admin-login-container h4 {
+  font-size: 1.4rem;
+}
+
+.admin-login-container > div > div {
+    width: 100%
+}
+
+.admin-login-container  input {
+  width: 100%;
+  padding: 0;
+  border: 1px solid #9c9c9c;
+  border-radius: 5px;
+  padding: 1em;
+  box-sizing: border-box;
+  margin: 0.3em 0;
+  font-size: 1rem;
+}
+
+.admin-login-container  input::placeholder {
+  color: #9c9c9c;
+}
+
+.admin-login-container  input:focus {
+  outline: none;
+}
+
+/* 로그인 버튼 */
+.admin-login-container button {
+  width: 100%;
+  background-color: #66a5fc;
+  border: none;
+  color: white;
+  border-radius: 5px;
+  padding: 1em;
+  font-weight: bold;
+  font-size: 1rem;
+  margin: 1.5em 0 1.5em 0;
+  cursor: pointer;
+}

@@ -1,0 +1,79 @@
+.footer {
+  margin-top: 4em;
+  background-color: #5a5a5a;
+  text-align: center;
+  color: #f1f1f1;
+  padding: 1.5em 0;
+  font-size: 0.9rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.terms {
+  margin-top: 0.8em;
+}
+
+.terms span:not(:last-of-type) {
+  margin-right: 1.5em;
+  cursor: pointer;
+}
+
+.terms span:last-child {
+  border: 1px solid white;
+  padding: 0.4em 0.8em;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  cursor: pointer;
+}
+
+.engineerInfo {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.5em;
+}
+
+.engineerInfo > div {
+  margin-right: 1em;
+}
+
+.backend {
+  display: flex;
+}
+
+.backend > div span:first-child {
+  display: block;
+  margin-bottom: 0.5em;
+}
+
+.backend > span,
+.frontend > span:first-child {
+  margin-right: 1em;
+  min-width: 60px;
+}
+
+.backend > div > span,
+.frontend > span:last-child {
+  font-weight: lighter;
+}
+
+@media screen and (max-width: 550px) {
+  .engineerInfo {
+    flex-direction: column;
+    align-items: start;
+  }
+  .frontend {
+    margin-top: 0.8em;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .terms span:not(:last-of-type) {
+    margin-right: 0.8em;
+    font-size: 0.8rem;
+  }
+
+  .engineerInfo span {
+    font-size: 0.8rem;
+  }
+}

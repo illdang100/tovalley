@@ -1,0 +1,18 @@
+.mainPage {
+  min-width: 360px;
+}
+
+.body {
+  padding: 0 7%;
+}
+
+.top {
+  display: flex;
+  margin-bottom: 3em;
+}
+
+@media screen and (max-width: 1000px) {
+  .top {
+    flex-direction: column;
+  }
+}

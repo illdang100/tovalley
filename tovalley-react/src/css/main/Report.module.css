@@ -1,0 +1,131 @@
+.report {
+  margin-top: 1.5em;
+  flex-grow: 1;
+}
+
+.menu {
+  margin-left: 0.5em;
+  display: flex;
+  align-items: center;
+}
+
+.menu span {
+  margin-right: 0.6em;
+  font-size: 0.9rem;
+  color: #66a5fc;
+}
+
+.toggleBtn {
+  background-color: #66a5fc;
+  width: 30px;
+  height: 16px;
+  border-radius: 30px;
+  margin-right: 0.4em;
+  display: flex;
+  align-items: center;
+  padding: 0.2em;
+  box-sizing: border-box;
+  cursor: pointer;
+  transition: all 2s;
+}
+
+.toggleSwitchOn,
+.toggleSwitchOff {
+  background-color: white;
+  width: 10px;
+  height: 10px;
+  border-radius: 100%;
+}
+
+.toggleSwitchOn {
+  transform: translateX(14px);
+  transition: all 0.2s;
+}
+
+.toggleSwitchOff {
+  transform: translateX(-0.5px);
+  transition: all 0.2s;
+}
+
+.defaultAlert {
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgb(232, 232, 232);
+  min-width: 100%;
+}
+
+.defaultAlert > div:first-child {
+  background-color: #e8e8e8;
+  border-radius: 10px 10px 0 0;
+  color: #3a3a3a;
+  font-weight: bold;
+  font-size: 0.9rem;
+  padding: 1em 1.5em;
+}
+
+.defaultAlert > div:last-child {
+  background-color: #f1f1f1;
+  border-radius: 0 0 10px 10px;
+  font-weight: bold;
+  font-size: 0.9rem;
+  padding: 1em;
+  height: 10em;
+}
+
+.reportList {
+  display: flex;
+  overflow: hidden;
+  margin-top: 0.3em;
+  padding: 0.3em;
+  align-items: center;
+}
+
+.reportItemContainer > div::-webkit-scrollbar {
+  display: none;
+}
+
+.reportItem {
+  min-width: 100%;
+  padding-right: 0.5em;
+}
+
+.presentation > span:first-child {
+  font-weight: bold;
+  margin-right: 0.5em;
+}
+
+.region {
+  margin-top: 0.5em;
+}
+
+@media screen and (max-width: 700px) {
+  .reportItemContainer > div:last-child {
+    min-height: 13em;
+  }
+
+  .defaultAlert > div:last-child {
+    min-height: 13em;
+  }
+
+  .reportList {
+    padding: 0.3em 0.3em 0 0;
+    align-items: center;
+    max-width: 330px;
+    min-width: 100%;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .reportItemContainer > div:last-child {
+    min-height: 10em;
+  }
+
+  .defaultAlert > div:last-child {
+    min-height: 10em;
+  }
+
+  .reportList {
+    padding: 0.3em 0.3em 0 0.3em;
+    align-items: center;
+    max-width: 100%;
+  }
+}

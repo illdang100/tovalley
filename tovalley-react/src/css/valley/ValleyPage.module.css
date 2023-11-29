@@ -1,0 +1,161 @@
+.valleyPageContainer {
+  min-width: 360px;
+}
+
+.valleyPage {
+  padding: 0 10% 2em 10%;
+}
+
+.modalContainer {
+  z-index: 3;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ffffffbd;
+  backdrop-filter: blur(2px);
+  background-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgb(255, 255, 255) 100%
+  );
+}
+
+.modalBox {
+  width: 280px;
+  height: 110px;
+  border-radius: 15px;
+  background-color: #ffffff;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -130px;
+  margin-top: -90px;
+  box-shadow: 0px 2px 4px #b5b5b5;
+}
+
+.modalContent {
+  height: 70px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  font-size: 0.8rem;
+  padding: 1em;
+  box-sizing: border-box;
+}
+
+.confirm {
+  border-top: 1px solid rgb(231, 231, 231);
+  color: #66a5fc;
+  padding: 0.4em;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.dangerSegments {
+  background-color: rgb(255, 245, 244);
+  border-radius: 10px;
+  width: 600px;
+  z-index: 5;
+  position: fixed;
+  left: 50%;
+  bottom: 0;
+  margin-bottom: 30px;
+  margin-left: -300px;
+  padding: 1em 1.5em;
+  box-shadow: 0 2px 4px rgb(198, 198, 198);
+  box-sizing: border-box;
+}
+
+.dangerSegments > span {
+  position: absolute;
+  top: 12px;
+  right: 15px;
+  font-size: 20px;
+  cursor: pointer;
+  color: #838383;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.8em;
+}
+
+.title span:first-child {
+  margin-right: 0.5em;
+  font-size: 0.9rem;
+}
+
+.title span:last-child {
+  color: rgb(230, 146, 139);
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.contents {
+  color: #616161;
+  font-weight: 500;
+}
+
+@media screen and (max-width: 730px) {
+  .valleyPage {
+    padding: 0 7% 2em 7%;
+  }
+
+  .dangerSegments {
+    width: 500px;
+    margin-left: -250px;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .dangerSegments {
+    width: 400px;
+    margin-left: -200px;
+  }
+
+  .title {
+    margin-bottom: 0.5em;
+  }
+
+  .title span:first-child,
+  .title span:last-child {
+    font-size: 0.8rem;
+  }
+
+  .contents {
+    font-size: 0.9rem;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .valleyPageMain {
+    margin-top: -2.2em;
+  }
+}
+
+@media screen and (max-width: 430px) {
+  .dangerSegments {
+    width: 340px;
+    margin-left: -170px;
+  }
+
+  .title {
+    margin-bottom: 0.5em;
+  }
+
+  .title span:first-child,
+  .title span:last-child {
+    font-size: 0.8rem;
+  }
+
+  .contents {
+    font-size: 0.9rem;
+  }
+}

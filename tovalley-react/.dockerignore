@@ -1,0 +1,24 @@
+# Ignore development and build files
+node_modules
+npm-debug.log
+yarn-error.log
+
+# Ignore Git-related files
+.git
+.gitignore
+
+# Ignore Docker-specific files
+Dockerfile
+.dockerignore
+
+# Ignore server-specific files
+tovalley-server/gradle
+tovalley-server/.gradle
+tovalley-server/build
+tovalley-server/*.iml
+
+# Ignore React-specific files
+tovalley-react/node_modules
+tovalley-react/npm-debug.log
+tovalley-react/yarn-error.log
+tovalley-react/.env

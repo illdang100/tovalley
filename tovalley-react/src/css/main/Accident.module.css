@@ -1,0 +1,188 @@
+.accident {
+  min-width: 35%;
+  max-width: 35%;
+  display: flex;
+  flex-direction: column;
+}
+
+.accident h4 {
+  font-size: 1.2rem;
+  margin: 2em 1em 0.5em;
+}
+
+.regionNav {
+  position: relative;
+}
+
+.regionMenu {
+  border: 1px solid #cccccc;
+  padding: 1em 0;
+  border-radius: 8px;
+  height: 1.2em;
+  overflow: auto;
+  white-space: nowrap;
+  display: flex;
+}
+
+.regionMenu::-webkit-scrollbar {
+  display: none;
+}
+
+.regionMenu > div:not(:last-of-type) {
+  border-right: 1px solid #cccccc;
+  padding-right: 1em;
+}
+
+.regionMenu > div:not(:first-of-type) {
+  padding-left: 1em;
+}
+
+.regionMenu span {
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.blank {
+  padding: 0.2em;
+}
+
+.regionNextBtn,
+.regionPrevBtn {
+  background-color: white;
+  box-shadow: 0 2px 2px rgb(202, 202, 202);
+  border-radius: 100%;
+  padding: 0.3em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 1.3em;
+  height: 1.3em;
+  cursor: pointer;
+  position: absolute;
+  top: 9px;
+}
+
+.regionNextBtn {
+  right: -15px;
+}
+
+.regionPrevBtn {
+  left: -15px;
+}
+
+.lineGraph {
+  border: 1px solid #cccccc;
+  border-radius: 10px;
+  margin-top: 0.7em;
+  padding: 1em 0.8em;
+  flex-grow: 1;
+}
+
+.graph {
+  margin-top: 1.5em;
+}
+
+.graphTitle {
+  background: linear-gradient(to right, #66a5fc, #95ae94);
+  border-radius: 10px 10px 0 0;
+  display: flex;
+}
+
+.graphTitle span {
+  color: white;
+  font-weight: bold;
+  display: block;
+  padding: 0.8em;
+  flex-grow: 1;
+  text-align: center;
+  font-size: 1.2rem;
+}
+
+.graphTitle > span:not(:last-of-type),
+.graphContent > span:not(:last-of-type) {
+  border-right: 1px solid #efefef;
+}
+
+.graphContent {
+  border-radius: 0 0 10px 10px;
+  box-shadow: 0 2px 2px rgb(201, 201, 201);
+  display: flex;
+}
+
+.graphContent span {
+  font-weight: bold;
+  display: block;
+  padding: 0.8em 0;
+  width: calc(100% / 3);
+  text-align: center;
+  font-size: 1.8em;
+}
+
+@media screen and (max-width: 1000px) {
+  .accident {
+    min-width: 100%;
+  }
+
+  .regionNextBtn,
+  .regionPrevBtn {
+    display: none;
+  }
+
+  .regionMenu {
+    justify-content: space-around;
+  }
+}
+
+@media screen and (max-width: 850px) {
+  .accident {
+    min-width: 695px;
+    width: 100%;
+  }
+
+  .regionNextBtn,
+  .regionPrevBtn {
+    display: none;
+  }
+
+  .regionMenu {
+    justify-content: space-around;
+  }
+
+  .regionMenu > div:not(:last-of-type) {
+    padding-right: 0.9em;
+  }
+
+  .regionMenu > div:not(:first-of-type) {
+    padding-left: 0.9em;
+  }
+}
+
+@media screen and (max-width: 700px) {
+  .accident {
+    min-width: 100%;
+  }
+
+  .regionNextBtn,
+  .regionPrevBtn {
+    display: flex;
+  }
+
+  .regionMenu {
+    justify-content: flex-start;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .regionMenu {
+    padding: 0.5em 0;
+  }
+
+  .regionMenu span {
+    font-size: 0.8rem;
+  }
+
+  .regionNextBtn,
+  .regionPrevBtn {
+    top: 6px;
+  }
+}

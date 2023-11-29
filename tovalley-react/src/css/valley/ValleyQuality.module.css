@@ -1,0 +1,443 @@
+.valleyQuality {
+  margin-top: 5em;
+}
+
+.valleyQuality > span {
+  font-weight: bold;
+  font-size: 1.6em;
+}
+
+.valleyQualityContent {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.qualityDetail {
+  margin-right: 1em;
+  width: 100%;
+  min-width: 500px;
+  background: linear-gradient(#eafaff, #ffffff);
+  height: 420px;
+  border-radius: 10px;
+  box-shadow: 0 2px 2px rgb(189, 189, 189);
+  overflow: hidden;
+  padding: 1.5em 0 0 0;
+}
+
+.valleyQualityReview {
+  padding: 2em 1em;
+  text-align: center;
+  height: 420px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.valleyQualityReview > h4 {
+  font-weight: bold;
+  color: rgb(78, 78, 78);
+  margin: 0;
+  margin-bottom: 0.5em;
+  font-size: 1.2rem;
+}
+
+.qualityGauge {
+  margin-left: 1.5em;
+}
+
+/* 수질 정도 */
+.gaugeTitle {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.gaugeTitle > span:first-child {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #707070;
+  margin-right: 0.3em;
+}
+
+.gaugeTitle > span:last-child {
+  cursor: pointer;
+}
+
+.helpInfo {
+  position: absolute;
+  top: 40px;
+  left: 110px;
+  z-index: 3;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0px 2px 2px rgb(221, 221, 221);
+  padding: 1em;
+  max-height: 420px;
+  overflow-y: scroll;
+}
+
+.helpInfo div span:first-child {
+  font-weight: bold;
+  font-size: 0.9rem;
+  color: #434343;
+}
+
+.helpInfo div span:last-child {
+  font-size: 0.8rem;
+  color: #525252;
+}
+
+.helpInfo div:last-child {
+  margin-top: 0.8em;
+}
+
+/* 게이지 바 컨테이너 */
+.gaugeBarList {
+  display: flex;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+.gaugeBarList span {
+  color: #707070;
+  font-size: 0.5rem;
+}
+
+/* BOD 게이지 */
+.bodGauge {
+  margin-right: 0.7em;
+}
+
+.bodGauge > span {
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: #848484;
+}
+
+.bodGaugeDetail {
+  position: relative;
+}
+
+.bodGaugeDetail > span:nth-child(2) {
+  position: absolute;
+  left: 20px;
+  top: 0px;
+}
+
+.bodGaugeDetail > span:nth-child(3) {
+  position: absolute;
+  left: 23px;
+}
+
+.bodGaugeDetail > span:last-child {
+  position: absolute;
+  left: 20px;
+  bottom: 0px;
+}
+
+.bodGaugeBar {
+  background: linear-gradient(to top, #95d2ff, #cbe2cb);
+  width: 14px;
+  height: 100px;
+  margin: 0.3em 0 0 0.2em;
+}
+
+.bodGaugeBar div {
+  width: 14px;
+  height: 3px;
+  background-color: #f19797;
+  position: absolute;
+}
+
+/* 탁도 게이지 */
+.ntuGauge > span {
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: #848484;
+}
+
+.ntuGaugeDetail {
+  position: relative;
+}
+
+.ntuGaugeDetail > span:nth-child(2) {
+  position: absolute;
+  left: 20px;
+  top: 0px;
+}
+
+.ntuGaugeDetail > span:nth-child(3) {
+  position: absolute;
+  left: 20px;
+}
+
+.ntuGaugeDetail > span:last-child {
+  position: absolute;
+  left: 20px;
+  bottom: 0px;
+}
+.ntuGaugeBar {
+  background: linear-gradient(to top, #fff1bd, #ffbb95);
+  width: 14px;
+  height: 100px;
+  margin: 0.3em 0 0 0.2em;
+}
+
+.ntuGaugeBar div {
+  width: 14px;
+  height: 3px;
+  background-color: #f19797;
+  position: absolute;
+}
+
+.valleyWaterInfo {
+  padding: 0 3%;
+  margin-bottom: -2.5em;
+  margin-top: 1em;
+  display: flex;
+  justify-content: space-between;
+}
+
+.valleyWaterInfo span {
+  color: #888888;
+  font-weight: bold;
+}
+
+.average {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.average > span:first-child {
+  font-size: 1rem;
+}
+
+.average > span:nth-child(2) {
+  font-size: 1.2rem;
+  min-width: 80px;
+}
+
+.blank {
+  width: 100%;
+}
+
+.danger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  margin-bottom: 1em;
+}
+
+.danger > span:first-child {
+  font-size: 1rem;
+}
+
+.danger > span:nth-child(2) {
+  font-size: 1.2rem;
+  min-width: 100px;
+}
+
+.valleyWater {
+  background: linear-gradient(to right, #95d2ff, #cbe2cb);
+  transform: skewY(-1.5deg) translate(0, 40px);
+  height: 260px;
+  border-radius: 0 0 10px 10px;
+  display: flex;
+  justify-content: space-around;
+}
+
+.waterTemperature {
+  margin-top: 3em;
+  background-color: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.505);
+  width: 140px;
+  height: 140px;
+  border-radius: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  text-shadow: 0 1px 1px rgba(174, 174, 174, 0.71);
+}
+
+.waterTemperature > span {
+  color: white;
+  font-weight: bold;
+  font-size: 1.6rem;
+}
+
+.waterTemperature > div {
+  margin-top: 0.3em;
+}
+
+.waterTemperature > div > span:first-child {
+  font-size: 2.4rem;
+  font-weight: 500;
+}
+
+.waterTemperature > div > span:last-child {
+  font-size: 2.4rem;
+  font-weight: 500;
+}
+
+.avgDepth,
+.deepestDepth {
+  background-color: rgba(255, 255, 255, 0.249);
+  width: 23%;
+  display: flex;
+  justify-content: right;
+  padding: 0.5em 1em;
+  box-sizing: border-box;
+  align-items: center;
+}
+
+.avgDepth > span,
+.deepestDepth > span {
+  color: white;
+  font-weight: bold;
+  font-size: 1.7rem;
+  text-shadow: 0 2px 1px rgb(199, 199, 199);
+  margin-right: 0.5em;
+}
+
+.avgDepth > div,
+.deepestDepth > div {
+  height: 100%;
+  width: 3px;
+  background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='white' stroke-width='10' stroke-dasharray='5%2c 29' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");
+}
+
+@media screen and (max-width: 1110px) {
+  .average > span:first-child {
+    font-size: 0.8rem;
+  }
+
+  .average > span:nth-child(2) {
+    font-size: 1rem;
+  }
+
+  .danger > span:first-child {
+    font-size: 0.8rem;
+  }
+
+  .danger > span:nth-child(2) {
+    font-size: 1rem;
+  }
+}
+
+@media screen and (max-width: 1110px) {
+  .qualityDetail {
+    min-width: 0;
+  }
+
+  .waterTemperature {
+    width: 100px;
+    height: 100px;
+  }
+
+  .waterTemperature > span {
+    font-size: 1.2rem;
+  }
+
+  .waterTemperature > div > span:first-child,
+  .waterTemperature > div > span:last-child {
+    font-size: 1.5rem;
+  }
+}
+
+@media screen and (max-width: 1000px) {
+  .average > span:first-child {
+    font-size: 1rem;
+  }
+
+  .average > span:nth-child(2) {
+    font-size: 1.2rem;
+  }
+
+  .danger > span:first-child {
+    font-size: 1rem;
+  }
+
+  .danger > span:nth-child(2) {
+    font-size: 1.2rem;
+  }
+
+  .valleyQualityContent {
+    flex-direction: column;
+  }
+
+  .waterTemperature {
+    width: 140px;
+    height: 140px;
+  }
+
+  .waterTemperature > span {
+    font-size: 1.6rem;
+  }
+
+  .waterTemperature > div > span:first-child,
+  .waterTemperature > div > span:last-child {
+    font-size: 2.4rem;
+  }
+
+  .qualityDetail {
+    margin-top: 1em;
+    margin-right: 0;
+  }
+}
+
+@media screen and (max-width: 730px) {
+  .valleyQuality {
+    margin-top: 3.5em;
+  }
+
+  .valleyQuality > span {
+    font-size: 1.3em;
+  }
+
+  .average > span:first-child {
+    font-size: 0.7rem;
+  }
+
+  .average > span:nth-child(2) {
+    font-size: 0.9rem;
+  }
+
+  .danger > span:first-child {
+    font-size: 0.7rem;
+  }
+
+  .danger > span:nth-child(2) {
+    font-size: 0.9rem;
+  }
+
+  .waterTemperature {
+    width: 100px;
+    height: 100px;
+  }
+
+  .waterTemperature > span {
+    font-size: 1.2rem;
+  }
+
+  .waterTemperature > div > span:first-child,
+  .waterTemperature > div > span:last-child {
+    font-size: 1.8rem;
+  }
+}
+
+@media screen and (max-width: 540px) {
+  .average > span:nth-child(2) {
+    min-width: 60px;
+  }
+
+  .danger > span:nth-child(2) {
+    min-width: 80px;
+  }
+}

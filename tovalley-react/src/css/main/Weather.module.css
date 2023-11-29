@@ -1,0 +1,356 @@
+.weather {
+  margin-right: 2em;
+  min-width: 42em;
+  max-width: 65%;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.weather h4 {
+  font-size: 1.2rem;
+  margin: 2em 1em 0.5em;
+}
+
+.dayContainer {
+  border: 1px solid #cccccc;
+  padding: 0.2em 1.5em;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-around;
+  min-width: 40.5em;
+}
+
+.date {
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 0.7em 0.3em 0.5em 0.3em;
+}
+
+.dayContainer span {
+  margin-right: 0.3em;
+  text-align: center;
+}
+
+.dayContainer > div > span:first-child {
+  font-weight: bold;
+}
+
+.dayContainer > div > span:last-child {
+  font-size: 1rem;
+}
+
+.dateClicked {
+  /* border-bottom: 2px solid #66a5fc; */
+  color: #66a5fc;
+  padding: 0.7em 0.3em 0.2em 0.3em;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.weatherInfo {
+  display: flex;
+  flex-grow: 1;
+}
+
+.weatherInfoDetail {
+  min-width: 38%;
+  max-width: 42%;
+  display: flex;
+  flex-direction: column;
+}
+
+.weatherMap {
+  width: 100%;
+  margin-top: 0.8em;
+  margin-right: 0.8em;
+  padding: 1em;
+  background-color: #aacbec;
+  box-sizing: border-box;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.weatherMapContainer {
+  position: relative;
+}
+
+.weatherMapContainer > img {
+  width: 400px;
+}
+
+#regionContainer {
+  border: 1px solid #cccccc;
+  background-color: white;
+  border-radius: 30px;
+  padding: 0.5em 0.1em;
+  cursor: pointer;
+  box-shadow: 0 2px 2px rgba(236, 236, 236, 0.437);
+}
+
+#regionContainer:hover {
+  transform: scale(1.1);
+  transition-duration: 0.5s;
+}
+
+#regionContainer span:first-child {
+  font-size: 0.7rem;
+  font-weight: 700;
+  margin-bottom: -0.8em;
+}
+
+#regionContainer span:last-child {
+  font-size: 0.8rem;
+  font-weight: bold;
+  margin-top: -0.8em;
+  color: rgb(101, 101, 101);
+}
+
+.weatherMapContainer > div {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.chuncheon {
+  top: 50px;
+  right: 130px;
+  position: relative;
+}
+
+.baengnyeong {
+  top: 80px;
+  left: 40px;
+  position: relative;
+}
+
+.seoul {
+  top: 60px;
+  left: 120px;
+  position: relative;
+}
+
+.gangneung {
+  top: 100px;
+  right: 70px;
+  position: relative;
+}
+
+.cheongju {
+  top: 150px;
+  right: 140px;
+  position: relative;
+}
+
+.ulleung {
+  top: 160px;
+  right: 0px;
+  position: relative;
+}
+
+.suwon {
+  top: 150px;
+  left: 110px;
+  position: relative;
+}
+
+.andong {
+  top: 200px;
+  right: 90px;
+  position: relative;
+}
+
+.daejeon {
+  top: 210px;
+  left: 160px;
+  position: relative;
+}
+
+.jeonju {
+  top: 270px;
+  left: 120px;
+  position: relative;
+}
+
+.daegu {
+  top: 260px;
+  right: 130px;
+  position: relative;
+}
+
+.ulsan {
+  top: 250px;
+  right: 30px;
+  position: relative;
+}
+
+.gwangju {
+  top: 320px;
+  left: 70px;
+  position: relative;
+}
+
+.mokpo {
+  top: 370px;
+  left: 20px;
+  position: relative;
+}
+
+.yeosu {
+  top: 360px;
+  left: 140px;
+  position: relative;
+}
+
+.busan {
+  top: 330px;
+  right: 60px;
+  position: relative;
+}
+
+.jeju {
+  top: 410px;
+  left: 80px;
+  position: relative;
+}
+
+@media screen and (max-width: 1000px) {
+  .weather {
+    margin-right: 0;
+    max-width: 100%;
+  }
+}
+
+@media screen and (max-width: 700px) {
+  .weather {
+    min-width: 400px;
+  }
+
+  .dayContainer {
+    min-width: 380px;
+  }
+
+  .weatherInfo {
+    flex-direction: column;
+  }
+
+  .weatherInfoDetail {
+    min-width: 100%;
+    display: flex;
+    /* flex-direction: row; */
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .weather {
+    min-width: 320px;
+    margin-top: -20px;
+  }
+
+  .date,
+  .dateClicked {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .dayContainer > div > span:last-child {
+    font-size: 0.9rem;
+  }
+
+  .dayContainer {
+    padding: 0.1em 1.5em;
+    min-width: 260px;
+  }
+
+  .weatherInfoDetail {
+    flex-direction: column;
+  }
+
+  .weatherMap {
+    padding: 1em 0.5em;
+  }
+
+  .weatherMapContainer > img {
+    width: 340px;
+  }
+
+  #regionContainer img {
+    width: 35px;
+  }
+
+  #regionContainer span:first-child {
+    margin-bottom: -0.6em;
+  }
+
+  #regionContainer span:last-child {
+    font-size: 0.6rem;
+    margin-top: -0.6em;
+  }
+
+  .chuncheon {
+    top: 25px;
+    right: 120px;
+  }
+
+  .seoul {
+    top: 55px;
+  }
+
+  .gangneung {
+    top: 90px;
+  }
+
+  .cheongju {
+    top: 125px;
+    right: 135px;
+  }
+
+  .ulleung {
+    right: 20px;
+  }
+
+  .andong {
+    top: 165px;
+    right: 80px;
+  }
+
+  .jeonju {
+    top: 225px;
+    left: 100px;
+  }
+
+  .daegu {
+    top: 240px;
+    right: 90px;
+  }
+
+  .ulsan {
+    top: 230px;
+  }
+
+  .gwangju {
+    top: 280px;
+    left: 65px;
+  }
+
+  .mokpo {
+    top: 320px;
+  }
+
+  .yeosu {
+    top: 300px;
+  }
+
+  .busan {
+    top: 300px;
+    right: 60px;
+  }
+
+  .jeju {
+    top: 350px;
+    left: 80px;
+  }
+}

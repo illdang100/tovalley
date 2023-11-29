@@ -1,0 +1,56 @@
+body {
+  margin: 0;
+}
+
+/* 푸터 */
+.footer {
+  background-color: #5a5a5a;
+  text-align: center;
+  color: #f1f1f1;
+  padding: 1.5em 0;
+  font-size: 0.9rem;
+  margin: 7em 0 0 0;
+}
+
+/* 이용약관 */
+.terms {
+  margin-top: 0.8em;
+}
+
+.terms span:not(:last-of-type) {
+  margin-right: 1.5em;
+  cursor: pointer;
+}
+
+/* 관리자 로그인 */
+.terms span:last-child {
+  border: 1px solid white;
+  padding: 0.4em 0.8em;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  cursor: pointer;
+}
+
+/* 개발자 정보 */
+.engineer-info {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.5em;
+}
+
+/* 이메일 */
+.engineer-info > div span {
+  display: block;
+  margin-right: 1em;
+  font-weight: lighter;
+  margin-bottom: 0.5em;
+}
+
+.engineer-info > span:nth-child(odd) {
+  margin-right: 1em;
+}
+
+/* 이메일 */
+.engineer-info > span:last-child {
+  font-weight: lighter;
+}

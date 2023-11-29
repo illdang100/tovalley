@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="layout/base :: common_header(~{:: title},~{:: link})">
+  <link rel="stylesheet" th:href="@{/css/admin-login.css}" />
+  <title>관리자 로그인 페이지</title>
+</head>
+<style>
+  .textError {
+    color:  #bd2130;
+    display: none;
+  }
+</style>
+<body>
+<div th:class="admin-login">
+  <div th:class="admin-logo">
+    <img src="./img/투계곡-logo.png" th:src="@{/images/투계곡-logo.png}" alt="tovalley logo" width="120px"/>
+    <h1>ADMIN</h1>
+  </div>
+  <form th:class="admin-login-container" action="/api/login" th:object="${loginForm}" method="post">
+    <div>
+      <h4>관리자 로그인</h4>
+      <div>
+        <input id="username" type="email" th:field="*{username}" placeholder="아이디" />
+        <p id="usernameError" class="textError">아이디를 입력하세요.</p>
+      </div>
+      <div>
+        <input id="password" type="password" th:field="*{password}" placeholder="비밀번호" />
+        <p id="passwordError" class="textError">비밀번호를 입력하세요.</p>
+      </div>
+      <button type="submit" id="submitBtn">로그인</button>
+    </div>
+  </form>
+</div>
+
+<script>
+  const submitBtn = document.querySelector("#submitBtn");
+
+  submitBtn.addEventListener('click', function(event) {
+    event.preventDefault();
+
+    const usernameInput = document.querySelector("#username");
+    const passwordInput = document.querySelector("#password");
+
+    const usernameError = document.querySelector("#usernameError");
+    const passwordError = document.querySelector("#passwordError");
+
+    const username = usernameInput.value;
+    const password = passwordInput.value;
+
+    (!username) ? usernameError.style.display = "block" : usernameError.style.display = "none";
+    (!password) ? passwordError.style.display = "block" : passwordError.style.display = "none";
+
+    usernameInput.addEventListener('focus', function() {
+      usernameError.style.display = "none";
+    });
+
+    passwordInput.addEventListener('focus', function() {
+      passwordError.style.display = "none";
+    });
+
+    const loginReqDto = {
+      username: username,
+      password: password
+    }
+
+    const url = '/api/login';
+    fetch(url, {
+      method: "POST",
+      body: JSON.stringify(loginReqDto),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    }).then((response) => {
+      console.log(response.status);
+      if (response.ok) {
+        window.location.href = "/th/admin/water-place-list"
+      }
+      else {
+        alert("아이디 혹은 비밀번호를 확인하세요")
+      }
+    })
+  })
+</script>
+</body>
+</html>

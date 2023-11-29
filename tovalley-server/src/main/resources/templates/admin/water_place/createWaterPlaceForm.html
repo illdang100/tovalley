@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/base :: common_header(~{:: title},~{:: link})">
+    <title>물놀이 장소 등록 페이지</title>
+    <link rel="stylesheet" th:href="@{/css/valley-register.css}"/>
+</head>
+<style>
+    .fieldError {
+        border-color: #bd2130;
+    }
+</style>
+<body>
+<div class="admin-valley-register">
+    <div class="admin-header">
+        <div class="admin-logo">
+            <img src="./img/투계곡-logo.png" th:src="@{/images/투계곡-logo.png}" alt="tovalley logo" width="120px"/>
+            <h1>ADMIN</h1>
+        </div>
+        <div th:class="admin-category">
+            <div><a th:href="@{/th/admin/water-place-list}">계곡 정보 관리</a></div>
+            <div><a class="category-register" th:href="@{/th/admin/water-places/new}">계곡 등록</a></div>
+        </div>
+    </div>
+    <div class="valley-register-page">
+        <div class="admin-title">
+            <h1>계곡 등록</h1>
+            <span><a th:href="@{/th/logout}">로그아웃</a></span>
+        </div>
+        <form method="post"
+              enctype="multipart/form-data"
+              th:action="@{/th/admin/water-places/new}"
+              th:object="${form}">
+            <div class="valley-create-page">
+                <div class="valley-info-register">
+
+                    <div th:class="valley-img">
+                        <img id="water-place-image" th:src="@{/images/default-img.png}" width="220px" height="220px" alt="default-img"/>
+                        <input type="file" accept=".jpg, .png" th:field="*{waterPlaceImage}"
+                               th:onchange="'javascript:previewImg('+this+')'" />
+                    </div>
+                    <div class="valley-info-basic">
+                        <input th:type="text" th:field="*{waterPlaceName}"
+                               required minlength="1" maxlength="20" placeholder="(필수) 계곡 이름을 입력하세요."/>
+                        <div class="valley-address">
+                            <select
+                                    th:field="*{province}"
+                                    th:class="${#fields.hasErrors('province')} ? 'fieldError' : ''"
+                                    required>
+                                <option value="">(필수) 시도</option>
+                                <option value="서울특별시">서울특별시</option>
+                                <option value="울산광역시">울산광역시</option>
+                                <option value="대전광역시">대전광역시</option>
+                                <option value="광주광역시">광주광역시</option>
+                                <option value="부산광역시">부산광역시</option>
+                                <option value="제주특별자치도">제주특별자치도</option>
+                                <option value="세종특별자치시">세종특별자치시</option>
+                                <option value="강원도">강원도</option>
+                                <option value="경기도">경기도</option>
+                                <option value="경상북도">경상북도</option>
+                                <option value="경상남도">경상남도</option>
+                                <option value="전라북도">전라북도</option>
+                                <option value="전라남도">전라남도</option>
+                                <option value="충청북도">충청북도</option>
+                                <option value="충청남도">충청남도</option>
+                            </select>
+                            <input th:type="text" th:field="*{city}"
+                                   th:class="${#fields.hasErrors('city')} ? 'fieldError' : ''"
+                                   placeholder="(필수) 시군구" maxlength="20" minlength="1" required/>
+                            <input th:type="text" th:field="*{town}"
+                                   th:class="${#fields.hasErrors('town')} ? 'fieldError' : ''"
+                                   placeholder="(선택) 읍면" maxlength="20" minlength="1"/>
+                        </div>
+                        <input th:type="text" th:field="*{subLocation}"
+                               th:class="${#fields.hasErrors('subLocation')} ? 'fieldError' : ''"
+                               placeholder="(선택) 세부지명을 입력하세요." maxlength="254" minlength="1"/>
+                        <input th:type="text" th:field="*{address}"
+                               th:class="${#fields.hasErrors('address')} ? 'fieldError' : ''"
+                               placeholder="(필수) 상세주소를 입력하세요." maxlength="254" minlength="1" required/>
+                        <div class="valley-category">
+                            <div>
+                                <p>구분</p>
+                                <select
+                                        th:field="*{waterPlaceCategory}"
+                                        th:class="${#fields.hasErrors('waterPlaceCategory')} ? 'fieldError' : ''">
+                                    <option value="">없음</option>
+                                    <option value="계곡">계곡</option>
+                                    <option value="계곡및소하천">계곡및소하천</option>
+                                    <option value="산간계곡">산간계곡</option>
+                                    <option value="유원지">유원지</option>
+                                    <option value="인공호수">인공호수</option>
+                                    <option value="저수지">저수지</option>
+                                    <option value="하천">하천</option>
+                                    <option value="하천(강)">하천(강)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <p>*관리유형
+                                    <span
+                                            th:if="${#fields.hasErrors('managementType')}"
+                                            style="color: red">관리유형은 필수입니다!!</span>
+                                </p>
+                                <input type="radio" id="general-area"
+                                       th:field="*{managementType}" th:value="일반지역">
+                                <label th:for="general-area" th:text="일반지역">일반지역</label>
+                                <input type="radio" id="priority-area" th:field="*{managementType}" th:value="중점관리지역">
+                                <label th:for="priority-area" th:text="중점관리지역">중점관리지역</label>
+                                <input type="radio" id="dangerous-area" th:field="*{managementType}" th:value="위험지역">
+                                <label th:for="dangerous-area" th:text="위험지역">위험지역</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="rescue-register">
+                    <h4>계곡 구조용품 현황</h4>
+                    <table border="1">
+                        <tr>
+                            <td>구명환</td>
+                            <td>구명로프</td>
+                            <td>인명구조함</td>
+                            <td>구명조끼</td>
+                            <td>이동식 거치대</td>
+                            <td>구조봉</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input th:type="number" th:field="*{lifeRingNum}"
+                                       th:class="${#fields.hasErrors('lifeRingNum')} ? 'fieldError' : ''"
+                                       min="0" max="100" value="0"/>
+                            </td>
+                            <td>
+                                <input th:type="number" th:field="*{rescueRopeNum}"
+                                       th:class="${#fields.hasErrors('rescueRopeNum')} ? 'fieldError' : ''"
+                                       min="0" max="100" th:value="0"/>
+                            </td>
+                            <td>
+                                <input th:type="number" th:field="*{lifeBoatNum}"
+                                       th:class="${#fields.hasErrors('lifeBoatNum')} ? 'fieldError' : ''"
+                                       min="0" max="100" th:value="0"/>
+                            </td>
+                            <td>
+                                <input th:type="number" th:field="*{lifeJacketNum}"
+                                       th:class="${#fields.hasErrors('lifeJacketNum')} ? 'fieldError' : ''"
+                                       min="0" max="100" th:value="0"/>
+                            </td>
+                            <td>
+                                <input th:type="number" th:field="*{portableStandNum}"
+                                       th:class="${#fields.hasErrors('portableStandNum')} ? 'fieldError' : ''"
+                                       min="0" max="100" th:value="0"/>
+                            </td>
+                            <td>
+                                <input th:type="number" th:field="*{rescueRodNum}"
+                                       th:class="${#fields.hasErrors('rescueRodNum')} ? 'fieldError' : ''"
+                                       min="0" max="100" th:value="0"/>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="valley-quality-register">
+                    <h4>계곡 수질</h4>
+                    <table border="1">
+                        <tr>
+                            <td>BOD(mg/L)</td>
+                            <td>탁도(NTU)</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input th:type="number" th:field="*{bod}"
+                                       th:class="${#fields.hasErrors('bod')} ? 'fieldError' : ''"
+                                       min="0" max="100" step="0.01"/>
+                            </td>
+                            <td>
+                                <input th:type="number" th:field="*{turbidity}"
+                                       th:class="${#fields.hasErrors('turbidity')} ? 'fieldError' : ''"
+                                       min="0" max="100" step="0.01"/>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="valley-detail-register">
+                    <h4>계곡 상세 정보</h4>
+                    <table border="1">
+                        <tr>
+                            <td colspan="2">수심(M)</td>
+                            <td>물놀이 구간(M)</td>
+                            <td>위험구역 구간(M)</td>
+                            <td>위험구역 안내표지판(합계)</td>
+                            <td>계곡 수온(°C)</td>
+                            <td>연평균 총 이용객(천명)</td>
+                        </tr>
+                        <tr>
+                            <td>*평균</td>
+                            <td>
+                                <input th:type="number" th:field="*{avgDepth}"
+                                       th:classappend="${#fields.hasErrors('avgDepth')} ? 'fieldError' : ''"
+                                       min="0" step="0.01" required/>
+                            </td>
+                            <td rowspan="2">
+                                <input th:type="number" th:field="*{waterPlaceSegment}"
+                                       th:class="${#fields.hasErrors('waterPlaceSegment')} ? 'fieldError' : ''"
+                                       min="0" step="0.01"/>
+                            </td>
+                            <td rowspan="2">
+                                <input th:type="number" th:field="*{dangerSegments}"
+                                       th:class="${#fields.hasErrors('dangerSegments')} ? 'fieldError' : ''"
+                                       min="0"/>
+                            </td>
+                            <td rowspan="2">
+                                <input th:type="number" th:field="*{dangerSignboardsNum}"
+                                       th:class="${#fields.hasErrors('dangerSignboardsNum')} ? 'fieldError' : ''"
+                                       min="0"/>
+                            </td>
+                            <td rowspan="2">
+                                <input th:type="number" th:field="*{waterTemperature}"
+                                       th:class="${#fields.hasErrors('waterTemperature')} ? 'fieldError' : ''"
+                                       min="0" max="100" step="0.01"/>
+                            </td>
+                            <td rowspan="2">
+                                <input th:type="number" th:field="*{annualVisitors}"
+                                       th:class="${#fields.hasErrors('annualVisitors')} ? 'fieldError' : ''"
+                                       min="0" step="0.01"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>*깊은 곳</td>
+                            <td>
+                                <input th:type="number" th:field="*{deepestDepth}"
+                                       th:class="${#fields.hasErrors('deepestDepth')} ? 'fieldError' : ''"
+                                       min="0" step="0.01" required/>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="valley-safety-alert">
+                    <h4>안전조치사항</h4>
+                    <input th:type="text" th:field="*{safetyMeasures}"
+                           th:class="${#fields.hasErrors('safetyMeasures')} ? 'fieldError' : ''"
+                           style="width: 50%; height: 100px"
+                           maxlength="254" minlength="1"/>
+                </div>
+                <button class="valley-register-btn">등록</button>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+<script th:inline="javascript">
+    function previewImg(input) {
+        const imgTag = document.getElementById("water-place-image");
+
+        if (!imgTag) {
+            console.error("previewImg: 'water-place-image' element not found.");
+            return;
+        }
+
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+
+            reader.onload = function (data) {
+                imgTag.src = data.target.result;
+                imgTag.width = 200;
+                imgTag.height = 200;
+            };
+
+            imgTag.className = "";
+            reader.readAsDataURL(input.files[0]);
+            console.log(input.files[0]);
+        } else {
+            imgTag.src = "/images/default-img.png"; // Set the default image path
+            imgTag.width = 220;
+            imgTag.height = 220;
+            imgTag.className = "";
+        }
+    }
+
+    const category = document.querySelector(".category-register");
+    category.style.color = "#66A5FC";
+
+</script>
+</html>
