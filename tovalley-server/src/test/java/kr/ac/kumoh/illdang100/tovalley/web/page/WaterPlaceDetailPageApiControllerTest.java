@@ -66,6 +66,8 @@ class WaterPlaceDetailPageApiControllerTest extends DummyObject {
     @Autowired
     private EntityManager em;
 
+    private LocalDate now = LocalDate.now();
+
     @BeforeEach
     public void setUp() {
         dataSetting();
@@ -144,7 +146,7 @@ class WaterPlaceDetailPageApiControllerTest extends DummyObject {
         resultActions
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.waterPlaceWeathers.size()").value(5))
-                .andExpect(jsonPath("$.data.waterPlaceWeathers[0].weatherDate").value(LocalDate.now().toString()))
+                .andExpect(jsonPath("$.data.waterPlaceWeathers[0].weatherDate").value(now.toString()))
                 .andExpect(jsonPath("$.data.waterPlaceDetails.waterPlaceName").value("울릉계곡"))
                 .andExpect(jsonPath("$.data.rescueSupplies.lifeBoatNum").value(10))
                 .andExpect(jsonPath("$.data.accidents.totalDeathCnt").value(0))
@@ -202,7 +204,6 @@ class WaterPlaceDetailPageApiControllerTest extends DummyObject {
         accidentRepository.saveAll(accidentList);
 
         List<WaterPlaceWeather> waterPlaceWeatherList = new ArrayList<>();
-        LocalDate now = LocalDate.now();
         waterPlaceWeatherList.add(newWaterPlaceWeather(waterPlace, now));
         waterPlaceWeatherList.add(newWaterPlaceWeather(waterPlace, now.plusDays(1)));
         waterPlaceWeatherList.add(newWaterPlaceWeather(waterPlace, now.plusDays(2)));
