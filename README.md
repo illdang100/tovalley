@@ -7,7 +7,7 @@
 https://tovalley.site/
 <br/><br/>
 
-## 💡 매뉴얼 (youtube)
+## 💡 데모 영상
 https://youtu.be/7LeTlWwDp3c?si=bZcxJQCtt5TyCFFc
 <br/><br/>
 
