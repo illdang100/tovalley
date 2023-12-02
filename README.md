@@ -8,7 +8,7 @@ https://tovalley.site/
 <br/><br/>
 
 ## 💡 매뉴얼 (youtube)
-(예정)
+https://youtu.be/7LeTlWwDp3c?si=bZcxJQCtt5TyCFFc
 <br/><br/>
 
 ## ☑️ 핵심 기능 설명
