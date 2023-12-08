@@ -126,21 +126,18 @@ const LoginPage = () => {
                 alt="kakao logo"
                 width="50px"
                 onClick={kakaoLogin}
-                // onClick={() => navigation("/social-login-exception")}
               />
               <img
                 src={process.env.PUBLIC_URL + "/img/login/naver-logo.png"}
                 alt="naver logo"
                 width="50px"
                 onClick={naverLogin}
-                // onClick={() => navigation("/social-login-exception")}
               />
               <img
                 src={process.env.PUBLIC_URL + "/img/login/google-logo.png"}
                 alt="google logo"
                 width="50px"
                 onClick={googleLogin}
-                // onClick={() => navigation("/social-login-exception")}
               />
             </div>
           </div>
