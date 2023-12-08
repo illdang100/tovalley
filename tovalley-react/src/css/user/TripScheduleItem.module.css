@@ -17,6 +17,10 @@
   cursor: pointer;
 }
 
+.scheduleValleyInfo {
+  max-width: 35em;
+}
+
 .scheduleValleyInfo > div:first-child {
   display: none;
   margin-top: 0.3em;
@@ -113,17 +117,12 @@
 }
 
 .writeReviewBtn {
-  display: flex;
-  justify-content: right;
-}
-
-.responsiveWriteReviewBtn {
   position: absolute;
-  right: 2em;
+  right: 7%;
+  top: 2.8em;
 }
 
-.writeReviewBtn > span,
-.responsiveWriteReviewBtn > span {
+.writeReviewBtn > span {
   background-color: #66a5fc;
   color: white;
   font-weight: bold;
@@ -187,7 +186,7 @@
   border-radius: 10px;
   justify-content: space-between;
   min-width: 300px;
-  margin-top: 1em;
+  margin-top: 3.2em;
 }
 
 .rescueItem {
@@ -201,7 +200,10 @@
   font-weight: bold;
 }
 
-@media screen and (max-width: 1250px) {
+@media screen and (max-width: 1300px) {
+  .scheduleValleyInfo {
+    max-width: 30em;
+  }
   .scheduleInfo > h4 {
     max-width: 13em;
   }
@@ -221,13 +223,20 @@
   }
 }
 
-@media screen and (max-width: 1200px) {
-  .scheduleInfo > h4 {
-    max-width: 9em;
+@media screen and (max-width: 1190px) {
+  .scheduleItem {
+    padding: 4em 2.5em 2em 1.5em;
   }
-}
 
-@media screen and (max-width: 1130px) {
+  .writeReviewBtn {
+    left: 3.5em;
+    top: 2em;
+  }
+
+  .scheduleValleyInfo {
+    max-width: 38em;
+  }
+
   .scheduleItem {
     flex-direction: column;
     justify-content: flex-start;
@@ -250,6 +259,11 @@
     display: block;
   }
 
+  .rescueList {
+    margin-top: 1em;
+    width: 90%;
+  }
+
   .responsiveCongestion {
     display: flex;
   }
@@ -262,10 +276,6 @@
     display: none;
   }
 
-  .writeReviewBtn {
-    display: none;
-  }
-
   .scheduleValleyInfo > div:first-child {
     display: block;
     margin-top: 0.3em;
@@ -273,13 +283,6 @@
 
   .scheduleValleyInfo > div:last-child {
     display: flex;
-  }
-}
-
-@media screen and (max-width: 1040px) {
-  .responsiveWriteReviewBtn {
-    position: static;
-    margin: 0 0 1em 2em;
   }
 }
 
@@ -314,9 +317,18 @@
 }
 
 @media screen and (max-width: 610px) {
+  .scheduleItem {
+    padding: 4em 2em 2em;
+  }
   .scheduleValleyInfo > div:last-child {
     flex-direction: column;
     align-items: center;
+  }
+
+  .imageContainer {
+    margin: 0;
+    width: 100%;
+    height: 250px;
   }
 
   .scheduleInfo > h4 {
@@ -340,7 +352,7 @@
   }
 
   .valleyInfo {
-    margin: 0 0 0 0.5em;
+    margin: 0;
     width: 100%;
   }
 

@@ -9,6 +9,7 @@ import { TiWaves } from "react-icons/ti";
 import { PiThermometerColdFill } from "react-icons/pi";
 import { MdDry } from "react-icons/md";
 import styled from "styled-components";
+import useDidMountEffect from "../../useDidMountEffect";
 
 interface Props {
   alert: {
@@ -108,7 +109,8 @@ const ReportContent = styled.div<ReportProps>`
 
 const Report: FC<Props> = ({ alert }) => {
   const [report, setReport] = useState(true);
-  const [num, setNum] = useState(0);
+  const [alertNum, setAlertNum] = useState(0);
+  const [preAlertNum, setPreAlertNum] = useState(0);
   const [carouselTransition, setCarouselTransition] = useState(
     "transform 600ms ease-in-out"
   );
@@ -119,16 +121,11 @@ const Report: FC<Props> = ({ alert }) => {
 
   useEffect(() => {
     if (alert.weatherAlerts.length > 1) {
-      setCurrAlertList([
-        alert.weatherAlerts[alert.weatherAlerts.length - 1],
-        ...alert.weatherAlerts,
-        alert.weatherAlerts[0],
-      ]);
+      setCurrAlertList([...alert.weatherAlerts, alert.weatherAlerts[0]]);
     }
 
     if (alert.weatherPreAlerts.length > 1) {
       setCurrPreAlertList([
-        alert.weatherPreAlerts[alert.weatherPreAlerts.length - 1],
         ...alert.weatherPreAlerts,
         alert.weatherPreAlerts[0],
       ]);
@@ -137,7 +134,8 @@ const Report: FC<Props> = ({ alert }) => {
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setNum((num) => num + 1);
+      setAlertNum((alertNum) => alertNum + 1);
+      setPreAlertNum((preAlertNum) => preAlertNum + 1);
       setCarouselTransition("transform 600ms ease-in-out");
     }, 5000);
 
@@ -146,14 +144,23 @@ const Report: FC<Props> = ({ alert }) => {
     };
   }, []);
 
-  useEffect(() => {
-    if (num === alert.weatherAlerts.length) handleOriginSlide(0);
-    if (num === alert.weatherPreAlerts.length) handleOriginSlide(0);
-  }, [num]);
+  useDidMountEffect(() => {
+    if (alertNum === alert.weatherAlerts.length) handleAlertOriginSlide(0);
+    if (preAlertNum === alert.weatherPreAlerts.length)
+      handlePreAlertOriginSlide(0);
+    console.log(alertNum, preAlertNum);
+  }, [alertNum, preAlertNum]);
 
-  function handleOriginSlide(index: number) {
+  function handleAlertOriginSlide(index: number) {
     setTimeout(() => {
-      setNum(index);
+      setAlertNum(index);
+      setCarouselTransition("");
+    }, 500);
+  }
+
+  function handlePreAlertOriginSlide(index: number) {
+    setTimeout(() => {
+      setPreAlertNum(index);
       setCarouselTransition("");
     }, 500);
   }
@@ -190,7 +197,7 @@ const Report: FC<Props> = ({ alert }) => {
                     currAlertList.length > 1
                       ? {
                           transition: `${carouselTransition}`,
-                          transform: `translateX(-${num}00%)`,
+                          transform: `translateX(-${alertNum}00%)`,
                         }
                       : {}
                   }
@@ -260,7 +267,7 @@ const Report: FC<Props> = ({ alert }) => {
                     currPreAlertList.length > 1
                       ? {
                           transition: `${carouselTransition}`,
-                          transform: `translateX(-${num}00%)`,
+                          transform: `translateX(-${preAlertNum}00%)`,
                         }
                       : {}
                   }
