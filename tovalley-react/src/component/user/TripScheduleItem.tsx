@@ -79,28 +79,6 @@ const TripScheduleItem: FC<Props> = ({
       )}
       <div className={styles.scheduleValleyInfo}>
         <div>
-          {scheduleBtn === "지난 일정" && (
-            <div className={styles.responsiveWriteReviewBtn}>
-              {!schedule.hasReview && (
-                <span onClick={() => setWriteReviewView(true)}>리뷰 쓰기</span>
-              )}
-              {writeReviewView && (
-                <WriteReview
-                  setWriteReviewView={setWriteReviewView}
-                  valleyInfo={{
-                    id: schedule.tripScheduleId,
-                    title: schedule.waterPlaceName,
-                    addr: schedule.waterPlaceAddr,
-                    tripDate: schedule.tripDate,
-                    people: schedule.tripPartySize,
-                    img: schedule.waterPlaceImg,
-                  }}
-                />
-              )}
-            </div>
-          )}
-        </div>
-        <div>
           <div className={styles.imageContainer}>
             <img
               src={
