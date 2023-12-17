@@ -20,7 +20,7 @@ https://youtu.be/7LeTlWwDp3c?si=bZcxJQCtt5TyCFFc
 <br/><br/>
 
 ## 🌈 전체 시스템 구조
-<p align="center"><img src="https://github.com/wl2258/tovalley/assets/77067383/6b00cd7d-db60-4755-a757-448892980222" width=70% /></p>
+<p align="center"><img src="https://github.com/wl2258/tovalley/assets/77067383/1d02a47a-7314-47d8-9145-b846d9d27593" width=60% /></p>
 <br/><br/>
 
 ## 📃 데이터베이스 구조
