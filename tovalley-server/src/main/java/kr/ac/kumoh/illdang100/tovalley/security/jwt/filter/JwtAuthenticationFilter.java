@@ -71,7 +71,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         String accessToken = jwtProcess.createAccessToken(principalDetails);
 
-        String refreshToken = saveRefreshToken(jwtProcess, refreshTokenRedisRepository, principalDetails.getMember());
+        String ip = getClientIpAddress(request);
+        String refreshToken = saveRefreshToken(jwtProcess, refreshTokenRedisRepository, principalDetails.getMember(), ip);
         addCookie(response, JwtVO.ACCESS_TOKEN, accessToken);
         addCookie(response, JwtVO.REFRESH_TOKEN, refreshToken);
         addCookie(response, ISLOGIN, "true", false);

@@ -3,11 +3,11 @@ package kr.ac.kumoh.illdang100.tovalley.util;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.dto.ResponseDto;
-import kr.ac.kumoh.illdang100.tovalley.handler.ex.CustomApiException;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtProcess;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtVO;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.RefreshToken;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.RefreshTokenRedisRepository;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -62,15 +62,16 @@ public class CustomResponseUtil {
         addCookie(response, name, value, true);
     }
 
-    public static String saveRefreshToken(JwtProcess jwtProcess, RefreshTokenRedisRepository refreshTokenRedisRepository, Member member) {
+    public static String saveRefreshToken(JwtProcess jwtProcess, RefreshTokenRedisRepository refreshTokenRedisRepository, Member member, String ip) {
         String memberId = member.getId().toString();
         String role = member.getRole().toString();
 
-        String refreshToken = jwtProcess.createRefreshToken(memberId, role);
+        String refreshToken = jwtProcess.createRefreshToken(memberId, role, ip);
 
         refreshTokenRedisRepository.save(RefreshToken.builder()
                 .id(memberId)
                 .role(role)
+                .ip(ip)
                 .refreshToken(refreshToken)
                 .build());
 
@@ -101,6 +102,37 @@ public class CustomResponseUtil {
             }
         }
         return token;
+    }
+
+    public static String getClientIpAddress(HttpServletRequest request) {
+        String ipAddress = request.getHeader("X-Forwarded-For");
+
+        if (StringUtils.isBlank(ipAddress) || "unknown".equalsIgnoreCase(ipAddress)) {
+            ipAddress = request.getHeader("X-Forwarded-For");
+        }
+        if (StringUtils.isBlank(ipAddress) || "unknown".equalsIgnoreCase(ipAddress)) {
+            ipAddress = request.getHeader("X-Real-IP");
+        }
+        if (StringUtils.isBlank(ipAddress) || "unknown".equalsIgnoreCase(ipAddress)) {
+            ipAddress = request.getHeader("X-Real-IP");
+        }
+        if (StringUtils.isBlank(ipAddress) || "unknown".equalsIgnoreCase(ipAddress)) {
+            ipAddress = request.getHeader("Http_X_FORWARDED_FOR");
+        }
+        if (StringUtils.isBlank(ipAddress) || "unknown".equalsIgnoreCase(ipAddress)) {
+            ipAddress = request.getHeader("HTTP_CLIENT_IP");
+        }
+        if (StringUtils.isBlank(ipAddress) || "unknown".equalsIgnoreCase(ipAddress)) {
+            ipAddress = request.getHeader("Proxy-Client-IP");
+        }
+        if (StringUtils.isBlank(ipAddress) || "unknown".equalsIgnoreCase(ipAddress)) {
+            ipAddress = request.getHeader("WL-Proxy-Client-IP");
+        }
+        if (StringUtils.isBlank(ipAddress) || "unknown".equalsIgnoreCase(ipAddress)) {
+            ipAddress = request.getRemoteAddr();
+        }
+
+        return ipAddress;
     }
 }
 

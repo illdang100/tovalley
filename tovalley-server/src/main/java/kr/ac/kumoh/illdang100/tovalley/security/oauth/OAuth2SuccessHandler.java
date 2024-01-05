@@ -16,9 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static kr.ac.kumoh.illdang100.tovalley.util.CustomResponseUtil.ISLOGIN;
-import static kr.ac.kumoh.illdang100.tovalley.util.CustomResponseUtil.addCookie;
-import static kr.ac.kumoh.illdang100.tovalley.util.CustomResponseUtil.saveRefreshToken;
+import static kr.ac.kumoh.illdang100.tovalley.util.CustomResponseUtil.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -42,7 +40,8 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         String accessToken = jwtProcess.createAccessToken(principalDetails);
 
-        String refreshToken = saveRefreshToken(jwtProcess, refreshTokenRedisRepository, member);
+        String ip = getClientIpAddress(request);
+        String refreshToken = saveRefreshToken(jwtProcess, refreshTokenRedisRepository, member, ip);
 
         addCookie(response, JwtVO.ACCESS_TOKEN, accessToken);
         addCookie(response, JwtVO.REFRESH_TOKEN, refreshToken);
