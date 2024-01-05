@@ -221,7 +221,7 @@ public class DummyObject {
                                                  LocalDate weatherDate) {
 
         return NationalWeather.builder()
-                .nationalRegion(nationalRegion)
+                .regionName(nationalRegion.getRegionName())
                 .climate(climate)
                 .climateIcon("10d")
                 .climateDescription("굵은 비")
@@ -240,8 +240,8 @@ public class DummyObject {
                                                      LocalDate weatherDate) {
 
         return NationalWeather.builder()
-                .id(id)
-                .nationalRegion(nationalRegion)
+                .id(String.valueOf(id))
+                .regionName(nationalRegion.getRegionName())
                 .climate(climate)
                 .climateIcon("10d")
                 .climateDescription("굵은 비")

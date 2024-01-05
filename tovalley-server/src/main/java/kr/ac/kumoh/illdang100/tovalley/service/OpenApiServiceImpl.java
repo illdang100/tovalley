@@ -7,7 +7,7 @@ import kr.ac.kumoh.illdang100.tovalley.domain.water_place.*;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.national_weather.NationalRegion;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.national_weather.NationalRegionRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.national_weather.NationalWeather;
-import kr.ac.kumoh.illdang100.tovalley.domain.weather.national_weather.NationalWeatherRepository;
+import kr.ac.kumoh.illdang100.tovalley.domain.weather.national_weather.NationalWeatherRedisRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.special_weather.*;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.water_place_weather.WaterPlaceWeather;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.water_place_weather.WaterPlaceWeatherRepository;
@@ -75,7 +75,7 @@ public class OpenApiServiceImpl implements OpenApiService {
     private final SpecialWeatherDetailRepository specialWeatherDetailRepository;
 
     private final NationalRegionRepository nationalRegionRepository;
-    private final NationalWeatherRepository nationalWeatherRepository;
+    private final NationalWeatherRedisRepository nationalWeatherRedisRepository;
 
     private final S3Service s3Service;
 
@@ -126,7 +126,7 @@ public class OpenApiServiceImpl implements OpenApiService {
 
         log.info("전국 지역 날씨 정보 업데이트중!!");
 
-        nationalWeatherRepository.deleteAll();
+        nationalWeatherRedisRepository.deleteAll();
 
         List<NationalRegion> nationalRegions = nationalRegionRepository.findAll();
 
@@ -134,7 +134,7 @@ public class OpenApiServiceImpl implements OpenApiService {
             JSONObject response = fetchWeatherData(nationalRegion.getCoordinate().getLatitude(), nationalRegion.getCoordinate().getLongitude());
             JSONArray weatherDataList = response.getJSONArray("list");
             List<NationalWeather> waterPlaceWeatherList = extractNationalWeatherData(weatherDataList, nationalRegion);
-            nationalWeatherRepository.saveAll(waterPlaceWeatherList);
+            nationalWeatherRedisRepository.saveAll(waterPlaceWeatherList);
         }
 
         log.info("전국 지역 날씨 정보 업데이트 완료!!");
@@ -167,8 +167,9 @@ public class OpenApiServiceImpl implements OpenApiService {
             JSONObject feelsLike = weatherData.getJSONObject("feels_like");
             double dayFeelsLike = feelsLike.getDouble("day");
 
+            // TODO: region을 지역 이름(String)으로 변경!!
             nationalWeatherList.add(NationalWeather.builder()
-                    .nationalRegion(nationalRegion)
+                    .regionName(nationalRegion.getRegionName())
                     .climate(climate)
                     .climateIcon(climateIcon)
                     .climateDescription(description)
@@ -225,6 +226,7 @@ public class OpenApiServiceImpl implements OpenApiService {
     }
 
     private void deleteWeatherAlertStatus() {
+        // TODO: 기존 특보 정보 redis로부터 삭제하기
         specialWeatherDetailRepository.deleteAll();
         specialWeatherRepository.deleteAll();
     }
@@ -354,7 +356,10 @@ public class OpenApiServiceImpl implements OpenApiService {
         }
     }
 
-    private SpecialWeather saveSpecialWeather(LocalDateTime announcementTime, LocalDateTime effectiveTime, WeatherAlertType weatherAlertType, SpecialWeatherEnum category, String title) {
+    private SpecialWeather saveSpecialWeather(LocalDateTime announcementTime, LocalDateTime effectiveTime,
+                                              WeatherAlertType weatherAlertType, SpecialWeatherEnum category,
+                                              String title) {
+        // TODO: 기상 특보 저장 -> redis로 변경하기
         return specialWeatherRepository.save(SpecialWeather.builder()
                 .announcementTime(announcementTime)
                 .effectiveTime(effectiveTime)
@@ -365,6 +370,7 @@ public class OpenApiServiceImpl implements OpenApiService {
     }
 
     private void saveSpecialWeatherDetail(SpecialWeather specialWeather, String content) {
+        // TODO: 기상 특보 저장 -> redis로 변경하기
         specialWeatherDetailRepository.save(SpecialWeatherDetail.builder()
                 .specialWeather(specialWeather)
                 .content(content)

@@ -1,7 +1,7 @@
 package kr.ac.kumoh.illdang100.tovalley.service.weather;
 
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.national_weather.NationalWeather;
-import kr.ac.kumoh.illdang100.tovalley.domain.weather.national_weather.NationalWeatherRepository;
+import kr.ac.kumoh.illdang100.tovalley.domain.weather.national_weather.NationalWeatherRedisRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.special_weather.SpecialWeather;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.special_weather.SpecialWeatherDetail;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.special_weather.SpecialWeatherDetailRepository;
@@ -27,7 +27,7 @@ import static kr.ac.kumoh.illdang100.tovalley.dto.weather.WeatherRespDto.*;
 @Transactional(readOnly = true)
 public class WeatherServiceImpl implements WeatherService {
 
-    private final NationalWeatherRepository nationalWeatherRepository;
+    private final NationalWeatherRedisRepository nationalWeatherRedisRepository;
     private final SpecialWeatherDetailRepository specialWeatherDetailRepository;
     private final WaterPlaceWeatherRepository waterPlaceWeatherRepository;
     private final OpenApiService openApiService;
@@ -40,9 +40,13 @@ public class WeatherServiceImpl implements WeatherService {
      */
     @Override
     public List<NationalWeatherRespDto> getNationalWeathers() {
-        List<NationalWeather> nationalWeatherWithNationalRegion = nationalWeatherRepository.findAllWithNationalRegion();
 
-        Map<LocalDate, List<DailyNationalWeatherDto>> weatherByDate = groupWeatherDataByDate(nationalWeatherWithNationalRegion);
+        Iterable<NationalWeather> nationalWeatherWithNationalRegion = nationalWeatherRedisRepository.findAll();
+
+        List<NationalWeather> nationalWeatherList = new ArrayList<>();
+        nationalWeatherWithNationalRegion.forEach(nationalWeatherList::add);
+
+        Map<LocalDate, List<DailyNationalWeatherDto>> weatherByDate = groupWeatherDataByDate(nationalWeatherList);
 
         List<NationalWeatherRespDto> nationalWeatherRespDtoList = createNationalWeatherRespDtoList(weatherByDate);
 
@@ -67,7 +71,7 @@ public class WeatherServiceImpl implements WeatherService {
 
     private DailyNationalWeatherDto createDailyNationalWeatherDto(NationalWeather nationalWeather) {
         return DailyNationalWeatherDto.builder()
-                .region(nationalWeather.getNationalRegion().getRegionName())
+                .region(nationalWeather.getRegionName())
                 .weatherIcon(nationalWeather.getClimateIcon())
                 .weatherDesc(nationalWeather.getClimateDescription())
                 .minTemp(nationalWeather.getLowestTemperature())
@@ -140,14 +144,16 @@ public class WeatherServiceImpl implements WeatherService {
     }
 
     /**
+     * @param waterPlaceId: 물놀이 장소 pk
      * @methodnme: getWaterPlaceWeatherData
      * @author: JYeonJun
      * @description: 물놀이 장소 날씨 조회
-     * @param waterPlaceId: 물놀이 장소 pk
      * @return: 물놀이 장소 날씨 리스트(5일)
      */
     @Override
     public List<DailyWaterPlaceWeatherDto> getWaterPlaceWeatherData(Long waterPlaceId) {
+
+        // TODO: 계곡 날씨 또한 redis에 저장하는 걸로??
         List<WaterPlaceWeather> findWaterPlaceWeathers =
                 waterPlaceWeatherRepository.findAllByWaterPlace_Id(waterPlaceId);
 

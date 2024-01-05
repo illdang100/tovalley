@@ -8,7 +8,7 @@ import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlace;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlaceRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.national_weather.NationalRegion;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.national_weather.NationalRegionRepository;
-import kr.ac.kumoh.illdang100.tovalley.domain.weather.national_weather.NationalWeatherRepository;
+import kr.ac.kumoh.illdang100.tovalley.domain.weather.national_weather.NationalWeatherRedisRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.special_weather.*;
 import kr.ac.kumoh.illdang100.tovalley.dummy.DummyObject;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,7 +16,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
@@ -44,7 +43,7 @@ class MainPageApiControllerTest extends DummyObject {
     @Autowired
     private NationalRegionRepository nationalRegionRepository;
     @Autowired
-    private NationalWeatherRepository nationalWeatherRepository;
+    private NationalWeatherRedisRepository nationalWeatherRedisRepository;
     @Autowired
     private SpecialWeatherRepository specialWeatherRepository;
     @Autowired
@@ -101,35 +100,35 @@ class MainPageApiControllerTest extends DummyObject {
         NationalRegion daegu = nationalRegionRepository.save(newNationalRegion("대구"));
         NationalRegion busan = nationalRegionRepository.save(newNationalRegion("부산"));
 
-        nationalWeatherRepository.save(newNationalWeather(seoul, "Rain", LocalDate.now()));
-        nationalWeatherRepository.save(newNationalWeather(seoul, "Rain", LocalDate.now().plusDays(1)));
-        nationalWeatherRepository.save(newNationalWeather(seoul, "Rain", LocalDate.now().plusDays(2)));
-        nationalWeatherRepository.save(newNationalWeather(seoul, "Clouds", LocalDate.now().plusDays(3)));
-        nationalWeatherRepository.save(newNationalWeather(seoul, "Snow", LocalDate.now().plusDays(4)));
+        nationalWeatherRedisRepository.save(newNationalWeather(seoul, "Rain", LocalDate.now()));
+        nationalWeatherRedisRepository.save(newNationalWeather(seoul, "Rain", LocalDate.now().plusDays(1)));
+        nationalWeatherRedisRepository.save(newNationalWeather(seoul, "Rain", LocalDate.now().plusDays(2)));
+        nationalWeatherRedisRepository.save(newNationalWeather(seoul, "Clouds", LocalDate.now().plusDays(3)));
+        nationalWeatherRedisRepository.save(newNationalWeather(seoul, "Snow", LocalDate.now().plusDays(4)));
 
-        nationalWeatherRepository.save(newNationalWeather(jeju, "Clear", LocalDate.now()));
-        nationalWeatherRepository.save(newNationalWeather(jeju, "Rain", LocalDate.now().plusDays(1)));
-        nationalWeatherRepository.save(newNationalWeather(jeju, "Rain", LocalDate.now().plusDays(2)));
-        nationalWeatherRepository.save(newNationalWeather(jeju, "Thunderstorm", LocalDate.now().plusDays(3)));
-        nationalWeatherRepository.save(newNationalWeather(jeju, "Mist", LocalDate.now().plusDays(4)));
+        nationalWeatherRedisRepository.save(newNationalWeather(jeju, "Clear", LocalDate.now()));
+        nationalWeatherRedisRepository.save(newNationalWeather(jeju, "Rain", LocalDate.now().plusDays(1)));
+        nationalWeatherRedisRepository.save(newNationalWeather(jeju, "Rain", LocalDate.now().plusDays(2)));
+        nationalWeatherRedisRepository.save(newNationalWeather(jeju, "Thunderstorm", LocalDate.now().plusDays(3)));
+        nationalWeatherRedisRepository.save(newNationalWeather(jeju, "Mist", LocalDate.now().plusDays(4)));
 
-        nationalWeatherRepository.save(newNationalWeather(ulleng, "Clear", LocalDate.now()));
-        nationalWeatherRepository.save(newNationalWeather(ulleng, "Clear", LocalDate.now().plusDays(1)));
-        nationalWeatherRepository.save(newNationalWeather(ulleng, "Mist", LocalDate.now().plusDays(2)));
-        nationalWeatherRepository.save(newNationalWeather(ulleng, "Mist", LocalDate.now().plusDays(3)));
-        nationalWeatherRepository.save(newNationalWeather(ulleng, "Mist", LocalDate.now().plusDays(4)));
+        nationalWeatherRedisRepository.save(newNationalWeather(ulleng, "Clear", LocalDate.now()));
+        nationalWeatherRedisRepository.save(newNationalWeather(ulleng, "Clear", LocalDate.now().plusDays(1)));
+        nationalWeatherRedisRepository.save(newNationalWeather(ulleng, "Mist", LocalDate.now().plusDays(2)));
+        nationalWeatherRedisRepository.save(newNationalWeather(ulleng, "Mist", LocalDate.now().plusDays(3)));
+        nationalWeatherRedisRepository.save(newNationalWeather(ulleng, "Mist", LocalDate.now().plusDays(4)));
 
-        nationalWeatherRepository.save(newNationalWeather(daegu, "Thunderstorm", LocalDate.now()));
-        nationalWeatherRepository.save(newNationalWeather(daegu, "Thunderstorm", LocalDate.now().plusDays(1)));
-        nationalWeatherRepository.save(newNationalWeather(daegu, "Rain", LocalDate.now().plusDays(2)));
-        nationalWeatherRepository.save(newNationalWeather(daegu, "Clear", LocalDate.now().plusDays(3)));
-        nationalWeatherRepository.save(newNationalWeather(daegu, "Rain", LocalDate.now().plusDays(4)));
+        nationalWeatherRedisRepository.save(newNationalWeather(daegu, "Thunderstorm", LocalDate.now()));
+        nationalWeatherRedisRepository.save(newNationalWeather(daegu, "Thunderstorm", LocalDate.now().plusDays(1)));
+        nationalWeatherRedisRepository.save(newNationalWeather(daegu, "Rain", LocalDate.now().plusDays(2)));
+        nationalWeatherRedisRepository.save(newNationalWeather(daegu, "Clear", LocalDate.now().plusDays(3)));
+        nationalWeatherRedisRepository.save(newNationalWeather(daegu, "Rain", LocalDate.now().plusDays(4)));
 
-        nationalWeatherRepository.save(newNationalWeather(busan, "Clear", LocalDate.now()));
-        nationalWeatherRepository.save(newNationalWeather(busan, "Clear", LocalDate.now().plusDays(1)));
-        nationalWeatherRepository.save(newNationalWeather(busan, "Clouds", LocalDate.now().plusDays(2)));
-        nationalWeatherRepository.save(newNationalWeather(busan, "Clouds", LocalDate.now().plusDays(3)));
-        nationalWeatherRepository.save(newNationalWeather(busan, "Clouds", LocalDate.now().plusDays(4)));
+        nationalWeatherRedisRepository.save(newNationalWeather(busan, "Clear", LocalDate.now()));
+        nationalWeatherRedisRepository.save(newNationalWeather(busan, "Clear", LocalDate.now().plusDays(1)));
+        nationalWeatherRedisRepository.save(newNationalWeather(busan, "Clouds", LocalDate.now().plusDays(2)));
+        nationalWeatherRedisRepository.save(newNationalWeather(busan, "Clouds", LocalDate.now().plusDays(3)));
+        nationalWeatherRedisRepository.save(newNationalWeather(busan, "Clouds", LocalDate.now().plusDays(4)));
 
         SpecialWeather specialWeather1 =
                 specialWeatherRepository.save(newSpecialWeather(LocalDateTime.now().minusHours(1), WeatherAlertType.WINDSTORM, SpecialWeatherEnum.BREAKING, "강풍주의보"));
