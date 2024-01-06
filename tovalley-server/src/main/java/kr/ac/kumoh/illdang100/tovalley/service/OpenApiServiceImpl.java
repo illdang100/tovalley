@@ -121,8 +121,7 @@ public class OpenApiServiceImpl implements OpenApiService {
      * @description: 전국 몇몇 지역의 날씨 정보를 Open API로부터 가져와 데이터베이스에 저장
      */
     @Override
-    @Transactional
-    @Scheduled(cron = "0 0/30 0 * * *")
+    @Scheduled(cron = "0 */30 0 * * *")
     public void fetchAndSaveNationalWeatherData() {
 
         log.info("전국 지역 날씨 정보 업데이트중!!");
@@ -193,7 +192,6 @@ public class OpenApiServiceImpl implements OpenApiService {
      * @description: 전국 특보 정보를 Open API로부터 가져와 데이터베이스에 저장
      */
     @Override
-    @Transactional
     @Scheduled(cron = "0 */30 * * * *")
     public void fetchAndSaveSpecialWeatherData() {
 
