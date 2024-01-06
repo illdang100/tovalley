@@ -1,5 +1,6 @@
 package kr.ac.kumoh.illdang100.tovalley.dummy;
 
+import java.util.List;
 import kr.ac.kumoh.illdang100.tovalley.domain.Coordinate;
 import kr.ac.kumoh.illdang100.tovalley.domain.ImageFile;
 import kr.ac.kumoh.illdang100.tovalley.domain.accident.Accident;
@@ -253,7 +254,8 @@ public class DummyObject {
     }
 
     protected SpecialWeather newSpecialWeather (LocalDateTime time, WeatherAlertType weatherAlertType,
-                                                SpecialWeatherEnum category, String title) {
+                                                SpecialWeatherEnum category, String title,
+                                                List<SpecialWeatherDetail> details) {
 
         return SpecialWeather.builder()
                 .announcementTime(time)
@@ -261,16 +263,8 @@ public class DummyObject {
                 .weatherAlertType(weatherAlertType)
                 .category(category)
                 .title(title)
+                .details(details)
                 .build();
-    }
-
-    protected SpecialWeatherDetail newSpecialWeatherDetail (SpecialWeather specialWeather, String content) {
-
-        return SpecialWeatherDetail.builder()
-                .specialWeather(specialWeather)
-                .content(content)
-                .build();
-
     }
 
     protected WaterPlaceWeather newWaterPlaceWeather (WaterPlace waterPlace, LocalDate date) {

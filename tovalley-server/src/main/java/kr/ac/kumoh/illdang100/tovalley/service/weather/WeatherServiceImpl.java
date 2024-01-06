@@ -4,8 +4,8 @@ import kr.ac.kumoh.illdang100.tovalley.domain.weather.national_weather.NationalW
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.national_weather.NationalWeatherRedisRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.special_weather.SpecialWeather;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.special_weather.SpecialWeatherDetail;
-import kr.ac.kumoh.illdang100.tovalley.domain.weather.special_weather.SpecialWeatherDetailRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.special_weather.SpecialWeatherEnum;
+import kr.ac.kumoh.illdang100.tovalley.domain.weather.special_weather.SpecialWeatherRedisRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.water_place_weather.WaterPlaceWeather;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.water_place_weather.WaterPlaceWeatherRepository;
 import kr.ac.kumoh.illdang100.tovalley.service.OpenApiService;
@@ -28,8 +28,8 @@ import static kr.ac.kumoh.illdang100.tovalley.dto.weather.WeatherRespDto.*;
 public class WeatherServiceImpl implements WeatherService {
 
     private final NationalWeatherRedisRepository nationalWeatherRedisRepository;
-    private final SpecialWeatherDetailRepository specialWeatherDetailRepository;
     private final WaterPlaceWeatherRepository waterPlaceWeatherRepository;
+    private final SpecialWeatherRedisRepository specialWeatherRedisRepository;
     private final OpenApiService openApiService;
 
     /**
@@ -56,7 +56,8 @@ public class WeatherServiceImpl implements WeatherService {
         return sortedNationalWeatherRespDtoList;
     }
 
-    private Map<LocalDate, List<DailyNationalWeatherDto>> groupWeatherDataByDate(List<NationalWeather> nationalWeathers) {
+    private Map<LocalDate, List<DailyNationalWeatherDto>> groupWeatherDataByDate(
+            List<NationalWeather> nationalWeathers) {
         Map<LocalDate, List<DailyNationalWeatherDto>> weatherByDate = new HashMap<>();
 
         for (NationalWeather nationalWeather : nationalWeathers) {
@@ -84,7 +85,8 @@ public class WeatherServiceImpl implements WeatherService {
                 .build();
     }
 
-    private List<NationalWeatherRespDto> createNationalWeatherRespDtoList(Map<LocalDate, List<DailyNationalWeatherDto>> weatherByDate) {
+    private List<NationalWeatherRespDto> createNationalWeatherRespDtoList(
+            Map<LocalDate, List<DailyNationalWeatherDto>> weatherByDate) {
         List<NationalWeatherRespDto> result = new ArrayList<>();
 
         for (Map.Entry<LocalDate, List<DailyNationalWeatherDto>> entry : weatherByDate.entrySet()) {
@@ -103,38 +105,33 @@ public class WeatherServiceImpl implements WeatherService {
      */
     @Override
     public AlertRespDto getAllSpecialWeathers() {
-        List<SpecialWeatherDetail> specialWeatherDetailsWithSpecialWeather =
-                specialWeatherDetailRepository.findAllWithSpecialWeather();
 
-
-        Map<SpecialWeather, List<SpecialWeatherDetail>> weatherDetailsMap =
-                groupWeatherDetails(specialWeatherDetailsWithSpecialWeather);
+        List<SpecialWeather> specialWeathers = (List<SpecialWeather>) specialWeatherRedisRepository.findAll();
 
         List<WeatherAlertDto> weatherAlerts = new ArrayList<>();
         List<WeatherPreliminaryAlertDto> weatherPreAlerts = new ArrayList<>();
 
-        weatherDetailsMap.forEach((specialWeather, details) -> {
+        specialWeathers.forEach(specialWeather -> {
             String weatherAlertType = specialWeather.getWeatherAlertType().getValue();
             String title = specialWeather.getTitle();
             LocalDateTime announcementTime = specialWeather.getAnnouncementTime();
             LocalDateTime effectiveTime = specialWeather.getEffectiveTime();
+            List<SpecialWeatherDetail> details = specialWeather.getDetails();
 
             if (specialWeather.getCategory() == SpecialWeatherEnum.BREAKING) {
                 String content = details.get(0).getContent();
-                weatherAlerts.add(new WeatherAlertDto(weatherAlertType, title, announcementTime, effectiveTime, content));
+                weatherAlerts.add(
+                        new WeatherAlertDto(weatherAlertType, title, announcementTime, effectiveTime, content));
             } else if (specialWeather.getCategory() == SpecialWeatherEnum.PRELIMINARY) {
-                List<WeatherPreliminaryAlertContentDto> contentDtos = createContentDtos(details);
-
-                weatherPreAlerts.add(new WeatherPreliminaryAlertDto(announcementTime, title, weatherAlertType, contentDtos));
+                if (details != null) {
+                    List<WeatherPreliminaryAlertContentDto> contentDtos = createContentDtos(details);
+                    weatherPreAlerts.add(
+                            new WeatherPreliminaryAlertDto(announcementTime, title, weatherAlertType, contentDtos));
+                }
             }
         });
 
         return new AlertRespDto(weatherAlerts, weatherPreAlerts);
-    }
-
-    private Map<SpecialWeather, List<SpecialWeatherDetail>> groupWeatherDetails(List<SpecialWeatherDetail> details) {
-        return details.stream()
-                .collect(Collectors.groupingBy(SpecialWeatherDetail::getSpecialWeather));
     }
 
     private List<WeatherPreliminaryAlertContentDto> createContentDtos(List<SpecialWeatherDetail> details) {
@@ -173,7 +170,8 @@ public class WeatherServiceImpl implements WeatherService {
         return openApiService.fetchAndSaveWaterPlaceWeatherData(waterPlaceId);
     }
 
-    private List<DailyWaterPlaceWeatherDto> createDailyWaterPlaceWeatherDtoList(List<WaterPlaceWeather> waterPlaceWeatherList) {
+    private List<DailyWaterPlaceWeatherDto> createDailyWaterPlaceWeatherDtoList(
+            List<WaterPlaceWeather> waterPlaceWeatherList) {
 
         return waterPlaceWeatherList.stream()
                 .map(this::createDailyWaterPlaceWeatherDto)

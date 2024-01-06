@@ -71,8 +71,7 @@ public class OpenApiServiceImpl implements OpenApiService {
 
     private final WaterPlaceWeatherRepository waterPlaceWeatherRepository;
 
-    private final SpecialWeatherRepository specialWeatherRepository;
-    private final SpecialWeatherDetailRepository specialWeatherDetailRepository;
+    private final SpecialWeatherRedisRepository specialWeatherRedisRepository;
 
     private final NationalRegionRepository nationalRegionRepository;
     private final NationalWeatherRedisRepository nationalWeatherRedisRepository;
@@ -83,12 +82,14 @@ public class OpenApiServiceImpl implements OpenApiService {
     public Coordinate getGeoDataByAddress(String completeAddress) {
         try {
             String encodedAddress = URLEncoder.encode(completeAddress, "UTF-8");
-            String apiUrl = "https://maps.googleapis.com/maps/api/geocode/json?address=" + encodedAddress + "&key=" + geocodingKey;
+            String apiUrl = "https://maps.googleapis.com/maps/api/geocode/json?address=" + encodedAddress + "&key="
+                    + geocodingKey;
 
             HttpURLConnection connection = (HttpURLConnection) new URL(apiUrl).openConnection();
             connection.setRequestMethod("GET");
 
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"))) {
+            try (BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(connection.getInputStream(), "UTF-8"))) {
                 StringBuilder responseStrBuilder = new StringBuilder();
                 String inputStr;
                 while ((inputStr = reader.readLine()) != null) {
@@ -131,7 +132,8 @@ public class OpenApiServiceImpl implements OpenApiService {
         List<NationalRegion> nationalRegions = nationalRegionRepository.findAll();
 
         for (NationalRegion nationalRegion : nationalRegions) {
-            JSONObject response = fetchWeatherData(nationalRegion.getCoordinate().getLatitude(), nationalRegion.getCoordinate().getLongitude());
+            JSONObject response = fetchWeatherData(nationalRegion.getCoordinate().getLatitude(),
+                    nationalRegion.getCoordinate().getLongitude());
             JSONArray weatherDataList = response.getJSONArray("list");
             List<NationalWeather> waterPlaceWeatherList = extractNationalWeatherData(weatherDataList, nationalRegion);
             nationalWeatherRedisRepository.saveAll(waterPlaceWeatherList);
@@ -167,7 +169,6 @@ public class OpenApiServiceImpl implements OpenApiService {
             JSONObject feelsLike = weatherData.getJSONObject("feels_like");
             double dayFeelsLike = feelsLike.getDouble("day");
 
-            // TODO: region을 지역 이름(String)으로 변경!!
             nationalWeatherList.add(NationalWeather.builder()
                     .regionName(nationalRegion.getRegionName())
                     .climate(climate)
@@ -226,19 +227,21 @@ public class OpenApiServiceImpl implements OpenApiService {
     }
 
     private void deleteWeatherAlertStatus() {
-        // TODO: 기존 특보 정보 redis로부터 삭제하기
-        specialWeatherDetailRepository.deleteAll();
-        specialWeatherRepository.deleteAll();
+        specialWeatherRedisRepository.deleteAll();
     }
 
     private JSONObject fetchSpecialWeatherData() {
         try {
 
-            StringBuilder urlBuilder = new StringBuilder("https://apis.data.go.kr/1360000/WthrWrnInfoService/getPwnStatus"); /*URL*/
+            StringBuilder urlBuilder = new StringBuilder(
+                    "https://apis.data.go.kr/1360000/WthrWrnInfoService/getPwnStatus"); /*URL*/
             urlBuilder.append("?" + URLEncoder.encode("serviceKey", "UTF-8") + "=" + specialWeatherKey); /*Service Key*/
-            urlBuilder.append("&" + URLEncoder.encode("pageNo", "UTF-8") + "=" + URLEncoder.encode("1", "UTF-8")); /*페이지번호*/
-            urlBuilder.append("&" + URLEncoder.encode("numOfRows", "UTF-8") + "=" + URLEncoder.encode("100", "UTF-8")); /*한 페이지 결과 수*/
-            urlBuilder.append("&" + URLEncoder.encode("dataType", "UTF-8") + "=" + URLEncoder.encode("json", "UTF-8")); /*요청자료형식(XML/JSON)Default: XML*/
+            urlBuilder.append(
+                    "&" + URLEncoder.encode("pageNo", "UTF-8") + "=" + URLEncoder.encode("1", "UTF-8")); /*페이지번호*/
+            urlBuilder.append("&" + URLEncoder.encode("numOfRows", "UTF-8") + "=" + URLEncoder.encode("100",
+                    "UTF-8")); /*한 페이지 결과 수*/
+            urlBuilder.append("&" + URLEncoder.encode("dataType", "UTF-8") + "=" + URLEncoder.encode("json",
+                    "UTF-8")); /*요청자료형식(XML/JSON)Default: XML*/
 
             URL url = new URL(urlBuilder.toString());
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -265,7 +268,8 @@ public class OpenApiServiceImpl implements OpenApiService {
         }
     }
 
-    private void extractWeatherAlertStatus(JSONObject item, LocalDateTime effectiveTime, LocalDateTime announcementTime) {
+    private void extractWeatherAlertStatus(JSONObject item, LocalDateTime effectiveTime,
+                                           LocalDateTime announcementTime) {
 
         String weatherAlert = item.getString("t6");
 
@@ -277,9 +281,18 @@ public class OpenApiServiceImpl implements OpenApiService {
 
             WeatherAlertType weatherAlertType = determineWeatherAlertType(title);
 
-            SpecialWeather savedSpecialWeather = saveSpecialWeather(announcementTime, effectiveTime, weatherAlertType, SpecialWeatherEnum.BREAKING, title);
+            List<SpecialWeatherDetail> details = new ArrayList<>();
+            String content = entry.getValue();
+            if (!content.isEmpty()) {
+                details.add(SpecialWeatherDetail.builder().content(content).build());
+            }
 
-            saveSpecialWeatherDetail(savedSpecialWeather, entry.getValue());
+            saveSpecialWeather(announcementTime,
+                    effectiveTime,
+                    weatherAlertType,
+                    SpecialWeatherEnum.BREAKING,
+                    title,
+                    details);
         }
     }
 
@@ -289,7 +302,9 @@ public class OpenApiServiceImpl implements OpenApiService {
         String[] lines = alertString.split("\n");
 
         for (String line : lines) {
-            if ("o 없 음".equals(line)) break;
+            if ("o 없 음".equals(line)) {
+                break;
+            }
             if (line.startsWith("o")) {
                 String[] tokens = line.split(":");
                 String alertName = tokens[0].trim();
@@ -302,30 +317,39 @@ public class OpenApiServiceImpl implements OpenApiService {
         return alertMap;
     }
 
-    private void extractPreWeatherAlertStatus(JSONObject item, LocalDateTime effectiveTime, LocalDateTime announcementTime) {
-
+    private void extractPreWeatherAlertStatus(JSONObject item, LocalDateTime effectiveTime,
+                                              LocalDateTime announcementTime) {
         String preWeatherAlert = item.getString("t7");
-
-        SpecialWeather specialWeather = null;
-
         String[] alertSections = preWeatherAlert.split("\\(\\d+\\)\\s+");
 
         for (String section : alertSections) {
             String[] lines = section.split("\r\n");
+            List<SpecialWeatherDetail> details = new ArrayList<>();
+            WeatherAlertType weatherAlertType = null;
+            String title = null;
+
             for (int i = 0; i < lines.length; i++) {
                 String line = lines[i].trim(); // 현재 줄의 앞뒤 공백 제거
 
                 if (!line.isEmpty()) {
                     if (i == 0) {
-                        WeatherAlertType weatherAlertType = determineWeatherAlertType(line);
-                        if ("o 없음".equals(line)) return;
-                        specialWeather = saveSpecialWeather(announcementTime, effectiveTime, weatherAlertType, SpecialWeatherEnum.PRELIMINARY, line);
-
+                        weatherAlertType = determineWeatherAlertType(line);
+                        if ("o 없음".equals(line)) {
+                            return;
+                        }
+                        title = line;
                     } else {
                         String content = line.substring(2);
-                        saveSpecialWeatherDetail(specialWeather, content);
+                        if (!content.isEmpty()) {
+                            details.add(SpecialWeatherDetail.builder().content(content).build());
+                        }
                     }
                 }
+            }
+
+            if (weatherAlertType != null && title != null) {
+                saveSpecialWeather(announcementTime, effectiveTime, weatherAlertType,
+                        SpecialWeatherEnum.PRELIMINARY, title, details);
             }
         }
     }
@@ -356,24 +380,16 @@ public class OpenApiServiceImpl implements OpenApiService {
         }
     }
 
-    private SpecialWeather saveSpecialWeather(LocalDateTime announcementTime, LocalDateTime effectiveTime,
-                                              WeatherAlertType weatherAlertType, SpecialWeatherEnum category,
-                                              String title) {
-        // TODO: 기상 특보 저장 -> redis로 변경하기
-        return specialWeatherRepository.save(SpecialWeather.builder()
+    private void saveSpecialWeather(LocalDateTime announcementTime, LocalDateTime effectiveTime,
+                                    WeatherAlertType weatherAlertType, SpecialWeatherEnum category,
+                                    String title, List<SpecialWeatherDetail> details) {
+        specialWeatherRedisRepository.save(SpecialWeather.builder()
                 .announcementTime(announcementTime)
                 .effectiveTime(effectiveTime)
                 .weatherAlertType(weatherAlertType)
                 .category(category)
                 .title(title)
-                .build());
-    }
-
-    private void saveSpecialWeatherDetail(SpecialWeather specialWeather, String content) {
-        // TODO: 기상 특보 저장 -> redis로 변경하기
-        specialWeatherDetailRepository.save(SpecialWeatherDetail.builder()
-                .specialWeather(specialWeather)
-                .content(content)
+                .details(details)
                 .build());
     }
 
@@ -447,12 +463,15 @@ public class OpenApiServiceImpl implements OpenApiService {
     private JSONObject fetchWeatherData(String lat, String lon) {
 
         try {
-            StringBuilder urlBuilder = new StringBuilder("https://pro.openweathermap.org/data/2.5/forecast/climate"); /*URL*/
+            StringBuilder urlBuilder = new StringBuilder(
+                    "https://pro.openweathermap.org/data/2.5/forecast/climate"); /*URL*/
             urlBuilder.append("?" + URLEncoder.encode("appid", "UTF-8") + "=" + openWeatherKey); /*Service Key*/
             urlBuilder.append("&" + URLEncoder.encode("lat", "UTF-8") + "=" + URLEncoder.encode(lat, "UTF-8")); /*위도*/
             urlBuilder.append("&" + URLEncoder.encode("lon", "UTF-8") + "=" + URLEncoder.encode(lon, "UTF-8")); /*경도*/
-            urlBuilder.append("&" + URLEncoder.encode("units", "UTF-8") + "=" + URLEncoder.encode("metric", "UTF-8")); /*섭씨온도*/
-            urlBuilder.append("&" + URLEncoder.encode("lang", "UTF-8") + "=" + URLEncoder.encode("kr", "UTF-8")); /*한국어*/
+            urlBuilder.append(
+                    "&" + URLEncoder.encode("units", "UTF-8") + "=" + URLEncoder.encode("metric", "UTF-8")); /*섭씨온도*/
+            urlBuilder.append(
+                    "&" + URLEncoder.encode("lang", "UTF-8") + "=" + URLEncoder.encode("kr", "UTF-8")); /*한국어*/
             urlBuilder.append("&" + URLEncoder.encode("cnt", "UTF-8") + "=" + URLEncoder.encode("5", "UTF-8")); /*한국어*/
             URL url = new URL(urlBuilder.toString());
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -616,11 +635,16 @@ public class OpenApiServiceImpl implements OpenApiService {
     private JSONObject fetchWaterPlacesData() {
 
         try {
-            StringBuilder strBuilder = new StringBuilder("https://www.safemap.go.kr/openApiService/data/getWtrPlayData.do"); /*URL*/
-            strBuilder.append("?" + URLEncoder.encode("serviceKey", "UTF-8") + "=" + URLEncoder.encode(waterPlaceKey, "UTF-8")); /*Service Key*/
-            strBuilder.append("&" + URLEncoder.encode("pageNo", "UTF-8") + "=" + URLEncoder.encode("1", "UTF-8")); /*페이지번호*/
-            strBuilder.append("&" + URLEncoder.encode("numOfRows", "UTF-8") + "=" + URLEncoder.encode("1365", "UTF-8")); /*한 페이지 결과 수*/
-            strBuilder.append("&" + URLEncoder.encode("dataType", "UTF-8") + "=" + URLEncoder.encode("json", "UTF-8")); /*xml(기본값), JSON*/
+            StringBuilder strBuilder = new StringBuilder(
+                    "https://www.safemap.go.kr/openApiService/data/getWtrPlayData.do"); /*URL*/
+            strBuilder.append("?" + URLEncoder.encode("serviceKey", "UTF-8") + "=" + URLEncoder.encode(waterPlaceKey,
+                    "UTF-8")); /*Service Key*/
+            strBuilder.append(
+                    "&" + URLEncoder.encode("pageNo", "UTF-8") + "=" + URLEncoder.encode("1", "UTF-8")); /*페이지번호*/
+            strBuilder.append("&" + URLEncoder.encode("numOfRows", "UTF-8") + "=" + URLEncoder.encode("1365",
+                    "UTF-8")); /*한 페이지 결과 수*/
+            strBuilder.append("&" + URLEncoder.encode("dataType", "UTF-8") + "=" + URLEncoder.encode("json",
+                    "UTF-8")); /*xml(기본값), JSON*/
             URL url = new URL(strBuilder.toString());
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
@@ -673,14 +697,17 @@ public class OpenApiServiceImpl implements OpenApiService {
     private ImageFile saveWaterPlaceImage(String waterPlaceName) {
         try {
             String placeId = findPlaceId(waterPlaceName);
-            if (placeId == null || placeId.trim().isEmpty())
+            if (placeId == null || placeId.trim().isEmpty()) {
                 return null;
+            }
 
             List<String> photoAttributions = findPhotoAttributions(placeId);
-            if (photoAttributions == null || photoAttributions.isEmpty())
+            if (photoAttributions == null || photoAttributions.isEmpty()) {
                 return null;
+            }
 
-            ImageFile placeImageFile = findPlaceImage(photoAttributions, FileRootPathVO.WATER_PLACE_PATH, waterPlaceName);
+            ImageFile placeImageFile = findPlaceImage(photoAttributions, FileRootPathVO.WATER_PLACE_PATH,
+                    waterPlaceName);
             log.debug("waterPlace={} url={}", waterPlaceName, placeImageFile.getStoreFileUrl());
 
             return placeImageFile;
@@ -689,7 +716,8 @@ public class OpenApiServiceImpl implements OpenApiService {
         }
     }
 
-    private ImageFile findPlaceImage(List<String> photoAttributions, String fileRootPath, String waterPlaceName) throws IOException {
+    private ImageFile findPlaceImage(List<String> photoAttributions, String fileRootPath, String waterPlaceName)
+            throws IOException {
         String apiUrl = "https://maps.googleapis.com/maps/api/place/photo";
         Map<String, String> params = new HashMap<>();
         params.put("photo_reference", photoAttributions.get(1));
@@ -718,10 +746,11 @@ public class OpenApiServiceImpl implements OpenApiService {
         params.put("fields", field);
         String googleApiUrl = buildGoogleApiUrl(apiUrl, params);
 
-
         JSONObject jsonResponse = getJsonObject(googleApiUrl);
         JSONObject result = jsonResponse.getJSONObject("result");
-        if (result.isEmpty()) return null;
+        if (result.isEmpty()) {
+            return null;
+        }
         JSONArray photos = result.getJSONArray("photos");
         JSONObject jsonObject = photos.getJSONObject(0);
         String width = jsonObject.get("width").toString();
@@ -740,7 +769,9 @@ public class OpenApiServiceImpl implements OpenApiService {
 
         JSONObject jsonResponse = getJsonObject(googleApiUrl);
         JSONArray candidates = jsonResponse.getJSONArray("candidates");
-        if (candidates.isEmpty()) return null;
+        if (candidates.isEmpty()) {
+            return null;
+        }
         JSONObject jsonObject = candidates.getJSONObject(0);
 
         return jsonObject.get("place_id").toString();

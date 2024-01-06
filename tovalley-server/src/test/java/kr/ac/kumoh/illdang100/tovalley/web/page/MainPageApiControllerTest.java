@@ -1,6 +1,7 @@
 package kr.ac.kumoh.illdang100.tovalley.web.page;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Arrays;
 import kr.ac.kumoh.illdang100.tovalley.domain.accident.Accident;
 import kr.ac.kumoh.illdang100.tovalley.domain.accident.AccidentEnum;
 import kr.ac.kumoh.illdang100.tovalley.domain.accident.AccidentRepository;
@@ -45,9 +46,7 @@ class MainPageApiControllerTest extends DummyObject {
     @Autowired
     private NationalWeatherRedisRepository nationalWeatherRedisRepository;
     @Autowired
-    private SpecialWeatherRepository specialWeatherRepository;
-    @Autowired
-    private SpecialWeatherDetailRepository specialWeatherDetailRepository;
+    private SpecialWeatherRedisRepository specialWeatherRedisRepository;
     @Autowired
     private WaterPlaceRepository waterPlaceRepository;
     @Autowired
@@ -130,16 +129,24 @@ class MainPageApiControllerTest extends DummyObject {
         nationalWeatherRedisRepository.save(newNationalWeather(busan, "Clouds", LocalDate.now().plusDays(3)));
         nationalWeatherRedisRepository.save(newNationalWeather(busan, "Clouds", LocalDate.now().plusDays(4)));
 
-        SpecialWeather specialWeather1 =
-                specialWeatherRepository.save(newSpecialWeather(LocalDateTime.now().minusHours(1), WeatherAlertType.WINDSTORM, SpecialWeatherEnum.BREAKING, "강풍주의보"));
-        SpecialWeather specialWeather2 =
-                specialWeatherRepository.save(newSpecialWeather(LocalDateTime.now().minusHours(2), WeatherAlertType.ROUGH_SEA, SpecialWeatherEnum.BREAKING, "풍랑주의보"));
-        SpecialWeather specialWeather3 =
-                specialWeatherRepository.save(newSpecialWeather(LocalDateTime.now().minusHours(2), WeatherAlertType.ROUGH_SEA, SpecialWeatherEnum.PRELIMINARY, "풍랑 예비특보"));
-
-        specialWeatherDetailRepository.save(newSpecialWeatherDetail(specialWeather1, "울릉도.독도"));
-        specialWeatherDetailRepository.save(newSpecialWeatherDetail(specialWeather2, "남해동부먼바다, 동해중부먼바다, 동해남부먼바다"));
-        specialWeatherDetailRepository.save(newSpecialWeatherDetail(specialWeather3, "06월 07일 아침 : 동해중부앞바다, 동해남부앞바다(경북북부앞바다, 경북남부앞바다)"));
+        specialWeatherRedisRepository.save(
+                newSpecialWeather(LocalDateTime.now().minusHours(1), WeatherAlertType.WINDSTORM,
+                        SpecialWeatherEnum.BREAKING, "강풍주의보",
+                        Arrays.asList(SpecialWeatherDetail.builder()
+                                .content("울릉도.독도")
+                                .build())));
+        specialWeatherRedisRepository.save(
+                newSpecialWeather(LocalDateTime.now().minusHours(2), WeatherAlertType.ROUGH_SEA,
+                        SpecialWeatherEnum.BREAKING, "풍랑주의보",
+                        Arrays.asList(SpecialWeatherDetail.builder()
+                                .content("남해동부먼바다, 동해중부먼바다, 동해남부먼바다")
+                                .build())));
+        specialWeatherRedisRepository.save(
+                newSpecialWeather(LocalDateTime.now().minusHours(2), WeatherAlertType.ROUGH_SEA,
+                        SpecialWeatherEnum.PRELIMINARY, "풍랑 예비특보",
+                        Arrays.asList(SpecialWeatherDetail.builder()
+                                .content("06월 07일 아침 : 동해중부앞바다, 동해남부앞바다(경북북부앞바다, 경북남부앞바다)")
+                                .build())));
 
         Accident accident1 =
                 accidentRepository.save(newAccident(waterPlace1, LocalDate.now(), AccidentEnum.INJURY, 10));
