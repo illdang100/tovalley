@@ -41,12 +41,13 @@ public class JwtProcess {
         return JwtVO.TOKEN_PREFIX + URLEncoder.encode(jwtToken, StandardCharsets.UTF_8);
     }
 
-    public String createRefreshToken(String memberId, String role) {
+    public String createRefreshToken(String memberId, String role, String ip) {
         String refreshToken = JWT.create()
                 .withSubject(jwtSubject)
                 .withExpiresAt(new Date(System.currentTimeMillis() + JwtVO.REFRESH_TOKEN_EXPIRATION_TIME))
                 .withClaim("id", memberId)
                 .withClaim("role", role)
+                .withClaim("ip", ip)
                 .sign(Algorithm.HMAC512(secret));
 
         return JwtVO.TOKEN_PREFIX + URLEncoder.encode(refreshToken, StandardCharsets.UTF_8);

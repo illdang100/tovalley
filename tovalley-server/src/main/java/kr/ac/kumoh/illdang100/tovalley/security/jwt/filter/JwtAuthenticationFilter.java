@@ -22,7 +22,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static kr.ac.kumoh.illdang100.tovalley.util.CookieUtil.addCookie;
 import static kr.ac.kumoh.illdang100.tovalley.util.CustomResponseUtil.*;
+import static kr.ac.kumoh.illdang100.tovalley.util.HttpServletUtil.getClientIpAddress;
+import static kr.ac.kumoh.illdang100.tovalley.util.TokenUtil.*;
 
 @Slf4j
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
@@ -71,7 +74,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         String accessToken = jwtProcess.createAccessToken(principalDetails);
 
-        String refreshToken = saveRefreshToken(jwtProcess, refreshTokenRedisRepository, principalDetails.getMember());
+        String ip = getClientIpAddress(request);
+        String refreshToken = saveRefreshToken(jwtProcess, refreshTokenRedisRepository, principalDetails.getMember(), ip);
         addCookie(response, JwtVO.ACCESS_TOKEN, accessToken);
         addCookie(response, JwtVO.REFRESH_TOKEN, refreshToken);
         addCookie(response, ISLOGIN, "true", false);

@@ -45,7 +45,7 @@ public class JwtAuthorizationFilterTest extends DummyObject {
 
         PrincipalDetails loginUser = new PrincipalDetails(member);
         String accessToken = jwtProcess.createAccessToken(loginUser);
-        String refreshToken = jwtProcess.createRefreshToken(member.getId().toString(), member.getRole().toString());
+        String refreshToken = jwtProcess.createRefreshToken(member.getId().toString(), member.getRole().toString(), "127.0.0.1");
 
         String decodedAccessToken = URLDecoder.decode(accessToken, StandardCharsets.UTF_8);
         String decodedRefreshToken = URLDecoder.decode(refreshToken, StandardCharsets.UTF_8);
@@ -85,7 +85,7 @@ public class JwtAuthorizationFilterTest extends DummyObject {
 
         PrincipalDetails loginUser = new PrincipalDetails(member);
         String accessToken = jwtProcess.createAccessToken(loginUser);
-        String refreshToken = jwtProcess.createRefreshToken(member.getId().toString(), member.getRole().toString());
+        String refreshToken = jwtProcess.createRefreshToken(member.getId().toString(), member.getRole().toString(), "127.0.0.1");
 
         String decodedAccessToken = URLDecoder.decode(accessToken, StandardCharsets.UTF_8);
         String decodedRefreshToken = URLDecoder.decode(refreshToken, StandardCharsets.UTF_8);
