@@ -44,10 +44,6 @@ class AccidentApiControllerTest extends DummyObject {
     @Autowired
     private NationalRegionRepository nationalRegionRepository;
     @Autowired
-    private SpecialWeatherRepository specialWeatherRepository;
-    @Autowired
-    private SpecialWeatherDetailRepository specialWeatherDetailRepository;
-    @Autowired
     private WaterPlaceRepository waterPlaceRepository;
     @Autowired
     private AccidentRepository accidentRepository;

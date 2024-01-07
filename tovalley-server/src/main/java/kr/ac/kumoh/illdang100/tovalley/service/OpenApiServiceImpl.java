@@ -9,12 +9,14 @@ import kr.ac.kumoh.illdang100.tovalley.domain.weather.national_weather.NationalR
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.national_weather.NationalWeather;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.national_weather.NationalWeatherRedisRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.special_weather.*;
+import kr.ac.kumoh.illdang100.tovalley.domain.weather.special_weather.SpecialWeather.SpecialWeatherDetail;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.water_place_weather.WaterPlaceWeather;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.water_place_weather.WaterPlaceWeatherRepository;
 import kr.ac.kumoh.illdang100.tovalley.handler.ex.CustomApiException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.locationtech.proj4j.*;
 import org.springframework.beans.factory.annotation.Value;
@@ -199,14 +201,20 @@ public class OpenApiServiceImpl implements OpenApiService {
 
         JSONObject specialWeatherData = fetchSpecialWeatherData();
 
+        if (specialWeatherData == null) {
+            log.error("특보 정보 파싱 에러");
+            return;
+        }
+
         JSONArray itemArray = getItemArray(specialWeatherData);
 
         deleteWeatherAlertStatus();
 
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmm");
+
         for (int i = 0; i < itemArray.length(); i++) {
             JSONObject item = itemArray.getJSONObject(i);
 
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmm");
             LocalDateTime tmEfTime = LocalDateTime.parse(item.getString("tmEf"), formatter);
             LocalDateTime tmFcTime = LocalDateTime.parse(String.valueOf(item.getLong("tmFc")), formatter);
 
@@ -260,8 +268,14 @@ public class OpenApiServiceImpl implements OpenApiService {
             conn.disconnect();
 
             String result = sb.toString();
-            return new JSONObject(result.trim());
-        } catch (IOException e) {
+            String trim = result.trim();
+            if (trim.startsWith("{")) {
+                return new JSONObject(result.trim());
+            } else {
+                return null;
+            }
+        } catch (IOException | JSONException e) {
+            log.error("특보 정보 파싱 에러", e);
             throw new CustomApiException(e.getMessage());
         }
     }
@@ -536,7 +550,8 @@ public class OpenApiServiceImpl implements OpenApiService {
             String wpName = waterPlaceName.replaceAll("\\s", "");
 
             if (!isWaterPlaceExist(waterPlaceName)) {
-                ImageFile waterPlaceImage = saveWaterPlaceImage(wpName);
+//                ImageFile waterPlaceImage = saveWaterPlaceImage(wpName);
+                ImageFile waterPlaceImage = null;
                 WaterPlace waterPlace = createWaterPlace(item, waterPlaceImage);
 
                 WaterPlaceDetail waterPlaceDetail = createWaterPlaceDetail(item, waterPlace);
@@ -592,10 +607,6 @@ public class OpenApiServiceImpl implements OpenApiService {
     }
 
     private WaterPlaceDetail createWaterPlaceDetail(JSONObject item, WaterPlace waterPlace) {
-
-        double waterTemperature = generateRandomValue(20.0, 30.0);
-        double bod = generateRandomValue(0.0, 6.0);
-        double turbidity = generateRandomValue(1.0, 50.0);
 
         return WaterPlaceDetail.builder()
                 .waterPlace(waterPlace)

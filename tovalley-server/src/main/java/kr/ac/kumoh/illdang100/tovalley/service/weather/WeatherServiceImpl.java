@@ -3,7 +3,7 @@ package kr.ac.kumoh.illdang100.tovalley.service.weather;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.national_weather.NationalWeather;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.national_weather.NationalWeatherRedisRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.special_weather.SpecialWeather;
-import kr.ac.kumoh.illdang100.tovalley.domain.weather.special_weather.SpecialWeatherDetail;
+import kr.ac.kumoh.illdang100.tovalley.domain.weather.special_weather.SpecialWeather.SpecialWeatherDetail;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.special_weather.SpecialWeatherEnum;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.special_weather.SpecialWeatherRedisRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.water_place_weather.WaterPlaceWeather;

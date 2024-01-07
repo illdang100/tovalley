@@ -32,4 +32,12 @@ public class SpecialWeather {
     private String title;
 
     private List<SpecialWeatherDetail> details;
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class SpecialWeatherDetail {
+        private String content;
+    }
 }
