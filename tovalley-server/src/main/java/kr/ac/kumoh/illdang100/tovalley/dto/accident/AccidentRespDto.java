@@ -2,6 +2,7 @@ package kr.ac.kumoh.illdang100.tovalley.dto.accident;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import kr.ac.kumoh.illdang100.tovalley.domain.accident.AccidentEnum;
+import kr.ac.kumoh.illdang100.tovalley.domain.accident.RegionAccidentStatistics.AccidentCountPerMonth;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.data.domain.Page;
@@ -42,16 +43,11 @@ public class AccidentRespDto {
         private Integer disappearanceCnt;
         private Integer injuryCnt;
 
-        public void incrementDeathCnt(int cnt) {
-            this.deathCnt = deathCnt + cnt;
-        }
-
-        public void incrementDisappearanceCnt(int cnt) {
-            this.disappearanceCnt = disappearanceCnt + cnt;
-        }
-
-        public void incrementInjuryCnt(int cnt) {
-            this.injuryCnt = injuryCnt + cnt;
+        public AccidentCountPerMonthDto(AccidentCountPerMonth accidentCountPerMonth) {
+            this.month = accidentCountPerMonth.getMonth();
+            this.deathCnt = accidentCountPerMonth.getDeathCnt();
+            this.disappearanceCnt = accidentCountPerMonth.getDisappearanceCnt();
+            this.injuryCnt = accidentCountPerMonth.getInjuryCnt();
         }
     }
 

@@ -1,5 +1,6 @@
 package kr.ac.kumoh.illdang100.tovalley.dummy;
 
+import java.util.List;
 import kr.ac.kumoh.illdang100.tovalley.domain.Coordinate;
 import kr.ac.kumoh.illdang100.tovalley.domain.ImageFile;
 import kr.ac.kumoh.illdang100.tovalley.domain.accident.Accident;
@@ -17,7 +18,7 @@ import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlaceRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.national_weather.NationalRegion;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.national_weather.NationalWeather;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.special_weather.SpecialWeather;
-import kr.ac.kumoh.illdang100.tovalley.domain.weather.special_weather.SpecialWeatherDetail;
+import kr.ac.kumoh.illdang100.tovalley.domain.weather.special_weather.SpecialWeather.SpecialWeatherDetail;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.special_weather.SpecialWeatherEnum;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.special_weather.WeatherAlertType;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.water_place_weather.WaterPlaceWeather;
@@ -221,7 +222,7 @@ public class DummyObject {
                                                  LocalDate weatherDate) {
 
         return NationalWeather.builder()
-                .nationalRegion(nationalRegion)
+                .regionName(nationalRegion.getRegionName())
                 .climate(climate)
                 .climateIcon("10d")
                 .climateDescription("굵은 비")
@@ -240,8 +241,8 @@ public class DummyObject {
                                                      LocalDate weatherDate) {
 
         return NationalWeather.builder()
-                .id(id)
-                .nationalRegion(nationalRegion)
+                .id(String.valueOf(id))
+                .regionName(nationalRegion.getRegionName())
                 .climate(climate)
                 .climateIcon("10d")
                 .climateDescription("굵은 비")
@@ -253,7 +254,8 @@ public class DummyObject {
     }
 
     protected SpecialWeather newSpecialWeather (LocalDateTime time, WeatherAlertType weatherAlertType,
-                                                SpecialWeatherEnum category, String title) {
+                                                SpecialWeatherEnum category, String title,
+                                                List<SpecialWeatherDetail> details) {
 
         return SpecialWeather.builder()
                 .announcementTime(time)
@@ -261,16 +263,8 @@ public class DummyObject {
                 .weatherAlertType(weatherAlertType)
                 .category(category)
                 .title(title)
+                .details(details)
                 .build();
-    }
-
-    protected SpecialWeatherDetail newSpecialWeatherDetail (SpecialWeather specialWeather, String content) {
-
-        return SpecialWeatherDetail.builder()
-                .specialWeather(specialWeather)
-                .content(content)
-                .build();
-
     }
 
     protected WaterPlaceWeather newWaterPlaceWeather (WaterPlace waterPlace, LocalDate date) {

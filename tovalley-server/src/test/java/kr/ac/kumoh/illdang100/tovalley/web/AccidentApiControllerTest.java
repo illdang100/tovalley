@@ -6,9 +6,7 @@ import kr.ac.kumoh.illdang100.tovalley.domain.accident.AccidentEnum;
 import kr.ac.kumoh.illdang100.tovalley.domain.accident.AccidentRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlace;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlaceRepository;
-import kr.ac.kumoh.illdang100.tovalley.domain.weather.national_weather.NationalRegion;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.national_weather.NationalRegionRepository;
-import kr.ac.kumoh.illdang100.tovalley.domain.weather.national_weather.NationalWeatherRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.special_weather.*;
 import kr.ac.kumoh.illdang100.tovalley.dummy.DummyObject;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,7 +24,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import javax.persistence.EntityManager;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,12 +43,6 @@ class AccidentApiControllerTest extends DummyObject {
     private ObjectMapper om;
     @Autowired
     private NationalRegionRepository nationalRegionRepository;
-    @Autowired
-    private NationalWeatherRepository nationalWeatherRepository;
-    @Autowired
-    private SpecialWeatherRepository specialWeatherRepository;
-    @Autowired
-    private SpecialWeatherDetailRepository specialWeatherDetailRepository;
     @Autowired
     private WaterPlaceRepository waterPlaceRepository;
     @Autowired

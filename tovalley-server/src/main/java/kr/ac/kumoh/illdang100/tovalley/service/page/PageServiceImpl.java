@@ -1,8 +1,7 @@
 package kr.ac.kumoh.illdang100.tovalley.service.page;
 
+import io.micrometer.core.annotation.Timed;
 import kr.ac.kumoh.illdang100.tovalley.domain.ProvinceEnum;
-import kr.ac.kumoh.illdang100.tovalley.dto.member.MemberRespDto;
-import kr.ac.kumoh.illdang100.tovalley.dto.trip_schedule.TripScheduleRespDto;
 import kr.ac.kumoh.illdang100.tovalley.service.accident.AccidentService;
 import kr.ac.kumoh.illdang100.tovalley.service.member.MemberService;
 import kr.ac.kumoh.illdang100.tovalley.service.review.ReviewService;
@@ -34,6 +33,7 @@ import static kr.ac.kumoh.illdang100.tovalley.dto.weather.WeatherRespDto.*;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@Timed("my.page")
 public class PageServiceImpl implements PageService{
     private final WeatherService weatherService;
     private final AccidentService accidentService;
