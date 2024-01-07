@@ -1,15 +1,24 @@
 package kr.ac.kumoh.illdang100.tovalley.service.accident;
 
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import kr.ac.kumoh.illdang100.tovalley.domain.ProvinceEnum;
 import kr.ac.kumoh.illdang100.tovalley.domain.accident.Accident;
 import kr.ac.kumoh.illdang100.tovalley.domain.accident.AccidentEnum;
 import kr.ac.kumoh.illdang100.tovalley.domain.accident.AccidentRepository;
+import kr.ac.kumoh.illdang100.tovalley.domain.accident.RegionAccidentStatistics;
+import kr.ac.kumoh.illdang100.tovalley.domain.accident.RegionAccidentStatistics.AccidentCountPerMonth;
+import kr.ac.kumoh.illdang100.tovalley.domain.accident.RegionAccidentStatisticsRedisRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlace;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlaceRepository;
 import kr.ac.kumoh.illdang100.tovalley.form.accident.CreateAccidentForm;
+import kr.ac.kumoh.illdang100.tovalley.handler.ex.CustomApiException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.ToIntFunction;
 
+import static kr.ac.kumoh.illdang100.tovalley.domain.ProvinceEnum.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.accident.AccidentReqDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.accident.AccidentRespDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.util.EntityFinder.*;
@@ -32,6 +42,7 @@ public class AccidentServiceImpl implements AccidentService {
 
     private final AccidentRepository accidentRepository;
     private final WaterPlaceRepository waterPlaceRepository;
+    private final RegionAccidentStatisticsRedisRepository regionAccidentStatisticsRedisRepository;
 
     @Override
     @Transactional
@@ -66,66 +77,29 @@ public class AccidentServiceImpl implements AccidentService {
      */
     @Override
     public AccidentCountDto getAccidentCntPerMonthByProvince(String province) {
+        RegionAccidentStatistics findRegionAccidentStatistics
+                = regionAccidentStatisticsRedisRepository.findByProvince(province)
+                .orElseThrow(() -> new CustomApiException(province + "에 대한 사건사고 통계가 존재하지 않습니다"));
 
-        List<Accident> accidents = getAllAccidentsByProvince(province);
+        List<AccidentCountPerMonthDto> accidentCountPerMonthDtoList
+                = convertToDtoList(findRegionAccidentStatistics.getAccidentCountPerMonth());
 
-        Map<Integer, AccidentCountPerMonthDto> accidentCountMap = initializeAccidentCountMap();
-
-        calculateAccidentCounts(accidents, accidentCountMap);
-
-        List<AccidentCountPerMonthDto> accidentCountPerMonthList = new ArrayList<>(accidentCountMap.values());
-
-        Integer totalDeathCnt =
-                calculateTotalFromAccidentCountPerMonthDto(accidentCountPerMonthList, AccidentCountPerMonthDto::getDeathCnt);
-        Integer totalDisappearanceCnt =
-                calculateTotalFromAccidentCountPerMonthDto(accidentCountPerMonthList, AccidentCountPerMonthDto::getDisappearanceCnt);
-        Integer totalInjuryCnt =
-                calculateTotalFromAccidentCountPerMonthDto(accidentCountPerMonthList, AccidentCountPerMonthDto::getInjuryCnt);
-
-        return new AccidentCountDto(accidentCountPerMonthList, province, totalDeathCnt, totalDisappearanceCnt, totalInjuryCnt);
+        return new AccidentCountDto(
+                accidentCountPerMonthDtoList,
+                findRegionAccidentStatistics.getProvince(),
+                findRegionAccidentStatistics.getTotalDeathCnt(),
+                findRegionAccidentStatistics.getTotalDisappearanceCnt(),
+                findRegionAccidentStatistics.getTotalInjuryCnt()
+        );
     }
 
-    private List<Accident> getAllAccidentsByProvince(String province) {
-        int year = LocalDate.now().getYear();
-        if ("전국".equals(province)) {
-            return accidentRepository.findByYear(year);
-        } else {
-            return accidentRepository.findByProvinceStartingWithProvinceAndYear(province, year);
-        }
+    private List<AccidentCountPerMonthDto> convertToDtoList(List<AccidentCountPerMonth> accidentCountPerMonthList) {
+        return accidentCountPerMonthList
+                .stream()
+                .map(AccidentCountPerMonthDto::new)
+                .collect(Collectors.toList());
     }
 
-    private void calculateAccidentCounts(List<Accident> accidents, Map<Integer, AccidentCountPerMonthDto> accidentCountMap) {
-        for (Accident accident : accidents) {
-            Integer month = accident.getAccidentDate().getMonthValue();
-            AccidentCountPerMonthDto accidentCountDto = accidentCountMap.get(month);
-
-            switch (accident.getAccidentCondition()) {
-                case DEATH:
-                    accidentCountDto.incrementDeathCnt(accident.getPeopleNum());
-                    break;
-                case DISAPPEARANCE:
-                    accidentCountDto.incrementDisappearanceCnt(accident.getPeopleNum());
-                    break;
-                case INJURY:
-                    accidentCountDto.incrementInjuryCnt(accident.getPeopleNum());
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
-
-    private Map<Integer, AccidentCountPerMonthDto> initializeAccidentCountMap() {
-        Map<Integer, AccidentCountPerMonthDto> accidentCountMap = new HashMap<>();
-        for (int month = 1; month <= 12; month++) {
-            accidentCountMap.put(month, new AccidentCountPerMonthDto(month, 0, 0, 0));
-        }
-        return accidentCountMap;
-    }
-
-    private Integer calculateTotalFromAccidentCountPerMonthDto(List<AccidentCountPerMonthDto> list, ToIntFunction<AccidentCountPerMonthDto> mapper) {
-        return list.stream().mapToInt(mapper).sum();
-    }
 
     /**
      * @param waterPlaceId: 물놀이 장소 pk
@@ -177,7 +151,8 @@ public class AccidentServiceImpl implements AccidentService {
                                                                       Pageable pageable) {
 
         Page<AccidentDetailRespDto> accidentDetail =
-                accidentRepository.findAccidentDetailRespDtoByWaterPlaceId(waterPlaceId, retrieveAccidentCondition, pageable);
+                accidentRepository.findAccidentDetailRespDtoByWaterPlaceId(waterPlaceId, retrieveAccidentCondition,
+                        pageable);
 
         List<Accident> accidentsByWaterPlace = accidentRepository.findByWaterPlaceId(waterPlaceId);
 
@@ -193,5 +168,140 @@ public class AccidentServiceImpl implements AccidentService {
                 .filter(accident -> accident.getAccidentCondition() == condition)
                 .mapToInt(Accident::getPeopleNum)
                 .sum();
+    }
+
+    /**
+     * @methodnme: scheduleAccidentStatisticsByRegion
+     * @author: JYeonJun
+     * @description: 행정구역별 사건,사고 수를 통계내서 Redis에 저장하는 작업 스케줄링
+     */
+    @Scheduled(cron = "0 0/30 * * * ?")
+    public void scheduleAccidentStatisticsByRegion() {
+        log.info("사건,사고 통계 계산중!!");
+        Map<ProvinceEnum, RegionAccidentStatistics> updatedStatistics = new HashMap<>();
+
+        RegionAccidentStatistics nationwideStatistic = createNationwideStatistic();
+
+        calculateAccidentStatistics(updatedStatistics, nationwideStatistic);
+
+        regionAccidentStatisticsRedisRepository.deleteAll();
+        regionAccidentStatisticsRedisRepository.saveAll(updatedStatistics.values());
+        log.info("사건,사고 통계 계산 완료!!");
+    }
+
+    private RegionAccidentStatistics createNationwideStatistic() {
+        return RegionAccidentStatistics.builder()
+                .province(NATIONWIDE.getValue())
+                .accidentCountPerMonth(new ArrayList<>())
+                .totalDeathCnt(0)
+                .totalDisappearanceCnt(0)
+                .totalInjuryCnt(0)
+                .build();
+    }
+
+    private void calculateAccidentStatistics(Map<ProvinceEnum, RegionAccidentStatistics> updatedStatistics,
+                                             RegionAccidentStatistics nationwideStatistic) {
+        for (ProvinceEnum provinceEnum : values()) {
+            if (provinceEnum.equals(NATIONWIDE)) {
+                continue;
+            }
+            RegionAccidentStatistics regionAccidentStatistics = generateMonthlyRegionAccidentStatistics(
+                    provinceEnum.getValue());
+            updatedStatistics.put(provinceEnum, regionAccidentStatistics);
+            updateNationwideStatistic(nationwideStatistic, regionAccidentStatistics);
+        }
+
+        updatedStatistics.put(ProvinceEnum.NATIONWIDE, nationwideStatistic);
+    }
+
+    private void updateNationwideStatistic(RegionAccidentStatistics nationwideStatistic,
+                                           RegionAccidentStatistics regionAccidentStatistics) {
+        nationwideStatistic.incrementTotalDeathCnt(regionAccidentStatistics.getTotalDeathCnt());
+        nationwideStatistic.incrementTotalDisappearanceCnt(regionAccidentStatistics.getTotalDisappearanceCnt());
+        nationwideStatistic.incrementTotalInjuryCnt(regionAccidentStatistics.getTotalInjuryCnt());
+
+        updateNationwideAccidentCount(nationwideStatistic, regionAccidentStatistics);
+    }
+
+    private void updateNationwideAccidentCount(RegionAccidentStatistics nationwideStatistic,
+                                               RegionAccidentStatistics regionAccidentStatistics) {
+        for (AccidentCountPerMonth accidentCount : regionAccidentStatistics.getAccidentCountPerMonth()) {
+            AccidentCountPerMonth nationwideAccidentCount = getOrCreateNationwideAccidentCount(nationwideStatistic,
+                    accidentCount);
+            nationwideAccidentCount.incrementDeathCnt(accidentCount.getDeathCnt());
+            nationwideAccidentCount.incrementDisappearanceCnt(accidentCount.getDisappearanceCnt());
+            nationwideAccidentCount.incrementInjuryCnt(accidentCount.getInjuryCnt());
+        }
+    }
+
+    private AccidentCountPerMonth getOrCreateNationwideAccidentCount(RegionAccidentStatistics nationwideStatistic,
+                                                                     AccidentCountPerMonth accidentCount) {
+        return nationwideStatistic.getAccidentCountPerMonth().stream()
+                .filter(count -> count.getMonth().equals(accidentCount.getMonth()))
+                .findAny()
+                .orElseGet(() -> createAndAddNewAccidentCount(nationwideStatistic, accidentCount));
+    }
+
+    private AccidentCountPerMonth createAndAddNewAccidentCount(RegionAccidentStatistics nationwideStatistic,
+                                                               AccidentCountPerMonth accidentCount) {
+        AccidentCountPerMonth newCount = new AccidentCountPerMonth(accidentCount);
+        nationwideStatistic.getAccidentCountPerMonth().add(newCount);
+        return newCount;
+    }
+
+    private RegionAccidentStatistics generateMonthlyRegionAccidentStatistics(String province) {
+        List<Accident> accidents = retrieveAccidentsByProvinceForLastYear(province);
+        Map<Integer, AccidentCountPerMonth> accidentCountMap = createInitialMonthlyAccidentCountMap();
+
+        accumulateAccidentCountsByMonth(accidents, accidentCountMap);
+
+        List<AccidentCountPerMonth> accidentCountPerMonthList = new ArrayList<>(accidentCountMap.values());
+
+        return RegionAccidentStatistics.builder()
+                .province(province)
+                .accidentCountPerMonth(accidentCountPerMonthList)
+                .totalDeathCnt(calculateTotalCount(accidentCountPerMonthList, AccidentCountPerMonth::getDeathCnt))
+                .totalDisappearanceCnt(
+                        calculateTotalCount(accidentCountPerMonthList, AccidentCountPerMonth::getDisappearanceCnt))
+                .totalInjuryCnt(calculateTotalCount(accidentCountPerMonthList, AccidentCountPerMonth::getInjuryCnt))
+                .build();
+    }
+
+    private List<Accident> retrieveAccidentsByProvinceForLastYear(String province) {
+        int year = LocalDate.now().getYear();
+        return "전국".equals(province) ? accidentRepository.findByYear(year)
+                : accidentRepository.findByProvinceStartingWithProvinceAndYear(province, year);
+    }
+
+    private void accumulateAccidentCountsByMonth(List<Accident> accidents,
+                                                 Map<Integer, AccidentCountPerMonth> accidentCountMap) {
+        for (Accident accident : accidents) {
+            Integer month = accident.getAccidentDate().getMonthValue();
+            AccidentCountPerMonth accidentCountPerMonth = accidentCountMap.get(month);
+
+            switch (accident.getAccidentCondition()) {
+                case DEATH:
+                    accidentCountPerMonth.incrementDeathCnt(accident.getPeopleNum());
+                    break;
+                case DISAPPEARANCE:
+                    accidentCountPerMonth.incrementDisappearanceCnt(accident.getPeopleNum());
+                    break;
+                case INJURY:
+                    accidentCountPerMonth.incrementInjuryCnt(accident.getPeopleNum());
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    private Map<Integer, AccidentCountPerMonth> createInitialMonthlyAccidentCountMap() {
+        return IntStream.rangeClosed(1, 12)
+                .boxed()
+                .collect(Collectors.toMap(Function.identity(), month -> new AccidentCountPerMonth(month, 0, 0, 0)));
+    }
+
+    private Integer calculateTotalCount(List<AccidentCountPerMonth> list, ToIntFunction<AccidentCountPerMonth> mapper) {
+        return list.stream().mapToInt(mapper).sum();
     }
 }

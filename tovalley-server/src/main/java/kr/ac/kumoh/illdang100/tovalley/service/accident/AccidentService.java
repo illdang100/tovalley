@@ -1,7 +1,6 @@
 package kr.ac.kumoh.illdang100.tovalley.service.accident;
 
 
-import kr.ac.kumoh.illdang100.tovalley.domain.accident.Accident;
 import kr.ac.kumoh.illdang100.tovalley.form.accident.CreateAccidentForm;
 import org.springframework.data.domain.Pageable;
 
@@ -23,4 +22,7 @@ public interface AccidentService {
     WaterPlaceAccidentFor5YearsDto getAccidentsFor5YearsByWaterPlace(Long waterPlaceId);
 
     AccidentForAdminByWaterPlace getAccidentDetailByWaterPlace(Long waterPlaceId, RetrieveAccidentCondition retrieveAccidentCondition, Pageable pageable);
+
+    // 행정구역별 사건,사고 수를 통계내서 Redis에 저장하는 작업 스케줄링
+    void scheduleAccidentStatisticsByRegion();
 }

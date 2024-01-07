@@ -6,7 +6,6 @@ import kr.ac.kumoh.illdang100.tovalley.domain.accident.AccidentRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberEnum;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberRepository;
-import kr.ac.kumoh.illdang100.tovalley.domain.review.Review;
 import kr.ac.kumoh.illdang100.tovalley.domain.review.ReviewImageRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.review.ReviewRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.review.WaterQualityReviewEnum;
@@ -15,6 +14,7 @@ import kr.ac.kumoh.illdang100.tovalley.domain.trip_schedule.TripScheduleReposito
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlace;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlaceRepository;
 import kr.ac.kumoh.illdang100.tovalley.service.OpenApiServiceImpl;
+import kr.ac.kumoh.illdang100.tovalley.service.accident.AccidentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -26,7 +26,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 
 @Configuration
@@ -40,7 +39,7 @@ public class DummyDevInit extends DummyObject {
     private final TripScheduleRepository tripScheduleRepository;
     private final MemberRepository memberRepository;
     private final ReviewRepository reviewRepository;
-    private final ReviewImageRepository reviewImageRepository;
+    private final AccidentService accidentService;
 
     @Value("${admin.username}")
     private String adminUsername;
@@ -70,6 +69,8 @@ public class DummyDevInit extends DummyObject {
             /* 더미 데이터(주석 해제 후 서버 실행하고 반드시 다시 주석처리하기!!)  */
 //            saveDummyData();
 //            myPageDummyData();
+
+            accidentService.scheduleAccidentStatisticsByRegion();
         };
     }
 
@@ -83,6 +84,7 @@ public class DummyDevInit extends DummyObject {
 
             fetchAndSaveData();
 //            saveDummyData();
+            accidentService.scheduleAccidentStatisticsByRegion();
         };
     }
 
