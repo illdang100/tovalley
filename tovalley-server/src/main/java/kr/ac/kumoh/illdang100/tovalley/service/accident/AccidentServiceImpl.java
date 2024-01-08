@@ -175,6 +175,7 @@ public class AccidentServiceImpl implements AccidentService {
      * @author: JYeonJun
      * @description: 행정구역별 사건,사고 수를 통계내서 Redis에 저장하는 작업 스케줄링
      */
+    @Override
     @Scheduled(cron = "0 0/30 * * * ?")
     public void scheduleAccidentStatisticsByRegion() {
         log.info("사건,사고 통계 계산중!!");

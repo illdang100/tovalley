@@ -17,6 +17,9 @@ public interface WaterPlaceService {
     // 물놀이 장소 리스트 조회 페이지
     Page<RetrieveWaterPlacesDto> getWaterPlaces(RetrieveWaterPlacesCondition retrieveWaterPlacesCondition);
 
+    // 인기 물놀이 장소 스케줄링
+    void schedulePopularWaterPlaces();
+
     // 평점순 || 리뷰순 인기 물놀이 지역 리스트(4개) 조회
     List<NationalPopularWaterPlacesDto> getPopularWaterPlaces(String cond);
 

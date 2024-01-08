@@ -15,6 +15,7 @@ import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlace;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlaceRepository;
 import kr.ac.kumoh.illdang100.tovalley.service.OpenApiServiceImpl;
 import kr.ac.kumoh.illdang100.tovalley.service.accident.AccidentService;
+import kr.ac.kumoh.illdang100.tovalley.service.water_place.WaterPlaceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -40,6 +41,7 @@ public class DummyDevInit extends DummyObject {
     private final MemberRepository memberRepository;
     private final ReviewRepository reviewRepository;
     private final AccidentService accidentService;
+    private final WaterPlaceService waterPlaceService;
 
     @Value("${admin.username}")
     private String adminUsername;
@@ -71,6 +73,7 @@ public class DummyDevInit extends DummyObject {
 //            myPageDummyData();
 
             accidentService.scheduleAccidentStatisticsByRegion();
+            waterPlaceService.schedulePopularWaterPlaces();
         };
     }
 
@@ -85,6 +88,7 @@ public class DummyDevInit extends DummyObject {
             fetchAndSaveData();
 //            saveDummyData();
             accidentService.scheduleAccidentStatisticsByRegion();
+            waterPlaceService.schedulePopularWaterPlaces();
         };
     }
 

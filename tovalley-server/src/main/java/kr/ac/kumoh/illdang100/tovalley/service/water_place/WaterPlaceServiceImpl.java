@@ -1,5 +1,8 @@
 package kr.ac.kumoh.illdang100.tovalley.service.water_place;
 
+import java.util.Comparator;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 import kr.ac.kumoh.illdang100.tovalley.domain.Coordinate;
 import kr.ac.kumoh.illdang100.tovalley.domain.FileRootPathVO;
 import kr.ac.kumoh.illdang100.tovalley.domain.ImageFile;
@@ -18,6 +21,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -42,59 +46,78 @@ import static kr.ac.kumoh.illdang100.tovalley.util.EntityFinder.*;
 @Transactional(readOnly = true)
 public class WaterPlaceServiceImpl implements WaterPlaceService {
 
+    private static final String RATING_STR = "RATING";
+    private static final String REVIEW_STR = "REVIEW";
+
     private final WaterPlaceRepository waterPlaceRepository;
     private final WaterPlaceDetailRepository waterPlaceDetailRepository;
     private final RescueSupplyRepository rescueSupplyRepository;
     private final ReviewRepository reviewRepository;
     private final S3Service s3Service;
     private final OpenApiServiceImpl openApiService;
+    private final PopularWaterPlacesRedisRepository popularWaterPlacesRedisRepository;
 
     /**
      * // 물놀이 장소 리스트 조회 페이지
+     *
      * @param retrieveWaterPlacesCondition
      * @return
      */
     @Override
     public Page<RetrieveWaterPlacesDto> getWaterPlaces(RetrieveWaterPlacesCondition retrieveWaterPlacesCondition) {
 
-        PageRequest pageRequest = PageRequest.of(retrieveWaterPlacesCondition.getPage(), 12, Sort.by(Sort.Direction.DESC, retrieveWaterPlacesCondition.getSortCond()));
+        PageRequest pageRequest = PageRequest.of(retrieveWaterPlacesCondition.getPage(), 12,
+                Sort.by(Sort.Direction.DESC, retrieveWaterPlacesCondition.getSortCond()));
 
         return waterPlaceRepository.findWaterPlaceList(retrieveWaterPlacesCondition, pageRequest);
     }
 
-    /**
-     * @methodnme: getPopularWaterPlaces
-     * @author: JYeonJun
-     * @description: 전국 인기 계곡 리스트(8개) 조회 메서드
-     *
-     * @return: 인기 계곡 내림차순(평점 or 리뷰수) 정보
-     */
     @Override
-    public List<NationalPopularWaterPlacesDto> getPopularWaterPlaces(String cond) {
-        List<WaterPlace> waterPlaces;
-
+    @Scheduled(cron = "0 */10 * * * *") // 10분마다 실행
+    public void schedulePopularWaterPlaces() {
+        log.info("인기 물놀이 장소 통계 계산중!!");
         Pageable pageable = PageRequest.of(0, 8);
+        List<WaterPlace> waterPlacesByRating = getTop8WaterPlacesByRating(pageable);
+        List<WaterPlace> waterPlacesByReview = getTop8WaterPlacesByReview(pageable);
 
-        if ("RATING".equals(cond)) {
-            waterPlaces = waterPlaceRepository.findTop8ByOrderByRatingDesc(pageable);
-        } else {
-            waterPlaces = waterPlaceRepository.findTop8ByOrderByReviewCountDesc(pageable);
-        }
+        popularWaterPlacesRedisRepository.deleteAll();
+        savePopularWaterPlaces(waterPlacesByRating, RATING_STR);
+        savePopularWaterPlaces(waterPlacesByReview, REVIEW_STR);
+        log.info("인기 물놀이 장소 통계 계산 완료!!");
+    }
 
+    private List<WaterPlace> getTop8WaterPlacesByRating(Pageable pageable) {
+        return waterPlaceRepository.findTop8ByOrderByRatingDesc(pageable);
+    }
+
+    private List<WaterPlace> getTop8WaterPlacesByReview(Pageable pageable) {
+        return waterPlaceRepository.findTop8ByOrderByReviewCountDesc(pageable);
+    }
+
+    private void savePopularWaterPlaces(List<WaterPlace> waterPlaces, String condition) {
+        List<PopularWaterPlaces> popularWaterPlaces = mapToPopularWaterPlaces(waterPlaces, condition);
+        popularWaterPlacesRedisRepository.saveAll(popularWaterPlaces);
+    }
+
+    private List<PopularWaterPlaces> mapToPopularWaterPlaces(List<WaterPlace> waterPlaces, String condition) {
         return waterPlaces.stream()
-                .map(this::mapToPopularWaterPlaceDto)
+                .map(wp -> createPopularWaterPlace(wp, condition))
                 .collect(Collectors.toList());
     }
 
-    private NationalPopularWaterPlacesDto mapToPopularWaterPlaceDto(WaterPlace wp) {
+    private PopularWaterPlaces createPopularWaterPlace(WaterPlace wp, String cond) {
         String location = wp.getProvince() + " " + wp.getCity();
-        int reviewCount = wp.getReviewCount();
-        Double rating = wp.getRating();
-        String formattedRating = getFormattedRating(rating);
+        String formattedRating = getFormattedRating(wp.getRating());
+        String imageUrl = getImageUrl(wp.getWaterPlaceImage());
 
-        ImageFile waterPlaceImage = wp.getWaterPlaceImage();
-        return new NationalPopularWaterPlacesDto(wp.getId(), wp.getWaterPlaceName(), location, formattedRating, reviewCount, (waterPlaceImage != null) ? waterPlaceImage.getStoreFileUrl() : null);
+        return new PopularWaterPlaces(wp.getId(), wp.getWaterPlaceName(), location, formattedRating,
+                wp.getReviewCount(), imageUrl, cond);
     }
+
+    private String getImageUrl(ImageFile waterPlaceImage) {
+        return (waterPlaceImage == null) ? null : waterPlaceImage.getStoreFileUrl();
+    }
+
 
     private String getFormattedRating(Double rating) {
         DecimalFormat decimalFormat = new DecimalFormat("#.#");
@@ -102,9 +125,65 @@ public class WaterPlaceServiceImpl implements WaterPlaceService {
     }
 
     /**
+     * @methodnme: getPopularWaterPlaces
+     * @author: JYeonJun
+     * @description: 전국 인기 계곡 리스트(8개) 조회 메서드
+     * @return: 인기 계곡 내림차순(평점 or 리뷰수) 정보
+     */
+    @Override
+    public List<NationalPopularWaterPlacesDto> getPopularWaterPlaces(String cond) {
+        List<PopularWaterPlaces> popularWaterPlacesList = getPopularWaterPlacesList();
+
+        Stream<PopularWaterPlaces> filteredPopularWaterPlacesStream = filterByCondition(popularWaterPlacesList, cond);
+
+        Comparator<PopularWaterPlaces> comparator = createComparator(cond);
+
+        return getSortedAndMappedWaterPlaces(filteredPopularWaterPlacesStream, comparator);
+    }
+
+    private List<PopularWaterPlaces> getPopularWaterPlacesList() {
+        return StreamSupport.stream(popularWaterPlacesRedisRepository.findAll().spliterator(), false)
+                .collect(Collectors.toList());
+    }
+
+    private Stream<PopularWaterPlaces> filterByCondition(List<PopularWaterPlaces> waterPlacesList, String cond) {
+        return waterPlacesList.stream()
+                .filter(popularWaterPlaces -> cond.equals(popularWaterPlaces.getCondition()));
+    }
+
+    private Comparator<PopularWaterPlaces> createComparator(String cond) {
+        if (RATING_STR.equals(cond)) {
+            return Comparator.comparing(PopularWaterPlaces::getRating)
+                    .thenComparing(PopularWaterPlaces::getReviewCnt)
+                    .reversed();
+        }
+
+        if (REVIEW_STR.equals(cond)) {
+            return Comparator.comparing(PopularWaterPlaces::getReviewCnt)
+                    .thenComparing(PopularWaterPlaces::getRating)
+                    .reversed();
+        }
+
+        return null;
+    }
+
+    private List<NationalPopularWaterPlacesDto> getSortedAndMappedWaterPlaces(Stream<PopularWaterPlaces> waterPlacesStream, Comparator<PopularWaterPlaces> comparator) {
+        return waterPlacesStream
+                .sorted(comparator)
+                .map(this::mapToPopularWaterPlaceDto)
+                .collect(Collectors.toList());
+    }
+
+    private NationalPopularWaterPlacesDto mapToPopularWaterPlaceDto(PopularWaterPlaces wp) {
+        return new NationalPopularWaterPlacesDto(wp.getWaterPlaceId(), wp.getWaterPlaceName(), wp.getLocation(), wp.getRating(),
+                wp.getReviewCnt(), wp.getWaterPlaceImageUrl());
+    }
+
+
+    /**
+     * @param waterPlaceId: 물놀이 장소 pk
      * @methodnme: getWaterPlaceDetailByWaterPlace
      * @author: JYeonJun
-     * @param waterPlaceId: 물놀이 장소 pk
      * @description: 물놀이 장소 상세정보 조회
      * @return: 물놀이 장소 상세정보
      */
@@ -135,16 +214,17 @@ public class WaterPlaceServiceImpl implements WaterPlaceService {
     }
 
     /**
+     * @param waterPlaceId: 물놀이 장소 pk
      * @methodnme: getRescueSuppliesByWaterPlace
      * @author: JYeonJun
-     * @param waterPlaceId: 물놀이 장소 pk
      * @description: 물놀이 장소에 배치된 구조용품 현황 조회
      * @return: 구조용품 수량
      */
     @Override
     public RescueSupplyByWaterPlaceRespDto getRescueSuppliesByWaterPlace(Long waterPlaceId) {
 
-        RescueSupply findRescueSupply = findRescueSupplyByWaterPlaceIdOrElseThrowEx(rescueSupplyRepository, waterPlaceId);
+        RescueSupply findRescueSupply = findRescueSupplyByWaterPlaceIdOrElseThrowEx(rescueSupplyRepository,
+                waterPlaceId);
 
         return createRescueSupplyRespDto(findRescueSupply);
     }
@@ -182,10 +262,8 @@ public class WaterPlaceServiceImpl implements WaterPlaceService {
         WaterPlace findWaterPlace =
                 findWaterPlaceByIdOrElseThrowEx(waterPlaceRepository, waterPlaceId);
 
-
         WaterPlaceDetail findWaterPlaceDetail =
                 findWaterPlaceDetailByWaterPlaceIdOrElseThrowEx(waterPlaceDetailRepository, waterPlaceId);
-
 
         RescueSupply findRescueSupply =
                 findRescueSupplyByWaterPlaceIdOrElseThrowEx(rescueSupplyRepository, waterPlaceId);
