@@ -21,7 +21,5 @@ public class RefreshToken {
     private String memberId;
     private String role;
     private String ip;
-
-    @Indexed
     private String refreshToken;
 }
