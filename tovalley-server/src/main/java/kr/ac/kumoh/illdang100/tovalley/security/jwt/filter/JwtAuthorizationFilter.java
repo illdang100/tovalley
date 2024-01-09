@@ -45,28 +45,52 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        String requestUrl = request.getRequestURL().toString();
-        boolean containsApiAuth = requestUrl.contains("/api/auth/");
-        boolean containsAdmin = requestUrl.contains("/th/admin/");
-        if ((containsApiAuth || containsAdmin) && isCookieVerify(request, JwtVO.ACCESS_TOKEN)) {
-            String accessToken = findCookieValue(request, JwtVO.ACCESS_TOKEN).replace(JwtVO.TOKEN_PREFIX, "");
-            log.debug("accessToken={}", accessToken);
-
-            try {
-                PrincipalDetails loginMember = jwtProcess.verify(accessToken);
-
-                Authentication authentication = new UsernamePasswordAuthenticationToken(
-                        loginMember, null, loginMember.getAuthorities()
-                );
-
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-
-            } catch (Exception e) {
-                reIssueToken(request, response);
-            }
+        if (!isRequestValid(request)) {
+            chain.doFilter(request, response);
+            return;
         }
+
+        String accessToken = findAccessTokenFromCookie(request);
+        log.debug("accessToken={}", accessToken);
+
+        try {
+            setAuthenticationFromAccessToken(accessToken);
+        } catch (Exception e) {
+            reIssueToken(request, response);
+        }
+
         chain.doFilter(request, response);
     }
+
+    private boolean isRequestValid(HttpServletRequest request) {
+        String requestUrl = request.getRequestURL().toString();
+        return (isApiAuthRequest(requestUrl) || isAdminRequest(requestUrl)) && isCookieVerified(request);
+    }
+
+    private boolean isApiAuthRequest(String requestUrl) {
+        return requestUrl.contains("/api/auth/");
+    }
+
+    private boolean isAdminRequest(String requestUrl) {
+        return requestUrl.contains("/th/admin/");
+    }
+
+    private boolean isCookieVerified(HttpServletRequest request) {
+        return isCookieVerify(request, JwtVO.ACCESS_TOKEN);
+    }
+
+    private String findAccessTokenFromCookie(HttpServletRequest request) {
+        return findCookieValue(request, JwtVO.ACCESS_TOKEN).replace(JwtVO.TOKEN_PREFIX, "");
+    }
+
+    private void setAuthenticationFromAccessToken(String accessToken) {
+        PrincipalDetails loginMember = jwtProcess.verify(accessToken);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(
+                loginMember, null, loginMember.getAuthorities()
+        );
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
+
 
     private void reIssueToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
         if (!isCookieVerify(request, JwtVO.REFRESH_TOKEN)) {
