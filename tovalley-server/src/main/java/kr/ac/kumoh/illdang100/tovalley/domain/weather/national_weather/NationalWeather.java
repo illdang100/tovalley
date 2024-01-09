@@ -4,53 +4,42 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.redis.core.index.Indexed;
 
-@Entity
-@Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 @Builder
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@RedisHash(value = "NationalWeather")
 public class NationalWeather {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "national_weather_id")
-    private Long id;
+    private String id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "national_region_id", nullable = false)
-    private NationalRegion nationalRegion;
+    @Indexed
+    private String regionName;
 
-    @Column(nullable = false, length = 12)
-    private String climate; // 날씨 (비, 눈, 구름 등)
-
-    @Column(nullable = false, length = 3)
-    private String climateIcon; // 날씨 아이콘 ID
-
-    @Column(nullable = false, length = 20)
-    private String climateDescription; // 날씨 설명
-
-    @Column(nullable = false)
-    private Double lowestTemperature; // 최소 일일 온도
-
-    @Column(nullable = false)
-    private Double highestTemperature; // 최고 일일 온도
-
-    @Column(nullable = false)
+    @Indexed
     private LocalDate weatherDate; // 날짜
 
-    @Column(nullable = false)
+    private String climate; // 날씨 (비, 눈, 구름 등)
+
+    private String climateIcon; // 날씨 아이콘 ID
+
+    private String climateDescription; // 날씨 설명
+
+    private Double lowestTemperature; // 최소 일일 온도
+
+    private Double highestTemperature; // 최고 일일 온도
+
     private Double rainPrecipitation; // 강수량(mm)
 
-    @Column(nullable = false)
     private Integer humidity; // 습도(%)
 
-    @Column(nullable = false)
     private Double windSpeed; // 풍속(m/s)
 
-    @Column(nullable = false)
     private Integer clouds; // 흐림(%)
 
-    @Column(nullable = false)
     private Double dayFeelsLike; // 주간 체감 온도
 }

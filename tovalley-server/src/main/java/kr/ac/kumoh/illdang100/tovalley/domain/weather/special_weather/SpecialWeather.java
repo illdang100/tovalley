@@ -1,36 +1,43 @@
 package kr.ac.kumoh.illdang100.tovalley.domain.weather.special_weather;
 
+import java.util.List;
 import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.redis.core.index.Indexed;
 
-@Entity
+@Builder
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Builder
+@RedisHash(value = "SpecialWeather")
 public class SpecialWeather {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "special_weather_id")
-    private Long id;
+    private String id;
 
-    @Column(nullable = false)
     private LocalDateTime announcementTime;
 
-    @Column(nullable = false)
     private LocalDateTime effectiveTime;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 11)
     private WeatherAlertType weatherAlertType;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 11)
+    @Indexed
     private SpecialWeatherEnum category;
 
-    @Column(nullable = false, length = 20)
     private String title;
+
+    private List<SpecialWeatherDetail> details;
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class SpecialWeatherDetail {
+        private String content;
+    }
 }
