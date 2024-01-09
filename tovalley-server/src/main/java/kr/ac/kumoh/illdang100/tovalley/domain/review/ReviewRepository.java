@@ -12,4 +12,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long>, ReviewRep
     List<Review> findAllByWaterPlace_Id(@Param("wId") Long waterPlaceId);
 
     boolean existsByTripScheduleId(Long tripScheduleId);
+
+    @Query("select r from Review r where r.tripSchedule.id in :tripScheduleIds")
+    void deleteAllByTripScheduleIds(List<Long> tripScheduleIds);
 }

@@ -3,7 +3,15 @@ package kr.ac.kumoh.illdang100.tovalley.service.member;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberEnum;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberRepository;
+import kr.ac.kumoh.illdang100.tovalley.domain.review.Review;
+import kr.ac.kumoh.illdang100.tovalley.domain.review.ReviewRepository;
+import kr.ac.kumoh.illdang100.tovalley.domain.review.WaterQualityReviewEnum;
+import kr.ac.kumoh.illdang100.tovalley.domain.trip_schedule.TripSchedule;
+import kr.ac.kumoh.illdang100.tovalley.domain.trip_schedule.TripScheduleRepository;
+import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlace;
+import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlaceRepository;
 import kr.ac.kumoh.illdang100.tovalley.dummy.DummyObject;
+import kr.ac.kumoh.illdang100.tovalley.handler.ex.CustomApiException;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtVO;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.RefreshToken;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.RefreshTokenRedisRepository;
@@ -22,6 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,6 +50,10 @@ class MemberServiceImplTest extends DummyObject {
 
     @Mock
     private RefreshTokenRedisRepository refreshTokenRedisRepository;
+
+    @Mock private WaterPlaceRepository waterPlaceRepository;
+    @Mock private TripScheduleRepository tripScheduleRepository;
+    @Mock private ReviewRepository reviewRepository;
 
     @InjectMocks
     private MemberServiceImpl memberService;
@@ -117,4 +130,25 @@ class MemberServiceImplTest extends DummyObject {
         }
     }
 
+    @Test
+    @DisplayName("회원 탈퇴 테스트")
+    void deleteMember_test() throws Exception {
+        // given
+        Member member = newMockMember(3L, "test3", "nickname3", MemberEnum.CUSTOMER);
+        WaterPlace waterPlace = newWaterPlace(1L, "물놀이 장소1", "경상북도", 3.0, 1);
+        TripSchedule tripSchedule = newMockTripSchedule(1L, member, waterPlace, LocalDate.now().plusDays(1), 3);
+        Review review = newReview(1L, waterPlace, tripSchedule, "물이 깨끗해요", 3, WaterQualityReviewEnum.CLEAN);
+
+        // stub
+        when(memberRepository.findById(any())).thenReturn(Optional.of(member));
+        when(tripScheduleRepository.findTripSchedulesByMemberId(any())).thenReturn(List.of(tripSchedule));
+
+        // when
+        memberService.deleteMember(member.getId(), "refreshToken");
+
+        // then
+        verify(reviewRepository, times(1)).deleteAllByTripScheduleIds(eq(List.of(review.getId())));
+        verify(reviewRepository, times(1)).deleteAllByTripScheduleIds(eq(List.of(tripSchedule.getId())));
+        verify(memberRepository, times(1)).delete(member);
+    }
 }
