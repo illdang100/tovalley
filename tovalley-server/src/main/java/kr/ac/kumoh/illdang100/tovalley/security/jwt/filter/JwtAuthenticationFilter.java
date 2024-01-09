@@ -1,6 +1,7 @@
 package kr.ac.kumoh.illdang100.tovalley.security.jwt.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.dto.member.MemberReqDto.LoginReqDto;
 import kr.ac.kumoh.illdang100.tovalley.security.auth.PrincipalDetails;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtProcess;
@@ -36,7 +37,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     private RefreshTokenRedisRepository refreshTokenRedisRepository;
 
-    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtProcess jwtProcess, RefreshTokenRedisRepository refreshTokenRedisRepository) {
+    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtProcess jwtProcess,
+                                   RefreshTokenRedisRepository refreshTokenRedisRepository) {
         super(authenticationManager);
         setFilterProcessesUrl("/api/login");
         this.authenticationManager = authenticationManager;
@@ -45,7 +47,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     }
 
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
+    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
+            throws AuthenticationException {
         try {
 
             ObjectMapper om = new ObjectMapper();
@@ -64,20 +67,25 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     }
 
     @Override
-    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
+                                              AuthenticationException failed) throws IOException, ServletException {
         CustomResponseUtil.fail(response, "로그인 실패", HttpStatus.BAD_REQUEST);
     }
 
     @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
+                                            Authentication authResult) throws IOException, ServletException {
         PrincipalDetails principalDetails = (PrincipalDetails) authResult.getPrincipal();
 
         String accessToken = jwtProcess.createAccessToken(principalDetails);
 
         String ip = getClientIpAddress(request);
-        String refreshToken = saveRefreshToken(jwtProcess, refreshTokenRedisRepository, principalDetails.getMember(), ip);
+        Member member = principalDetails.getMember();
+        String refreshTokenId = saveRefreshToken(jwtProcess, refreshTokenRedisRepository,
+                String.valueOf(member.getId()),
+                member.getRole().toString(), ip);
         addCookie(response, JwtVO.ACCESS_TOKEN, accessToken);
-        addCookie(response, JwtVO.REFRESH_TOKEN, refreshToken);
+        addCookie(response, JwtVO.REFRESH_TOKEN, refreshTokenId);
         addCookie(response, ISLOGIN, "true", false);
 
         CustomResponseUtil.success(response, null);

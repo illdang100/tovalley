@@ -30,7 +30,7 @@ public interface MemberService {
     MemberProfileRespDto getMemberDetail(Long memberId);
 
     // 사용자 로그아웃 - 리프래시 토큰 삭제
-    void logout(HttpServletResponse response, String refreshToken);
+    void logout(HttpServletResponse response, String refreshTokenId);
 
     // 사용자 닉네임 업데이트
     void updateMemberNick(Long memberId, String newNickname);

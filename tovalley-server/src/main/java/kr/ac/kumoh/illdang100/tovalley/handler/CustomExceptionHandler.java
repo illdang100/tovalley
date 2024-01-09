@@ -5,6 +5,7 @@ import kr.ac.kumoh.illdang100.tovalley.handler.ex.CustomApiException;
 import kr.ac.kumoh.illdang100.tovalley.handler.ex.CustomValidationException;
 import kr.ac.kumoh.illdang100.tovalley.handler.ex.OpenApiException;
 import kr.ac.kumoh.illdang100.tovalley.handler.ex.SuspensionException;
+import kr.ac.kumoh.illdang100.tovalley.handler.ex.UnauthorizedAccessException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,13 @@ public class CustomExceptionHandler {
 
         log.error(e.getMessage());
         return new ResponseEntity<>(new ResponseDto<>(-1, e.getMessage(), null), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(UnauthorizedAccessException.class)
+    public ResponseEntity<?> reIssueTokenException(UnauthorizedAccessException e) {
+
+        log.error(e.getMessage());
+        return new ResponseEntity<>(new ResponseDto<>(-1, e.getMessage(), null), HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(SuspensionException.class)
