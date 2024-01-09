@@ -10,9 +10,9 @@ public interface WaterPlaceRepository extends JpaRepository<WaterPlace, Long>, W
 
     boolean existsByWaterPlaceName(String waterPlaceName);
 
-    @Query("select wp from WaterPlace wp order by wp.rating desc")
+    @Query("select wp from WaterPlace wp order by wp.rating desc, wp.reviewCount desc")
     List<WaterPlace> findTop8ByOrderByRatingDesc(Pageable pageable);
 
-    @Query("select wp from WaterPlace wp order by wp.reviewCount desc")
+    @Query("select wp from WaterPlace wp order by wp.reviewCount desc, wp.rating desc")
     List<WaterPlace> findTop8ByOrderByReviewCountDesc(Pageable pageable);
 }
