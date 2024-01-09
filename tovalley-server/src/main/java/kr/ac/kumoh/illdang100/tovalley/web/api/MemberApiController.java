@@ -6,9 +6,7 @@ import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.dto.ResponseDto;
 import kr.ac.kumoh.illdang100.tovalley.security.auth.PrincipalDetails;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtVO;
-import kr.ac.kumoh.illdang100.tovalley.service.S3Service;
 import kr.ac.kumoh.illdang100.tovalley.service.member.MemberService;
-import kr.ac.kumoh.illdang100.tovalley.util.CookieUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -22,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import static kr.ac.kumoh.illdang100.tovalley.dto.member.MemberReqDto.*;
+import static kr.ac.kumoh.illdang100.tovalley.util.CookieUtil.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -97,7 +96,9 @@ public class MemberApiController {
     public ResponseEntity<?> deleteMember(HttpServletResponse response, @AuthenticationPrincipal PrincipalDetails principalDetails, @CookieValue(JwtVO.REFRESH_TOKEN) String refreshToken) {
         memberService.deleteMember(principalDetails.getMember().getId(), refreshToken);
 
-        CookieUtil.expireCookie(response, JwtVO.REFRESH_TOKEN);
+        expireCookie(response, JwtVO.REFRESH_TOKEN);
+        expireCookie(response, JwtVO.ACCESS_TOKEN);
+        expireCookie(response, "ISLOGIN");
 
         return new ResponseEntity<>(new ResponseDto<>(1, "회원탈퇴를 성공했습니다", null), HttpStatus.OK);
     }

@@ -13,7 +13,6 @@ import kr.ac.kumoh.illdang100.tovalley.handler.ex.CustomApiException;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtVO;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.RefreshTokenRedisRepository;
 import kr.ac.kumoh.illdang100.tovalley.service.S3Service;
-import kr.ac.kumoh.illdang100.tovalley.util.CookieUtil;
 import kr.ac.kumoh.illdang100.tovalley.util.TokenUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +29,7 @@ import java.util.stream.Collectors;
 
 import static kr.ac.kumoh.illdang100.tovalley.dto.member.MemberReqDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.member.MemberRespDto.*;
+import static kr.ac.kumoh.illdang100.tovalley.util.CookieUtil.*;
 import static kr.ac.kumoh.illdang100.tovalley.util.CookieUtil.addCookie;
 import static kr.ac.kumoh.illdang100.tovalley.util.CustomResponseUtil.*;
 import static kr.ac.kumoh.illdang100.tovalley.util.EntityFinder.*;
@@ -132,8 +132,8 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public void logout(HttpServletResponse response, String refreshTokenId) {
         TokenUtil.deleteRefreshToken(refreshTokenId, refreshTokenRedisRepository);
-        CookieUtil.expireCookie(response, JwtVO.ACCESS_TOKEN);
-        CookieUtil.expireCookie(response, JwtVO.REFRESH_TOKEN);
+        expireCookie(response, JwtVO.ACCESS_TOKEN);
+        expireCookie(response, JwtVO.REFRESH_TOKEN);
         addCookie(response, ISLOGIN, "false", false);
     }
 
