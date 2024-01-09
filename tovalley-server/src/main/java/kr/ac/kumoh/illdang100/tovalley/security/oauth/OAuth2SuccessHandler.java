@@ -31,7 +31,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
     private final JwtProcess jwtProcess;
 
-    private  final RefreshTokenRedisRepository refreshTokenRedisRepository;
+    private final RefreshTokenRedisRepository refreshTokenRedisRepository;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -44,10 +44,12 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String accessToken = jwtProcess.createAccessToken(principalDetails);
 
         String ip = getClientIpAddress(request);
-        String refreshToken = saveRefreshToken(jwtProcess, refreshTokenRedisRepository, member, ip);
+        String refreshTokenId = saveRefreshToken(jwtProcess, refreshTokenRedisRepository,
+                String.valueOf(member.getId()),
+                member.getRole().toString(), ip);
 
         addCookie(response, JwtVO.ACCESS_TOKEN, accessToken);
-        addCookie(response, JwtVO.REFRESH_TOKEN, refreshToken);
+        addCookie(response, JwtVO.REFRESH_TOKEN, refreshTokenId);
         addCookie(response, ISLOGIN, "true", false);
 
         getRedirectStrategy().sendRedirect(request, response, redirectUrl);

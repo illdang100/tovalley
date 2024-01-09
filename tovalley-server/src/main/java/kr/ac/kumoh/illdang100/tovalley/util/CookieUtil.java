@@ -28,8 +28,15 @@ public class CookieUtil {
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 String cookieValue = URLDecoder.decode(cookie.getValue(), StandardCharsets.UTF_8);
-                if (cookie.getName().equals(cookieName) && cookieValue.startsWith(JwtVO.TOKEN_PREFIX)) {
-                    return true;
+                if (cookie.getName().equals(cookieName)) {
+                    // access token이나 refresh token이라면 검증에 성공했다고 판단
+                    if (cookieName.equals(JwtVO.ACCESS_TOKEN) && cookieValue.startsWith(JwtVO.TOKEN_PREFIX)) {
+                        return true;
+                    }
+                    // refreshTokenId는 특정 prefix 없이 바로 검증에 성공했다고 판단
+                    else if (cookieName.equals(JwtVO.REFRESH_TOKEN)) {
+                        return true;
+                    }
                 }
             }
         }
@@ -37,15 +44,22 @@ public class CookieUtil {
     }
 
     public static String findCookieValue(HttpServletRequest request, String cookieName) {
-        String token = "";
         Cookie[] cookies = request.getCookies();
-        for (Cookie cookie : cookies) {
-            String cookieValue = URLDecoder.decode(cookie.getValue(), StandardCharsets.UTF_8);
-            if (cookie.getName().equals(cookieName) && cookieValue.startsWith(JwtVO.TOKEN_PREFIX)) {
-                token = cookieValue;
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                String cookieValue = URLDecoder.decode(cookie.getValue(), StandardCharsets.UTF_8);
+                if (cookie.getName().equals(cookieName)) {
+                    // access token이라면 TOKEN_PREFIX를 제거한 후 반환
+                    if (cookieName.equals(JwtVO.ACCESS_TOKEN) && cookieValue.startsWith(JwtVO.TOKEN_PREFIX)) {
+                        return cookieValue.replace(JwtVO.TOKEN_PREFIX, "");
+                    }
+                    // refreshTokenId라면 바로 반환
+                    else if (cookieName.equals(JwtVO.REFRESH_TOKEN)) {
+                        return cookieValue;
+                    }
+                }
             }
         }
-        return token;
+        return "";
     }
-
 }

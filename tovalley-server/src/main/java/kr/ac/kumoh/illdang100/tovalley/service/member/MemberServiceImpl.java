@@ -124,8 +124,8 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public void logout(HttpServletResponse response, String refreshToken) {
-        deleteRefreshToken(refreshToken);
+    public void logout(HttpServletResponse response, String refreshTokenId) {
+        deleteRefreshToken(refreshTokenId);
         expireCookie(response, JwtVO.ACCESS_TOKEN);
         expireCookie(response, JwtVO.REFRESH_TOKEN);
         addCookie(response, ISLOGIN, "false", false);
@@ -138,8 +138,8 @@ public class MemberServiceImpl implements MemberService {
         response.addCookie(cookie);
     }
 
-    private void deleteRefreshToken(String refreshToken) {
-        Optional<RefreshToken> refreshTokenOpt = refreshTokenRedisRepository.findByRefreshToken(refreshToken);
+    private void deleteRefreshToken(String refreshTokenId) {
+        Optional<RefreshToken> refreshTokenOpt = refreshTokenRedisRepository.findById(refreshTokenId);
         if (refreshTokenOpt.isPresent()) {
             RefreshToken findRefreshToken = refreshTokenOpt.get();
             refreshTokenRedisRepository.delete(findRefreshToken);

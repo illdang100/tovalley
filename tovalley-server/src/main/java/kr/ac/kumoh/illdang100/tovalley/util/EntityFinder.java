@@ -50,8 +50,9 @@ public class EntityFinder {
                 .orElseThrow(() -> new CustomApiException("사용자[" + email + "]가 존재하지 않습니다"));
     }
 
-    public static RefreshToken findRefreshTokenOrElseThrowEx(RefreshTokenRedisRepository refreshTokenRedisRepository, String refreshToken) {
-        return refreshTokenRedisRepository.findByRefreshToken(refreshToken)
+    public static RefreshToken findRefreshTokenOrElseThrowEx(RefreshTokenRedisRepository refreshTokenRedisRepository,
+                                                             String refreshTokenId) {
+        return refreshTokenRedisRepository.findById(refreshTokenId)
                 .orElseThrow(() -> new CustomApiException("토큰 갱신에 실패했습니다"));
     }
 

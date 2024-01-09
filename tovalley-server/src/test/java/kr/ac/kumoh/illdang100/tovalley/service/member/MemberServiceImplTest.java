@@ -95,7 +95,7 @@ class MemberServiceImplTest extends DummyObject {
         RefreshToken refreshToken = newRefreshToken("testRefreshToken");
 
         //stub
-        when(refreshTokenRedisRepository.findByRefreshToken(any())).thenReturn(Optional.of(refreshToken));
+        when(refreshTokenRedisRepository.findById(any())).thenReturn(Optional.of(refreshToken));
 
         //when
         memberService.logout(response, "testRefreshToken");
