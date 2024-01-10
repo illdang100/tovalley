@@ -20,4 +20,9 @@ public interface TripScheduleRepository extends JpaRepository<TripSchedule, Long
     boolean existsByMember_IdAndWaterPlace_IdAndTripDate(Long memberId, Long waterPlaceId, LocalDate tripDate);
 
     Optional<TripSchedule> findTripScheduleByIdAndMemberId(Long tripScheduleId, Long memberId);
+
+    List<TripSchedule> findTripSchedulesByMemberId(Long memberId);
+
+    @Query("select t from TripSchedule t where t.id in :tripScheduleIds")
+    void deleteAllByIds(List<Long> tripScheduleIds);
 }

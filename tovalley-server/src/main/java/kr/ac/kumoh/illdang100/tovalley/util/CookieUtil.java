@@ -62,4 +62,11 @@ public class CookieUtil {
         }
         return "";
     }
+
+    public static void expireCookie(HttpServletResponse response, String cookieName) {
+        Cookie cookie = new Cookie(cookieName, "");
+        cookie.setMaxAge(0);
+        cookie.setPath("/");
+        response.addCookie(cookie);
+    }
 }

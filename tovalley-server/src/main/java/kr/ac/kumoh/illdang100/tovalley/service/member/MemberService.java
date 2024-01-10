@@ -3,7 +3,6 @@ package kr.ac.kumoh.illdang100.tovalley.service.member;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import static kr.ac.kumoh.illdang100.tovalley.dto.member.MemberReqDto.*;
@@ -37,4 +36,7 @@ public interface MemberService {
 
     // 사용자 프로필 이미지 업데이트
     void updateProfileImage(Long memberId, MultipartFile memberImage);
+
+    // 회원 탈퇴
+    void deleteMember(Long memberId, String refreshToken);
 }

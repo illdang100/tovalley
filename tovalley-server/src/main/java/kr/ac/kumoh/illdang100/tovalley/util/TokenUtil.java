@@ -1,10 +1,11 @@
 package kr.ac.kumoh.illdang100.tovalley.util;
 
 import java.util.UUID;
-import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtProcess;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.RefreshToken;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.RefreshTokenRedisRepository;
+
+import java.util.Optional;
 
 public class TokenUtil {
     public static String saveRefreshToken(JwtProcess jwtProcess,
@@ -26,5 +27,13 @@ public class TokenUtil {
                 .build());
 
         return refreshTokenId;
+    }
+
+    public static void deleteRefreshToken(String refreshTokenId, RefreshTokenRedisRepository refreshTokenRedisRepository) {
+        Optional<RefreshToken> refreshTokenOpt = refreshTokenRedisRepository.findById(refreshTokenId);
+        if (refreshTokenOpt.isPresent()) {
+            RefreshToken findRefreshToken = refreshTokenOpt.get();
+            refreshTokenRedisRepository.delete(findRefreshToken);
+        }
     }
 }
