@@ -1,5 +1,6 @@
 package kr.ac.kumoh.illdang100.tovalley.web.controller.admin;
 
+import kr.ac.kumoh.illdang100.tovalley.dto.admin.AdminChangeRoleReqDto;
 import kr.ac.kumoh.illdang100.tovalley.form.admin.LoginForm;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtVO;
 import kr.ac.kumoh.illdang100.tovalley.service.member.MemberService;
@@ -39,4 +40,39 @@ public class AdminController {
         memberService.logout(response, refreshToken);
 
         return "redirect:/th/admin-login";
-    }}
+    }
+
+    /**
+     * 사용자 권한 변경 페이지
+     * @param model
+     * @return
+     */
+    @GetMapping("/change-role")
+    public String changeRoleForm(Model model) {
+        return "admin/change-role";
+    }
+
+    /**
+     * 사용자 권한 변경
+     * @param adminChangeRoleReqDto
+     * @param refreshTokenId
+     * @param nmodel
+     * @return
+     */
+    @PostMapping("/change-role")
+    public String changeRole(AdminChangeRoleReqDto adminChangeRoleReqDto, @CookieValue(JwtVO.REFRESH_TOKEN) String refreshTokenId, Model nmodel) {
+        return "admin/change-role";
+    }
+
+    /**
+     * 사용자 검색 - 닉네임
+     * @param nickname
+     * @param model
+     * @return
+     */
+    @PostMapping("/members")
+    public String getMemberList(String nickname, Model model) {
+        return "admin/change-role";
+    }
+
+}
