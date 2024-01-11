@@ -8,6 +8,7 @@ import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.review.ReviewRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.trip_schedule.TripSchedule;
 import kr.ac.kumoh.illdang100.tovalley.domain.trip_schedule.TripScheduleRepository;
+import kr.ac.kumoh.illdang100.tovalley.dto.admin.AdminChangeRoleRespDto.SearchMembersRespDto;
 import kr.ac.kumoh.illdang100.tovalley.dto.member.MemberReqDto.SignUpReqDto;
 import kr.ac.kumoh.illdang100.tovalley.handler.ex.CustomApiException;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtVO;
@@ -16,6 +17,8 @@ import kr.ac.kumoh.illdang100.tovalley.service.S3Service;
 import kr.ac.kumoh.illdang100.tovalley.util.TokenUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -217,5 +220,10 @@ public class MemberServiceImpl implements MemberService {
 
     private boolean hasAccountProfileImage(Member member) {
         return member.getImageFile() != null;
+    }
+
+    @Override
+    public Slice<SearchMembersRespDto> searchMembers(String nickname, Pageable pageable) {
+        return memberRepository.findSliceMembersByNickname(nickname, pageable);
     }
 }

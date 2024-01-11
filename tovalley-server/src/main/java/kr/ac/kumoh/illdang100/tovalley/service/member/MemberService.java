@@ -1,6 +1,9 @@
 package kr.ac.kumoh.illdang100.tovalley.service.member;
 
 import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
+import kr.ac.kumoh.illdang100.tovalley.dto.admin.AdminChangeRoleRespDto.SearchMembersRespDto;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
@@ -39,4 +42,6 @@ public interface MemberService {
 
     // 회원 탈퇴
     void deleteMember(Long memberId, String refreshToken);
+
+    Slice<SearchMembersRespDto> searchMembers(String nickname, Pageable pageable);
 }

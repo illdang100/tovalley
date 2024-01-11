@@ -1,11 +1,14 @@
 package kr.ac.kumoh.illdang100.tovalley.dto.admin;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
-@Getter
-@Setter
-@NoArgsConstructor
 public class AdminChangeRoleReqDto {
+
+    @AllArgsConstructor
+    @Data
+    public static class SearchMembersCondition {
+
+        private String nickname;
+    }
 }
