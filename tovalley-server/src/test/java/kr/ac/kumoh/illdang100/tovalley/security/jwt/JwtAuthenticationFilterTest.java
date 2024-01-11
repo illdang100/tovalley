@@ -71,9 +71,9 @@ public class JwtAuthenticationFilterTest extends DummyObject {
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 String cookieValue = cookie.getValue();
-                if (cookie.getName().equals("accessToken")) {
+                if (cookie.getName().equals("ACCESSTOKEN")) {
                     accessToken = URLDecoder.decode(cookieValue, StandardCharsets.UTF_8);
-                } else if (cookie.getName().equals("refreshToken")) {
+                } else if (cookie.getName().equals("REFRESHTOKENID")) {
                     refreshToken = URLDecoder.decode(cookieValue, StandardCharsets.UTF_8);
                 }
             }
@@ -82,7 +82,6 @@ public class JwtAuthenticationFilterTest extends DummyObject {
         resultActions.andExpect(status().isOk());
         assertThat(accessToken).isNotNull();
         assertThat(accessToken.startsWith(JwtVO.TOKEN_PREFIX)).isTrue();
-        assertThat(refreshToken.startsWith(JwtVO.TOKEN_PREFIX)).isTrue();
     }
 
     @Test

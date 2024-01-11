@@ -16,9 +16,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static kr.ac.kumoh.illdang100.tovalley.util.CustomResponseUtil.ISLOGIN;
-import static kr.ac.kumoh.illdang100.tovalley.util.CustomResponseUtil.addCookie;
-import static kr.ac.kumoh.illdang100.tovalley.util.CustomResponseUtil.saveRefreshToken;
+import static kr.ac.kumoh.illdang100.tovalley.util.CookieUtil.addCookie;
+import static kr.ac.kumoh.illdang100.tovalley.util.CustomResponseUtil.*;
+import static kr.ac.kumoh.illdang100.tovalley.util.HttpServletUtil.getClientIpAddress;
+import static kr.ac.kumoh.illdang100.tovalley.util.TokenUtil.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -30,7 +31,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
     private final JwtProcess jwtProcess;
 
-    private  final RefreshTokenRedisRepository refreshTokenRedisRepository;
+    private final RefreshTokenRedisRepository refreshTokenRedisRepository;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -42,10 +43,13 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         String accessToken = jwtProcess.createAccessToken(principalDetails);
 
-        String refreshToken = saveRefreshToken(jwtProcess, refreshTokenRedisRepository, member);
+        String ip = getClientIpAddress(request);
+        String refreshTokenId = saveRefreshToken(jwtProcess, refreshTokenRedisRepository,
+                String.valueOf(member.getId()),
+                member.getRole().toString(), ip);
 
         addCookie(response, JwtVO.ACCESS_TOKEN, accessToken);
-        addCookie(response, JwtVO.REFRESH_TOKEN, refreshToken);
+        addCookie(response, JwtVO.REFRESH_TOKEN, refreshTokenId);
         addCookie(response, ISLOGIN, "true", false);
 
         getRedirectStrategy().sendRedirect(request, response, redirectUrl);

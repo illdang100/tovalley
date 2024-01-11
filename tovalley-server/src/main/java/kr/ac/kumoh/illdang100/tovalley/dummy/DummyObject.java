@@ -78,6 +78,26 @@ public class DummyObject {
                 .build();
     }
 
+    protected WaterPlace newWaterPlace(Long id, String name, String province, Double rating, Integer reviewCnt) {
+
+        return WaterPlace.builder()
+                .id(id)
+                .waterPlaceName(name)
+                .province(province)
+                .city("city")
+                .town("town")
+                .subLocation("subLocation")
+                .address("address")
+                .waterPlaceCategory("계곡")
+                .coordinate(new Coordinate("38.10000000", "128.10000000"))
+                .managementType("일반지역")
+                .rating(rating)
+                .reviewCount(reviewCnt)
+                .build();
+    }
+
+
+
     protected WaterPlace newWaterPlaceWithCity(String name, String province, String city, Double rating, Integer reviewCnt) {
 
         return WaterPlace.builder()
@@ -168,6 +188,21 @@ public class DummyObject {
         waterPlaceRepository.save(waterPlace);
 
         return Review.builder()
+                .tripSchedule(tripSchedule)
+                .reviewContent(content)
+                .rating(rating)
+                .waterQualityReview(waterQualityReviewEnum)
+                .build();
+    }
+
+    protected Review newReview(Long id, WaterPlace waterPlace, TripSchedule tripSchedule,
+                               String content, Integer rating,
+                               WaterQualityReviewEnum waterQualityReviewEnum) {
+
+        waterPlace.calculateRating(rating);
+
+        return Review.builder()
+                .id(id)
                 .tripSchedule(tripSchedule)
                 .reviewContent(content)
                 .rating(rating)

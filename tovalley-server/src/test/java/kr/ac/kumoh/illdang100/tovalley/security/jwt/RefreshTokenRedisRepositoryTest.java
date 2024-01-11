@@ -31,7 +31,7 @@ public class RefreshTokenRedisRepositoryTest {
         //when
         refreshTokenRedisRepository.save(refreshToken);
 
-        Optional<RefreshToken> findTokenOpt = refreshTokenRedisRepository.findByRefreshToken("testRefreshToken");
+        Optional<RefreshToken> findTokenOpt = refreshTokenRedisRepository.findById("testId");
 
         RefreshToken findToken = findTokenOpt.get();
 

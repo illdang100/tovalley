@@ -18,10 +18,8 @@ public class RefreshToken {
     @Id
     private String id;
 
+    private String memberId;
     private String role;
-
-    @Indexed
+    private String ip;
     private String refreshToken;
-
-    public void changeRefreshToken(String refreshToken) {this.refreshToken = refreshToken;}
 }

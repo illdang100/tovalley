@@ -1,8 +1,8 @@
 package kr.ac.kumoh.illdang100.tovalley.security.jwt;
 
+import java.util.UUID;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberEnum;
-import kr.ac.kumoh.illdang100.tovalley.dto.member.MemberReqDto;
 import kr.ac.kumoh.illdang100.tovalley.dummy.DummyObject;
 import kr.ac.kumoh.illdang100.tovalley.security.auth.PrincipalDetails;
 import org.junit.jupiter.api.DisplayName;
@@ -15,7 +15,6 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
@@ -30,6 +29,7 @@ class JwtProcessTest extends DummyObject {
 
         return jwtProcess.createAccessToken(principalDetails);
     }
+
     @Test
     @DisplayName("액세스 토큰 생성 테스트")
     void createAccessToken_test() throws Exception {
@@ -53,8 +53,11 @@ class JwtProcessTest extends DummyObject {
         //given
 
         //when
-        String refreshToken1 = jwtProcess.createRefreshToken("1", MemberEnum.CUSTOMER.toString());
-        String refreshToken2 = jwtProcess.createRefreshToken("2", MemberEnum.ADMIN.toString());
+        String refreshTokenId = UUID.randomUUID().toString();
+        String refreshToken1 = jwtProcess.createRefreshToken(refreshTokenId, "1", MemberEnum.CUSTOMER.toString(),
+                "127.0.0.1");
+        String refreshToken2 = jwtProcess.createRefreshToken(refreshTokenId, "2", MemberEnum.ADMIN.toString(),
+                "127.0.0.1");
 
         String decodedRefreshToken1 = URLDecoder.decode(refreshToken1, StandardCharsets.UTF_8);
         String decodedRefreshToken2 = URLDecoder.decode(refreshToken2, StandardCharsets.UTF_8);

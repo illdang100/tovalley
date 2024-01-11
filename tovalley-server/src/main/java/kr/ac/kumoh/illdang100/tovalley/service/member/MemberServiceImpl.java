@@ -2,34 +2,38 @@ package kr.ac.kumoh.illdang100.tovalley.service.member;
 
 import kr.ac.kumoh.illdang100.tovalley.domain.FileRootPathVO;
 import kr.ac.kumoh.illdang100.tovalley.domain.ImageFile;
-import kr.ac.kumoh.illdang100.tovalley.domain.email_code.EmailCodeRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberEnum;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberRepository;
+import kr.ac.kumoh.illdang100.tovalley.domain.review.ReviewRepository;
+import kr.ac.kumoh.illdang100.tovalley.domain.trip_schedule.TripSchedule;
+import kr.ac.kumoh.illdang100.tovalley.domain.trip_schedule.TripScheduleRepository;
+import kr.ac.kumoh.illdang100.tovalley.dto.admin.AdminChangeRoleRespDto.SearchMembersRespDto;
 import kr.ac.kumoh.illdang100.tovalley.dto.member.MemberReqDto.SignUpReqDto;
 import kr.ac.kumoh.illdang100.tovalley.handler.ex.CustomApiException;
-import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtProcess;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtVO;
-import kr.ac.kumoh.illdang100.tovalley.security.jwt.RefreshToken;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.RefreshTokenRedisRepository;
 import kr.ac.kumoh.illdang100.tovalley.service.S3Service;
-import kr.ac.kumoh.illdang100.tovalley.service.email_code.EmailCodeService;
+import kr.ac.kumoh.illdang100.tovalley.util.TokenUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static kr.ac.kumoh.illdang100.tovalley.dto.member.MemberReqDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.member.MemberRespDto.*;
+import static kr.ac.kumoh.illdang100.tovalley.util.CookieUtil.*;
+import static kr.ac.kumoh.illdang100.tovalley.util.CookieUtil.addCookie;
 import static kr.ac.kumoh.illdang100.tovalley.util.CustomResponseUtil.*;
 import static kr.ac.kumoh.illdang100.tovalley.util.EntityFinder.*;
 
@@ -42,10 +46,9 @@ public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
     private final S3Service s3Service;
-    private final JwtProcess jwtProcess;
-    private final EmailCodeService emailCodeService;
-    private final EmailCodeRepository emailCodeRepository;
     private final RefreshTokenRedisRepository refreshTokenRedisRepository;
+    private final TripScheduleRepository tripScheduleRepository;
+    private final ReviewRepository reviewRepository;
     private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Override
@@ -130,26 +133,11 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public void logout(HttpServletResponse response, String refreshToken) {
-        deleteRefreshToken(refreshToken);
+    public void logout(HttpServletResponse response, String refreshTokenId) {
+        TokenUtil.deleteRefreshToken(refreshTokenId, refreshTokenRedisRepository);
         expireCookie(response, JwtVO.ACCESS_TOKEN);
         expireCookie(response, JwtVO.REFRESH_TOKEN);
         addCookie(response, ISLOGIN, "false", false);
-    }
-
-    private void expireCookie(HttpServletResponse response, String cookieName) {
-        Cookie cookie = new Cookie(cookieName, "");
-        cookie.setMaxAge(0);
-        cookie.setPath("/");
-        response.addCookie(cookie);
-    }
-
-    private void deleteRefreshToken(String refreshToken) {
-        Optional<RefreshToken> refreshTokenOpt = refreshTokenRedisRepository.findByRefreshToken(refreshToken);
-        if (refreshTokenOpt.isPresent()) {
-            RefreshToken findRefreshToken = refreshTokenOpt.get();
-            refreshTokenRedisRepository.delete(findRefreshToken);
-        }
     }
 
     /**
@@ -173,6 +161,36 @@ public class MemberServiceImpl implements MemberService {
     public void updateProfileImage(Long memberId, MultipartFile memberImage) {
         Member findMember = findMemberByIdOrElseThrowEx(memberRepository, memberId);
         processImageUpdate(findMember, memberImage);
+    }
+
+    /**
+     * 회원 탈퇴
+     * @param memberId
+     */
+    @Override
+    @Transactional
+    public void deleteMember(Long memberId, String refreshToken) {
+        Member findMember = findMemberByIdOrElseThrowEx(memberRepository, memberId);
+
+        List<Long> tripScheduleIds = tripScheduleRepository.findTripSchedulesByMemberId(findMember.getId())
+                .stream()
+                .map(TripSchedule::getId)
+                .collect(Collectors.toList());
+
+        // 리뷰 삭제
+        reviewRepository.deleteAllByTripScheduleIds(tripScheduleIds);
+
+        // 여행 일정 삭제
+        tripScheduleRepository.deleteAllByIds(tripScheduleIds);
+
+        // 사용자 프로필 이미지 삭제
+        deleteProfileImage(findMember);
+
+        // 리프레시 토큰 삭제
+       TokenUtil.deleteRefreshToken(refreshToken, refreshTokenRedisRepository);
+
+        // 회원 삭제
+        memberRepository.delete(findMember);
     }
 
     private void processImageUpdate(Member member, MultipartFile memberImage) {
@@ -202,5 +220,10 @@ public class MemberServiceImpl implements MemberService {
 
     private boolean hasAccountProfileImage(Member member) {
         return member.getImageFile() != null;
+    }
+
+    @Override
+    public Slice<SearchMembersRespDto> searchMembers(String nickname, Pageable pageable) {
+        return memberRepository.findSliceMembersByNickname(nickname, pageable);
     }
 }

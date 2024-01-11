@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import static kr.ac.kumoh.illdang100.tovalley.dto.member.MemberReqDto.*;
+import static kr.ac.kumoh.illdang100.tovalley.util.CookieUtil.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -70,9 +71,9 @@ public class MemberApiController {
     }
 
     @DeleteMapping(value = "/logout")
-    public ResponseEntity<?> logout(@CookieValue(JwtVO.REFRESH_TOKEN) String refreshToken,
+    public ResponseEntity<?> logout(@CookieValue(JwtVO.REFRESH_TOKEN) String refreshTokenId,
                                     HttpServletResponse response) {
-        memberService.logout(response, refreshToken);
+        memberService.logout(response, refreshTokenId);
 
         return new ResponseEntity<>(new ResponseDto<>(1, "로그아웃을 성공했습니다", null), HttpStatus.OK);
     }
@@ -89,5 +90,16 @@ public class MemberApiController {
         memberService.resetPassword(resetPasswordReqDto);
 
         return new ResponseEntity<>(new ResponseDto<>(1, "비밀번호 변경을 성공했습니댜.", null), HttpStatus.OK);
+    }
+
+    @DeleteMapping(value = "/auth/members")
+    public ResponseEntity<?> deleteMember(HttpServletResponse response, @AuthenticationPrincipal PrincipalDetails principalDetails, @CookieValue(JwtVO.REFRESH_TOKEN) String refreshToken) {
+        memberService.deleteMember(principalDetails.getMember().getId(), refreshToken);
+
+        expireCookie(response, JwtVO.REFRESH_TOKEN);
+        expireCookie(response, JwtVO.ACCESS_TOKEN);
+        expireCookie(response, "ISLOGIN");
+
+        return new ResponseEntity<>(new ResponseDto<>(1, "회원탈퇴를 성공했습니다", null), HttpStatus.OK);
     }
 }
