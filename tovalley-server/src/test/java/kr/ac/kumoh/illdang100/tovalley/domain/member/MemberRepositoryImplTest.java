@@ -68,6 +68,22 @@ class MemberRepositoryImplTest extends DummyObject {
         assertThat(content.get(0).getRole()).isEqualTo("CUSTOMER");
     }
 
+    @Test
+    @DisplayName("존재하지 않는 닉네임 입력하고 조회 테스트")
+    public void findSliceMembersByNickname_test3() {
+
+        // given
+        String nickname = "member888";
+        PageRequest pageable =
+                PageRequest.of(0, 10, Sort.by(Sort.Direction.ASC, "nickname"));
+
+        // when
+        List<SearchMembersRespDto> content = memberRepository.findSliceMembersByNickname(nickname, pageable).getContent();
+
+        // then
+        assertThat(content.size()).isEqualTo(0);
+    }
+
     private void autoIncrementReset() {
 
         em.createNativeQuery("ALTER TABLE member ALTER COLUMN member_id RESTART WITH 1").executeUpdate();
