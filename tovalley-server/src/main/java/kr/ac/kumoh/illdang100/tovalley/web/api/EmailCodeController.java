@@ -25,7 +25,7 @@ public class EmailCodeController {
     @PostMapping
     public ResponseEntity<?> sendEmail (@RequestBody @Valid SendEmailCodeReqDto sendEmailCodeReqDto,
                                         BindingResult bindingResult) {
-        SendEmailCodeRespDto sendEmailCodeRespDto = emailCodeService.sendEmail(sendEmailCodeReqDto.getEmail());
+        SendEmailCodeRespDto sendEmailCodeRespDto = emailCodeService.sendEmailVerification(sendEmailCodeReqDto.getEmail());
 
         return new ResponseEntity<>(new ResponseDto<>(1, "사용자 이메일로 인증 코드를 전송했습니다", sendEmailCodeRespDto), HttpStatus.OK);
     }

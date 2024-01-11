@@ -24,7 +24,7 @@ public class EmailCodeServiceImpl implements EmailCodeService {
 
     @Override
     @Transactional
-    public SendEmailCodeRespDto sendEmail(String email) {
+    public SendEmailCodeRespDto sendEmailVerification(String email) {
 
         EmailCode findEmailCode = emailCodeRepository.findByEmail(email).orElse(null);
         if (findEmailCode != null)
@@ -84,5 +84,10 @@ public class EmailCodeServiceImpl implements EmailCodeService {
         }
 
         return randomString.toString();
+    }
+
+    @Override
+    public void sendReLoginRequestEmail(String email) {
+
     }
 }

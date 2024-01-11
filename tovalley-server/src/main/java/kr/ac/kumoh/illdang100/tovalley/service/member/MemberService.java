@@ -1,6 +1,7 @@
 package kr.ac.kumoh.illdang100.tovalley.service.member;
 
 import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
+import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberEnum;
 import kr.ac.kumoh.illdang100.tovalley.dto.admin.AdminChangeRoleRespDto.SearchMembersRespDto;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -44,4 +45,8 @@ public interface MemberService {
     void deleteMember(Long memberId, String refreshToken);
 
     Slice<SearchMembersRespDto> searchMembers(String nickname, Pageable pageable);
+
+    void changeMemberRole(Long memberId, MemberEnum role);
+
+    void deleteRefreshTokenByMemberId(Long memberId);
 }
