@@ -100,7 +100,7 @@ public class MemberServiceImpl implements MemberService {
         Member findMember = findMemberByEmailOrElseThrowEx(memberRepository, email);
 
         return findMember.getEmail();
-}
+    }
 
     @Override
     @Transactional
@@ -125,7 +125,8 @@ public class MemberServiceImpl implements MemberService {
 
         Member findMember = findMemberByIdOrElseThrowEx(memberRepository, memberId);
 
-        String memberProfileImg = (findMember.getImageFile() != null) ? findMember.getImageFile().getStoreFileUrl() : null;
+        String memberProfileImg =
+                (findMember.getImageFile() != null) ? findMember.getImageFile().getStoreFileUrl() : null;
         return new MemberProfileRespDto(memberProfileImg,
                 findMember.getMemberName(),
                 findMember.getNickname());
@@ -141,7 +142,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     /**
-     * @param memberId: 사용자 pk
+     * @param memberId:    사용자 pk
      * @param newNickname: 변경할 새로운 닉네임
      * @methodnme: updateMemberNick
      * @author: JYeonJun
@@ -165,6 +166,7 @@ public class MemberServiceImpl implements MemberService {
 
     /**
      * 회원 탈퇴
+     *
      * @param memberId
      */
     @Override
@@ -187,7 +189,7 @@ public class MemberServiceImpl implements MemberService {
         deleteProfileImage(findMember);
 
         // 리프레시 토큰 삭제
-       TokenUtil.deleteRefreshToken(refreshToken, refreshTokenRedisRepository);
+        TokenUtil.deleteRefreshToken(refreshToken, refreshTokenRedisRepository);
 
         // 회원 삭제
         memberRepository.delete(findMember);
@@ -225,5 +227,18 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public Slice<SearchMembersRespDto> searchMembers(String nickname, Pageable pageable) {
         return memberRepository.findSliceMembersByNickname(nickname, pageable);
+    }
+
+    @Override
+    @Transactional
+    public void changeMemberRole(Long memberId, MemberEnum role) {
+
+        Member findMember = findMemberByIdOrElseThrowEx(memberRepository, memberId);
+        findMember.changeRole(role);
+    }
+
+    @Override
+    public void deleteRefreshTokenByMemberId(Long memberId) {
+
     }
 }
