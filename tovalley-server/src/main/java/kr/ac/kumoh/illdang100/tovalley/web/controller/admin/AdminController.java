@@ -4,7 +4,6 @@ import javax.validation.Valid;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberEnum;
 import kr.ac.kumoh.illdang100.tovalley.dto.admin.AdminChangeRoleReqDto.ChangeMemberRoleReqDto;
 import kr.ac.kumoh.illdang100.tovalley.dto.admin.AdminChangeRoleReqDto.SearchMembersCondition;
-import kr.ac.kumoh.illdang100.tovalley.dto.admin.AdminChangeRoleRespDto.SearchMembersRespDto;
 import kr.ac.kumoh.illdang100.tovalley.form.admin.LoginForm;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtVO;
 import kr.ac.kumoh.illdang100.tovalley.service.email_code.EmailCodeService;
@@ -22,6 +21,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+
+import static kr.ac.kumoh.illdang100.tovalley.dto.admin.AdminChangeRoleRespDto.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -58,17 +59,17 @@ public class AdminController {
 
     /**
      * 사용자 권한 변경 페이지
-     * @param searchMembersCondition
      * @param pageable
      * @param model
      * @return
      */
     @GetMapping("/change-role")
-    public String changeRoleForm(@ModelAttribute SearchMembersCondition searchMembersCondition,
-                                 @PageableDefault(size = 10, sort = "nickname", direction = Sort.Direction.ASC) Pageable pageable,
+    public String changeRoleForm(@PageableDefault(size = 10, sort = "nickname", direction = Sort.Direction.ASC) Pageable pageable,
                                  Model model) {
 
         model.addAttribute("searchMembers", getSearchMembers(null, pageable));
+        model.addAttribute("searchMembersCondition", new SearchMembersCondition());
+        model.addAttribute("changeMemberRoleReqDto", new ChangeMemberRoleReqDto());
         return "admin/change-role";
     }
 
@@ -84,12 +85,16 @@ public class AdminController {
     public String changeRole(@ModelAttribute @Valid ChangeMemberRoleReqDto changeMemberRoleReqDto,
                              BindingResult result,
                              Model model) {
+        boolean isSuccess = true;
         if (result.hasErrors()) {
+            isSuccess = false;
+            model.addAttribute("isSuccess", isSuccess);
             return handleErrors(model);
         }
 
         executeRoleChange(changeMemberRoleReqDto);
-        return "admin/change-role";
+        model.addAttribute("isSuccess", isSuccess);
+        return changeRoleForm(PageRequest.of(0, 10, Sort.by("nickname").ascending()), model);
     }
 
     private String handleErrors(Model model) {
@@ -108,7 +113,7 @@ public class AdminController {
     private void executeRoleChange(ChangeMemberRoleReqDto changeMemberRoleReqDto) {
         Long memberId = changeMemberRoleReqDto.getMemberId();
         String email = changeMemberRoleReqDto.getEmail();
-        MemberEnum role = changeMemberRoleReqDto.getRole();
+        MemberEnum role = MemberEnum.valueOf(changeMemberRoleReqDto.getRole());
 
         memberService.changeMemberRole(memberId, role);
         memberService.deleteRefreshTokenByMemberId(memberId);
@@ -130,11 +135,15 @@ public class AdminController {
                                 @PageableDefault(size = 10, sort = "nickname", direction = Sort.Direction.ASC) Pageable pageable,
                                 Model model) {
 
+        boolean isSuccess = true;
         if (result.hasErrors()) {
+            isSuccess = false;
+            model.addAttribute("isSuccess", isSuccess);
             return handleErrors(model);
         }
 
         model.addAttribute("searchMembers", getSearchMembers(searchMembersCondition.getNickname(), pageable));
+        model.addAttribute("isSuccess", isSuccess);
         return "admin/change-role";
     }
 }
