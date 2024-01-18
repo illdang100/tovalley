@@ -1,0 +1,158 @@
+body {
+  margin: 0;
+}
+
+a {
+    text-decoration: none;
+}
+
+a:link, a:visited {
+    color: white;
+}
+
+.admin__change-role {
+  display: flex;
+}
+
+/* 헤더 */
+.admin__left-sidebar {
+    background-color: #5a5a5a;
+    width: 18em;
+    padding: 1em 0;
+    flex-grow: 1;
+    height: 100vh;
+}
+
+.admin-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.admin-logo img {
+  margin-right: 1em;
+}
+
+.admin-logo h1 {
+  color: white;
+}
+
+/* 헤더 카테고리 */
+.admin-category {
+  margin-top: 1em;
+}
+
+.admin-category div {
+  background-color: #4b4b4b;
+  margin: 0.8em 0;
+  padding: 1em 2em;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.admin-category div a:link, .admin-category div a:visited {
+    color: white;
+}
+
+.admin-category div:nth-child(3) a {
+    color: #66A5FC;
+}
+
+.change-role {
+  width: 80%;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 2px rgb(225, 225, 225);
+  height: 5em;
+  padding: 0 3em;
+}
+
+.title h1 {
+  font-size: 1.4rem;
+}
+
+.title span {
+  border: 1px solid #dadada;
+  border-radius: 20px;
+  padding: 0.5em 1em;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.title span a:link, .title span a:visited {
+    color: black
+}
+
+.valley-search-container {
+    display: flex;
+}
+
+/* 페이지 메인 */
+.items__user-list {
+    padding: 5%;
+}
+
+.items__change-role {
+    border: 1px solid #A0A0A0;
+    width: 400px;
+    height: 250px;
+    margin-top: 95px;
+}
+
+.items__change-role .user-info {
+    margin-left: 20px;
+}
+
+.change-role-btn button {
+    color: #66A5FC;
+    border: 1px solid #66A5FC;
+    padding: 0.3em 0.8em;
+    border-radius: 30px;
+    margin-top: 10px;
+    margin-right: 30px;
+    float: right;
+}
+
+h4 {
+    font-size: 1.1rem;
+    margin: 0 0 1em 0;
+}
+
+table {
+    border: 1px solid #A0A0A0;
+    border-collapse: collapse;
+    margin-top: 20px;
+    width: 500px;
+}
+
+th, td {
+    border-bottom: 1px solid #A0A0A0;
+    text-align: left;
+}
+
+.table-row {
+    cursor: pointer;
+}
+
+.info-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.info-title {
+    width: 50px;
+    margin-right: 10px;
+}
+
+.info-input {
+    flex: 1;
+}
+
+.info-input input {
+    width: 280px;
+}
