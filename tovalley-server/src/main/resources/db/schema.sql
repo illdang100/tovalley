@@ -165,6 +165,26 @@ CREATE TABLE IF NOT EXISTS `email_code` (
     primary key (email_code_id)
 ) engine=InnoDB;
 
+CREATE TABLE `lost_found_board` (
+                                    `lost_found_id`	BIGINT	NOT NULL COMMENT '분실물 찾기 게시글 아이디',
+                                    `water_place_id`	BIGINT	NOT NULL COMMENT '물놀이 장소 아이디',
+                                    `author_email`	VARCHAR(30)	NOT NULL COMMENT '게시글 작성자 이메일',
+                                    `content`	VARCHAR(256)	NOT NULL COMMENT '게시글 내용',
+                                    `isPosting`	TINYINT(1)	NULL COMMENT '게시글 포스팅 여부',
+                                    `isResolved`	TINYINT(1)	NULL COMMENT '분실물 찾기 완료 여부',
+                                    `create_date`	DATETIME(6)	NOT NULL,
+                                    `last_modified_date`	DATETIME(6)	NOT NULL
+                                    primary key (lost_found_id)
+) engine=InnoDB;
+
+CREATE TABLE `comment` (
+                           `comment_id`	BIGINT	NOT NULL COMMENT '댓글 아이디',
+                           `lost_found_id`	BIGINT	NOT NULL COMMENT '분실물 찾기 게시글 아이디',
+                           `author_email`	VARCHAR(30)	NOT NULL COMMENT '댓글 작성자 이메일',
+                           `content`	VARCHAR(256)	NOT NULL COMMENT '댓글 내용'
+                            primary key (comment_id)
+) engine=InnoDB;
+
 alter table member
     add constraint UK_mbmcqelty0fbrvxp1q58dn57t unique (email);
 
