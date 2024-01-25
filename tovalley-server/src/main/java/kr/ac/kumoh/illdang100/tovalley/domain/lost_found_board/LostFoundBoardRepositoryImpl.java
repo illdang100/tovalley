@@ -5,10 +5,6 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import kr.ac.kumoh.illdang100.tovalley.domain.member.QMember;
-import kr.ac.kumoh.illdang100.tovalley.domain.water_place.QWaterPlace;
-import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlace;
-import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlaceRepository;
 import kr.ac.kumoh.illdang100.tovalley.dto.lost_found_board.LostFoundBoardReqDto.LostFoundBoardListReqDto;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Pageable;
@@ -18,7 +14,6 @@ import org.springframework.data.domain.SliceImpl;
 import javax.persistence.EntityManager;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static kr.ac.kumoh.illdang100.tovalley.domain.comment.QComment.*;
 import static kr.ac.kumoh.illdang100.tovalley.domain.lost_found_board.QLostFoundBoard.*;
@@ -30,10 +25,8 @@ import static kr.ac.kumoh.illdang100.tovalley.dto.lost_found_board.LostFoundBoar
 public class LostFoundBoardRepositoryImpl implements LostFoundBoardRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
-    private final WaterPlaceRepository waterPlaceRepository;
-    public LostFoundBoardRepositoryImpl(EntityManager em, WaterPlaceRepository waterPlaceRepository) {
+    public LostFoundBoardRepositoryImpl(EntityManager em) {
         this.queryFactory = new JPAQueryFactory(em);
-        this.waterPlaceRepository = waterPlaceRepository;
     }
     @Override
     public Slice<LostFoundBoardListRespDto> getLostFoundBoardListBySlice(LostFoundBoardListReqDto lostFoundBoardListReqDto, Pageable pageable) {
@@ -68,6 +61,12 @@ public class LostFoundBoardRepositoryImpl implements LostFoundBoardRepositoryCus
                     lostFoundBoard.title.toLowerCase().containsIgnoreCase(searchWord.toLowerCase()),
                     lostFoundBoard.content.toLowerCase().containsIgnoreCase(searchWord.toLowerCase())
             );
+        }
+
+        // 계곡 아이디
+        List<Long> valleyIds = lostFoundBoardListReqDto.getValleyId();
+        if (valleyIds != null && !valleyIds.isEmpty()) {
+            booleanBuilder.and(lostFoundBoard.waterPlace.id.in(valleyIds));
         }
 
         // 해결된 게시글 제외

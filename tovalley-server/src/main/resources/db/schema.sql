@@ -182,11 +182,10 @@ CREATE TABLE `lost_found_board` (
 ) engine=InnoDB;
 
 CREATE TABLE `comment` (
-                           `comment_id`	BIGINT	NOT NULL COMMENT '댓글 아이디',
+                           `comment_id`	BIGINT	NOT NULL primary key COMMENT '댓글 아이디',
                            `lost_found_id`	BIGINT	NOT NULL COMMENT '분실물 찾기 게시글 아이디',
                            `author_email`	VARCHAR(30)	NOT NULL COMMENT '댓글 작성자 이메일',
                            `content`	VARCHAR(256)	NOT NULL COMMENT '댓글 내용'
-                            primary key (comment_id)
 ) engine=InnoDB;
 
 create table `lost_found_board_image` (

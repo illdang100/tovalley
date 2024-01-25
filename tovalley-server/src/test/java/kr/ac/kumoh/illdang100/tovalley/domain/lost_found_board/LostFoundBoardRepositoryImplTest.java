@@ -1,14 +1,12 @@
 package kr.ac.kumoh.illdang100.tovalley.domain.lost_found_board;
 
-import kr.ac.kumoh.illdang100.tovalley.domain.Coordinate;
-import kr.ac.kumoh.illdang100.tovalley.domain.ImageFile;
-import kr.ac.kumoh.illdang100.tovalley.domain.comment.Comment;
 import kr.ac.kumoh.illdang100.tovalley.domain.comment.CommentRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberEnum;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlace;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlaceRepository;
+import kr.ac.kumoh.illdang100.tovalley.dummy.DummyObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,7 +29,7 @@ import static org.assertj.core.api.Assertions.*;
 @Rollback(false)
 @ActiveProfiles("test")
 @DataJpaTest
-class LostFoundBoardRepositoryImplTest {
+class LostFoundBoardRepositoryImplTest extends DummyObject {
     @Autowired
     private LostFoundBoardRepository lostFoundBoardRepository;
     @Autowired
@@ -57,18 +55,16 @@ class LostFoundBoardRepositoryImplTest {
     public void getLostFoundBoardListTest() {
 
         // given
-        LostFoundBoardListReqDto lostFoundBoardListReqDto = new LostFoundBoardListReqDto(null, List.of("금오계곡"), "", true);
+        LostFoundBoardListReqDto lostFoundBoardListReqDto = new LostFoundBoardListReqDto(null, List.of(1L), "", true);
         PageRequest pageRequest = PageRequest.of(0, 5, Sort.by(Sort.Direction.fromString("desc"), "createdDate"));
 
         // when
         Slice<LostFoundBoardListRespDto> lostFoundBoardListBySlice = lostFoundBoardRepository.getLostFoundBoardListBySlice(lostFoundBoardListReqDto, pageRequest);
 
         // then
-        assertThat(lostFoundBoardListBySlice.getContent()).hasSize(4);
-        assertThat(lostFoundBoardListBySlice.getContent().get(0).getId()).isEqualTo(4L);
-        assertThat(lostFoundBoardListBySlice.getContent().get(1).getPostImage()).isEqualTo("fileUrl");
-        assertThat(lostFoundBoardListBySlice.getContent().get(2).getContent()).isEqualTo("1234");
-        assertThat(lostFoundBoardListBySlice.getContent().get(3).getCommentCnt()).isEqualTo(2);
+        assertThat(lostFoundBoardListBySlice.getContent()).hasSize(2);
+        assertThat(lostFoundBoardListBySlice.getContent().get(0).getContent()).isEqualTo("1234");
+        assertThat(lostFoundBoardListBySlice.getContent().get(1).getCommentCnt()).isEqualTo(2);
     }
 
     @Test
@@ -76,7 +72,7 @@ class LostFoundBoardRepositoryImplTest {
     public void getLostFoundBoardListTest_검색어() {
 
         // given
-        LostFoundBoardListReqDto lostFoundBoardListReqDto = new LostFoundBoardListReqDto(LostFoundEnum.LOST.toString(), List.of("금오계곡"), "1234", true);
+        LostFoundBoardListReqDto lostFoundBoardListReqDto = new LostFoundBoardListReqDto(LostFoundEnum.FOUND.toString(), List.of(2L), "content", true);
         PageRequest pageRequest = PageRequest.of(0, 5, Sort.by(Sort.Direction.fromString("desc"), "createdDate"));
 
         // when
@@ -91,7 +87,7 @@ class LostFoundBoardRepositoryImplTest {
     public void getLostFoundBoardListTest_해결완료제외() {
 
         // given
-        LostFoundBoardListReqDto lostFoundBoardListReqDto = new LostFoundBoardListReqDto(LostFoundEnum.LOST.toString(), List.of("금오계곡"), null, true);
+        LostFoundBoardListReqDto lostFoundBoardListReqDto = new LostFoundBoardListReqDto(LostFoundEnum.LOST.toString(), List.of(1L), null, true);
         PageRequest pageRequest = PageRequest.of(0, 5, Sort.by(Sort.Direction.fromString("desc"), "createdDate"));
 
         // when
@@ -117,98 +113,23 @@ class LostFoundBoardRepositoryImplTest {
     }
 
     private void dataSetting() {
-        Member member = Member.builder()
-                .id(1L)
-                .email("test@naver.com")
-                .username("username")
-                .memberName("사용자")
-                .password("pwpw123")
-                .role(MemberEnum.CUSTOMER)
-                .imageFile(new ImageFile("fileName.jpg", "fileUrl"))
-                .build();
+
+        Member member = newMockMember(1L, "username", "사용자", MemberEnum.CUSTOMER);
         memberRepository.save(member);
-        WaterPlace waterPlace = WaterPlace.builder()
-                .id(1L)
-                .waterPlaceName("금오계곡")
-                .province("province")
-                .city("city")
-                .town("town")
-                .subLocation("subLocation")
-                .address("address")
-                .waterPlaceCategory("계곡")
-                .coordinate(new Coordinate("38.10000000", "128.10000000"))
-                .managementType("일반지역")
-                .rating(3.0)
-                .reviewCount(1)
-                .build();
-        waterPlaceRepository.save(waterPlace);
-        lostFoundBoardRepository.save(
-                LostFoundBoard.builder()
-                        .id(1L)
-                        .title("title1")
-                        .content("1234")
-                        .member(member)
-                        .isResolved(false)
-                        .lostFoundEnum(LostFoundEnum.LOST)
-                        .waterPlace(waterPlace)
-                        .build()
-        );
-        lostFoundBoardRepository.save(
-                LostFoundBoard.builder()
-                        .id(2L)
-                        .title("title2")
-                        .content("1234")
-                        .member(member)
-                        .isResolved(true)
-                        .lostFoundEnum(LostFoundEnum.LOST)
-                        .waterPlace(waterPlace)
-                        .build()
-        );
-        lostFoundBoardRepository.save(
-                LostFoundBoard.builder()
-                        .id(3L)
-                        .title("title3")
-                        .content("content3")
-                        .member(member)
-                        .isResolved(false)
-                        .lostFoundEnum(LostFoundEnum.FOUND)
-                        .waterPlace(waterPlace)
-                        .build()
-        );
-        lostFoundBoardRepository.save(
-                LostFoundBoard.builder()
-                        .id(4L)
-                        .title("title4")
-                        .content("content4")
-                        .member(member)
-                        .isResolved(true)
-                        .lostFoundEnum(LostFoundEnum.FOUND)
-                        .waterPlace(waterPlace)
-                        .build()
-        );
-        commentRepository.save(
-                Comment.builder()
-                        .id(1L)
-                        .lostFoundBoardId(1L)
-                        .authorEmail("user@naver.com")
-                        .content("comment")
-                        .build()
-        );
-        commentRepository.save(
-                Comment.builder()
-                        .id(2L)
-                        .lostFoundBoardId(1L)
-                        .authorEmail("user@naver.com")
-                        .content("comment")
-                        .build()
-        );
-        lostFoundBoardImageRepository.save(
-                LostFoundBoardImage.builder()
-                        .id(1L)
-                        .lostFoundBoardId(3L)
-                        .imageFile(new ImageFile("fileName", "fileUrl"))
-                        .build()
-        );
+
+        WaterPlace waterPlace1 = newWaterPlace(1L, "금오계곡", "경상북도", 3.0, 3);
+        waterPlaceRepository.save(waterPlace1);
+        WaterPlace waterPlace2 = newWaterPlace(2L, "대구계곡", "경상북도", 3.0, 3);
+        waterPlaceRepository.save(waterPlace2);
+
+        lostFoundBoardRepository.save(newLostFoundBoard(1L, "title1", "1234", member, false, LostFoundEnum.LOST, waterPlace1));
+        lostFoundBoardRepository.save(newLostFoundBoard(2L, "title2", "1234", member, true, LostFoundEnum.LOST, waterPlace1));
+        lostFoundBoardRepository.save(newLostFoundBoard(3L, "title3", "content3", member, false, LostFoundEnum.FOUND, waterPlace2));
+        lostFoundBoardRepository.save(newLostFoundBoard(4L, "title4", "content4", member, true, LostFoundEnum.FOUND, waterPlace2));
+
+        commentRepository.save(newComment(1L, 1L));
+        commentRepository.save(newComment(2L, 1L));
+        lostFoundBoardImageRepository.save(newLostFoundBoardImage(1L, 3L));
     }
 
 }
