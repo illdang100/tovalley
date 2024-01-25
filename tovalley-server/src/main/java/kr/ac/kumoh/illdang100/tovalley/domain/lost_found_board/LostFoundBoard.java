@@ -1,6 +1,8 @@
 package kr.ac.kumoh.illdang100.tovalley.domain.lost_found_board;
 
 import kr.ac.kumoh.illdang100.tovalley.domain.BaseTimeEntity;
+import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
+import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlace;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,11 +18,13 @@ public class LostFoundBoard extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private Long waterPlaceId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "waterPlace_id")
+    private WaterPlace waterPlace;
 
-    @Column(nullable = false, length = 30)
-    private String authorEmail;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     @Column(nullable = false, length = 20)
     private String title;
@@ -41,10 +45,10 @@ public class LostFoundBoard extends BaseTimeEntity {
     }
 
     @Builder
-    public LostFoundBoard(Long id, Long waterPlaceId, String authorEmail, String title, String content, Boolean isPosting, Boolean isResolved, LostFoundEnum lostFoundEnum) {
+    public LostFoundBoard(Long id, WaterPlace waterPlace, Member member, String title, String content, Boolean isPosting, Boolean isResolved, LostFoundEnum lostFoundEnum) {
         this.id = id;
-        this.waterPlaceId = waterPlaceId;
-        this.authorEmail = authorEmail;
+        this.waterPlace = waterPlace;
+        this.member = member;
         this.title = title;
         this.content = content;
         this.isPosting = isPosting;

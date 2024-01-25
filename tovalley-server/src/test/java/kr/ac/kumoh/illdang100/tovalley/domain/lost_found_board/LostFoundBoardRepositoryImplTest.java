@@ -4,6 +4,9 @@ import kr.ac.kumoh.illdang100.tovalley.domain.Coordinate;
 import kr.ac.kumoh.illdang100.tovalley.domain.ImageFile;
 import kr.ac.kumoh.illdang100.tovalley.domain.comment.Comment;
 import kr.ac.kumoh.illdang100.tovalley.domain.comment.CommentRepository;
+import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
+import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberEnum;
+import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlace;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlaceRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,6 +40,8 @@ class LostFoundBoardRepositoryImplTest {
     private CommentRepository commentRepository;
     @Autowired
     private WaterPlaceRepository waterPlaceRepository;
+    @Autowired
+    private MemberRepository memberRepository;
     @Autowired
     private EntityManager em;
 
@@ -112,31 +117,40 @@ class LostFoundBoardRepositoryImplTest {
     }
 
     private void dataSetting() {
-        waterPlaceRepository.save(
-                WaterPlace.builder()
-                        .id(1L)
-                        .waterPlaceName("금오계곡")
-                        .province("province")
-                        .city("city")
-                        .town("town")
-                        .subLocation("subLocation")
-                        .address("address")
-                        .waterPlaceCategory("계곡")
-                        .coordinate(new Coordinate("38.10000000", "128.10000000"))
-                        .managementType("일반지역")
-                        .rating(3.0)
-                        .reviewCount(1)
-                        .build()
-        );
+        Member member = Member.builder()
+                .id(1L)
+                .email("test@naver.com")
+                .username("username")
+                .memberName("사용자")
+                .password("pwpw123")
+                .role(MemberEnum.CUSTOMER)
+                .imageFile(new ImageFile("fileName.jpg", "fileUrl"))
+                .build();
+        memberRepository.save(member);
+        WaterPlace waterPlace = WaterPlace.builder()
+                .id(1L)
+                .waterPlaceName("금오계곡")
+                .province("province")
+                .city("city")
+                .town("town")
+                .subLocation("subLocation")
+                .address("address")
+                .waterPlaceCategory("계곡")
+                .coordinate(new Coordinate("38.10000000", "128.10000000"))
+                .managementType("일반지역")
+                .rating(3.0)
+                .reviewCount(1)
+                .build();
+        waterPlaceRepository.save(waterPlace);
         lostFoundBoardRepository.save(
                 LostFoundBoard.builder()
                         .id(1L)
                         .title("title1")
                         .content("1234")
-                        .authorEmail("test@naver.com")
+                        .member(member)
                         .isResolved(false)
                         .lostFoundEnum(LostFoundEnum.LOST)
-                        .waterPlaceId(1L)
+                        .waterPlace(waterPlace)
                         .build()
         );
         lostFoundBoardRepository.save(
@@ -144,10 +158,10 @@ class LostFoundBoardRepositoryImplTest {
                         .id(2L)
                         .title("title2")
                         .content("1234")
-                        .authorEmail("test@naver.com")
+                        .member(member)
                         .isResolved(true)
                         .lostFoundEnum(LostFoundEnum.LOST)
-                        .waterPlaceId(1L)
+                        .waterPlace(waterPlace)
                         .build()
         );
         lostFoundBoardRepository.save(
@@ -155,10 +169,10 @@ class LostFoundBoardRepositoryImplTest {
                         .id(3L)
                         .title("title3")
                         .content("content3")
-                        .authorEmail("test@naver.com")
+                        .member(member)
                         .isResolved(false)
                         .lostFoundEnum(LostFoundEnum.FOUND)
-                        .waterPlaceId(1L)
+                        .waterPlace(waterPlace)
                         .build()
         );
         lostFoundBoardRepository.save(
@@ -166,10 +180,10 @@ class LostFoundBoardRepositoryImplTest {
                         .id(4L)
                         .title("title4")
                         .content("content4")
-                        .authorEmail("test@naver.com")
+                        .member(member)
                         .isResolved(true)
                         .lostFoundEnum(LostFoundEnum.FOUND)
-                        .waterPlaceId(1L)
+                        .waterPlace(waterPlace)
                         .build()
         );
         commentRepository.save(

@@ -5,6 +5,8 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import kr.ac.kumoh.illdang100.tovalley.domain.member.QMember;
+import kr.ac.kumoh.illdang100.tovalley.domain.water_place.QWaterPlace;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlace;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlaceRepository;
 import kr.ac.kumoh.illdang100.tovalley.dto.lost_found_board.LostFoundBoardReqDto.LostFoundBoardListReqDto;
@@ -21,6 +23,8 @@ import java.util.stream.Collectors;
 import static kr.ac.kumoh.illdang100.tovalley.domain.comment.QComment.*;
 import static kr.ac.kumoh.illdang100.tovalley.domain.lost_found_board.QLostFoundBoard.*;
 import static kr.ac.kumoh.illdang100.tovalley.domain.lost_found_board.QLostFoundBoardImage.*;
+import static kr.ac.kumoh.illdang100.tovalley.domain.member.QMember.*;
+import static kr.ac.kumoh.illdang100.tovalley.domain.water_place.QWaterPlace.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.lost_found_board.LostFoundBoardRespDto.*;
 
 public class LostFoundBoardRepositoryImpl implements LostFoundBoardRepositoryCustom {
@@ -38,13 +42,16 @@ public class LostFoundBoardRepositoryImpl implements LostFoundBoardRepositoryCus
                         lostFoundBoard.id,
                         lostFoundBoard.title,
                         lostFoundBoard.content,
-                        lostFoundBoard.authorEmail,
+                        member.email,
                         JPAExpressions.select(comment.id.count()).from(comment).where(comment.lostFoundBoardId.eq(lostFoundBoard.id)),
                         lostFoundBoard.createdDate,
                         JPAExpressions.select(lostFoundBoardImage.imageFile.storeFileUrl).from(lostFoundBoardImage).where(lostFoundBoardImage.lostFoundBoardId.eq(lostFoundBoard.id)).limit(1),
                         lostFoundBoard.lostFoundEnum
                 ))
-                .from(lostFoundBoard);
+                .from(lostFoundBoard)
+                .leftJoin(lostFoundBoard.waterPlace, waterPlace)
+                .join(member).on(lostFoundBoard.member.id.eq(member.id))
+                .groupBy(lostFoundBoard.id);
 
         BooleanBuilder booleanBuilder = new BooleanBuilder();
 
@@ -52,16 +59,6 @@ public class LostFoundBoardRepositoryImpl implements LostFoundBoardRepositoryCus
         String category = lostFoundBoardListReqDto.getCategory();
         if (category != null) {
             booleanBuilder.and(lostFoundBoard.lostFoundEnum.eq(LostFoundEnum.valueOf(category)));
-        }
-
-        // 계곡 이름 (복수 선택)
-        List<String> valleyNames = lostFoundBoardListReqDto.getValley();
-        if (valleyNames != null && !valleyNames.isEmpty()) {
-            List<WaterPlace> waterPlaces = waterPlaceRepository.findByWaterPlaceNameIn(valleyNames);
-            List<Long> waterPlaceIds = waterPlaces.stream()
-                    .map(WaterPlace::getId)
-                    .collect(Collectors.toList());
-            booleanBuilder.and(lostFoundBoard.waterPlaceId.in(waterPlaceIds));
         }
 
         // 검색어 (제목, 내용 포함)
