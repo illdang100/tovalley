@@ -166,24 +166,35 @@ CREATE TABLE IF NOT EXISTS `email_code` (
 ) engine=InnoDB;
 
 CREATE TABLE `lost_found_board` (
-                                    `lost_found_id`	BIGINT	NOT NULL COMMENT '분실물 찾기 게시글 아이디',
-                                    `water_place_id`	BIGINT	NOT NULL COMMENT '물놀이 장소 아이디',
-                                    `author_email`	VARCHAR(30)	NOT NULL COMMENT '게시글 작성자 이메일',
-                                    `content`	VARCHAR(256)	NOT NULL COMMENT '게시글 내용',
-                                    `isPosting`	TINYINT(1)	NULL COMMENT '게시글 포스팅 여부',
-                                    `isResolved`	TINYINT(1)	NULL COMMENT '분실물 찾기 완료 여부',
-                                    `create_date`	DATETIME(6)	NOT NULL,
-                                    `last_modified_date`	DATETIME(6)	NOT NULL
-                                    primary key (lost_found_id)
+                                  `id` BIGINT AUTO_INCREMENT PRIMARY KEY,
+                                  `waterPlace_id` BIGINT,
+                                  `member_id` BIGINT,
+                                  `title` VARCHAR(20) NOT NULL,
+                                  `content` VARCHAR(256) NOT NULL,
+                                  `isPosting` BOOLEAN,
+                                  `isResolved` BOOLEAN,
+                                  `lostFoundEnum` VARCHAR(255),
+                                  `created_date` TIMESTAMP,
+                                  `modified_date` TIMESTAMP,
+
+                                  FOREIGN KEY (waterPlace_id) REFERENCES water_place(water_place_id),
+                                  FOREIGN KEY (member_id) REFERENCES member(member_id)
 ) engine=InnoDB;
 
 CREATE TABLE `comment` (
-                           `comment_id`	BIGINT	NOT NULL COMMENT '댓글 아이디',
+                           `comment_id`	BIGINT	NOT NULL primary key COMMENT '댓글 아이디',
                            `lost_found_id`	BIGINT	NOT NULL COMMENT '분실물 찾기 게시글 아이디',
                            `author_email`	VARCHAR(30)	NOT NULL COMMENT '댓글 작성자 이메일',
                            `content`	VARCHAR(256)	NOT NULL COMMENT '댓글 내용'
-                            primary key (comment_id)
 ) engine=InnoDB;
+
+create table `lost_found_board_image` (
+    `id` BIGINT auto_increment primary key,
+    `store_file_name`     varchar(100) null,
+    `store_file_url`      varchar(250) null,
+    `lost_found_board_id` bigint       null
+) engine=InnoDB;
+
 
 alter table member
     add constraint UK_mbmcqelty0fbrvxp1q58dn57t unique (email);
