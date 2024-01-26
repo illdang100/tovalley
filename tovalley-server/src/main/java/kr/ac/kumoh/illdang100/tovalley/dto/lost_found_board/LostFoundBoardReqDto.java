@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import reactor.util.annotation.Nullable;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 import java.util.List;
 
 public class LostFoundBoardReqDto {
@@ -16,6 +16,7 @@ public class LostFoundBoardReqDto {
         @Pattern(regexp = "(LOST|FOUND)$")
         private String category;
 
+        @NotEmpty
         private List<Long> valleyId;
 
         @Nullable

@@ -2,7 +2,6 @@ package kr.ac.kumoh.illdang100.tovalley.domain.lost_found_board;
 
 import kr.ac.kumoh.illdang100.tovalley.domain.comment.CommentRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
-import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberEnum;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlace;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlaceRepository;
@@ -15,7 +14,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 
 import javax.persistence.EntityManager;
@@ -26,7 +24,6 @@ import static kr.ac.kumoh.illdang100.tovalley.dto.lost_found_board.LostFoundBoar
 import static kr.ac.kumoh.illdang100.tovalley.dto.lost_found_board.LostFoundBoardRespDto.*;
 import static org.assertj.core.api.Assertions.*;
 
-@Rollback(false)
 @ActiveProfiles("test")
 @DataJpaTest
 class LostFoundBoardRepositoryImplTest extends DummyObject {
@@ -45,6 +42,7 @@ class LostFoundBoardRepositoryImplTest extends DummyObject {
 
     @BeforeEach
     public void setUp() {
+        autoIncrementReset();
         dataSetting();
         em.flush();
         em.clear();
@@ -63,8 +61,8 @@ class LostFoundBoardRepositoryImplTest extends DummyObject {
 
         // then
         assertThat(lostFoundBoardListBySlice.getContent()).hasSize(2);
-        assertThat(lostFoundBoardListBySlice.getContent().get(0).getContent()).isEqualTo("1234");
-        assertThat(lostFoundBoardListBySlice.getContent().get(1).getCommentCnt()).isEqualTo(2);
+        assertThat(lostFoundBoardListBySlice.getContent().get(0).getTitle()).isEqualTo("title2");
+        assertThat(lostFoundBoardListBySlice.getContent().get(1).getTitle()).isEqualTo("title1");
     }
 
     @Test
@@ -114,12 +112,12 @@ class LostFoundBoardRepositoryImplTest extends DummyObject {
 
     private void dataSetting() {
 
-        Member member = newMockMember(1L, "username", "사용자", MemberEnum.CUSTOMER);
+        Member member = newMember("username", "사용자");
         memberRepository.save(member);
 
-        WaterPlace waterPlace1 = newWaterPlace(1L, "금오계곡", "경상북도", 3.0, 3);
+        WaterPlace waterPlace1 = newWaterPlace("금오계곡", "경상북도", 3.0, 3);
         waterPlaceRepository.save(waterPlace1);
-        WaterPlace waterPlace2 = newWaterPlace(2L, "대구계곡", "경상북도", 3.0, 3);
+        WaterPlace waterPlace2 = newWaterPlace("대구계곡", "경상북도", 3.0, 3);
         waterPlaceRepository.save(waterPlace2);
 
         lostFoundBoardRepository.save(newLostFoundBoard(1L, "title1", "1234", member, false, LostFoundEnum.LOST, waterPlace1));
@@ -131,5 +129,8 @@ class LostFoundBoardRepositoryImplTest extends DummyObject {
         commentRepository.save(newComment(2L, 1L));
         lostFoundBoardImageRepository.save(newLostFoundBoardImage(1L, 3L));
     }
-
+    private void autoIncrementReset() {
+        em.createNativeQuery("ALTER TABLE member ALTER COLUMN member_id RESTART WITH 1").executeUpdate();
+        em.createNativeQuery("ALTER TABLE water_place ALTER COLUMN water_place_id RESTART WITH 1").executeUpdate();
+    }
 }
