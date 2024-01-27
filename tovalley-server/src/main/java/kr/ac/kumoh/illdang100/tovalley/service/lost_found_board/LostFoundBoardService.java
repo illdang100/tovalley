@@ -12,6 +12,7 @@ public interface LostFoundBoardService {
     Slice<LostFoundBoardListRespDto> getLostFoundBoardList(LostFoundBoardListReqDto lostFoundBoardListReqDto, Pageable pageable);
 
     // 분실물 게시글 상세 페이지 조회 메서드
+    LostFoundBoardDetailRespDto getLostFoundBoardDetail(long lostFoundBoardId, long memberId);
 
     // 분실물 게시글 등록
 
