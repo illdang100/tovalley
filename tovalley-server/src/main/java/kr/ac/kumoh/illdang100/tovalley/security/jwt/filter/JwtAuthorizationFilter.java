@@ -1,7 +1,5 @@
 package kr.ac.kumoh.illdang100.tovalley.security.jwt.filter;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import kr.ac.kumoh.illdang100.tovalley.dto.ResponseDto;
 import kr.ac.kumoh.illdang100.tovalley.handler.ex.UnauthorizedAccessException;
 import kr.ac.kumoh.illdang100.tovalley.security.auth.PrincipalDetails;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtProcess;
@@ -137,11 +135,6 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
                 memberId, memberRole, clientIpAddress);
         addCookie(response, JwtVO.ACCESS_TOKEN, newAccessToken);
         addCookie(response, JwtVO.REFRESH_TOKEN, newRefreshTokenId);
-    }
-
-    private void handleTokenVerificationFailure(HttpServletResponse response) throws IOException {
-        addCookie(response, ISLOGIN, "false");
-        CustomResponseUtil.fail(response, "만료된 토큰입니다.", HttpStatus.BAD_REQUEST);
     }
 
     private void sendLoginRequiredResponse(HttpServletResponse response) {
