@@ -1,4 +1,4 @@
-package kr.ac.kumoh.illdang100.tovalley.service.lost_found_board;
+package kr.ac.kumoh.illdang100.tovalley.service.page;
 
 import kr.ac.kumoh.illdang100.tovalley.domain.comment.Comment;
 import kr.ac.kumoh.illdang100.tovalley.domain.comment.CommentRepository;
@@ -32,7 +32,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class LostFoundBoardServiceImplTest extends DummyObject {
     @InjectMocks
-    private LostFoundBoardServiceImpl lostFoundBoardService;
+    private PageServiceImpl pageService;
     @Mock
     private LostFoundBoardRepository lostFoundBoardRepository;
     @Mock
@@ -46,9 +46,8 @@ class LostFoundBoardServiceImplTest extends DummyObject {
     public void getLostFoundBoardDetails() {
         // given
         long lostFoundBoardId = 1L;
-        long memberId = 1L;
+        String memberEmail = "kakao_1234@naver.com";
         Member member = newMockMember(1L, "kakao_1234", "nickname1", MemberEnum.CUSTOMER);
-        Member comment_member = newMockMember(2L, "user", "nickname2", MemberEnum.CUSTOMER);
         WaterPlace waterPlace = newWaterPlace(1L, "금오계곡", "경북", 3.5, 3);
         LostFoundBoard lostFoundBoard = newLostFoundBoard(1L, "지갑 찾아요", "금오계곡에서 지갑 잃어버림 검정색 지갑", member, false, LostFoundEnum.LOST, waterPlace);
 
@@ -64,13 +63,12 @@ class LostFoundBoardServiceImplTest extends DummyObject {
 
         // stub
         when(lostFoundBoardRepository.findById(anyLong())).thenReturn(Optional.of(lostFoundBoard));
-        when(memberRepository.findByEmail(any())).thenReturn(Optional.of(comment_member));
         when(commentRepository.findCommentByLostFoundBoardId(anyLong())).thenReturn(comments);
         when(lostFoundBoardImageRepository.findImageByLostFoundBoardId(anyLong())).thenReturn(postImages);
         when(commentRepository.countByLostFoundBoardId(anyLong())).thenReturn((long)comments.size());
 
         // when
-        LostFoundBoardDetailRespDto lostFoundBoardDetail = lostFoundBoardService.getLostFoundBoardDetail(lostFoundBoardId, memberId);
+        LostFoundBoardDetailRespDto lostFoundBoardDetail = pageService.getLostFoundBoardDetail(lostFoundBoardId, memberEmail);
 
         // then
         assertThat(lostFoundBoardDetail.getTitle()).isEqualTo("지갑 찾아요");
