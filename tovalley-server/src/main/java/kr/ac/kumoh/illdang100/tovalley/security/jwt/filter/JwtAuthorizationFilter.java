@@ -55,11 +55,10 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
         try {
             setAuthenticationFromAccessToken(accessToken);
+            chain.doFilter(request, response);
         } catch (Exception e) {
             reIssueToken(request, response);
         }
-
-        chain.doFilter(request, response);
     }
 
     private boolean isRequestValid(HttpServletRequest request) {
@@ -97,8 +96,12 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             return;
         }
         String refreshTokenId = findCookieValue(request, JwtVO.REFRESH_TOKEN);
-        RefreshToken findRefreshToken = findRefreshTokenOrElseThrowEx(refreshTokenRedisRepository, refreshTokenId);
-        validateToken(request, response, findRefreshToken);
+        try {
+            RefreshToken findRefreshToken = findRefreshTokenOrElseThrowEx(refreshTokenRedisRepository, refreshTokenId);
+            validateToken(request, response, findRefreshToken);
+        } catch (Exception e) {
+            handleTokenVerificationFailure(response);
+        }
     }
 
     private void validateToken(HttpServletRequest request, HttpServletResponse response, RefreshToken findRefreshToken)
