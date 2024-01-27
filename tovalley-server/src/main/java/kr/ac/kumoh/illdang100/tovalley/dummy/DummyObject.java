@@ -4,6 +4,10 @@ import kr.ac.kumoh.illdang100.tovalley.domain.Coordinate;
 import kr.ac.kumoh.illdang100.tovalley.domain.ImageFile;
 import kr.ac.kumoh.illdang100.tovalley.domain.accident.Accident;
 import kr.ac.kumoh.illdang100.tovalley.domain.accident.AccidentEnum;
+import kr.ac.kumoh.illdang100.tovalley.domain.comment.Comment;
+import kr.ac.kumoh.illdang100.tovalley.domain.lost_found_board.LostFoundBoard;
+import kr.ac.kumoh.illdang100.tovalley.domain.lost_found_board.LostFoundBoardImage;
+import kr.ac.kumoh.illdang100.tovalley.domain.lost_found_board.LostFoundEnum;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberEnum;
 import kr.ac.kumoh.illdang100.tovalley.domain.review.Review;
@@ -361,6 +365,38 @@ public class DummyObject {
         return RefreshToken.builder()
                 .refreshToken(refreshToken)
                 .role(MemberEnum.CUSTOMER.toString())
+                .build();
+    }
+
+    protected LostFoundBoard newLostFoundBoard(Long id, String title, String content, Member member, Boolean isResolved, LostFoundEnum lostFoundEnum, WaterPlace waterPlace) {
+
+        return LostFoundBoard.builder()
+                .id(id)
+                .title(title)
+                .content(content)
+                .member(member)
+                .isResolved(isResolved)
+                .lostFoundEnum(lostFoundEnum)
+                .waterPlace(waterPlace)
+                .build();
+    }
+
+    protected Comment newComment(Long id, Long lostFoundBoardId) {
+
+        return Comment.builder()
+                .id(id)
+                .lostFoundBoardId(lostFoundBoardId)
+                .authorEmail("user@naver.com")
+                .content("comment")
+                .build();
+    }
+
+    protected LostFoundBoardImage newLostFoundBoardImage(Long id, Long lostFoundBoardId) {
+
+        return LostFoundBoardImage.builder()
+                .id(id)
+                .lostFoundBoardId(lostFoundBoardId)
+                .imageFile(new ImageFile("fileName", "fileUrl"))
                 .build();
     }
 }
