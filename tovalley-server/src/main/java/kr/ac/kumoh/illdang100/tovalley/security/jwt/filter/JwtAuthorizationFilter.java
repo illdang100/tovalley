@@ -8,6 +8,7 @@ import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtProcess;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtVO;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.RefreshToken;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.RefreshTokenRedisRepository;
+import kr.ac.kumoh.illdang100.tovalley.util.CustomResponseUtil;
 import kr.ac.kumoh.illdang100.tovalley.util.HttpServletUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -50,6 +51,10 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             return;
         }
 
+        if (!isCookieVerified(request)) {
+            sendLoginRequiredResponse(response);
+        }
+
         String accessToken = findAccessTokenFromCookie(request);
         log.debug("accessToken={}", accessToken);
 
@@ -63,7 +68,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
     private boolean isRequestValid(HttpServletRequest request) {
         String requestUrl = request.getRequestURL().toString();
-        return (isApiAuthRequest(requestUrl) || isAdminRequest(requestUrl)) && isCookieVerified(request);
+        return isApiAuthRequest(requestUrl) || isAdminRequest(requestUrl);
     }
 
     private boolean isApiAuthRequest(String requestUrl) {
@@ -145,5 +150,9 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         response.getWriter().write(responseBody);
         response.getWriter().flush();
         response.getWriter().close();
+    }
+
+    private void sendLoginRequiredResponse(HttpServletResponse response) {
+        CustomResponseUtil.fail(response, "로그인이 필요합니다", HttpStatus.UNAUTHORIZED);
     }
 }

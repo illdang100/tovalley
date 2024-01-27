@@ -83,6 +83,20 @@ public class JwtAuthorizationFilterTest extends DummyObject {
     }
 
     @Test
+    @DisplayName("인증 실패 테스트(쿠키가 없는 경우)")
+    void Authorization_no_cookie_failure_test() throws Exception {
+        //given
+
+        //when
+        ResultActions resultActions = mvc.perform(get("/api/auth/my-page"));
+
+        //then
+        resultActions.andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.msg").value("로그인이 필요합니다"))
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
     @DisplayName("인가 실패 테스트")
     void unSuccessfulAuthorization_test() throws Exception {
         //given
