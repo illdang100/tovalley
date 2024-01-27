@@ -18,8 +18,10 @@ import javax.servlet.http.Cookie;
 
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ActiveProfiles("test")
@@ -60,6 +62,38 @@ public class JwtAuthorizationFilterTest extends DummyObject {
 
         //then
         resultActions.andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("인증 실패 테스트(유효기간이 지난 토큰 가진 경우)")
+    void Authorization_duration_failure_test() throws Exception {
+        //given
+        String refreshTokenId = UUID.randomUUID().toString();
+        String accessToken = "Bearer test";
+
+        //when
+        ResultActions resultActions = mvc.perform(get("/api/auth/my-page")
+                .cookie(new Cookie(JwtVO.ACCESS_TOKEN, accessToken),
+                        new Cookie(JwtVO.REFRESH_TOKEN, refreshTokenId)));
+
+        //then
+        resultActions.andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.msg").value("만료된 토큰입니다."))
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    @DisplayName("인증 실패 테스트(쿠키가 없는 경우)")
+    void Authorization_no_cookie_failure_test() throws Exception {
+        //given
+
+        //when
+        ResultActions resultActions = mvc.perform(get("/api/auth/my-page"));
+
+        //then
+        resultActions.andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.msg").value("로그인이 필요합니다"))
+                .andDo(MockMvcResultHandlers.print());
     }
 
     @Test

@@ -8,6 +8,7 @@ import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtProcess;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtVO;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.RefreshToken;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.RefreshTokenRedisRepository;
+import kr.ac.kumoh.illdang100.tovalley.util.CustomResponseUtil;
 import kr.ac.kumoh.illdang100.tovalley.util.HttpServletUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -50,21 +51,24 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             return;
         }
 
+        if (!isCookieVerified(request)) {
+            sendLoginRequiredResponse(response);
+        }
+
         String accessToken = findAccessTokenFromCookie(request);
         log.debug("accessToken={}", accessToken);
 
         try {
             setAuthenticationFromAccessToken(accessToken);
+            chain.doFilter(request, response);
         } catch (Exception e) {
             reIssueToken(request, response);
         }
-
-        chain.doFilter(request, response);
     }
 
     private boolean isRequestValid(HttpServletRequest request) {
         String requestUrl = request.getRequestURL().toString();
-        return (isApiAuthRequest(requestUrl) || isAdminRequest(requestUrl)) && isCookieVerified(request);
+        return isApiAuthRequest(requestUrl) || isAdminRequest(requestUrl);
     }
 
     private boolean isApiAuthRequest(String requestUrl) {
@@ -97,8 +101,12 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             return;
         }
         String refreshTokenId = findCookieValue(request, JwtVO.REFRESH_TOKEN);
-        RefreshToken findRefreshToken = findRefreshTokenOrElseThrowEx(refreshTokenRedisRepository, refreshTokenId);
-        validateToken(request, response, findRefreshToken);
+        try {
+            RefreshToken findRefreshToken = findRefreshTokenOrElseThrowEx(refreshTokenRedisRepository, refreshTokenId);
+            validateToken(request, response, findRefreshToken);
+        } catch (Exception e) {
+            handleTokenVerificationFailure(response);
+        }
     }
 
     private void validateToken(HttpServletRequest request, HttpServletResponse response, RefreshToken findRefreshToken)
@@ -133,14 +141,10 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
     private void handleTokenVerificationFailure(HttpServletResponse response) throws IOException {
         addCookie(response, ISLOGIN, "false");
+        CustomResponseUtil.fail(response, "만료된 토큰입니다.", HttpStatus.BAD_REQUEST);
+    }
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        ResponseDto<Object> responseDto = new ResponseDto<>(-1, "만료된 토큰입니다.", null);
-        String responseBody = objectMapper.writeValueAsString(responseDto);
-        response.setContentType("application/json;charset=UTF-8");
-        response.setStatus(HttpStatus.BAD_REQUEST.value());
-        response.getWriter().write(responseBody);
-        response.getWriter().flush();
-        response.getWriter().close();
+    private void sendLoginRequiredResponse(HttpServletResponse response) {
+        CustomResponseUtil.fail(response, "로그인이 필요합니다", HttpStatus.UNAUTHORIZED);
     }
 }
