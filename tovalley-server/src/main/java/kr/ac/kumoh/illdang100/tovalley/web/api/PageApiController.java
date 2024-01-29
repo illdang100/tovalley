@@ -4,8 +4,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.ac.kumoh.illdang100.tovalley.dto.ResponseDto;
 import kr.ac.kumoh.illdang100.tovalley.dto.lost_found_board.LostFoundBoardReqDto;
-import kr.ac.kumoh.illdang100.tovalley.dto.lost_found_board.LostFoundBoardRespDto;
 import kr.ac.kumoh.illdang100.tovalley.security.auth.PrincipalDetails;
+import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtProcess;
+import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtVO;
 import kr.ac.kumoh.illdang100.tovalley.service.page.PageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+import static kr.ac.kumoh.illdang100.tovalley.dto.lost_found_board.LostFoundBoardRespDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.page.PageRespDto.*;
 
 @RestController
@@ -31,6 +33,7 @@ import static kr.ac.kumoh.illdang100.tovalley.dto.page.PageRespDto.*;
 public class PageApiController {
 
     private final PageService pageService;
+    private final JwtProcess jwtProcess;
 
     @GetMapping("/main-page")
     @Operation(summary = "메인 화면", description = "메인 화면을 출력합니다.")
@@ -67,16 +70,21 @@ public class PageApiController {
                                                    BindingResult bindingResult,
                                                    @PageableDefault(size = 5, sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable) {
 
-        Slice<LostFoundBoardRespDto.LostFoundBoardListRespDto> lostFoundBoardList = pageService.getLostFoundBoardList(lostFoundBoardListReqDto, pageable);
+        Slice<LostFoundBoardListRespDto> lostFoundBoardList = pageService.getLostFoundBoardList(lostFoundBoardListReqDto, pageable);
 
         return new ResponseEntity<>(new ResponseDto<>(1, "분실물 찾기 페이지 조회를 성공했습니다", lostFoundBoardList), HttpStatus.OK);
     }
 
-    @GetMapping("/auth/lostItem/{lostFoundBoardId}")
+    @GetMapping("/lostItem/{lostFoundBoardId}")
     public ResponseEntity<?> getLostFoundBoardDetail(@PathVariable long lostFoundBoardId,
-                                                     @AuthenticationPrincipal PrincipalDetails principalDetails) {
+                                                     @CookieValue(JwtVO.REFRESH_TOKEN) String refreshToken) {
 
-        LostFoundBoardRespDto.LostFoundBoardDetailRespDto lostFoundBoardDetail = pageService.getLostFoundBoardDetail(lostFoundBoardId, principalDetails.getMember().getEmail());
+        PrincipalDetails principalDetails = jwtProcess.verify(refreshToken);
+
+        LostFoundBoardDetailRespDto lostFoundBoardDetail = new LostFoundBoardDetailRespDto();
+        if (principalDetails != null) {
+            lostFoundBoardDetail = pageService.getLostFoundBoardDetail(lostFoundBoardId, principalDetails.getMember().getEmail());
+        }
 
         return new ResponseEntity<>(new ResponseDto<>(1, "분실물 찾기 상세 페이지 조회를 성공했습니다", lostFoundBoardDetail), HttpStatus.OK);
     }

@@ -5,6 +5,7 @@ import kr.ac.kumoh.illdang100.tovalley.domain.lost_found_board.LostFoundEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,6 +28,7 @@ public class LostFoundBoardRespDto {
 
     @Data
     @Builder
+    @NoArgsConstructor
     @AllArgsConstructor
     public static class LostFoundBoardDetailRespDto {
         private String title;
