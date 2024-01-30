@@ -79,12 +79,7 @@ public class PageApiController {
     public ResponseEntity<?> getLostFoundBoardDetail(@PathVariable long lostFoundBoardId,
                                                      @CookieValue(JwtVO.REFRESH_TOKEN) String refreshToken) {
 
-        PrincipalDetails principalDetails = jwtProcess.verify(refreshToken);
-
-        LostFoundBoardDetailRespDto lostFoundBoardDetail = new LostFoundBoardDetailRespDto();
-        if (principalDetails != null) {
-            lostFoundBoardDetail = pageService.getLostFoundBoardDetail(lostFoundBoardId, principalDetails.getMember().getEmail());
-        }
+        LostFoundBoardDetailRespDto lostFoundBoardDetail = pageService.getLostFoundBoardDetail(lostFoundBoardId, refreshToken);
 
         return new ResponseEntity<>(new ResponseDto<>(1, "분실물 찾기 상세 페이지 조회를 성공했습니다", lostFoundBoardDetail), HttpStatus.OK);
     }
