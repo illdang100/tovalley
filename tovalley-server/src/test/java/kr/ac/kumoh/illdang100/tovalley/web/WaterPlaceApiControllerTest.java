@@ -12,8 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.TestExecutionEvent;
-import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
@@ -85,6 +83,21 @@ public class WaterPlaceApiControllerTest extends DummyObject {
                 .andExpect(jsonPath("$.data[0].waterPlaceName").value("서울계곡"))
                 .andExpect(jsonPath("$.data[4].waterPlaceName").value("세종계곡"))
                 .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    public void getWaterPlaceNames() throws Exception {
+        // given
+
+        // when
+        ResultActions resultActions = mvc.perform(get("/api/water-place")
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // then
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data[0].waterPlaceName").value("서울계곡"))
+                .andExpect(jsonPath("$.data[4].waterPlaceName").value("세종계곡"));
     }
 
     private void dataSetting() {
