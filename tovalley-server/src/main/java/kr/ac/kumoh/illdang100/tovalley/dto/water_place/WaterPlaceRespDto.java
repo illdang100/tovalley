@@ -154,4 +154,12 @@ public class WaterPlaceRespDto {
         private Double rating; // 평점
         private String waterPlaceCategory; // 구분
     }
+
+    @Data
+    @AllArgsConstructor
+    public static class LostFoundBoardWaterPlaceDto {
+        private Long waterPlaceId;
+        private String waterPlaceName;
+        private String address;
+    }
 }

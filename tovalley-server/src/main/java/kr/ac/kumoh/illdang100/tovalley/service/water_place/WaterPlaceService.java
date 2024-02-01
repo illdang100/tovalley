@@ -34,5 +34,5 @@ public interface WaterPlaceService {
 
     Page<AdminRetrieveWaterPlacesDto> getAdminWaterPlaceList(String searchWord, Pageable pageable);
 
-    List<String> getWaterPlaceNames();
+    List<LostFoundBoardWaterPlaceDto> getWaterPlaceNames();
 }

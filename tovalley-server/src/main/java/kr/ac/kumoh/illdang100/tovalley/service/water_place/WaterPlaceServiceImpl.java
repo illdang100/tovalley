@@ -246,8 +246,10 @@ public class WaterPlaceServiceImpl implements WaterPlaceService {
      * @return
      */
     @Override
-    public List<String> getWaterPlaceNames() {
-        return waterPlaceRepository.findWaterPlaceNames();
+    public List<LostFoundBoardWaterPlaceDto> getWaterPlaceNames() {
+        return waterPlaceRepository.findAll().stream()
+                .map(waterPlace -> new LostFoundBoardWaterPlaceDto(waterPlace.getId(), waterPlace.getWaterPlaceName(), waterPlace.getAddress()))
+                .collect(Collectors.toList());
     }
 
     private void processImageUpdate(WaterPlace waterPlace, MultipartFile waterPlaceImage) {
