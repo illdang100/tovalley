@@ -135,7 +135,6 @@ class LostFoundBoardControllerTest extends DummyObject {
     @WithUserDetails(value = "kakao_123", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @DisplayName(value = "분실물 게시글 등록")
     void saveLostFoundBoard() throws Exception {
-        // TODO 왜 dto에 기본 생성자가 필요한지?
         // given
         Long valleyId = 1L;
         LostFoundBoardSaveReqDto lostFoundBoardSaveReqDto = new LostFoundBoardSaveReqDto("LOST", valleyId, "잃어버림", "지갑 잃어버렸어요", null);
