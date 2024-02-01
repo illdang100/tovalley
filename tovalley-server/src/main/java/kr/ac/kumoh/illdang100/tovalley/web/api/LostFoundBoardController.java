@@ -38,13 +38,14 @@ public class LostFoundBoardController {
                                                 BindingResult bindingResult,
                                                 @AuthenticationPrincipal PrincipalDetails principalDetails) throws IOException {
 
+        Long saveLostFoundBoardId = lostFoundBoardService.saveLostFoundBoard(lostFoundBoardSaveReqDto, principalDetails.getMember());
+
         List<MultipartFile> postImage = lostFoundBoardSaveReqDto.getPostImage();
         List<ImageFile> uploadImageFiles = new ArrayList<>();
         if (ListUtil.isEmptyList(postImage)) {
             uploadImageFiles = s3Service.upload(postImage, FileRootPathVO.LOST_FOUND_BOARD_PATH);
         }
 
-        Long saveLostFoundBoardId = lostFoundBoardService.saveLostFoundBoard(lostFoundBoardSaveReqDto, principalDetails.getMember());
         lostFoundBoardImageService.saveLostFoundImageFile(uploadImageFiles, saveLostFoundBoardId);
 
         return new ResponseEntity<>(new ResponseDto<>(1, "분실물 게시글이 정상적으로 등록되었습니다", saveLostFoundBoardId), HttpStatus.CREATED);
