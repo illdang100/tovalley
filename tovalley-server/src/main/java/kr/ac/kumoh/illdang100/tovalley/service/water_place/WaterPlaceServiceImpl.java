@@ -241,6 +241,15 @@ public class WaterPlaceServiceImpl implements WaterPlaceService {
         return waterPlaceRepository.getAdminWaterPlaceList(searchWord, pageable);
     }
 
+    /**
+     * @description 분실문 찾기 게시판에서 계곡 선택 시 사용
+     * @return
+     */
+    @Override
+    public List<String> getWaterPlaceNames() {
+        return waterPlaceRepository.findWaterPlaceNames();
+    }
+
     private void processImageUpdate(WaterPlace waterPlace, MultipartFile waterPlaceImage) {
         try {
             if (waterPlaceImage != null) {

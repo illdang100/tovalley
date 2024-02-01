@@ -9,9 +9,6 @@ import kr.ac.kumoh.illdang100.tovalley.service.water_place.WaterPlaceService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -52,5 +49,11 @@ public class WaterPlaceApiController {
         Page<RetrieveWaterPlacesDto> result = waterPlaceService.getWaterPlaces(retrieveWaterPlacesCondition);
 
         return new ResponseEntity<>(new ResponseDto<>(1, "전국 물놀이 지역 조회에 성공하였습니다.", result), HttpStatus.OK);
+    }
+
+    @GetMapping("/water-place")
+    public ResponseEntity<?> getWaterPlaceNames() {
+        List<String> waterPlaceNames = waterPlaceService.getWaterPlaceNames();
+        return new ResponseEntity<>(new ResponseDto<>(1, "물놀이 장소 이름 리스트 조회에 성공하였습니다", waterPlaceNames), HttpStatus.OK);
     }
 }
