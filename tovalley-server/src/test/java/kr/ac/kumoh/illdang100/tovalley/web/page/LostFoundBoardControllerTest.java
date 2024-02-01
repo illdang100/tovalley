@@ -26,7 +26,9 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import javax.persistence.EntityManager;
 
+import static kr.ac.kumoh.illdang100.tovalley.dto.lost_found_board.LostFoundBoardReqDto.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -126,6 +128,27 @@ class LostFoundBoardControllerTest extends DummyObject {
         // then
         resultActions
                 .andExpect(status().isBadRequest())
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    @WithUserDetails(value = "kakao_123", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @DisplayName(value = "분실물 게시글 등록")
+    void saveLostFoundBoard() throws Exception {
+        // TODO 왜 dto에 기본 생성자가 필요한지?
+        // given
+        Long valleyId = 1L;
+        LostFoundBoardSaveReqDto lostFoundBoardSaveReqDto = new LostFoundBoardSaveReqDto("LOST", valleyId, "잃어버림", "지갑 잃어버렸어요", null);
+
+        String requestBody = om.writeValueAsString(lostFoundBoardSaveReqDto);
+        // when
+        ResultActions resultActions = mvc.perform(post("/api/auth/lostItem")
+                .content(requestBody)
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // then
+        resultActions
+                .andExpect(status().isCreated())
                 .andDo(MockMvcResultHandlers.print());
     }
 

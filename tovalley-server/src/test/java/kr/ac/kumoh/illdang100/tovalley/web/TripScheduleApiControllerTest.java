@@ -93,7 +93,6 @@ class TripScheduleApiControllerTest extends DummyObject {
 
         // given
 
-
         // when
         ResultActions resultActions = mvc.perform(get("/api/auth/my-page/upcoming-schedules"));
 
