@@ -28,11 +28,13 @@ public class LostFoundBoardServiceImpl implements LostFoundBoardService{
 
     @Override
     @Transactional
-    public Long saveLostFoundBoard(LostFoundBoardSaveReqDto lostFoundBoardSaveReqDto, Member member) {
+    public Long saveLostFoundBoard(LostFoundBoardSaveReqDto lostFoundBoardSaveReqDto, long memberId) {
+        Member findMember = EntityFinder.findMemberByIdOrElseThrowEx(memberRepository, memberId);
+
         WaterPlace findWaterPlace = EntityFinder.findWaterPlaceByIdOrElseThrowEx(waterPlaceRepository, lostFoundBoardSaveReqDto.getValleyId());
 
         LostFoundBoard lostFoundBoard = lostFoundBoardRepository.save(LostFoundBoard.builder()
-                .member(member)
+                .member(findMember)
                 .lostFoundEnum(LostFoundEnum.valueOf(lostFoundBoardSaveReqDto.getCategory()))
                 .title(lostFoundBoardSaveReqDto.getTitle())
                 .content(lostFoundBoardSaveReqDto.getContent())

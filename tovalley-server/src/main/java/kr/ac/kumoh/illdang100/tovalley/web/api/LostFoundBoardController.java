@@ -38,7 +38,7 @@ public class LostFoundBoardController {
                                                 BindingResult bindingResult,
                                                 @AuthenticationPrincipal PrincipalDetails principalDetails) throws IOException {
 
-        Long saveLostFoundBoardId = lostFoundBoardService.saveLostFoundBoard(lostFoundBoardSaveReqDto, principalDetails.getMember());
+        Long saveLostFoundBoardId = lostFoundBoardService.saveLostFoundBoard(lostFoundBoardSaveReqDto, principalDetails.getMember().getId());
 
         List<MultipartFile> postImage = lostFoundBoardSaveReqDto.getPostImage();
         List<ImageFile> uploadImageFiles = new ArrayList<>();
