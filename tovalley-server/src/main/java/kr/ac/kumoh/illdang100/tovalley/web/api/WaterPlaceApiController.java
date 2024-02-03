@@ -53,7 +53,7 @@ public class WaterPlaceApiController {
 
     @GetMapping("/water-place")
     public ResponseEntity<?> getWaterPlaceNames() {
-        List<String> waterPlaceNames = waterPlaceService.getWaterPlaceNames();
+        List<LostFoundBoardWaterPlaceDto> waterPlaceNames = waterPlaceService.getWaterPlaceNames();
         return new ResponseEntity<>(new ResponseDto<>(1, "물놀이 장소 이름 리스트 조회에 성공하였습니다", waterPlaceNames), HttpStatus.OK);
     }
 }

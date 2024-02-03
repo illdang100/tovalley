@@ -96,8 +96,8 @@ public class WaterPlaceApiControllerTest extends DummyObject {
         // then
         resultActions
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data[0]").value("서울계곡"))
-                .andExpect(jsonPath("$.data[4]").value("세종계곡"));
+                .andExpect(jsonPath("$.data[0].waterPlaceName").value("서울계곡"))
+                .andExpect(jsonPath("$.data[4].waterPlaceName").value("세종계곡"));
     }
 
     private void dataSetting() {

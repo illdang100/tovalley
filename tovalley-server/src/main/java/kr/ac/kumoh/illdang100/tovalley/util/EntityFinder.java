@@ -1,5 +1,6 @@
 package kr.ac.kumoh.illdang100.tovalley.util;
 
+import java.util.NoSuchElementException;
 import kr.ac.kumoh.illdang100.tovalley.domain.accident.Accident;
 import kr.ac.kumoh.illdang100.tovalley.domain.accident.AccidentRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.email_code.EmailCode;
@@ -55,7 +56,7 @@ public class EntityFinder {
     public static RefreshToken findRefreshTokenOrElseThrowEx(RefreshTokenRedisRepository refreshTokenRedisRepository,
                                                              String refreshTokenId) {
         return refreshTokenRedisRepository.findById(refreshTokenId)
-                .orElseThrow(() -> new CustomApiException("토큰 갱신에 실패했습니다"));
+                .orElseThrow(() -> new NoSuchElementException("토큰 갱신에 실패했습니다"));
     }
 
     public static EmailCode findEmailCodeByEmailOrElseThrowEx(EmailCodeRepository emailCodeRepository, String email) {

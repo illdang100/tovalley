@@ -49,14 +49,7 @@ public class CookieUtil {
             for (Cookie cookie : cookies) {
                 String cookieValue = URLDecoder.decode(cookie.getValue(), StandardCharsets.UTF_8);
                 if (cookie.getName().equals(cookieName)) {
-                    // access token이라면 TOKEN_PREFIX를 제거한 후 반환
-                    if (cookieName.equals(JwtVO.ACCESS_TOKEN) && cookieValue.startsWith(JwtVO.TOKEN_PREFIX)) {
-                        return cookieValue.replace(JwtVO.TOKEN_PREFIX, "");
-                    }
-                    // refreshTokenId라면 바로 반환
-                    else if (cookieName.equals(JwtVO.REFRESH_TOKEN)) {
-                        return cookieValue;
-                    }
+                    return cookieValue;
                 }
             }
         }

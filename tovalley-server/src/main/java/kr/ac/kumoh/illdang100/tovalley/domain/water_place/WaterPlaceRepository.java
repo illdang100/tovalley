@@ -17,7 +17,4 @@ public interface WaterPlaceRepository extends JpaRepository<WaterPlace, Long>, W
     List<WaterPlace> findTop8ByOrderByReviewCountDesc(Pageable pageable);
 
     List<WaterPlace> findByWaterPlaceNameIn(List<String> valleyNames);
-
-    @Query("select wp.waterPlaceName from WaterPlace wp")
-    List<String> findWaterPlaceNames();
 }
