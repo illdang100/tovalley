@@ -41,7 +41,7 @@ public class TokenUtil {
         }
     }
 
-    public static String createAccessToken_test(MemberRepository memberRepository, JwtProcess jwtProcess, String username) {
+    public static String createTestAccessToken(MemberRepository memberRepository, JwtProcess jwtProcess, String username) {
         Member member = memberRepository.findByUsername(username).get();
         PrincipalDetails loginUser = new PrincipalDetails(member);
         return jwtProcess.createAccessToken(loginUser);

@@ -14,8 +14,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.security.test.context.support.TestExecutionEvent;
-import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
@@ -30,7 +28,7 @@ import java.nio.charset.StandardCharsets;
 
 import static kr.ac.kumoh.illdang100.tovalley.dto.member.MemberReqDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.util.CustomResponseUtil.ISLOGIN;
-import static kr.ac.kumoh.illdang100.tovalley.util.TokenUtil.createAccessToken_test;
+import static kr.ac.kumoh.illdang100.tovalley.util.TokenUtil.createTestAccessToken;
 import static org.assertj.core.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -56,9 +54,12 @@ class MemberApiControllerTest extends DummyObject {
     @Autowired
     private JwtProcess jwtProcess;
 
+    private String accessToken;
+
     @BeforeEach
     public void setUp() {
         dataSetting();
+        accessToken = createTestAccessToken(memberRepository, jwtProcess, "user123@naver.com");
     }
 
     @Test
@@ -99,7 +100,6 @@ class MemberApiControllerTest extends DummyObject {
     }
 
     @Test
-    @WithUserDetails(value = "user123@naver.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     public void updateNickname_test() throws Exception {
 
         // given
@@ -108,13 +108,11 @@ class MemberApiControllerTest extends DummyObject {
         validateNicknameRequest.setNickname("변경후닉네임");
 
         String requestBody = om.writeValueAsString(validateNicknameRequest);
-        
-        String accessToken = createAccessToken_test(memberRepository, jwtProcess, "user123@naver.com");
 
         // when
         ResultActions resultActions = mvc.perform(post("/api/auth/members/set-nickname")
                 .content(requestBody)
-                .cookie(new Cookie("ACCESSTOKEN", accessToken))
+                .cookie(new Cookie(JwtVO.ACCESS_TOKEN, accessToken))
                 .contentType(MediaType.APPLICATION_JSON));
 
         resultActions.andReturn().getResponse().getContentAsString();

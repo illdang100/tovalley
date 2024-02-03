@@ -10,6 +10,7 @@ import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlace;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlaceRepository;
 import kr.ac.kumoh.illdang100.tovalley.dummy.DummyObject;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtProcess;
+import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtVO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,8 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.TestExecutionEvent;
-import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
@@ -28,7 +27,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import javax.persistence.EntityManager;
 import javax.servlet.http.Cookie;
 
-import static kr.ac.kumoh.illdang100.tovalley.util.TokenUtil.createAccessToken_test;
+import static kr.ac.kumoh.illdang100.tovalley.util.TokenUtil.createTestAccessToken;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -61,23 +60,24 @@ class LostFoundBoardControllerTest extends DummyObject {
 
     @Autowired
     private JwtProcess jwtProcess;
+    
+    private String accessToken;
 
     @BeforeEach
     public void setUp() {
         dataSetting();
+        accessToken = createTestAccessToken(memberRepository, jwtProcess, "kakao_123");
     }
 
     @Test
-    @WithUserDetails(value = "kakao_123", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @DisplayName(value = "기본 파라미터 - 카테고리, 물놀이 장소 아이디 1개, 검색어, 해결 완료 여부")
     void getLostFoundBoardList() throws Exception {
         // given
         long valleyId = 1L;
-        String accessToken = createAccessToken_test(memberRepository, jwtProcess, "kakao_123");
 
         // when
         ResultActions resultActions = mvc.perform(get("/api/lostItem?" + "category=LOST&valleyId=" + valleyId + "&searchWord=지갑&isResolved=false")
-                .cookie(new Cookie("ACCESSTOKEN", accessToken))
+                .cookie(new Cookie(JwtVO.ACCESS_TOKEN, accessToken))
                 .contentType(MediaType.APPLICATION_JSON));
 
         // then
@@ -87,17 +87,15 @@ class LostFoundBoardControllerTest extends DummyObject {
     }
 
     @Test
-    @WithUserDetails(value = "kakao_123", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @DisplayName(value = "물놀이 장소 아이디 2개")
     void getLostFoundBoardList_valleys() throws Exception {
         // given
         long valleyId1 = 1L;
         long valleyId2 = 2L;
-        String accessToken = createAccessToken_test(memberRepository, jwtProcess, "kakao_123");
 
         // when
         ResultActions resultActions = mvc.perform(get("/api/lostItem?" + "category=LOST&valleyId=" + valleyId1 + "&valleyId=" + valleyId2 + "&searchWord=지갑&isResolved=false")
-                .cookie(new Cookie("ACCESSTOKEN", accessToken))
+                .cookie(new Cookie(JwtVO.ACCESS_TOKEN, accessToken))
                 .contentType(MediaType.APPLICATION_JSON));
 
         // then
@@ -107,16 +105,14 @@ class LostFoundBoardControllerTest extends DummyObject {
     }
 
     @Test
-    @WithUserDetails(value = "kakao_123", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @DisplayName(value = "카테고리 형식 에러")
     void getLostFoundBoardList_category_error() throws Exception {
         // given
         long valleyId = 1L;
-        String accessToken = createAccessToken_test(memberRepository, jwtProcess, "kakao_123");
 
         // when
         ResultActions resultActions = mvc.perform(get("/api/lostItem?category=error&" + "valleyId" + valleyId + "&searchWord=지갑&isResolved=false")
-                .cookie(new Cookie("ACCESSTOKEN", accessToken))
+                .cookie(new Cookie(JwtVO.ACCESS_TOKEN, accessToken))
                 .contentType(MediaType.APPLICATION_JSON));
 
         // then
@@ -126,15 +122,13 @@ class LostFoundBoardControllerTest extends DummyObject {
     }
 
     @Test
-    @WithUserDetails(value = "kakao_123", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @DisplayName(value = "파라미터 생략 - 물놀이 장소 아이디")
     void getLostFoundBoardList_noPram() throws Exception {
         // given
-        String accessToken = createAccessToken_test(memberRepository, jwtProcess, "kakao_123");
 
         // when
         ResultActions resultActions = mvc.perform(get("/api/lostItem?category=LOST&&searchWord=지갑&isResolved=false")
-                .cookie(new Cookie("ACCESSTOKEN", accessToken))
+                .cookie(new Cookie(JwtVO.ACCESS_TOKEN, accessToken))
                 .contentType(MediaType.APPLICATION_JSON));
 
         // then
