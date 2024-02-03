@@ -10,6 +10,7 @@ import kr.ac.kumoh.illdang100.tovalley.domain.trip_schedule.TripScheduleReposito
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.*;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.water_place_weather.WaterPlaceWeatherRepository;
 import kr.ac.kumoh.illdang100.tovalley.dummy.DummyObject;
+import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtProcess;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,10 +25,12 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import javax.persistence.EntityManager;
+import javax.servlet.http.Cookie;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import static kr.ac.kumoh.illdang100.tovalley.util.TokenUtil.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -61,6 +64,8 @@ public class MyPageApiControllerTest extends DummyObject {
     @Autowired
     private ReviewImageRepository reviewImageRepository;
     @Autowired
+    private JwtProcess jwtProcess;
+    @Autowired
     private EntityManager em;
 
     @BeforeEach
@@ -74,9 +79,11 @@ public class MyPageApiControllerTest extends DummyObject {
 
         // given
 //        PageRequest pageable = PageRequest.of(0, 5, Sort.by(Sort.Direction.DESC, "createdDate"));
+        String accessToken = createAccessToken_test(memberRepository, jwtProcess, "kakao_1234");
 
         // when
-        ResultActions resultActions = mvc.perform(get("/api/auth/my-page"));
+        ResultActions resultActions = mvc.perform(get("/api/auth/my-page")
+                .cookie(new Cookie("ACCESSTOKEN", accessToken)));
 
         LocalDate now = LocalDate.now();
 

@@ -1,6 +1,10 @@
 package kr.ac.kumoh.illdang100.tovalley.util;
 
 import java.util.UUID;
+
+import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
+import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberRepository;
+import kr.ac.kumoh.illdang100.tovalley.security.auth.PrincipalDetails;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtProcess;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.RefreshToken;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.RefreshTokenRedisRepository;
@@ -35,5 +39,11 @@ public class TokenUtil {
             RefreshToken findRefreshToken = refreshTokenOpt.get();
             refreshTokenRedisRepository.delete(findRefreshToken);
         }
+    }
+
+    public static String createAccessToken_test(MemberRepository memberRepository, JwtProcess jwtProcess, String username) {
+        Member member = memberRepository.findByUsername(username).get();
+        PrincipalDetails loginUser = new PrincipalDetails(member);
+        return jwtProcess.createAccessToken(loginUser);
     }
 }

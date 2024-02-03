@@ -7,6 +7,7 @@ import kr.ac.kumoh.illdang100.tovalley.domain.trip_schedule.TripSchedule;
 import kr.ac.kumoh.illdang100.tovalley.domain.trip_schedule.TripScheduleRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.*;
 import kr.ac.kumoh.illdang100.tovalley.dummy.DummyObject;
+import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtProcess;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +22,12 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import javax.persistence.EntityManager;
+import javax.servlet.http.Cookie;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import static kr.ac.kumoh.illdang100.tovalley.util.TokenUtil.createAccessToken_test;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -48,6 +51,8 @@ class ReviewApiControllerTest extends DummyObject {
     @Autowired
     private ReviewImageRepository reviewImageRepository;
     @Autowired
+    private JwtProcess jwtProcess;
+    @Autowired
     private EntityManager em;
 
     @BeforeEach
@@ -61,10 +66,12 @@ class ReviewApiControllerTest extends DummyObject {
 
         // given
         Long waterPlaceId = 1L;
+        String accessToken = createAccessToken_test(memberRepository, jwtProcess, "kakao_1234");
 
         // when
         ResultActions resultActions =
-                mvc.perform(get("/api/auth/water-places/" + waterPlaceId + "/reviews?sort=createdDate,desc&page=0&size=5"));
+                mvc.perform(get("/api/auth/water-places/" + waterPlaceId + "/reviews?sort=createdDate,desc&page=0&size=5")
+                        .cookie(new Cookie("ACCESSTOKEN", accessToken)));
 
         // then
         resultActions
@@ -88,10 +95,12 @@ class ReviewApiControllerTest extends DummyObject {
 
         // given
         Long waterPlaceId = 4000L;
+        String accessToken = createAccessToken_test(memberRepository, jwtProcess, "kakao_1234");
 
         // when
         ResultActions resultActions =
-                mvc.perform(get("/api/auth/water-places/" + waterPlaceId + "/reviews?sort=createdDate,desc&page=0&size=5"));
+                mvc.perform(get("/api/auth/water-places/" + waterPlaceId + "/reviews?sort=createdDate,desc&page=0&size=5")
+                        .cookie(new Cookie("ACCESSTOKEN", accessToken)));
 
         // then
         resultActions

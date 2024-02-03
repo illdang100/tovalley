@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberRepository;
 import kr.ac.kumoh.illdang100.tovalley.dummy.DummyObject;
+import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtProcess;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtVO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -29,6 +30,7 @@ import java.nio.charset.StandardCharsets;
 
 import static kr.ac.kumoh.illdang100.tovalley.dto.member.MemberReqDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.util.CustomResponseUtil.ISLOGIN;
+import static kr.ac.kumoh.illdang100.tovalley.util.TokenUtil.createAccessToken_test;
 import static org.assertj.core.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -50,6 +52,9 @@ class MemberApiControllerTest extends DummyObject {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @Autowired
+    private JwtProcess jwtProcess;
 
     @BeforeEach
     public void setUp() {
@@ -103,10 +108,13 @@ class MemberApiControllerTest extends DummyObject {
         validateNicknameRequest.setNickname("변경후닉네임");
 
         String requestBody = om.writeValueAsString(validateNicknameRequest);
+        
+        String accessToken = createAccessToken_test(memberRepository, jwtProcess, "user123@naver.com");
 
         // when
         ResultActions resultActions = mvc.perform(post("/api/auth/members/set-nickname")
                 .content(requestBody)
+                .cookie(new Cookie("ACCESSTOKEN", accessToken))
                 .contentType(MediaType.APPLICATION_JSON));
 
         resultActions.andReturn().getResponse().getContentAsString();

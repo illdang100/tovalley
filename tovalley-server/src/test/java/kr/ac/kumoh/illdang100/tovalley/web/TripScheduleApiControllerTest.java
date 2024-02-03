@@ -6,6 +6,7 @@ import kr.ac.kumoh.illdang100.tovalley.domain.trip_schedule.TripSchedule;
 import kr.ac.kumoh.illdang100.tovalley.domain.trip_schedule.TripScheduleRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.*;
 import kr.ac.kumoh.illdang100.tovalley.dummy.DummyObject;
+import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtProcess;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,11 +21,13 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import javax.persistence.EntityManager;
+import javax.servlet.http.Cookie;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 
+import static kr.ac.kumoh.illdang100.tovalley.util.TokenUtil.createAccessToken_test;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -44,6 +47,8 @@ class TripScheduleApiControllerTest extends DummyObject {
     @Autowired
     private MemberRepository memberRepository;
     @Autowired
+    private JwtProcess jwtProcess;
+    @Autowired
     private EntityManager em;
 
     @BeforeEach
@@ -59,9 +64,12 @@ class TripScheduleApiControllerTest extends DummyObject {
         Long waterPlaceId = 1L;
         YearMonth now = YearMonth.now();
 
+        String accessToken = createAccessToken_test(memberRepository, jwtProcess, "kakao_1234");
+
         // when
         ResultActions resultActions =
-                mvc.perform(get("/api/auth/water-places/" + waterPlaceId + "/trip-schedules?yearMonth=" + now));
+                mvc.perform(get("/api/auth/water-places/" + waterPlaceId + "/trip-schedules?yearMonth=" + now)
+                        .cookie(new Cookie("ACCESSTOKEN", accessToken)));
 
         // then
         resultActions
@@ -77,9 +85,12 @@ class TripScheduleApiControllerTest extends DummyObject {
         Long waterPlaceId = 4000L;
         YearMonth now = YearMonth.now();
 
+        String accessToken = createAccessToken_test(memberRepository, jwtProcess, "kakao_1234");
+
         // when
         ResultActions resultActions =
-                mvc.perform(get("/api/auth/water-places/" + waterPlaceId + "/trip-schedules?yearMonth=" + now));
+                mvc.perform(get("/api/auth/water-places/" + waterPlaceId + "/trip-schedules?yearMonth=" + now)
+                        .cookie(new Cookie("ACCESSTOKEN", accessToken)));
 
         // then
         resultActions
@@ -92,10 +103,11 @@ class TripScheduleApiControllerTest extends DummyObject {
     public void getUpcomingTripAttendeesByMember_test() throws Exception {
 
         // given
-
+        String accessToken = createAccessToken_test(memberRepository, jwtProcess, "kakao_1234");
 
         // when
-        ResultActions resultActions = mvc.perform(get("/api/auth/my-page/upcoming-schedules"));
+        ResultActions resultActions = mvc.perform(get("/api/auth/my-page/upcoming-schedules")
+                .cookie(new Cookie("ACCESSTOKEN", accessToken)));
 
         // then
         resultActions
@@ -114,10 +126,11 @@ class TripScheduleApiControllerTest extends DummyObject {
     public void getPreTripAttendeesByMember_test() throws Exception {
 
         // given
-
+        String accessToken = createAccessToken_test(memberRepository, jwtProcess, "kakao_1234");
 
         // when
-        ResultActions resultActions = mvc.perform(get("/api/auth/my-page/pre-schedules"));
+        ResultActions resultActions = mvc.perform(get("/api/auth/my-page/pre-schedules")
+                .cookie(new Cookie("ACCESSTOKEN", accessToken)));
 
         // then
         resultActions

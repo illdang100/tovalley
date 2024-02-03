@@ -13,6 +13,7 @@ import kr.ac.kumoh.illdang100.tovalley.domain.water_place.*;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.water_place_weather.WaterPlaceWeather;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.water_place_weather.WaterPlaceWeatherRepository;
 import kr.ac.kumoh.illdang100.tovalley.dummy.DummyObject;
+import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtProcess;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,10 +28,12 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import javax.persistence.EntityManager;
+import javax.servlet.http.Cookie;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import static kr.ac.kumoh.illdang100.tovalley.util.TokenUtil.createAccessToken_test;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -64,6 +67,8 @@ class WaterPlaceDetailPageApiControllerTest extends DummyObject {
     @Autowired
     private ReviewImageRepository reviewImageRepository;
     @Autowired
+    private JwtProcess jwtProcess;
+    @Autowired
     private EntityManager em;
 
     @BeforeEach
@@ -76,11 +81,12 @@ class WaterPlaceDetailPageApiControllerTest extends DummyObject {
     public void getWaterPlaceDetailPage_test() throws Exception {
 
         // given
-
+        String accessToken = createAccessToken_test(memberRepository, jwtProcess, "kakao_1234");
 
         // when
         ResultActions resultActions =
-                mvc.perform(get("/api/auth/water-places/1?sort=createdDate,desc&page=0&size=5"));
+                mvc.perform(get("/api/auth/water-places/1?sort=createdDate,desc&page=0&size=5")
+                        .cookie(new Cookie("ACCESSTOKEN", accessToken)));
 
         LocalDate now = LocalDate.now();
         int year = now.getYear();
@@ -110,10 +116,12 @@ class WaterPlaceDetailPageApiControllerTest extends DummyObject {
     public void getWaterPlaceDetailPage_빈리스트_test() throws Exception {
 
         // given
+        String accessToken = createAccessToken_test(memberRepository, jwtProcess, "kakao_1234");
 
         // when
         ResultActions resultActions =
-                mvc.perform(get("/api/auth/water-places/2?sort=rating,desc&page=0&size=5"));
+                mvc.perform(get("/api/auth/water-places/2?sort=rating,desc&page=0&size=5")
+                        .cookie(new Cookie("ACCESSTOKEN", accessToken)));
 
         // then
         resultActions
@@ -135,10 +143,12 @@ class WaterPlaceDetailPageApiControllerTest extends DummyObject {
     public void getWaterPlaceDetailPage_날짜_갱신_test() throws Exception {
 
         // given
+        String accessToken = createAccessToken_test(memberRepository, jwtProcess, "kakao_1234");
 
         // when
         ResultActions resultActions =
-                mvc.perform(get("/api/auth/water-places/3?sort=createdDate,desc&page=0&size=5"));
+                mvc.perform(get("/api/auth/water-places/3?sort=createdDate,desc&page=0&size=5")
+                        .cookie(new Cookie("ACCESSTOKEN", accessToken)));
 
         // then
         resultActions

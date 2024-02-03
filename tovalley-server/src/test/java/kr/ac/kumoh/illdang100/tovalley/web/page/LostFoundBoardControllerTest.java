@@ -9,6 +9,7 @@ import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlace;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlaceRepository;
 import kr.ac.kumoh.illdang100.tovalley.dummy.DummyObject;
+import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtProcess;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,7 +26,9 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import javax.persistence.EntityManager;
+import javax.servlet.http.Cookie;
 
+import static kr.ac.kumoh.illdang100.tovalley.util.TokenUtil.createAccessToken_test;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -56,6 +59,9 @@ class LostFoundBoardControllerTest extends DummyObject {
     @Autowired
     private WaterPlaceRepository waterPlaceRepository;
 
+    @Autowired
+    private JwtProcess jwtProcess;
+
     @BeforeEach
     public void setUp() {
         dataSetting();
@@ -67,9 +73,11 @@ class LostFoundBoardControllerTest extends DummyObject {
     void getLostFoundBoardList() throws Exception {
         // given
         long valleyId = 1L;
+        String accessToken = createAccessToken_test(memberRepository, jwtProcess, "kakao_123");
 
         // when
         ResultActions resultActions = mvc.perform(get("/api/lostItem?" + "category=LOST&valleyId=" + valleyId + "&searchWord=지갑&isResolved=false")
+                .cookie(new Cookie("ACCESSTOKEN", accessToken))
                 .contentType(MediaType.APPLICATION_JSON));
 
         // then
@@ -85,9 +93,11 @@ class LostFoundBoardControllerTest extends DummyObject {
         // given
         long valleyId1 = 1L;
         long valleyId2 = 2L;
+        String accessToken = createAccessToken_test(memberRepository, jwtProcess, "kakao_123");
 
         // when
         ResultActions resultActions = mvc.perform(get("/api/lostItem?" + "category=LOST&valleyId=" + valleyId1 + "&valleyId=" + valleyId2 + "&searchWord=지갑&isResolved=false")
+                .cookie(new Cookie("ACCESSTOKEN", accessToken))
                 .contentType(MediaType.APPLICATION_JSON));
 
         // then
@@ -102,9 +112,11 @@ class LostFoundBoardControllerTest extends DummyObject {
     void getLostFoundBoardList_category_error() throws Exception {
         // given
         long valleyId = 1L;
+        String accessToken = createAccessToken_test(memberRepository, jwtProcess, "kakao_123");
 
         // when
         ResultActions resultActions = mvc.perform(get("/api/lostItem?category=error&" + "valleyId" + valleyId + "&searchWord=지갑&isResolved=false")
+                .cookie(new Cookie("ACCESSTOKEN", accessToken))
                 .contentType(MediaType.APPLICATION_JSON));
 
         // then
@@ -118,9 +130,11 @@ class LostFoundBoardControllerTest extends DummyObject {
     @DisplayName(value = "파라미터 생략 - 물놀이 장소 아이디")
     void getLostFoundBoardList_noPram() throws Exception {
         // given
+        String accessToken = createAccessToken_test(memberRepository, jwtProcess, "kakao_123");
 
         // when
         ResultActions resultActions = mvc.perform(get("/api/lostItem?category=LOST&&searchWord=지갑&isResolved=false")
+                .cookie(new Cookie("ACCESSTOKEN", accessToken))
                 .contentType(MediaType.APPLICATION_JSON));
 
         // then
