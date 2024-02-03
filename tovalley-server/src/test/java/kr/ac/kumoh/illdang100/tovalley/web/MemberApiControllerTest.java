@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberRepository;
 import kr.ac.kumoh.illdang100.tovalley.dummy.DummyObject;
+import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtProcess;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtVO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -13,8 +14,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.security.test.context.support.TestExecutionEvent;
-import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
@@ -29,6 +28,7 @@ import java.nio.charset.StandardCharsets;
 
 import static kr.ac.kumoh.illdang100.tovalley.dto.member.MemberReqDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.util.CustomResponseUtil.ISLOGIN;
+import static kr.ac.kumoh.illdang100.tovalley.util.TokenUtil.createTestAccessToken;
 import static org.assertj.core.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -51,9 +51,15 @@ class MemberApiControllerTest extends DummyObject {
     @Autowired
     private MemberRepository memberRepository;
 
+    @Autowired
+    private JwtProcess jwtProcess;
+
+    private String accessToken;
+
     @BeforeEach
     public void setUp() {
         dataSetting();
+        accessToken = createTestAccessToken(memberRepository, jwtProcess, "user123@naver.com");
     }
 
     @Test
@@ -94,7 +100,6 @@ class MemberApiControllerTest extends DummyObject {
     }
 
     @Test
-    @WithUserDetails(value = "user123@naver.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     public void updateNickname_test() throws Exception {
 
         // given
@@ -107,6 +112,7 @@ class MemberApiControllerTest extends DummyObject {
         // when
         ResultActions resultActions = mvc.perform(post("/api/auth/members/set-nickname")
                 .content(requestBody)
+                .cookie(new Cookie(JwtVO.ACCESS_TOKEN, accessToken))
                 .contentType(MediaType.APPLICATION_JSON));
 
         resultActions.andReturn().getResponse().getContentAsString();
