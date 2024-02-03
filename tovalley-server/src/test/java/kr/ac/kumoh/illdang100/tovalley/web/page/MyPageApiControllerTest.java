@@ -1,8 +1,6 @@
 package kr.ac.kumoh.illdang100.tovalley.web.page;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kr.ac.kumoh.illdang100.tovalley.domain.accident.Accident;
-import kr.ac.kumoh.illdang100.tovalley.domain.accident.AccidentEnum;
 import kr.ac.kumoh.illdang100.tovalley.domain.accident.AccidentRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberRepository;
@@ -10,10 +8,6 @@ import kr.ac.kumoh.illdang100.tovalley.domain.review.*;
 import kr.ac.kumoh.illdang100.tovalley.domain.trip_schedule.TripSchedule;
 import kr.ac.kumoh.illdang100.tovalley.domain.trip_schedule.TripScheduleRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.*;
-import kr.ac.kumoh.illdang100.tovalley.domain.weather.national_weather.NationalRegionRepository;
-import kr.ac.kumoh.illdang100.tovalley.domain.weather.national_weather.NationalWeatherRepository;
-import kr.ac.kumoh.illdang100.tovalley.domain.weather.special_weather.*;
-import kr.ac.kumoh.illdang100.tovalley.domain.weather.water_place_weather.WaterPlaceWeather;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.water_place_weather.WaterPlaceWeatherRepository;
 import kr.ac.kumoh.illdang100.tovalley.dummy.DummyObject;
 import org.junit.jupiter.api.BeforeEach;

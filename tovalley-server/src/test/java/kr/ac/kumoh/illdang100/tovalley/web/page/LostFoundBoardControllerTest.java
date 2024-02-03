@@ -1,4 +1,4 @@
-package kr.ac.kumoh.illdang100.tovalley.web.api;
+package kr.ac.kumoh.illdang100.tovalley.web.page;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.ac.kumoh.illdang100.tovalley.domain.comment.CommentRepository;

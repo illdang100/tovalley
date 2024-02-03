@@ -33,4 +33,6 @@ public interface WaterPlaceService {
     void saveNewWaterPlace(CreateWaterPlaceForm form);
 
     Page<AdminRetrieveWaterPlacesDto> getAdminWaterPlaceList(String searchWord, Pageable pageable);
+
+    List<LostFoundBoardWaterPlaceDto> getWaterPlaceNames();
 }

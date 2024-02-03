@@ -6,7 +6,6 @@ import kr.ac.kumoh.illdang100.tovalley.domain.accident.AccidentEnum;
 import kr.ac.kumoh.illdang100.tovalley.domain.accident.AccidentRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlace;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlaceRepository;
-import kr.ac.kumoh.illdang100.tovalley.domain.weather.national_weather.NationalRegion;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.national_weather.NationalRegionRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.national_weather.NationalWeatherRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.special_weather.*;
@@ -26,7 +25,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import javax.persistence.EntityManager;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
