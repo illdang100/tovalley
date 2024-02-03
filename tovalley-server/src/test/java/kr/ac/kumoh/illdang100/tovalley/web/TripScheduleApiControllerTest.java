@@ -6,13 +6,13 @@ import kr.ac.kumoh.illdang100.tovalley.domain.trip_schedule.TripSchedule;
 import kr.ac.kumoh.illdang100.tovalley.domain.trip_schedule.TripScheduleRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.*;
 import kr.ac.kumoh.illdang100.tovalley.dummy.DummyObject;
+import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtProcess;
+import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtVO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.test.context.support.TestExecutionEvent;
-import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
@@ -20,11 +20,13 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import javax.persistence.EntityManager;
+import javax.servlet.http.Cookie;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 
+import static kr.ac.kumoh.illdang100.tovalley.util.TokenUtil.createTestAccessToken;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -44,24 +46,29 @@ class TripScheduleApiControllerTest extends DummyObject {
     @Autowired
     private MemberRepository memberRepository;
     @Autowired
+    private JwtProcess jwtProcess;
+    @Autowired
     private EntityManager em;
+    private String accessToken;
 
     @BeforeEach
     public void setUp() {
         dataSetting();
+        accessToken = createTestAccessToken(memberRepository, jwtProcess, "kakao_1234");
     }
 
     @Test
-    @WithUserDetails(value = "kakao_1234", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     public void getTripAttendeesByWaterPlace_success_test() throws Exception {
 
         // given
         Long waterPlaceId = 1L;
         YearMonth now = YearMonth.now();
 
+
         // when
         ResultActions resultActions =
-                mvc.perform(get("/api/auth/water-places/" + waterPlaceId + "/trip-schedules?yearMonth=" + now));
+                mvc.perform(get("/api/auth/water-places/" + waterPlaceId + "/trip-schedules?yearMonth=" + now)
+                        .cookie(new Cookie(JwtVO.ACCESS_TOKEN, accessToken)));
 
         // then
         resultActions
@@ -70,16 +77,17 @@ class TripScheduleApiControllerTest extends DummyObject {
     }
 
     @Test
-    @WithUserDetails(value = "kakao_1234", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     public void getTripAttendeesByWaterPlace_failure_test() throws Exception {
 
         // given
         Long waterPlaceId = 4000L;
         YearMonth now = YearMonth.now();
 
+
         // when
         ResultActions resultActions =
-                mvc.perform(get("/api/auth/water-places/" + waterPlaceId + "/trip-schedules?yearMonth=" + now));
+                mvc.perform(get("/api/auth/water-places/" + waterPlaceId + "/trip-schedules?yearMonth=" + now)
+                        .cookie(new Cookie(JwtVO.ACCESS_TOKEN, accessToken)));
 
         // then
         resultActions
@@ -88,14 +96,13 @@ class TripScheduleApiControllerTest extends DummyObject {
     }
 
     @Test
-    @WithUserDetails(value = "kakao_1234", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     public void getUpcomingTripAttendeesByMember_test() throws Exception {
 
         // given
 
-
         // when
-        ResultActions resultActions = mvc.perform(get("/api/auth/my-page/upcoming-schedules"));
+        ResultActions resultActions = mvc.perform(get("/api/auth/my-page/upcoming-schedules")
+                .cookie(new Cookie(JwtVO.ACCESS_TOKEN, accessToken)));
 
         // then
         resultActions
@@ -110,14 +117,13 @@ class TripScheduleApiControllerTest extends DummyObject {
     }
 
     @Test
-    @WithUserDetails(value = "kakao_1234", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     public void getPreTripAttendeesByMember_test() throws Exception {
 
         // given
 
-
         // when
-        ResultActions resultActions = mvc.perform(get("/api/auth/my-page/pre-schedules"));
+        ResultActions resultActions = mvc.perform(get("/api/auth/my-page/pre-schedules")
+                .cookie(new Cookie(JwtVO.ACCESS_TOKEN, accessToken)));
 
         // then
         resultActions
