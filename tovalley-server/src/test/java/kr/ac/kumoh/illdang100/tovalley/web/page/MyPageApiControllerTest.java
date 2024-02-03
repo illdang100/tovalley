@@ -10,13 +10,13 @@ import kr.ac.kumoh.illdang100.tovalley.domain.trip_schedule.TripScheduleReposito
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.*;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.water_place_weather.WaterPlaceWeatherRepository;
 import kr.ac.kumoh.illdang100.tovalley.dummy.DummyObject;
+import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtProcess;
+import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtVO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.test.context.support.TestExecutionEvent;
-import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
@@ -24,10 +24,12 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import javax.persistence.EntityManager;
+import javax.servlet.http.Cookie;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import static kr.ac.kumoh.illdang100.tovalley.util.TokenUtil.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -61,22 +63,26 @@ public class MyPageApiControllerTest extends DummyObject {
     @Autowired
     private ReviewImageRepository reviewImageRepository;
     @Autowired
+    private JwtProcess jwtProcess;
+    @Autowired
     private EntityManager em;
+    private String accessToken;
 
     @BeforeEach
     public void setUp() {
         dataSetting();
+        accessToken = createTestAccessToken(memberRepository, jwtProcess, "kakao_1234");
     }
 
     @Test
-    @WithUserDetails(value = "kakao_1234", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     public void getMyPage_test() throws Exception {
 
         // given
 //        PageRequest pageable = PageRequest.of(0, 5, Sort.by(Sort.Direction.DESC, "createdDate"));
 
         // when
-        ResultActions resultActions = mvc.perform(get("/api/auth/my-page"));
+        ResultActions resultActions = mvc.perform(get("/api/auth/my-page")
+                .cookie(new Cookie(JwtVO.ACCESS_TOKEN, accessToken)));
 
         LocalDate now = LocalDate.now();
 

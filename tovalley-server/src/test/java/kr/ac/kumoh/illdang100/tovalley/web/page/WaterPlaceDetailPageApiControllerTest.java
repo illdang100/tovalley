@@ -13,13 +13,13 @@ import kr.ac.kumoh.illdang100.tovalley.domain.water_place.*;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.water_place_weather.WaterPlaceWeather;
 import kr.ac.kumoh.illdang100.tovalley.domain.weather.water_place_weather.WaterPlaceWeatherRepository;
 import kr.ac.kumoh.illdang100.tovalley.dummy.DummyObject;
+import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtProcess;
+import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtVO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.test.context.support.TestExecutionEvent;
-import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
@@ -27,10 +27,12 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import javax.persistence.EntityManager;
+import javax.servlet.http.Cookie;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import static kr.ac.kumoh.illdang100.tovalley.util.TokenUtil.createTestAccessToken;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -64,23 +66,26 @@ class WaterPlaceDetailPageApiControllerTest extends DummyObject {
     @Autowired
     private ReviewImageRepository reviewImageRepository;
     @Autowired
+    private JwtProcess jwtProcess;
+    @Autowired
     private EntityManager em;
+    private String accessToken;
 
     @BeforeEach
     public void setUp() {
         dataSetting();
+        accessToken = createTestAccessToken(memberRepository, jwtProcess, "kakao_1234");
     }
 
     @Test
-    @WithUserDetails(value = "kakao_1234", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     public void getWaterPlaceDetailPage_test() throws Exception {
 
         // given
 
-
         // when
         ResultActions resultActions =
-                mvc.perform(get("/api/auth/water-places/1?sort=createdDate,desc&page=0&size=5"));
+                mvc.perform(get("/api/auth/water-places/1?sort=createdDate,desc&page=0&size=5")
+                        .cookie(new Cookie(JwtVO.ACCESS_TOKEN, accessToken)));
 
         LocalDate now = LocalDate.now();
         int year = now.getYear();
@@ -106,14 +111,14 @@ class WaterPlaceDetailPageApiControllerTest extends DummyObject {
     }
 
     @Test
-    @WithUserDetails(value = "kakao_1234", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     public void getWaterPlaceDetailPage_빈리스트_test() throws Exception {
 
         // given
 
         // when
         ResultActions resultActions =
-                mvc.perform(get("/api/auth/water-places/2?sort=rating,desc&page=0&size=5"));
+                mvc.perform(get("/api/auth/water-places/2?sort=rating,desc&page=0&size=5")
+                        .cookie(new Cookie(JwtVO.ACCESS_TOKEN, accessToken)));
 
         // then
         resultActions
@@ -131,14 +136,14 @@ class WaterPlaceDetailPageApiControllerTest extends DummyObject {
     }
 
     @Test
-    @WithUserDetails(value = "kakao_1234", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     public void getWaterPlaceDetailPage_날짜_갱신_test() throws Exception {
 
         // given
 
         // when
         ResultActions resultActions =
-                mvc.perform(get("/api/auth/water-places/3?sort=createdDate,desc&page=0&size=5"));
+                mvc.perform(get("/api/auth/water-places/3?sort=createdDate,desc&page=0&size=5")
+                        .cookie(new Cookie(JwtVO.ACCESS_TOKEN, accessToken)));
 
         // then
         resultActions
