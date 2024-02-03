@@ -1,9 +1,12 @@
 package kr.ac.kumoh.illdang100.tovalley.util;
 
+import java.util.NoSuchElementException;
 import kr.ac.kumoh.illdang100.tovalley.domain.accident.Accident;
 import kr.ac.kumoh.illdang100.tovalley.domain.accident.AccidentRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.email_code.EmailCode;
 import kr.ac.kumoh.illdang100.tovalley.domain.email_code.EmailCodeRepository;
+import kr.ac.kumoh.illdang100.tovalley.domain.lost_found_board.LostFoundBoard;
+import kr.ac.kumoh.illdang100.tovalley.domain.lost_found_board.LostFoundBoardRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.trip_schedule.TripSchedule;
@@ -53,7 +56,7 @@ public class EntityFinder {
     public static RefreshToken findRefreshTokenOrElseThrowEx(RefreshTokenRedisRepository refreshTokenRedisRepository,
                                                              String refreshTokenId) {
         return refreshTokenRedisRepository.findById(refreshTokenId)
-                .orElseThrow(() -> new CustomApiException("토큰 갱신에 실패했습니다"));
+                .orElseThrow(() -> new NoSuchElementException("토큰 갱신에 실패했습니다"));
     }
 
     public static EmailCode findEmailCodeByEmailOrElseThrowEx(EmailCodeRepository emailCodeRepository, String email) {
@@ -66,5 +69,9 @@ public class EntityFinder {
 
         return accidentRepository.findByIdAndWaterPlaceId(accidentId, waterPlaceId)
                 .orElseThrow(() -> new CustomApiException("물놀이 장소[" + waterPlaceId + "]에 대한 사고[" + accidentId + "]가 존재하지 않습니다"));
+    }
+
+    public static LostFoundBoard findLostFoundBoardByIdOrElseThrow(LostFoundBoardRepository lostFoundBoardRepository, long lostFoundBoardId) {
+        return lostFoundBoardRepository.findById(lostFoundBoardId).orElseThrow(() -> new CustomApiException("분실물 찾기 게시글[" + lostFoundBoardId + "]이 존재하지 않습니다"));
     }
 }

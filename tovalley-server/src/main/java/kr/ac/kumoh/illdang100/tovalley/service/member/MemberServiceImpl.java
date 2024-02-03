@@ -14,6 +14,7 @@ import kr.ac.kumoh.illdang100.tovalley.handler.ex.CustomApiException;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtVO;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.RefreshTokenRedisRepository;
 import kr.ac.kumoh.illdang100.tovalley.service.S3Service;
+import kr.ac.kumoh.illdang100.tovalley.service.refreshToken.RefreshTokenRedisService;
 import kr.ac.kumoh.illdang100.tovalley.util.TokenUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +37,7 @@ import static kr.ac.kumoh.illdang100.tovalley.util.CookieUtil.*;
 import static kr.ac.kumoh.illdang100.tovalley.util.CookieUtil.addCookie;
 import static kr.ac.kumoh.illdang100.tovalley.util.CustomResponseUtil.*;
 import static kr.ac.kumoh.illdang100.tovalley.util.EntityFinder.*;
+import static kr.ac.kumoh.illdang100.tovalley.util.EntityFinder.findMemberByIdOrElseThrowEx;
 
 @Slf4j
 @Service
@@ -49,6 +51,7 @@ public class MemberServiceImpl implements MemberService {
     private final RefreshTokenRedisRepository refreshTokenRedisRepository;
     private final TripScheduleRepository tripScheduleRepository;
     private final ReviewRepository reviewRepository;
+    private final RefreshTokenRedisService refreshTokenRedisService;
     private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Override
@@ -100,7 +103,7 @@ public class MemberServiceImpl implements MemberService {
         Member findMember = findMemberByEmailOrElseThrowEx(memberRepository, email);
 
         return findMember.getEmail();
-}
+    }
 
     @Override
     @Transactional
@@ -125,7 +128,8 @@ public class MemberServiceImpl implements MemberService {
 
         Member findMember = findMemberByIdOrElseThrowEx(memberRepository, memberId);
 
-        String memberProfileImg = (findMember.getImageFile() != null) ? findMember.getImageFile().getStoreFileUrl() : null;
+        String memberProfileImg =
+                (findMember.getImageFile() != null) ? findMember.getImageFile().getStoreFileUrl() : null;
         return new MemberProfileRespDto(memberProfileImg,
                 findMember.getMemberName(),
                 findMember.getNickname());
@@ -141,7 +145,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     /**
-     * @param memberId: 사용자 pk
+     * @param memberId:    사용자 pk
      * @param newNickname: 변경할 새로운 닉네임
      * @methodnme: updateMemberNick
      * @author: JYeonJun
@@ -165,6 +169,7 @@ public class MemberServiceImpl implements MemberService {
 
     /**
      * 회원 탈퇴
+     *
      * @param memberId
      */
     @Override
@@ -187,7 +192,7 @@ public class MemberServiceImpl implements MemberService {
         deleteProfileImage(findMember);
 
         // 리프레시 토큰 삭제
-       TokenUtil.deleteRefreshToken(refreshToken, refreshTokenRedisRepository);
+        TokenUtil.deleteRefreshToken(refreshToken, refreshTokenRedisRepository);
 
         // 회원 삭제
         memberRepository.delete(findMember);
@@ -225,5 +230,19 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public Slice<SearchMembersRespDto> searchMembers(String nickname, Pageable pageable) {
         return memberRepository.findSliceMembersByNickname(nickname, pageable);
+    }
+
+    @Override
+    @Transactional
+    public void changeMemberRole(Long memberId, MemberEnum role) {
+
+        Member findMember = findMemberByIdOrElseThrowEx(memberRepository, memberId);
+        MemberEnum newRole = (role == MemberEnum.ADMIN) ? MemberEnum.CUSTOMER : MemberEnum.ADMIN;
+        findMember.changeRole(newRole);
+    }
+
+    @Override
+    public void deleteRefreshTokenByMemberId(Long memberId) {
+        refreshTokenRedisService.deleteRefreshTokenByMemberId(String.valueOf(memberId));
     }
 }

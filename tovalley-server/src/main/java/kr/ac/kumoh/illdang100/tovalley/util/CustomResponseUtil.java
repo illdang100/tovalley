@@ -1,6 +1,9 @@
 package kr.ac.kumoh.illdang100.tovalley.util;
 
+import static kr.ac.kumoh.illdang100.tovalley.util.CookieUtil.addCookie;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
 import kr.ac.kumoh.illdang100.tovalley.dto.ResponseDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +40,11 @@ public class CustomResponseUtil {
         } catch (Exception e) {
             log.error("서버 파싱 에러");
         }
+    }
+
+    public static void handleTokenVerificationFailure(HttpServletResponse response) throws IOException {
+        addCookie(response, ISLOGIN, "false");
+        CustomResponseUtil.fail(response, "만료된 토큰입니다.", HttpStatus.BAD_REQUEST);
     }
 }
 

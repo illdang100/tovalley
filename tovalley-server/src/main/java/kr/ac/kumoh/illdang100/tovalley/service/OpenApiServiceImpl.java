@@ -513,7 +513,8 @@ public class OpenApiServiceImpl implements OpenApiService {
             String wpName = waterPlaceName.replaceAll("\\s", "");
 
             if (!isWaterPlaceExist(waterPlaceName)) {
-                ImageFile waterPlaceImage = saveWaterPlaceImage(wpName);
+//                ImageFile waterPlaceImage = saveWaterPlaceImage(wpName);
+                ImageFile waterPlaceImage = null;
                 WaterPlace waterPlace = createWaterPlace(item, waterPlaceImage);
 
                 WaterPlaceDetail waterPlaceDetail = createWaterPlaceDetail(item, waterPlace);

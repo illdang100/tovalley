@@ -17,7 +17,7 @@ import javax.persistence.Id;
 public class RefreshToken {
     @Id
     private String id;
-
+    @Indexed
     private String memberId;
     private String role;
     private String ip;

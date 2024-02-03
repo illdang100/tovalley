@@ -11,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Random;
 
 import static kr.ac.kumoh.illdang100.tovalley.dto.email_code.EmailCodeRespDto.*;
@@ -24,7 +26,7 @@ public class EmailCodeServiceImpl implements EmailCodeService {
 
     @Override
     @Transactional
-    public SendEmailCodeRespDto sendEmail(String email) {
+    public SendEmailCodeRespDto sendEmailVerification(String email) {
 
         EmailCode findEmailCode = emailCodeRepository.findByEmail(email).orElse(null);
         if (findEmailCode != null)
@@ -84,5 +86,24 @@ public class EmailCodeServiceImpl implements EmailCodeService {
         }
 
         return randomString.toString();
+    }
+
+    @Override
+    public void sendReLoginRequestEmail(String email) {
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        String verifyCode = generateRandomString();
+        MimeMessageHelper mimeMessageHelper = null;
+        try {
+            mimeMessageHelper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
+
+            mimeMessageHelper.setTo(email); // 메일 수신자
+            mimeMessageHelper.setSubject("사용자 권한이 변경되었습니다."); // 메일 제목
+            mimeMessageHelper.setText("권한 변경 일자: " + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yy-MM-dd HH:mm:ss")) + "\n서비스 이용을 위해 재로그인이 필요합니다."); // 메일 본문 내용
+
+            javaMailSender.send(mimeMessage);
+        } catch (MessagingException e) {
+            throw new CustomApiException("이메일 전송을 실패했습니다");
+        }
+
     }
 }

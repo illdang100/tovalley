@@ -1,9 +1,158 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>change role</title>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/base :: common_header(~{:: title},~{:: link})">
+    <title>사용자 권한 변경</title>
+    <link rel="stylesheet" th:href="@{/css/change-role.css}" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="/static/js/change-role.js"></script>
 </head>
 <body>
+<section class="admin__change-role">
+    <section class="admin__left-sidebar">
+        <div class="admin-logo">
+            <img src="./img/투계곡-logo.png" th:src="@{/images/투계곡-logo.png}" alt="tovalley logo" width="120px" />
+            <h1>ADMIN</h1>
+        </div>
+
+        <div th:class="admin-category">
+            <div><a th:href="@{/th/admin/water-place-list}">계곡 정보 관리</a></div>
+            <div><a th:href="@{/th/admin/water-places/new}">계곡 등록</a></div>
+            <div><a th:href="@{/th/change-role}">사용자 권한 변경</a></div>
+        </div>
+    </section>
+
+    <div class="change-role">
+        <div class="title">
+            <h1>사용자 권한 변경</h1>
+            <span><a th:href="@{/th/logout}">로그아웃</a></span>
+        </div>
+        <div class="valley-search-container">
+        </div>
+
+        <div class="valley-search-container">
+            <div class="items__user-list">
+                <form id="search-form">
+                    <div class="search-group">
+                        <input type="text" id="search-nickname" name="nickname" th:value="${searchMembersCondition?.nickname}" placeholder="닉네임을 입력하세요."/>
+                        <button id="search-btn">검색</button>
+                    </div>
+                    <table class="admin-table">
+                        <thead>
+                        <tr>
+                            <th class="col-title">이름</th>
+                            <th class="col-title">닉네임</th>
+                            <th class="col-title">이메일</th>
+                            <th class="col-title">역할</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr class="table-data table-row" id="table-row" th:if="${not #lists.isEmpty(searchMembers)}" th:each="member : ${searchMembers}" th:data-memberId = "${member.id}">
+                            <input type="hidden" id="memberId" name="id" th:value="${member.id}" />
+                            <td id="table-data__name" th:text="${member.memberName}"></td>
+                            <td id="table-data__nickname" th:text="${member.nickname}"></td>
+                            <td id="table-data__email" th:text="${member.email}"></td>
+                            <td id="table-data__role" th:text="${member.role}"></td>
+                        </tr>
+                        <tr class="table-data" th:unless="${not #lists.isEmpty(searchMembers)}">
+                            <td th:colspan="4">검색 결과가 존재하지 않습니다.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+
+            <div class="items__change-role">
+                <form id="change-role-form">
+                <div class="user-info" id="user-info-box">
+                    <h2>사용자 정보</h2>
+                    <div class="info-content">
+                        <input type="hidden" id="detail-member-id" name="memberId" th:value="${changeMemberRoleReqDto?.memberId}"/>
+                        <div class="info-group">
+                            <div class="info-title">이름:</div>
+                            <div class="info-input">
+                                <input type="text" id="user-name" />
+                            </div>
+                        </div>
+                        <div class="info-group">
+                            <div class="info-title">닉네임:</div>
+                            <div class="info-input">
+                                <input id="user-nickname"/>
+                            </div>
+                        </div>
+                        <div class="info-group">
+                            <div class="info-title">이메일:</div>
+                            <div class="info-input">
+                                <input id="user-email" name="email" th:value="${changeMemberRoleReqDto?.email}"/>
+                            </div>
+                        </div>
+                        <div class="info-group">
+                            <div class="info-title">역할:</div>
+                            <div class="info-input">
+                                <input id="user-role" name="role" th:value="${changeMemberRoleReqDto?.role}"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 사용자 권한 변경 버튼 -->
+                <div class="change-role-btn">
+                    <button id="change-role-btn">사용자 권한 변경</button>
+                </div>
+                </form>
+            </div>
+
+        </div>
+        </div>
+</section>
 </body>
+<div th:if="${isSuccess != null && !isSuccess}">
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            alert('실패했습니다.');
+        });
+    </script>
+</div>
+<div th:if="${isSuccess != null && isSuccess}">
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            alert('성공했습니다.');
+        });
+    </script>
+</div>
+<script th:inline="javascript">
+    document.getElementById('search-btn').addEventListener('click', function() {
+
+
+        document.getElementById('search-form').action = "/th/members";
+        document.getElementById('search-form').method = "POST";
+        document.getElementById('search-form').submit();
+    });
+
+    document.getElementById('change-role-btn').addEventListener('click', function () {
+        // 닉네임이 Null로 저장된 경우 빈 문자로 대체
+        var nicknameElement = document.getElementById('user-nickname');
+        var nickname = nicknameElement ? nicknameElement.value : "";
+
+        document.getElementById('change-role-form').action = "/th/change-role";
+        document.getElementById('change-role-form').method = "POST";
+        document.getElementById('change-role-form').submit();
+    });
+
+    document.querySelectorAll('.table-row').forEach(function(row) {
+        row.addEventListener('click', function() {
+            let memberId = row.getAttribute('data-memberId');
+            let memberName = row.querySelector("#table-data__name").textContent;
+            let email = row.querySelector("#table-data__email").textContent;
+            let nickname = row.querySelector("#table-data__nickname").textContent;
+            let role = row.querySelector("#table-data__role").textContent;
+
+            document.getElementById('detail-member-id').value = memberId;
+            document.getElementById('memberId').value = memberId;
+            document.getElementById('user-name').value = memberName;
+            document.getElementById('user-nickname').value = nickname;
+            document.getElementById('user-email').value = email;
+            document.getElementById('user-role').value = role;
+        });
+    });
+</script>
 </html>
