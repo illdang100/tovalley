@@ -1,4 +1,4 @@
-package kr.ac.kumoh.illdang100.tovalley.web.page;
+package kr.ac.kumoh.illdang100.tovalley.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.ac.kumoh.illdang100.tovalley.domain.comment.CommentRepository;
@@ -27,9 +27,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import javax.persistence.EntityManager;
 import javax.servlet.http.Cookie;
 
-import static kr.ac.kumoh.illdang100.tovalley.dto.lost_found_board.LostFoundBoardReqDto.*;
+import static kr.ac.kumoh.illdang100.tovalley.dto.lost_found_board.LostFoundBoardReqDto.LostFoundBoardSaveReqDto;
 import static kr.ac.kumoh.illdang100.tovalley.util.TokenUtil.createTestAccessToken;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -72,70 +71,22 @@ class LostFoundBoardControllerTest extends DummyObject {
     }
 
     @Test
-    @DisplayName(value = "기본 파라미터 - 카테고리, 물놀이 장소 아이디 1개, 검색어, 해결 완료 여부")
-    void getLostFoundBoardList() throws Exception {
+    @DisplayName(value = "분실물 게시글 등록")
+    void saveLostFoundBoard() throws Exception {
         // given
-        long valleyId = 1L;
+        Long valleyId = 1L;
+        LostFoundBoardSaveReqDto lostFoundBoardSaveReqDto = new LostFoundBoardSaveReqDto("LOST", valleyId, "잃어버림", "지갑 잃어버렸어요", null);
 
+        String requestBody = om.writeValueAsString(lostFoundBoardSaveReqDto);
         // when
-        ResultActions resultActions = mvc.perform(get("/api/lostItem?" + "category=LOST&valleyId=" + valleyId + "&searchWord=지갑&isResolved=false")
+        ResultActions resultActions = mvc.perform(post("/api/auth/lostItem")
+                .content(requestBody)
                 .cookie(new Cookie(JwtVO.ACCESS_TOKEN, accessToken))
                 .contentType(MediaType.APPLICATION_JSON));
 
         // then
         resultActions
-                .andExpect(status().isOk())
-                .andDo(MockMvcResultHandlers.print());
-    }
-
-    @Test
-    @DisplayName(value = "물놀이 장소 아이디 2개")
-    void getLostFoundBoardList_valleys() throws Exception {
-        // given
-        long valleyId1 = 1L;
-        long valleyId2 = 2L;
-
-        // when
-        ResultActions resultActions = mvc.perform(get("/api/lostItem?" + "category=LOST&valleyId=" + valleyId1 + "&valleyId=" + valleyId2 + "&searchWord=지갑&isResolved=false")
-                .cookie(new Cookie(JwtVO.ACCESS_TOKEN, accessToken))
-                .contentType(MediaType.APPLICATION_JSON));
-
-        // then
-        resultActions
-                .andExpect(status().isOk())
-                .andDo(MockMvcResultHandlers.print());
-    }
-
-    @Test
-    @DisplayName(value = "카테고리 형식 에러")
-    void getLostFoundBoardList_category_error() throws Exception {
-        // given
-        long valleyId = 1L;
-
-        // when
-        ResultActions resultActions = mvc.perform(get("/api/lostItem?category=error&" + "valleyId" + valleyId + "&searchWord=지갑&isResolved=false")
-                .cookie(new Cookie(JwtVO.ACCESS_TOKEN, accessToken))
-                .contentType(MediaType.APPLICATION_JSON));
-
-        // then
-        resultActions
-                .andExpect(status().isBadRequest())
-                .andDo(MockMvcResultHandlers.print());
-    }
-
-    @Test
-    @DisplayName(value = "파라미터 생략 - 물놀이 장소 아이디")
-    void getLostFoundBoardList_noPram() throws Exception {
-        // given
-
-        // when
-        ResultActions resultActions = mvc.perform(get("/api/lostItem?category=LOST&&searchWord=지갑&isResolved=false")
-                .cookie(new Cookie(JwtVO.ACCESS_TOKEN, accessToken))
-                .contentType(MediaType.APPLICATION_JSON));
-
-        // then
-        resultActions
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isCreated())
                 .andDo(MockMvcResultHandlers.print());
     }
 
