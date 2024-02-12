@@ -47,4 +47,25 @@ public class LostFoundBoardReqDto {
         @Size(max = 5, message = "사진은 최대 5개까지 추가할 수 있습니다")
         private List<MultipartFile> postImage;
     }
+
+    @Data
+    @AllArgsConstructor
+    public static class LostFoundBoardUpdateReqDto {
+        @NotNull
+        private Long lostFoundBoardId;
+
+        @Pattern(regexp = "(LOST|FOUND)$")
+        private String category;
+
+        @NotNull
+        private Long valleyId;
+
+        @NotBlank
+        @Size(max = 20, message = "제목은 20자 이하로 작성해주세요")
+        private String title;
+
+        @NotBlank
+        @Size(max = 256, message = "내용은 256자 이하로 작성해주세요")
+        private String content;
+    }
 }

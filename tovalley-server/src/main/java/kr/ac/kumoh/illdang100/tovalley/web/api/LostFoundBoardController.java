@@ -50,4 +50,13 @@ public class LostFoundBoardController {
 
         return new ResponseEntity<>(new ResponseDto<>(1, "분실물 게시글이 정상적으로 등록되었습니다", saveLostFoundBoardId), HttpStatus.CREATED);
     }
+
+    @PatchMapping(value = "/auth/lostItem")
+    public ResponseEntity<?> updateLostFoundBoard(@RequestBody @Valid LostFoundBoardUpdateReqDto lostFoundBoardUpdateReqDto,
+                                                  BindingResult bindingResult,
+                                                  @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        lostFoundBoardService.updateLostFoundBoard(lostFoundBoardUpdateReqDto, principalDetails.getMember().getId());
+
+        return new ResponseEntity<>(new ResponseDto<>(1, "분실물 게시글이 정상적으로 수정되었습니다", null), HttpStatus.OK);
+    }
 }

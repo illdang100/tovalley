@@ -27,8 +27,10 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import javax.persistence.EntityManager;
 import javax.servlet.http.Cookie;
 
+import static kr.ac.kumoh.illdang100.tovalley.dto.lost_found_board.LostFoundBoardReqDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.lost_found_board.LostFoundBoardReqDto.LostFoundBoardSaveReqDto;
 import static kr.ac.kumoh.illdang100.tovalley.util.TokenUtil.createTestAccessToken;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -78,6 +80,7 @@ class LostFoundBoardControllerTest extends DummyObject {
         LostFoundBoardSaveReqDto lostFoundBoardSaveReqDto = new LostFoundBoardSaveReqDto("LOST", valleyId, "잃어버림", "지갑 잃어버렸어요", null);
 
         String requestBody = om.writeValueAsString(lostFoundBoardSaveReqDto);
+
         // when
         ResultActions resultActions = mvc.perform(post("/api/auth/lostItem")
                 .content(requestBody)
@@ -87,6 +90,28 @@ class LostFoundBoardControllerTest extends DummyObject {
         // then
         resultActions
                 .andExpect(status().isCreated())
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    @DisplayName(value = "분실물 게시글 수정")
+    void updateLostFoundBoard() throws Exception {
+        // given
+        Long valleyId = 2L;
+        Long lostFoundBoardId = 2L;
+        LostFoundBoardUpdateReqDto lostFoundBoardUpdateReqDto = new LostFoundBoardUpdateReqDto(lostFoundBoardId, "LOST", valleyId, "지갑 잃어버렸습니다ㅠㅠ", "지갑 좀 찾아주세요 검정색 카드지갑 입니다!!");
+
+        String requestBody = om.writeValueAsString(lostFoundBoardUpdateReqDto);
+
+        // when
+        ResultActions resultActions = mvc.perform(patch("/api/auth/lostItem")
+                .content(requestBody)
+                .cookie(new Cookie(JwtVO.ACCESS_TOKEN, accessToken))
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // then
+        resultActions
+                .andExpect(status().isOk())
                 .andDo(MockMvcResultHandlers.print());
     }
 
