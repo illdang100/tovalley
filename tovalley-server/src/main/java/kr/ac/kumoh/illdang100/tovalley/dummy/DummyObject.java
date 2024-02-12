@@ -399,4 +399,17 @@ public class DummyObject {
                 .imageFile(new ImageFile("fileName", "fileUrl"))
                 .build();
     }
+
+    protected LostFoundBoard newLostFoundBoard(Long id, LostFoundEnum lostFoundEnum, WaterPlace waterPlace, Member member) {
+
+        return LostFoundBoard.builder()
+                .id(id)
+                .title("title")
+                .content("content")
+                .lostFoundEnum(lostFoundEnum)
+                .waterPlace(waterPlace)
+                .member(member)
+                .isResolved(false)
+                .build();
+    }
 }
