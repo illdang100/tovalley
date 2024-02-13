@@ -9,6 +9,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -23,5 +26,22 @@ public class LostFoundBoardImageServiceImpl implements LostFoundBoardImageServic
         uploadImageFiles.stream()
                 .map(imageFile -> LostFoundBoardImage.builder().lostFoundBoardId(lostFoundBoardId).imageFile(imageFile).build())
                 .forEach(lostFoundBoardImageRepository::save);
+    }
+
+    @Override
+    public void deleteLostFoundImageFiles(List<String> imageFileUrls, Long lostFoundBoardId) {
+        Map<String, LostFoundBoardImage> imageFileMap = lostFoundBoardImageRepository.findByLostFoundBoardId(lostFoundBoardId)
+                .stream()
+                .collect(Collectors.toMap(
+                        foundImage -> foundImage.getImageFile().getStoreFileUrl(),
+                        Function.identity()
+                ));
+
+        for (String imageUrl : imageFileUrls) {
+            LostFoundBoardImage foundImage = imageFileMap.get(imageUrl);
+            if (foundImage != null) {
+                lostFoundBoardImageRepository.delete(foundImage);
+            }
+        }
     }
 }

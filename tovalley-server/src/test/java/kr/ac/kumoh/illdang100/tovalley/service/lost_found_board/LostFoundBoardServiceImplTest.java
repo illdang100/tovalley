@@ -56,7 +56,7 @@ class LostFoundBoardServiceImplTest extends DummyObject {
         Long waterPlaceId = 1L;
         Long lostFoundBoardId = 1L;
 
-        LostFoundBoardUpdateReqDto lostFoundBoardUpdateReqDto = new LostFoundBoardUpdateReqDto(lostFoundBoardId, "LOST", waterPlaceId, "잃어버렸어요ㅠㅠ", "지갑 보신 분 계신가요?");
+        LostFoundBoardUpdateReqDto lostFoundBoardUpdateReqDto = new LostFoundBoardUpdateReqDto(lostFoundBoardId, "LOST", waterPlaceId, "잃어버렸어요ㅠㅠ", "지갑 보신 분 계신가요?", null, null);
 
         // stub
         Member member = newMockMember(memberId, "kakao_1234", "일당백", MemberEnum.CUSTOMER);

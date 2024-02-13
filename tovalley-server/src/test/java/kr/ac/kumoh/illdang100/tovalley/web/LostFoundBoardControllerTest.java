@@ -99,7 +99,7 @@ class LostFoundBoardControllerTest extends DummyObject {
         // given
         Long valleyId = 2L;
         Long lostFoundBoardId = 2L;
-        LostFoundBoardUpdateReqDto lostFoundBoardUpdateReqDto = new LostFoundBoardUpdateReqDto(lostFoundBoardId, "LOST", valleyId, "지갑 잃어버렸습니다ㅠㅠ", "지갑 좀 찾아주세요 검정색 카드지갑 입니다!!");
+        LostFoundBoardUpdateReqDto lostFoundBoardUpdateReqDto = new LostFoundBoardUpdateReqDto(lostFoundBoardId, "LOST", valleyId, "지갑 잃어버렸습니다ㅠㅠ", "지갑 좀 찾아주세요 검정색 카드지갑 입니다!!", null, null);
 
         String requestBody = om.writeValueAsString(lostFoundBoardUpdateReqDto);
 
