@@ -4,6 +4,7 @@ import kr.ac.kumoh.illdang100.tovalley.domain.Coordinate;
 import kr.ac.kumoh.illdang100.tovalley.domain.ImageFile;
 import kr.ac.kumoh.illdang100.tovalley.domain.accident.Accident;
 import kr.ac.kumoh.illdang100.tovalley.domain.accident.AccidentEnum;
+import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatRoom;
 import kr.ac.kumoh.illdang100.tovalley.domain.comment.Comment;
 import kr.ac.kumoh.illdang100.tovalley.domain.lost_found_board.LostFoundBoard;
 import kr.ac.kumoh.illdang100.tovalley.domain.lost_found_board.LostFoundBoardImage;
@@ -397,6 +398,15 @@ public class DummyObject {
                 .id(id)
                 .lostFoundBoardId(lostFoundBoardId)
                 .imageFile(new ImageFile("fileName", "fileUrl"))
+                .build();
+    }
+
+    protected ChatRoom newMockChatRoom(Long id, Member sender, Member recipient) {
+
+        return ChatRoom.builder()
+                .id(id)
+                .sender(sender)
+                .recipient(recipient)
                 .build();
     }
 }
