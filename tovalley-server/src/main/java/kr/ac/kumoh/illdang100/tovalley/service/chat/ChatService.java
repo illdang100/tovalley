@@ -14,6 +14,4 @@ public interface ChatService {
     Slice<ChatRoomRespDto> getChatRoomSlice(Long memberId, Pageable pageable);
 
     ChatMessageListRespDto getChatMessages(Long memberId, Long chatRoomId);
-
-
 }

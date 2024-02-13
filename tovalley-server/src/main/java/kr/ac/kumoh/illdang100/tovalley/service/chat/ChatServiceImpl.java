@@ -102,7 +102,23 @@ public class ChatServiceImpl implements ChatService {
      */
     @Override
     public Slice<ChatRoomRespDto> getChatRoomSlice(Long memberId, Pageable pageable) {
-        return null;
+        Slice<ChatRoomRespDto> sliceChatRoomsByMemberId = chatRoomRepository.findSliceChatRoomsByMemberId(memberId,
+                pageable);
+
+        List<ChatRoomRespDto> content = sliceChatRoomsByMemberId.getContent();
+        for (ChatRoomRespDto chatRoomRespDto : content) {
+
+            Long chatRoomId = chatRoomRespDto.getChatRoomId();
+            Optional<ChatMessage> lastMessageOpt = chatMessageRepository.findTopByChatRoomIdOrderByCreatedAtDesc(
+                    chatRoomId);
+
+            lastMessageOpt.ifPresent((lastMessage) -> {
+                chatRoomRespDto.changeLastMessage(lastMessage.getContent(),
+                        ChatUtil.convertZdtStringToLocalDateTime(lastMessage.getCreatedAt()));
+            });
+        }
+
+        return new SliceImpl<>(content, pageable, sliceChatRoomsByMemberId.hasNext());
     }
 
     @Override
