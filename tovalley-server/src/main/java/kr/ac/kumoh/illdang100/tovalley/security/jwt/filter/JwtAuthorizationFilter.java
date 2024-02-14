@@ -51,6 +51,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
         if (!isCookieVerified(request)) {
             sendLoginRequiredResponse(response);
+            return;
         }
 
         String accessToken = findAccessTokenFromCookie(request);
