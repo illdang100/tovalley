@@ -60,7 +60,7 @@ public class ChatApiController {
     }
 
     @GetMapping("/api/auth/chatroom")
-    public ResponseEntity<?> chatRoomList(@AuthenticationPrincipal PrincipalDetails principalDetails,
+    public ResponseEntity<?> findChatRoomList(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                           @PageableDefault(size = 10, sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable) {
         Slice<ChatRoomRespDto> result = chatService.getChatRoomSlice(principalDetails.getMember().getId(), pageable);
         return new ResponseEntity<>(new ResponseDto<>(1, "채팅방 목록 조회를 성공했습니다", result), HttpStatus.OK);
@@ -68,11 +68,11 @@ public class ChatApiController {
 
     // TODO: 채팅내역 조회
     @GetMapping("/api/auth/chat/messages/{chatRoomId}")
-    public ResponseEntity<?> chattingList(
+    public ResponseEntity<?> findChatMessages(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
-            @PathVariable("chatRoomId") Long chatRoomId) {
-        ChatMessageListRespDto result = chatService.getChatMessages(principalDetails.getMember().getId(),
-                chatRoomId);
+            @PathVariable("chatRoomId") Long chatRoomId,
+            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+        Slice<ChatMessageListRespDto> result = chatService.getChatMessages(principalDetails.getMember().getId(), chatRoomId, pageable);
         return new ResponseEntity<>(new ResponseDto<>(1, "채팅 메시지 목록 조회에 성공했습니다", result), HttpStatus.OK);
     }
 

@@ -427,7 +427,7 @@ public class DummyObject {
                 .senderId(senderId)
                 .content(content)
                 .createdAt(ZonedDateTime.now().toString())
-                .readCount(1)
+//                .readCount(1)
                 .build();
     }
 }

@@ -15,8 +15,10 @@ import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatMessageRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatRoom;
 import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatRoomRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
+import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberEnum;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberRepository;
 import kr.ac.kumoh.illdang100.tovalley.dto.chat.ChatReqDto.CreateNewChatRoomReqDto;
+import kr.ac.kumoh.illdang100.tovalley.dto.chat.ChatRespDto.ChatMessageListRespDto;
 import kr.ac.kumoh.illdang100.tovalley.dto.chat.ChatRespDto.ChatRoomRespDto;
 import kr.ac.kumoh.illdang100.tovalley.dto.chat.ChatRespDto.CreateNewChatRoomRespDto;
 import kr.ac.kumoh.illdang100.tovalley.dummy.DummyObject;
@@ -33,6 +35,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.test.context.ActiveProfiles;
 
 @ActiveProfiles("test")
@@ -176,5 +179,46 @@ class ChatServiceImplTest extends DummyObject {
                 .isEqualTo(mockChatMessage.getContent());
         Assertions.assertThat(result.getContent().get(0).getLastMessageTime())
                 .isEqualTo(ChatUtil.convertZdtStringToLocalDateTime(mockChatMessage.getCreatedAt()));
+    }
+
+    @Test
+    public void getChatMessages_test() {
+
+        // given
+        Long memberId = 1L;
+        Long chatRoomId = 1L;
+        Pageable pageable = PageRequest.of(0, 10, Direction.DESC, "createdAt");
+
+        Member sender = newMockMember(memberId, "username1", "nickname1", CUSTOMER);
+        Member recipient = newMockMember(memberId, "username2", "nickname2", CUSTOMER);
+        ChatRoom chatRoom = newMockChatRoom(chatRoomId, sender, recipient);
+
+        // 채팅 메시지 목록 생성
+        List<ChatMessage> mockChatMessages = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            mockChatMessages.add(ChatMessage.builder()
+                    .id("chatMessageId" + i)
+                    .senderId(sender.getId())
+                    .content("Test Message " + i)
+                    .createdAt(ZonedDateTime.now().minusMinutes(i).toString())
+                    .build());
+        }
+
+        // stub1
+        when(chatRoomRepository.findByIdAndMemberId(chatRoomId, memberId)).thenReturn(Optional.of(chatRoom));
+
+        // stub2
+        when(chatMessageRepository.findByChatRoomIdOrderByCreatedAtDesc(chatRoomId, pageable))
+                .thenReturn(new SliceImpl<>(mockChatMessages, pageable, true));
+
+        // when
+        Slice<ChatMessageListRespDto> result = chatService.getChatMessages(memberId, chatRoomId, pageable);
+
+        // then
+        Assertions.assertThat(result.getContent().get(0).getChatMessages().size()).isEqualTo(10);
+        Assertions.assertThat(result.getContent().get(0).getChatMessages().get(0).getSenderId()).isEqualTo(sender.getId());
+        Assertions.assertThat(result.getContent().get(0).getChatMessages().get(0).getContent()).isEqualTo("Test Message 0");
+        Assertions.assertThat(result.getContent().get(0).getChatMessages().get(9).getContent()).isEqualTo("Test Message 9");
+        Assertions.assertThat(result.getContent().get(0).getChatRoomId()).isEqualTo(chatRoomId);
     }
 }

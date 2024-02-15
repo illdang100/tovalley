@@ -1,7 +1,9 @@
 package kr.ac.kumoh.illdang100.tovalley.service.chat;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatMessage;
 import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatMessageRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatRoom;
@@ -10,6 +12,7 @@ import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberRepository;
 import kr.ac.kumoh.illdang100.tovalley.dto.chat.ChatReqDto.CreateNewChatRoomReqDto;
 import kr.ac.kumoh.illdang100.tovalley.dto.chat.ChatRespDto.ChatMessageListRespDto;
+import kr.ac.kumoh.illdang100.tovalley.dto.chat.ChatRespDto.ChatMessageRespDto;
 import kr.ac.kumoh.illdang100.tovalley.dto.chat.ChatRespDto.ChatRoomRespDto;
 import kr.ac.kumoh.illdang100.tovalley.dto.chat.ChatRespDto.CreateNewChatRoomRespDto;
 import kr.ac.kumoh.illdang100.tovalley.handler.ex.CustomApiException;
@@ -51,7 +54,7 @@ public class ChatServiceImpl implements ChatService {
 
         // 존재한다면 기존 채팅방 Pk 반환
         if (findChatRoomOpt.isPresent()) {
-                return new CreateNewChatRoomRespDto(false, findChatRoomOpt.get().getId());
+            return new CreateNewChatRoomRespDto(false, findChatRoomOpt.get().getId());
         }
 
         List<Member> members = memberRepository.findByIdOrNickname(senderId, recipientNick);
@@ -122,7 +125,35 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public ChatMessageListRespDto getChatMessages(Long memberId, Long chatRoomId) {
-        return null;
+    public Slice<ChatMessageListRespDto> getChatMessages(Long memberId, Long chatRoomId, Pageable pageable) {
+
+        // 해당 채팅방이 요청한 사용자가 속한 방인지 확인
+        Optional<ChatRoom> chatRoom = chatRoomRepository.findByIdAndMemberId(chatRoomId, memberId);
+        if (!chatRoom.isPresent()) {
+            throw new CustomApiException("해당 사용자가 속한 채팅방이 아닙니다");
+        }
+
+        // 해당 채팅방의 채팅 내역 조회 (페이징 처리 및 생성 시간 내림차순 정렬)
+        Slice<ChatMessage> chatMessages
+                = chatMessageRepository.findByChatRoomIdOrderByCreatedAtDesc(chatRoomId, pageable);
+
+        // ChatMessageListRespDto로 변환
+        List<ChatMessageRespDto> content = chatMessages.getContent().stream()
+                .map(chatMessage -> new ChatMessageRespDto(
+                        chatMessage.getId(),
+                        chatMessage.getSenderId(),
+                        chatMessage.getSenderId().equals(memberId),  // myMsg는 요청한 사용자가 메시지를 보낸 경우 true
+                        chatMessage.getContent(),
+                        ChatUtil.convertZdtStringToLocalDateTime(chatMessage.getCreatedAt()))
+                )
+                .collect(Collectors.toList());
+
+        // ChatMessageListRespDto에 chatRoomId와 chatMessages를 설정
+        ChatMessageListRespDto result = new ChatMessageListRespDto();
+        result.setChatRoomId(chatRoomId);
+        result.setChatMessages(content);
+
+        // Slice<ChatMessageListRespDto>로 반환
+        return new SliceImpl<>(Arrays.asList(result), pageable, chatMessages.hasNext());
     }
 }

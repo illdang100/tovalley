@@ -53,13 +53,14 @@ public class ChatRespDto {
     }
 
     @Data
+    @AllArgsConstructor
     public static class ChatMessageRespDto {
         private String chatMessageId;
         private Long senderId;
-        private boolean isMyMsg;
+        private boolean myMsg;
         private String content;
         @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "Asia/Seoul")
         private LocalDateTime createdAt;
-        private int reaCount;
+//        private int reaCount;
     }
 }
