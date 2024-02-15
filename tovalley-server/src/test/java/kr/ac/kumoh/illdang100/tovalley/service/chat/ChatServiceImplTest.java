@@ -132,4 +132,49 @@ class ChatServiceImplTest extends DummyObject {
         Assertions.assertThatThrownBy(() -> chatService.createOrGetChatRoom(senderId, reqDto))
                 .isInstanceOf(CustomApiException.class);
     }
+
+    @Test
+    public void getChatRoomSlice_success_test() {
+
+        // given
+        Long memberId = 1L;
+        Pageable pageable = PageRequest.of(0, 10);
+
+        ChatRoomRespDto mockChatRoomRespDto = ChatRoomRespDto.builder()
+                .chatRoomId(1L)
+                .chatRoomTitle("Test title")
+                .otherUserProfileImage("afsoijdosfiajasdofij")
+                .otherUserNick("testNick")
+                .createdChatRoomDate(LocalDateTime.now())
+                .build();
+
+        List<ChatRoomRespDto> chatRoomRespDtoList = new ArrayList<>();
+        chatRoomRespDtoList.add(mockChatRoomRespDto);
+        Slice<ChatRoomRespDto> mockSlice = new SliceImpl<>(chatRoomRespDtoList);
+
+        ChatMessage mockChatMessage = ChatMessage.builder()
+                .chatRoomId(1L)
+                .senderId(2L)
+                .content("Test message")
+                .createdAt(ZonedDateTime.now().toString())
+                .build();
+
+        // stub1
+        when(chatRoomRepository.findSliceChatRoomsByMemberId(memberId, pageable)).thenReturn(mockSlice);
+
+        // stub2
+        when(chatMessageRepository.findTopByChatRoomIdOrderByCreatedAtDesc(mockChatRoomRespDto.getChatRoomId()))
+                .thenReturn(Optional.ofNullable(mockChatMessage));
+
+        // when
+        Slice<ChatRoomRespDto> result = chatService.getChatRoomSlice(memberId, pageable);
+
+        // then
+        Assertions.assertThat(result.getContent().get(0).getChatRoomId())
+                .isEqualTo(mockChatRoomRespDto.getChatRoomId());
+        Assertions.assertThat(result.getContent().get(0).getLastMessageContent())
+                .isEqualTo(mockChatMessage.getContent());
+        Assertions.assertThat(result.getContent().get(0).getLastMessageTime())
+                .isEqualTo(ChatUtil.convertZdtStringToLocalDateTime(mockChatMessage.getCreatedAt()));
+    }
 }

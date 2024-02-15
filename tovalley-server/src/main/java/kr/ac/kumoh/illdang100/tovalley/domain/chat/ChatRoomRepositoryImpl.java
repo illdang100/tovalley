@@ -32,12 +32,13 @@ public class ChatRoomRepositoryImpl implements ChatRoomRepositoryCustom {
         JPAQuery<ChatRoomRespDto> query = queryFactory
                 .select(Projections.constructor(ChatRoomRespDto.class,
                         chatRoom.id,
-                        Expressions.asString(chatRoom.recipient.nickname.concat("와(과)의 채팅방입니다.")),
-                        chatRoom.recipient,
+                        Expressions.asString(chatRoom.recipient.nickname.concat(" 와(과)의 채팅방입니다.")),
                         chatRoom.recipient.imageFile.storeFileUrl,
-                        chatRoom.recipient.nickname
+                        chatRoom.recipient.nickname,
+                        chatRoom.createdDate
                 ))
                 .from(chatRoom)
+                .join(chatRoom.sender, member)
                 .where(member.id.eq(memberId))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize() + 1);

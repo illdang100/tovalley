@@ -1,9 +1,11 @@
 package kr.ac.kumoh.illdang100.tovalley.dummy;
 
+import java.time.ZonedDateTime;
 import kr.ac.kumoh.illdang100.tovalley.domain.Coordinate;
 import kr.ac.kumoh.illdang100.tovalley.domain.ImageFile;
 import kr.ac.kumoh.illdang100.tovalley.domain.accident.Accident;
 import kr.ac.kumoh.illdang100.tovalley.domain.accident.AccidentEnum;
+import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatMessage;
 import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatRoom;
 import kr.ac.kumoh.illdang100.tovalley.domain.comment.Comment;
 import kr.ac.kumoh.illdang100.tovalley.domain.lost_found_board.LostFoundBoard;
@@ -102,8 +104,8 @@ public class DummyObject {
     }
 
 
-
-    protected WaterPlace newWaterPlaceWithCity(String name, String province, String city, Double rating, Integer reviewCnt) {
+    protected WaterPlace newWaterPlaceWithCity(String name, String province, String city, Double rating,
+                                               Integer reviewCnt) {
 
         return WaterPlace.builder()
                 .waterPlaceName(name)
@@ -292,8 +294,8 @@ public class DummyObject {
                 .build();
     }
 
-    protected SpecialWeather newSpecialWeather (LocalDateTime time, WeatherAlertType weatherAlertType,
-                                                SpecialWeatherEnum category, String title) {
+    protected SpecialWeather newSpecialWeather(LocalDateTime time, WeatherAlertType weatherAlertType,
+                                               SpecialWeatherEnum category, String title) {
 
         return SpecialWeather.builder()
                 .announcementTime(time)
@@ -304,7 +306,7 @@ public class DummyObject {
                 .build();
     }
 
-    protected SpecialWeatherDetail newSpecialWeatherDetail (SpecialWeather specialWeather, String content) {
+    protected SpecialWeatherDetail newSpecialWeatherDetail(SpecialWeather specialWeather, String content) {
 
         return SpecialWeatherDetail.builder()
                 .specialWeather(specialWeather)
@@ -313,7 +315,7 @@ public class DummyObject {
 
     }
 
-    protected WaterPlaceWeather newWaterPlaceWeather (WaterPlace waterPlace, LocalDate date) {
+    protected WaterPlaceWeather newWaterPlaceWeather(WaterPlace waterPlace, LocalDate date) {
 
         return WaterPlaceWeather.builder()
                 .waterPlace(waterPlace)
@@ -331,7 +333,7 @@ public class DummyObject {
                 .build();
     }
 
-    protected WaterPlaceDetail newWaterPlaceDetail (WaterPlace waterPlace) {
+    protected WaterPlaceDetail newWaterPlaceDetail(WaterPlace waterPlace) {
 
         return WaterPlaceDetail.builder()
                 .waterPlace(waterPlace)
@@ -348,7 +350,7 @@ public class DummyObject {
                 .build();
     }
 
-    protected RescueSupply newRescueSupply (WaterPlace waterPlace) {
+    protected RescueSupply newRescueSupply(WaterPlace waterPlace) {
 
         return RescueSupply.builder()
                 .waterPlace(waterPlace)
@@ -361,7 +363,7 @@ public class DummyObject {
                 .build();
     }
 
-    protected RefreshToken newRefreshToken (String refreshToken) {
+    protected RefreshToken newRefreshToken(String refreshToken) {
 
         return RefreshToken.builder()
                 .refreshToken(refreshToken)
@@ -369,7 +371,8 @@ public class DummyObject {
                 .build();
     }
 
-    protected LostFoundBoard newLostFoundBoard(Long id, String title, String content, Member member, Boolean isResolved, LostFoundEnum lostFoundEnum, WaterPlace waterPlace) {
+    protected LostFoundBoard newLostFoundBoard(Long id, String title, String content, Member member, Boolean isResolved,
+                                               LostFoundEnum lostFoundEnum, WaterPlace waterPlace) {
 
         return LostFoundBoard.builder()
                 .id(id)
@@ -415,6 +418,16 @@ public class DummyObject {
                 .id(id)
                 .sender(sender)
                 .recipient(recipient)
+                .build();
+    }
+
+    protected ChatMessage newChatMessage(Long chatRoomId, Long senderId, String content) {
+        return ChatMessage.builder()
+                .chatRoomId(chatRoomId)
+                .senderId(senderId)
+                .content(content)
+                .createdAt(ZonedDateTime.now().toString())
+                .readCount(1)
                 .build();
     }
 }

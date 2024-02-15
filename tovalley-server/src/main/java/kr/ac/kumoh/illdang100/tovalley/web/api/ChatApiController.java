@@ -42,14 +42,16 @@ public class ChatApiController {
     //    private final SimpMessageSendingOperations template;
     private final SimpMessagingTemplate template;
 
-    // TODO: 채팅방 생성
-    @PostMapping("/auth/chatroom")
-    public ResponseEntity<?> createChatRoom(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                            @RequestBody @Valid final CreateNewChatRoomReqDto requestDto,
-                                            BindingResult bindingResult) {
+    @PostMapping("/api/auth/chatroom")
+//    @PostMapping("/api/chatroom")
+    public ResponseEntity<?> createChatRoom(
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
+            @RequestBody @Valid final CreateNewChatRoomReqDto requestDto,
+            BindingResult bindingResult) {
 
         CreateNewChatRoomRespDto respDto = chatService.createOrGetChatRoom(principalDetails.getMember().getId(),
                 requestDto);
+//        CreateNewChatRoomRespDto respDto = chatService.createOrGetChatRoom(1L, requestDto);
         if (respDto.isNew()) {
             return new ResponseEntity<>(new ResponseDto<>(1, "채팅방이 생성되었습니다", respDto), HttpStatus.CREATED);
         } else {
@@ -57,8 +59,7 @@ public class ChatApiController {
         }
     }
 
-    // TODO: 채팅방 리스트 조회
-    @GetMapping("/auth/chatroom")
+    @GetMapping("/api/auth/chatroom")
     public ResponseEntity<?> chatRoomList(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                           @PageableDefault(size = 10, sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable) {
         Slice<ChatRoomRespDto> result = chatService.getChatRoomSlice(principalDetails.getMember().getId(), pageable);
@@ -66,11 +67,13 @@ public class ChatApiController {
     }
 
     // TODO: 채팅내역 조회
-    @GetMapping("/auth/chat/messages/{chatRoomId}")
+    @GetMapping("/api/auth/chat/messages/{chatRoomId}")
     public ResponseEntity<?> chattingList(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @PathVariable("chatRoomId") Long chatRoomId) {
-        return null;
+        ChatMessageListRespDto result = chatService.getChatMessages(principalDetails.getMember().getId(),
+                chatRoomId);
+        return new ResponseEntity<>(new ResponseDto<>(1, "채팅 메시지 목록 조회에 성공했습니다", result), HttpStatus.OK);
     }
 
     /*
@@ -81,6 +84,8 @@ public class ChatApiController {
     // 사용자가 "/pub/chat/message"로 메시지를 전송하면 여기서 어떤 토픽의 메시지인지 구분하고 해당 토픽에 메시지를 전송한다.
     @MessageMapping("/chat/message") //websocket "/pub/chat/message"로 들어오는 메시지 처리
     public void sendMessage(@Payload Message message, @SessionAttribute(ChatUtil.MEMBER_ID) Long memberId) {
+        log.debug("sendMessage 동작!!");
+        template.convertAndSend("/sub/chat/room/" + message.getChatRoomId(), message); // /sub/chat/room/{roomId} - 구독
     }
 
     //

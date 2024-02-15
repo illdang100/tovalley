@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 public class ChatRespDto {
@@ -16,14 +17,28 @@ public class ChatRespDto {
     }
 
     @Data
+    @AllArgsConstructor
+    @Builder
     public static class ChatRoomRespDto {
         private Long chatRoomId;
         private String chatRoomTitle;
         private String otherUserProfileImage;
         private String otherUserNick;
+        @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "Asia/Seoul")
+        private LocalDateTime createdChatRoomDate;
         private String lastMessageContent;
         @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "Asia/Seoul")
         private LocalDateTime lastMessageTime;
+
+        public ChatRoomRespDto(Long chatRoomId, String chatRoomTitle, String otherUserProfileImage,
+                               String otherUserNick,
+                               LocalDateTime createdChatRoomDate) {
+            this.chatRoomId = chatRoomId;
+            this.chatRoomTitle = chatRoomTitle;
+            this.otherUserProfileImage = otherUserProfileImage;
+            this.otherUserNick = otherUserNick;
+            this.createdChatRoomDate = createdChatRoomDate;
+        }
 
         public void changeLastMessage(String lastMessageContent, LocalDateTime lastMessageTime) {
             this.lastMessageContent = lastMessageContent;

@@ -55,6 +55,24 @@ class ChatRoomRepositoryTest extends DummyObject {
         assertThat(findChatRoomOpt.get().getId()).isEqualTo(1L);
     }
 
+    @Test
+    public void findSliceChatRoomsByMemberId_test() {
+
+        // given
+        Long memberId = 1L; // 또는 테스트하려는 특정 멤버의 ID
+        int pageSize = 10; // 페이지 크기 설정
+        Pageable pageable = PageRequest.of(0, pageSize);
+
+        // when
+        Slice<ChatRoomRespDto> sliceChatRooms = chatRoomRepository.findSliceChatRoomsByMemberId(memberId, pageable);
+        List<ChatRoomRespDto> content = sliceChatRooms.getContent();
+        // then
+        assertThat(sliceChatRooms.getContent()).isNotEmpty(); // 내용이 비어있지 않음
+        assertThat(sliceChatRooms.getSize()).isEqualTo(pageSize); // 페이지 크기가 일치
+        assertThat(content.get(0).getChatRoomTitle()).isEqualTo("recipientNick1 와(과)의 채팅방입니다.");
+        assertThat(content.get(3).getChatRoomTitle()).isEqualTo("recipientNick4 와(과)의 채팅방입니다.");
+    }
+
     private void autoIncrementReset() {
 
         em.createNativeQuery("ALTER TABLE member ALTER COLUMN member_id RESTART WITH 1").executeUpdate();
