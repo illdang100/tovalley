@@ -10,10 +10,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ImageUtil {
+    public static final int MAX_IMAGE_COUNT = 5;
 
     public static List<ImageFile> uploadImageFile(S3Service s3Service, List<MultipartFile> multipartFiles) throws IOException {
         List<ImageFile> uploadImageFiles = new ArrayList<>();
-        if (ListUtil.isEmptyList(multipartFiles)) {
+        if (!ListUtil.isEmptyList(multipartFiles)) {
             uploadImageFiles = s3Service.upload(multipartFiles, FileRootPathVO.LOST_FOUND_BOARD_PATH);
         }
         return uploadImageFiles;

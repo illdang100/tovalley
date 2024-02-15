@@ -68,10 +68,8 @@ public class LostFoundBoardReqDto {
         @Size(max = 256, message = "내용은 256자 이하로 작성해주세요")
         private String content;
 
-        @Size(max = 5, message = "사진은 최대 5개까지 추가할 수 있습니다")
         private List<MultipartFile> postImage;
 
-        @Size(max = 5, message = "사진은 최대 5개까지 삭제할 수 있습니다")
         private List<String> deleteImage;
     }
 }

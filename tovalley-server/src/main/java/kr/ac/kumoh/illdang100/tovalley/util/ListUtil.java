@@ -4,6 +4,6 @@ import java.util.List;
 
 public class ListUtil {
     public static boolean isEmptyList(List<?> list) {
-        return (list != null && !list.isEmpty());
+        return list == null || list.isEmpty();
     }
 }

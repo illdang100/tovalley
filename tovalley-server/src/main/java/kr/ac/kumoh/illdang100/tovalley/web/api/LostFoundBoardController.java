@@ -1,12 +1,12 @@
 package kr.ac.kumoh.illdang100.tovalley.web.api;
 
 import kr.ac.kumoh.illdang100.tovalley.domain.ImageFile;
+import kr.ac.kumoh.illdang100.tovalley.domain.lost_found_board.LostFoundBoard;
 import kr.ac.kumoh.illdang100.tovalley.dto.ResponseDto;
 import kr.ac.kumoh.illdang100.tovalley.security.auth.PrincipalDetails;
 import kr.ac.kumoh.illdang100.tovalley.service.S3Service;
 import kr.ac.kumoh.illdang100.tovalley.service.lost_found_board.LostFoundBoardImageService;
 import kr.ac.kumoh.illdang100.tovalley.service.lost_found_board.LostFoundBoardService;
-import kr.ac.kumoh.illdang100.tovalley.util.ImageUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.List;
 
 import static kr.ac.kumoh.illdang100.tovalley.dto.lost_found_board.LostFoundBoardReqDto.*;
+import static kr.ac.kumoh.illdang100.tovalley.util.ImageUtil.*;
 
 @Slf4j
 @RestController
@@ -37,7 +38,7 @@ public class LostFoundBoardController {
 
         Long saveLostFoundBoardId = lostFoundBoardService.saveLostFoundBoard(lostFoundBoardSaveReqDto, principalDetails.getMember().getId());
 
-        List<ImageFile> uploadImageFiles = ImageUtil.uploadImageFile(s3Service, lostFoundBoardSaveReqDto.getPostImage());
+        List<ImageFile> uploadImageFiles = uploadImageFile(s3Service, lostFoundBoardSaveReqDto.getPostImage());
         lostFoundBoardImageService.saveLostFoundImageFile(uploadImageFiles, saveLostFoundBoardId);
 
         return new ResponseEntity<>(new ResponseDto<>(1, "분실물 게시글이 정상적으로 등록되었습니다", saveLostFoundBoardId), HttpStatus.CREATED);
@@ -48,15 +49,21 @@ public class LostFoundBoardController {
                                                   BindingResult bindingResult,
                                                   @AuthenticationPrincipal PrincipalDetails principalDetails) throws IOException {
 
-        lostFoundBoardService.updateLostFoundBoard(lostFoundBoardUpdateReqDto, principalDetails.getMember().getId());
+        Long memberId = principalDetails.getMember().getId();
+        List<String> deleteImage = lostFoundBoardUpdateReqDto.getDeleteImage();
+        Long lostFoundBoardId = lostFoundBoardUpdateReqDto.getLostFoundBoardId();
+
+        LostFoundBoard lostFoundBoard = lostFoundBoardService.updateLostFoundBoard(lostFoundBoardUpdateReqDto, memberId);
+
+        lostFoundBoardImageService.validateImageCount(lostFoundBoardUpdateReqDto, lostFoundBoard);
 
         // 사진 파일 삭제
-        s3Service.deleteFiles(lostFoundBoardUpdateReqDto.getDeleteImage());
-        lostFoundBoardImageService.deleteLostFoundImageFiles(lostFoundBoardUpdateReqDto.getDeleteImage(), lostFoundBoardUpdateReqDto.getLostFoundBoardId());
+        lostFoundBoardImageService.deleteLostFoundImageFiles(deleteImage, lostFoundBoardId, memberId);
+        s3Service.deleteFiles(deleteImage);
 
         // 새로운 사진 파일 등록
-        List<ImageFile> uploadImageFiles = ImageUtil.uploadImageFile(s3Service, lostFoundBoardUpdateReqDto.getPostImage());
-        lostFoundBoardImageService.saveLostFoundImageFile(uploadImageFiles, lostFoundBoardUpdateReqDto.getLostFoundBoardId());
+        List<ImageFile> uploadImageFiles = uploadImageFile(s3Service, lostFoundBoardUpdateReqDto.getPostImage());
+        lostFoundBoardImageService.saveLostFoundImageFile(uploadImageFiles, lostFoundBoardId);
 
         return new ResponseEntity<>(new ResponseDto<>(1, "분실물 게시글이 정상적으로 수정되었습니다", null), HttpStatus.OK);
     }

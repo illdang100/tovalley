@@ -124,13 +124,13 @@ class LostFoundBoardControllerTest extends DummyObject {
         WaterPlace waterPlace2 = newWaterPlace(2L, "대구계곡", "경상북도", 3.0, 3);
         waterPlaceRepository.save(waterPlace2);
 
-        lostFoundBoardRepository.save(newLostFoundBoard(1L, "지갑 보신 분", "지갑", member, false, LostFoundEnum.LOST, waterPlace1));
-        lostFoundBoardRepository.save(newLostFoundBoard(2L, "지갑 찾습니다.", "지갑", member, false, LostFoundEnum.LOST, waterPlace1));
-        lostFoundBoardRepository.save(newLostFoundBoard(3L, "폰 찾았어요", "아이폰14", member, false, LostFoundEnum.FOUND, waterPlace2));
-        lostFoundBoardRepository.save(newLostFoundBoard(4L, "폰 잃어버리신 분", "갤럭시S20", member, true, LostFoundEnum.FOUND, waterPlace2));
+        lostFoundBoardRepository.save(newMockLostFoundBoard(1L, "지갑 보신 분", "지갑", member, false, LostFoundEnum.LOST, waterPlace1));
+        lostFoundBoardRepository.save(newMockLostFoundBoard(2L, "지갑 찾습니다.", "지갑", member, false, LostFoundEnum.LOST, waterPlace1));
+        lostFoundBoardRepository.save(newMockLostFoundBoard(3L, "폰 찾았어요", "아이폰14", member, false, LostFoundEnum.FOUND, waterPlace2));
+        lostFoundBoardRepository.save(newMockLostFoundBoard(4L, "폰 잃어버리신 분", "갤럭시S20", member, true, LostFoundEnum.FOUND, waterPlace2));
 
-        commentRepository.save(newComment(1L, 1L));
-        commentRepository.save(newComment(2L, 1L));
+        commentRepository.save(newMockComment(1L, 1L));
+        commentRepository.save(newMockComment(2L, 1L));
 
         em.clear();
     }
