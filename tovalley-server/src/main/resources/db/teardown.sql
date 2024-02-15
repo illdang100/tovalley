@@ -15,4 +15,5 @@ truncate table special_weather_detail;
 truncate table lost_found_board;
 truncate table lost_found_board_image;
 truncate table comment;
+truncate table chat_room;
 SET REFERENTIAL_INTEGRITY TRUE; -- 모든 제약 조건 활성화

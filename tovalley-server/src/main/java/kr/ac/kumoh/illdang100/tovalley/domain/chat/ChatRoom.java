@@ -24,6 +24,7 @@ public class ChatRoom extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "chat_room_id")
     private Long id;
 
     @ManyToOne

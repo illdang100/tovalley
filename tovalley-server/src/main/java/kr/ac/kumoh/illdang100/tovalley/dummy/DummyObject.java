@@ -401,6 +401,14 @@ public class DummyObject {
                 .build();
     }
 
+    protected ChatRoom newChatRoom(Member sender, Member recipient) {
+
+        return ChatRoom.builder()
+                .sender(sender)
+                .recipient(recipient)
+                .build();
+    }
+
     protected ChatRoom newMockChatRoom(Long id, Member sender, Member recipient) {
 
         return ChatRoom.builder()

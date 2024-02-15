@@ -165,6 +165,16 @@ CREATE TABLE IF NOT EXISTS `email_code` (
     primary key (email_code_id)
 ) engine=InnoDB;
 
+CREATE TABLE IF NOT EXISTS `chat_room` (
+                                            `chat_room_id`	BIGINT	NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                                            `sender_id`	BIGINT,
+                                            `recipient_id`	BIGINT,
+                                            `created_date`	DATETIME(6)	NOT NULL,
+                                            `last_modified_date`	DATETIME(6)	NOT NULL,
+                                            FOREIGN KEY (sender_id) REFERENCES member(member_id),
+                                            FOREIGN KEY (recipient_id) REFERENCES member(member_id)
+) engine=InnoDB;
+
 CREATE TABLE `lost_found_board` (
                                   `id` BIGINT AUTO_INCREMENT PRIMARY KEY,
                                   `waterPlace_id` BIGINT,

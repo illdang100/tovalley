@@ -40,18 +40,18 @@ public class ChatServiceImpl implements ChatService {
      * @return
      */
     @Override
+    @Transactional
     public CreateNewChatRoomRespDto createOrGetChatRoom(Long senderId, CreateNewChatRoomReqDto requestDto) {
 
         // 요청하는 사용자와 상대방 간에 채팅방이 있는지 확인하는 로직 필요
         String recipientNick = requestDto.getRecipientNick();
 
-        Optional<Long> chatRoomIdOpt = chatRoomRepository.findIdBySenderIdAndRecipientNickname(
-                senderId, recipientNick);
-
+        Optional<ChatRoom> findChatRoomOpt
+                = chatRoomRepository.findBySenderIdAndRecipientNickname(senderId, recipientNick);
 
         // 존재한다면 기존 채팅방 Pk 반환
-        if (chatRoomIdOpt.isPresent()) {
-            return new CreateNewChatRoomRespDto(false, chatRoomIdOpt.get());
+        if (findChatRoomOpt.isPresent()) {
+                return new CreateNewChatRoomRespDto(false, findChatRoomOpt.get().getId());
         }
 
         List<Member> members = memberRepository.findByIdOrNickname(senderId, recipientNick);
