@@ -50,12 +50,12 @@ class LostFoundBoardServiceImplTest extends DummyObject {
         String memberEmail = "kakao_1234@naver.com";
         Member member = newMockMember(1L, "kakao_1234", "nickname1", MemberEnum.CUSTOMER);
         WaterPlace waterPlace = newWaterPlace(1L, "금오계곡", "경북", 3.5, 3);
-        LostFoundBoard lostFoundBoard = newLostFoundBoard(1L, "지갑 찾아요", "금오계곡에서 지갑 잃어버림 검정색 지갑", member, false, LostFoundEnum.LOST, waterPlace);
+        LostFoundBoard lostFoundBoard = newMockLostFoundBoard(1L, "지갑 찾아요", "금오계곡에서 지갑 잃어버림 검정색 지갑", member, false, LostFoundEnum.LOST, waterPlace);
 
         List<Comment> comments = new ArrayList<>();
-        comments.add(newComment(1L, 1L));
-        comments.add(newComment(2L, 1L));
-        comments.add(newComment(3L, 1L));
+        comments.add(newMockComment(1L, 1L));
+        comments.add(newMockComment(2L, 1L));
+        comments.add(newMockComment(3L, 1L));
 
         List<String> postImages = new ArrayList<>();
         postImages.add("https://imageUrl1.com");
@@ -63,7 +63,7 @@ class LostFoundBoardServiceImplTest extends DummyObject {
         postImages.add("https://imageUrl3.com");
 
         // stub
-        when(lostFoundBoardRepository.findById(anyLong())).thenReturn(Optional.of(lostFoundBoard));
+        when(lostFoundBoardRepository.findByIdWithMember(anyLong())).thenReturn(Optional.of(lostFoundBoard));
         when(commentRepository.findCommentByLostFoundBoardId(anyLong())).thenReturn(comments);
         when(lostFoundBoardImageRepository.findImageByLostFoundBoardId(anyLong())).thenReturn(postImages);
         when(commentRepository.countByLostFoundBoardId(anyLong())).thenReturn((long)comments.size());

@@ -1,5 +1,6 @@
 package kr.ac.kumoh.illdang100.tovalley.domain.lost_found_board;
 
+import kr.ac.kumoh.illdang100.tovalley.domain.ImageFile;
 import kr.ac.kumoh.illdang100.tovalley.domain.comment.CommentRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberRepository;
@@ -120,14 +121,14 @@ class LostFoundBoardRepositoryImplTest extends DummyObject {
         WaterPlace waterPlace2 = newWaterPlace("대구계곡", "경상북도", 3.0, 3);
         waterPlaceRepository.save(waterPlace2);
 
-        lostFoundBoardRepository.save(newLostFoundBoard(1L, "title1", "1234", member, false, LostFoundEnum.LOST, waterPlace1));
-        lostFoundBoardRepository.save(newLostFoundBoard(2L, "title2", "1234", member, true, LostFoundEnum.LOST, waterPlace1));
-        lostFoundBoardRepository.save(newLostFoundBoard(3L, "title3", "content3", member, false, LostFoundEnum.FOUND, waterPlace2));
-        lostFoundBoardRepository.save(newLostFoundBoard(4L, "title4", "content4", member, true, LostFoundEnum.FOUND, waterPlace2));
+        lostFoundBoardRepository.save(newMockLostFoundBoard(1L, "title1", "1234", member, false, LostFoundEnum.LOST, waterPlace1));
+        lostFoundBoardRepository.save(newMockLostFoundBoard(2L, "title2", "1234", member, true, LostFoundEnum.LOST, waterPlace1));
+        lostFoundBoardRepository.save(newMockLostFoundBoard(3L, "title3", "content3", member, false, LostFoundEnum.FOUND, waterPlace2));
+        lostFoundBoardRepository.save(newMockLostFoundBoard(4L, "title4", "content4", member, true, LostFoundEnum.FOUND, waterPlace2));
 
-        commentRepository.save(newComment(1L, 1L));
-        commentRepository.save(newComment(2L, 1L));
-        lostFoundBoardImageRepository.save(newLostFoundBoardImage(1L, 3L));
+        commentRepository.save(newMockComment(1L, 1L));
+        commentRepository.save(newMockComment(2L, 1L));
+        lostFoundBoardImageRepository.save(newMockLostFoundBoardImage(1L, 3L, new ImageFile("fileName", "fileUrl")));
     }
     private void autoIncrementReset() {
         em.createNativeQuery("ALTER TABLE member ALTER COLUMN member_id RESTART WITH 1").executeUpdate();

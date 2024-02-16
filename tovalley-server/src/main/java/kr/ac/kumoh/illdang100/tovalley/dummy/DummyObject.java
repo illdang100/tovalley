@@ -368,7 +368,7 @@ public class DummyObject {
                 .build();
     }
 
-    protected LostFoundBoard newLostFoundBoard(Long id, String title, String content, Member member, Boolean isResolved, LostFoundEnum lostFoundEnum, WaterPlace waterPlace) {
+    protected LostFoundBoard newMockLostFoundBoard(Long id, String title, String content, Member member, Boolean isResolved, LostFoundEnum lostFoundEnum, WaterPlace waterPlace) {
 
         return LostFoundBoard.builder()
                 .id(id)
@@ -381,7 +381,7 @@ public class DummyObject {
                 .build();
     }
 
-    protected Comment newComment(Long id, Long lostFoundBoardId) {
+    protected Comment newMockComment(Long id, Long lostFoundBoardId) {
 
         return Comment.builder()
                 .id(id)
@@ -391,12 +391,12 @@ public class DummyObject {
                 .build();
     }
 
-    protected LostFoundBoardImage newLostFoundBoardImage(Long id, Long lostFoundBoardId) {
+    protected LostFoundBoardImage newMockLostFoundBoardImage(Long id, Long lostFoundBoardId, ImageFile imageFile) {
 
         return LostFoundBoardImage.builder()
                 .id(id)
                 .lostFoundBoardId(lostFoundBoardId)
-                .imageFile(new ImageFile("fileName", "fileUrl"))
+                .imageFile(imageFile)
                 .build();
     }
 }

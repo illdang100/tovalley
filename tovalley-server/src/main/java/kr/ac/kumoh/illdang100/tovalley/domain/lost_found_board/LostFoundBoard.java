@@ -55,4 +55,11 @@ public class LostFoundBoard extends BaseTimeEntity {
         this.isResolved = isResolved;
         this.lostFoundEnum = lostFoundEnum;
     }
+
+    public void updateLostFoundBoard(WaterPlace waterPlace, String title, String content, LostFoundEnum lostFoundEnum) {
+        this.waterPlace = waterPlace;
+        this.title = title;
+        this.content = content;
+        this.lostFoundEnum = lostFoundEnum;
+    }
 }

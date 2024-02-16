@@ -36,7 +36,7 @@ import static kr.ac.kumoh.illdang100.tovalley.dto.review.ReviewRespDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.trip_schedule.TripScheduleRespDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.water_place.WaterPlaceRespDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.weather.WeatherRespDto.*;
-import static kr.ac.kumoh.illdang100.tovalley.util.EntityFinder.findLostFoundBoardByIdOrElseThrow;
+import static kr.ac.kumoh.illdang100.tovalley.util.EntityFinder.findLostFoundBoardByIdWithMemberOrElseThrow;
 
 @Slf4j
 @Service
@@ -161,7 +161,7 @@ public class PageServiceImpl implements PageService{
     @Override
     public LostFoundBoardDetailRespDto getLostFoundBoardDetail(long lostFoundBoardId, String refreshToken) {
 
-        LostFoundBoard findLostFoundBoard = findLostFoundBoardByIdOrElseThrow(lostFoundBoardRepository, lostFoundBoardId);
+        LostFoundBoard findLostFoundBoard = findLostFoundBoardByIdWithMemberOrElseThrow(lostFoundBoardRepository, lostFoundBoardId);
 
         PrincipalDetails principalDetails = jwtProcess.verify(refreshToken);
 
