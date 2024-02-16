@@ -47,6 +47,7 @@ public class ChatRespDto {
     }
 
     @Data
+    @AllArgsConstructor
     public static class ChatMessageListRespDto{
         private Long chatRoomId;
         private List<ChatMessageRespDto> chatMessages;
