@@ -105,27 +105,39 @@ public class ChatServiceImpl implements ChatService {
      */
     @Override
     public Slice<ChatRoomRespDto> getChatRoomSlice(Long memberId, Pageable pageable) {
-        Slice<ChatRoomRespDto> sliceChatRoomsByMemberId = chatRoomRepository.findSliceChatRoomsByMemberId(memberId,
-                pageable);
+        Slice<ChatRoomRespDto> sliceChatRoomsByMemberId = chatRoomRepository.findSliceChatRoomsByMemberId(memberId, pageable);
 
-        List<ChatRoomRespDto> content = sliceChatRoomsByMemberId.getContent();
-        for (ChatRoomRespDto chatRoomRespDto : content) {
-
-            Long chatRoomId = chatRoomRespDto.getChatRoomId();
-            Optional<ChatMessage> lastMessageOpt = chatMessageRepository.findTopByChatRoomIdOrderByCreatedAtDesc(
-                    chatRoomId);
-
-            lastMessageOpt.ifPresent((lastMessage) -> {
-                chatRoomRespDto.changeLastMessage(lastMessage.getContent(),
-                        ChatUtil.convertZdtStringToLocalDateTime(lastMessage.getCreatedAt()));
-            });
-        }
+        List<ChatRoomRespDto> content = processChatRooms(sliceChatRoomsByMemberId.getContent());
 
         return new SliceImpl<>(content, pageable, sliceChatRoomsByMemberId.hasNext());
     }
 
+    private List<ChatRoomRespDto> processChatRooms(List<ChatRoomRespDto> chatRooms) {
+        for (ChatRoomRespDto chatRoom : chatRooms) {
+
+            processChatRoom(chatRoom);
+        }
+        return chatRooms;
+    }
+
+    private void processChatRoom(ChatRoomRespDto chatRoom) {
+        Long chatRoomId = chatRoom.getChatRoomId();
+        Optional<ChatMessage> lastMessageOpt = chatMessageRepository.findTopByChatRoomIdOrderByCreatedAtDesc(chatRoomId);
+
+        lastMessageOpt.ifPresent((lastMessage) -> {
+            updateChatRoomWithLastMessage(chatRoom, lastMessage);
+        });
+    }
+
+    private void updateChatRoomWithLastMessage(ChatRoomRespDto chatRoom, ChatMessage lastMessage) {
+        chatRoom.changeLastMessage(lastMessage.getContent(),
+                ChatUtil.convertZdtStringToLocalDateTime(lastMessage.getCreatedAt()));
+    }
+
     @Override
     public Slice<ChatMessageListRespDto> getChatMessages(Long memberId, Long chatRoomId, Pageable pageable) {
+
+        // TODO: 추후, 사용자 읽음 처리 기능 구현 시, 모든 메시지 읽음 처리 구현해야함.
 
         // 해당 채팅방이 요청한 사용자가 속한 방인지 확인
         Optional<ChatRoom> chatRoom = chatRoomRepository.findByIdAndMemberId(chatRoomId, memberId);
