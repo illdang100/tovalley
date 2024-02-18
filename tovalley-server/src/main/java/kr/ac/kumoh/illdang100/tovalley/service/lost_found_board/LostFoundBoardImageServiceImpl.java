@@ -17,6 +17,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static kr.ac.kumoh.illdang100.tovalley.dto.lost_found_board.LostFoundBoardReqDto.*;
+import static kr.ac.kumoh.illdang100.tovalley.util.AuthorizationUtil.*;
 import static kr.ac.kumoh.illdang100.tovalley.util.EntityFinder.*;
 import static kr.ac.kumoh.illdang100.tovalley.util.ImageUtil.MAX_IMAGE_COUNT;
 import static kr.ac.kumoh.illdang100.tovalley.util.ListUtil.isEmptyList;
@@ -28,7 +29,6 @@ import static kr.ac.kumoh.illdang100.tovalley.util.ListUtil.isEmptyList;
 public class LostFoundBoardImageServiceImpl implements LostFoundBoardImageService {
     private final LostFoundBoardImageRepository lostFoundBoardImageRepository;
     private final LostFoundBoardRepository lostFoundBoardRepository;
-    private final LostFoundBoardService lostFoundBoardService;
 
     @Override
     @Transactional
@@ -63,7 +63,7 @@ public class LostFoundBoardImageServiceImpl implements LostFoundBoardImageServic
 
     public Boolean isAuthorizedToAccessLostFoundBoardImage(Long lostFoundBoardId, Long memberId) {
         LostFoundBoard findLostFoundBoard = findLostFoundBoardByIdWithMemberOrElseThrow(lostFoundBoardRepository, lostFoundBoardId);
-        return lostFoundBoardService.isAuthorizedToAccessBoard(findLostFoundBoard, memberId);
+        return isAuthorizedToAccessBoard(findLostFoundBoard, memberId);
     }
 
     @Override
@@ -75,5 +75,20 @@ public class LostFoundBoardImageServiceImpl implements LostFoundBoardImageServic
         if (currentImageSize - deleteImageSize + newImageSize > MAX_IMAGE_COUNT) {
             throw new CustomApiException("게시글에 저장할 수 있는 최대 이미지 개수를 초과했습니다");
         }
+    }
+
+    @Override
+    public List<String> deleteLostFoundBoardImageInBatch(Long lostFoundBoardId) {
+        List<LostFoundBoardImage> findLostFoundBoardImageList = lostFoundBoardImageRepository.findByLostFoundBoardId(lostFoundBoardId);
+
+        if (!findLostFoundBoardImageList.isEmpty()) {
+            lostFoundBoardImageRepository.deleteAllByIdInBatch(findLostFoundBoardImageList.stream()
+                    .map(LostFoundBoardImage::getId)
+                    .collect(Collectors.toList()));
+        }
+
+        return findLostFoundBoardImageList.stream()
+                .map(image -> image.getImageFile().getStoreFileName())
+                .collect(Collectors.toList());
     }
 }

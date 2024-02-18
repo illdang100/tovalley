@@ -1,5 +1,6 @@
 package kr.ac.kumoh.illdang100.tovalley.service.lost_found_board;
 
+import kr.ac.kumoh.illdang100.tovalley.domain.comment.Comment;
 import kr.ac.kumoh.illdang100.tovalley.domain.comment.CommentRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.lost_found_board.LostFoundBoard;
 import kr.ac.kumoh.illdang100.tovalley.domain.lost_found_board.LostFoundBoardImageRepository;
@@ -28,12 +29,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static kr.ac.kumoh.illdang100.tovalley.dto.lost_found_board.LostFoundBoardReqDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.lost_found_board.LostFoundBoardRespDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.util.ImageUtil.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ActiveProfiles("test")
@@ -53,6 +56,8 @@ class LostFoundBoardServiceImplTest extends DummyObject {
     private LostFoundBoardImageRepository lostFoundBoardImageRepository;
     @Mock
     private JwtProcess jwtProcess;
+    @Mock
+    private LostFoundBoardImageService lostFoundBoardImageService;
 
     @Test
     @DisplayName(value = "분실물 게시글 수정")
@@ -201,5 +206,56 @@ class LostFoundBoardServiceImplTest extends DummyObject {
 
         // then
         assertEquals(lostFoundBoardDetail.getPostImages().size(), imageUrlList.size());
+    }
+
+    @Test
+    @DisplayName("분실물 게시글 삭제 - 댓글x")
+    public void deleteLostFoundBoardTest() {
+        // given
+        Long memberId = 1L;
+        Long waterPlaceId = 1L;
+        Long lostFoundBoardId = 1L;
+
+        // stub
+        Member member = newMockMember(memberId, "kakao_1234", "일당백", MemberEnum.CUSTOMER);
+        WaterPlace waterPlace = newWaterPlace(waterPlaceId, "금오계곡", "경북", 3.0, 3);
+        LostFoundBoard lostFoundBoard = newMockLostFoundBoard(lostFoundBoardId, "title", "content", member, false, LostFoundEnum.LOST, waterPlace);
+
+        when(lostFoundBoardRepository.findByIdWithMember(lostFoundBoardId)).thenReturn(Optional.of(lostFoundBoard));
+
+        // when
+        lostFoundBoardService.deleteLostFoundBoard(lostFoundBoardId, memberId);
+
+        // then
+        verify(lostFoundBoardRepository).delete(lostFoundBoard);
+    }
+
+    @Test
+    @DisplayName("분실물 게시글 삭제 - 댓글o")
+    public void deleteLostFoundBoardWithCommentTest() {
+        // given
+        Long memberId = 1L;
+        Long waterPlaceId = 1L;
+        Long lostFoundBoardId = 1L;
+
+        // stub
+        Member member = newMockMember(memberId, "kakao_1234", "일당백", MemberEnum.CUSTOMER);
+        WaterPlace waterPlace = newWaterPlace(waterPlaceId, "금오계곡", "경북", 3.0, 3);
+        LostFoundBoard lostFoundBoard = newMockLostFoundBoard(lostFoundBoardId, "title", "content", member, false, LostFoundEnum.LOST, waterPlace);
+
+        List<Comment> commentList = new ArrayList<>();
+        commentList.add(newMockComment(1L, lostFoundBoardId));
+        commentList.add(newMockComment(2L, lostFoundBoardId));
+        commentList.add(newMockComment(3L, lostFoundBoardId));
+
+        when(lostFoundBoardRepository.findByIdWithMember(lostFoundBoardId)).thenReturn(Optional.of(lostFoundBoard));
+        when(commentRepository.findCommentByLostFoundBoardId(lostFoundBoardId)).thenReturn(commentList);
+
+        // when
+        lostFoundBoardService.deleteLostFoundBoard(lostFoundBoardId, memberId);
+
+        // then
+        verify(commentRepository).deleteAllByIdInBatch(commentList.stream().map(Comment::getId).collect(Collectors.toList()));
+        verify(lostFoundBoardRepository).delete(lostFoundBoard);
     }
 }

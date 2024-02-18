@@ -1,5 +1,6 @@
 package kr.ac.kumoh.illdang100.tovalley.service.lost_found_board;
 
+import kr.ac.kumoh.illdang100.tovalley.domain.comment.Comment;
 import kr.ac.kumoh.illdang100.tovalley.domain.comment.CommentRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.lost_found_board.*;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
@@ -12,7 +13,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static kr.ac.kumoh.illdang100.tovalley.dto.lost_found_board.LostFoundBoardReqDto.*;
+import static kr.ac.kumoh.illdang100.tovalley.util.AuthorizationUtil.*;
 import static kr.ac.kumoh.illdang100.tovalley.util.EntityFinder.*;
 
 @Slf4j
@@ -24,8 +29,8 @@ public class LostFoundBoardServiceImpl implements LostFoundBoardService {
     private final LostFoundBoardRepository lostFoundBoardRepository;
     private final CommentRepository commentRepository;
     private final MemberRepository memberRepository;
-    private final LostFoundBoardImageRepository lostFoundBoardImageRepository;
     private final WaterPlaceRepository waterPlaceRepository;
+    private final LostFoundBoardImageService lostFoundBoardImageService;
 
     @Override
     @Transactional
@@ -49,7 +54,7 @@ public class LostFoundBoardServiceImpl implements LostFoundBoardService {
     @Transactional
     public LostFoundBoard updateLostFoundBoard(LostFoundBoardUpdateReqDto lostFoundBoardUpdateReqDto, Long memberId) {
         LostFoundBoard findLostFoundBoard = findLostFoundBoardByIdWithMemberOrElseThrow(lostFoundBoardRepository, lostFoundBoardUpdateReqDto.getLostFoundBoardId());
-        if(!isAuthorizedToAccessBoard(findLostFoundBoard, memberId)) {
+        if (!isAuthorizedToAccessBoard(findLostFoundBoard, memberId)) {
             throw new CustomApiException("게시글 작성자에게만 수정 권한이 있습니다");
         }
 
@@ -60,12 +65,25 @@ public class LostFoundBoardServiceImpl implements LostFoundBoardService {
     }
 
     @Override
-    public Boolean isAuthorizedToAccessBoard(LostFoundBoard lostFoundBoard, Long memberId) {
-        boolean result = false;
-        Member member = lostFoundBoard.getMember();
-        if (member != null) {
-            result = lostFoundBoard.getMember().getId().equals(memberId);
+    @Transactional
+    public void deleteLostFoundBoard(Long lostFoundBoardId, Long memberId) {
+
+        LostFoundBoard findLostFoundBoard = findLostFoundBoardByIdWithMemberOrElseThrow(lostFoundBoardRepository, lostFoundBoardId);
+
+        isAuthorizedToAccessBoard(findLostFoundBoard, memberId);
+
+        deleteCommentByLostFoundBoardIdInBatch(lostFoundBoardId);
+
+        lostFoundBoardRepository.delete(findLostFoundBoard);
+    }
+
+    public void deleteCommentByLostFoundBoardIdInBatch(Long lostFoundBoardId) {
+        List<Comment> findCommentList = commentRepository.findCommentByLostFoundBoardId(lostFoundBoardId);
+
+        if (!findCommentList.isEmpty()) {
+            commentRepository.deleteAllByIdInBatch(findCommentList.stream()
+                    .map(Comment::getId)
+                    .collect(Collectors.toList()));
         }
-        return result;
     }
 }

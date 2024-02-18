@@ -67,4 +67,16 @@ public class LostFoundBoardController {
 
         return new ResponseEntity<>(new ResponseDto<>(1, "분실물 게시글이 정상적으로 수정되었습니다", null), HttpStatus.OK);
     }
+
+    @DeleteMapping(value = "/auth/lostItem/{lostFoundBoardId}")
+    public ResponseEntity<?> deleteLostFoundBoard(@PathVariable("lostFoundBoardId") long lostFoundBoardId,
+                                                  @AuthenticationPrincipal PrincipalDetails principalDetails) {
+
+        List<String> deleteLostFoundBoardImageFileName = lostFoundBoardImageService.deleteLostFoundBoardImageInBatch(lostFoundBoardId);
+        s3Service.deleteFiles(deleteLostFoundBoardImageFileName);
+
+        lostFoundBoardService.deleteLostFoundBoard(lostFoundBoardId, principalDetails.getMember().getId());
+
+        return new ResponseEntity<>(new ResponseDto<>(1, "분실물 게시글이 정상적으로 삭제되었습니다", null), HttpStatus.OK);
+    }
 }
