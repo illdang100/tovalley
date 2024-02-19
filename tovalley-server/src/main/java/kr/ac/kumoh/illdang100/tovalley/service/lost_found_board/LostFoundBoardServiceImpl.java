@@ -48,7 +48,7 @@ public class LostFoundBoardServiceImpl implements LostFoundBoardService {
     @Override
     @Transactional
     public LostFoundBoard updateLostFoundBoard(LostFoundBoardUpdateReqDto lostFoundBoardUpdateReqDto, Long memberId) {
-        LostFoundBoard findLostFoundBoard = findLostFoundBoardByIdWithMemberOrElseThrow(lostFoundBoardRepository, lostFoundBoardUpdateReqDto.getLostFoundBoardId());
+        LostFoundBoard findLostFoundBoard = findLostFoundBoardByIdWithMemberOrElseThrowEx(lostFoundBoardRepository, lostFoundBoardUpdateReqDto.getLostFoundBoardId());
         if(!isAuthorizedToAccessBoard(findLostFoundBoard, memberId)) {
             throw new CustomApiException("게시글 작성자에게만 수정 권한이 있습니다");
         }
@@ -67,5 +67,12 @@ public class LostFoundBoardServiceImpl implements LostFoundBoardService {
             result = lostFoundBoard.getMember().getId().equals(memberId);
         }
         return result;
+    }
+
+    @Override
+    @Transactional
+    public void updateResolvedStatus(Long lostFoundBoardId, Boolean isResolved) {
+        LostFoundBoard findLostFoundBoard = findLostFoundBoardOrElseThrowEx(lostFoundBoardRepository, lostFoundBoardId);
+        findLostFoundBoard.updateResolvedStatus(isResolved);
     }
 }

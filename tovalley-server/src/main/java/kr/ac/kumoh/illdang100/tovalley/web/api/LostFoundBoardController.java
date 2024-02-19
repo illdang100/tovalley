@@ -67,4 +67,14 @@ public class LostFoundBoardController {
 
         return new ResponseEntity<>(new ResponseDto<>(1, "분실물 게시글이 정상적으로 수정되었습니다", null), HttpStatus.OK);
     }
+
+    @PatchMapping(value = "/auth/lostItem/{lostFoundBoardId}")
+    public ResponseEntity<?> updateResolvedStatus(@PathVariable(value = "lostFoundBoardId")Long lostFoundBoardId,
+                                                  @RequestParam Boolean isResolved) {
+
+        lostFoundBoardService.updateResolvedStatus(lostFoundBoardId, isResolved);
+
+        String result = isResolved ? "해결 완료" : "해결 미완료";
+        return new ResponseEntity<>(new ResponseDto<>(1, "분실물 게시글 상태[" + result + "]가 변경되었습니다", null), HttpStatus.OK);
+    }
 }

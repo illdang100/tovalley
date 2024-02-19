@@ -202,4 +202,32 @@ class LostFoundBoardServiceImplTest extends DummyObject {
         // then
         assertEquals(lostFoundBoardDetail.getPostImages().size(), imageUrlList.size());
     }
+
+    @Test
+    @DisplayName("게시물 해결완료 상태 변경(해결 완료 -> 해결 미완료")
+    public void updateResolvedStatusToNotResolved() {
+        // given
+        Long memberId = 1L;
+        Long waterPlaceId = 1L;
+        Long lostFoundBoardId = 1L;
+
+        // stub
+        Member member = newMockMember(memberId, "kakao_1234", "일당백", MemberEnum.CUSTOMER);
+        WaterPlace waterPlace = newWaterPlace(waterPlaceId, "금오계곡", "경북", 3.0, 3);
+        LostFoundBoard lostFoundBoard = newMockLostFoundBoard(lostFoundBoardId, "title", "content", member, false, LostFoundEnum.LOST, waterPlace);
+
+        when(lostFoundBoardRepository.findById(waterPlaceId)).thenReturn(Optional.of(lostFoundBoard));
+
+        // when
+        lostFoundBoardService.updateResolvedStatus(lostFoundBoardId, true);
+
+        // stub2
+        when(jwtProcess.verify(any())).thenReturn(new PrincipalDetails(member));
+        when(lostFoundBoardRepository.findByIdWithMemberAndWaterPlace(lostFoundBoardId)).thenReturn(Optional.of(lostFoundBoard));
+
+        LostFoundBoardDetailRespDto lostFoundBoardDetail = pageService.getLostFoundBoardDetail(lostFoundBoardId, "refreshToken");
+
+        // then
+        assertEquals(lostFoundBoardDetail.getIsResolved(), true);
+    }
 }

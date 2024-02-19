@@ -62,7 +62,7 @@ public class LostFoundBoardImageServiceImpl implements LostFoundBoardImageServic
     }
 
     public Boolean isAuthorizedToAccessLostFoundBoardImage(Long lostFoundBoardId, Long memberId) {
-        LostFoundBoard findLostFoundBoard = findLostFoundBoardByIdWithMemberOrElseThrow(lostFoundBoardRepository, lostFoundBoardId);
+        LostFoundBoard findLostFoundBoard = findLostFoundBoardByIdWithMemberOrElseThrowEx(lostFoundBoardRepository, lostFoundBoardId);
         return lostFoundBoardService.isAuthorizedToAccessBoard(findLostFoundBoard, memberId);
     }
 

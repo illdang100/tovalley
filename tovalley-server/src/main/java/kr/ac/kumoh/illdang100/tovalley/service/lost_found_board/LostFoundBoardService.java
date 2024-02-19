@@ -14,4 +14,6 @@ public interface LostFoundBoardService {
     // 분실물 게시글 삭제
 
     Boolean isAuthorizedToAccessBoard(LostFoundBoard lostFoundBoard, Long memberId);
+
+    void updateResolvedStatus(Long lostFoundBoardId, Boolean isResolved);
 }

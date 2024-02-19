@@ -62,4 +62,8 @@ public class LostFoundBoard extends BaseTimeEntity {
         this.content = content;
         this.lostFoundEnum = lostFoundEnum;
     }
+
+    public void updateResolvedStatus(Boolean isResolved) {
+        this.isResolved = isResolved;
+    }
 }
