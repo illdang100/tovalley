@@ -8,6 +8,6 @@ import java.util.Optional;
 
 public interface LostFoundBoardRepository extends JpaRepository<LostFoundBoard, Long>, LostFoundBoardRepositoryCustom {
 
-    @Query("select lfb from LostFoundBoard lfb JOIN FETCH lfb.member m where lfb.id = :lostFoundBoardId")
-    Optional<LostFoundBoard> findByIdWithMember(@Param("lostFoundBoardId")long lostFoundBoardId);
+    @Query("select lfb from LostFoundBoard lfb JOIN FETCH lfb.member m JOIN FETCH lfb.waterPlace wp where lfb.id = :lostFoundBoardId")
+    Optional<LostFoundBoard> findByIdWithMemberAndWaterPlace(@Param("lostFoundBoardId")long lostFoundBoardId);
 }

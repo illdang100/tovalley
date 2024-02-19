@@ -169,17 +169,26 @@ public class PageServiceImpl implements PageService{
                 .title(findLostFoundBoard.getTitle())
                 .content(findLostFoundBoard.getContent())
                 .author(findLostFoundBoard.getMember().getNickname())
+                .waterPlaceName(findLostFoundBoard.getWaterPlace().getWaterPlaceName())
+                .waterPlaceAddress(findLostFoundBoard.getWaterPlace().getAddress())
                 .postCreateAt(findLostFoundBoard.getCreatedDate())
+                .isResolved(findLostFoundBoard.getIsResolved())
+                .isMyBoard(isMyBoard(findLostFoundBoard, principalDetails.getMember().getId()))
+                .boardAuthorProfile(findLostFoundBoard.getMember().getImageFile() != null ? findLostFoundBoard.getMember().getImageFile().getStoreFileUrl(): null)
                 .comments(findCommentDetails(lostFoundBoardId, principalDetails.getMember().getEmail()))
                 .postImages(lostFoundBoardImageRepository.findImageByLostFoundBoardId(lostFoundBoardId))
                 .commentCnt(commentRepository.countByLostFoundBoardId(lostFoundBoardId))
                 .build();
     }
 
+    private Boolean isMyBoard(LostFoundBoard lostFoundBoard, Long memberId) {
+        return lostFoundBoard.getMember().getId().equals(memberId);
+    }
+
     private List<CommentDetailRespDto> findCommentDetails(long lostFoundBoardId, String memberEmail) {
         return commentRepository.findCommentByLostFoundBoardId(lostFoundBoardId)
                 .stream()
-                .map(c -> new CommentDetailRespDto(c.getAuthorEmail(), c.getContent(), c.getCreatedDate(), isMyComment(memberEmail, c.getAuthorEmail())))
+                .map(c -> new CommentDetailRespDto(c.getId(), c.getAuthorEmail(), c.getContent(), c.getCreatedDate(), isMyComment(memberEmail, c.getAuthorEmail())))
                 .collect(Collectors.toList());
     }
 

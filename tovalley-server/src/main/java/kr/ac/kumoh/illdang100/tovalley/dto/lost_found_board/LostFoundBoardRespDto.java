@@ -34,9 +34,14 @@ public class LostFoundBoardRespDto {
         private String title;
         private String content;
         private String author;
+        private String waterPlaceName;
+        private String waterPlaceAddress;
         @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
         private LocalDateTime postCreateAt;
         private List<String> postImages;
+        private Boolean isResolved;
+        private Boolean isMyBoard;
+        private String boardAuthorProfile;
         private Long commentCnt;
         private List<CommentDetailRespDto> comments;
     }
@@ -44,6 +49,7 @@ public class LostFoundBoardRespDto {
     @Data
     @AllArgsConstructor
     public static class CommentDetailRespDto {
+        private Long commentId;
         private String commentAuthor;
         private String commentContent;
         @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")

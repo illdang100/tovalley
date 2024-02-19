@@ -69,7 +69,7 @@ class LostFoundBoardServiceImplTest extends DummyObject {
         WaterPlace waterPlace = newWaterPlace(waterPlaceId, "금오계곡", "경북", 3.0, 3);
         LostFoundBoard lostFoundBoard = newMockLostFoundBoard(lostFoundBoardId, "title", "content", member, false, LostFoundEnum.LOST, waterPlace);
 
-        when(lostFoundBoardRepository.findByIdWithMember(lostFoundBoardId)).thenReturn(Optional.of(lostFoundBoard));
+        when(lostFoundBoardRepository.findByIdWithMemberAndWaterPlace(lostFoundBoardId)).thenReturn(Optional.of(lostFoundBoard));
         when(waterPlaceRepository.findById(waterPlaceId)).thenReturn(Optional.of(waterPlace));
 
         // when
@@ -112,7 +112,7 @@ class LostFoundBoardServiceImplTest extends DummyObject {
             imageUrlList.add( "fileUrl" + i);
         }
 
-        when(lostFoundBoardRepository.findByIdWithMember(lostFoundBoardId)).thenReturn(Optional.of(lostFoundBoard));
+        when(lostFoundBoardRepository.findByIdWithMemberAndWaterPlace(lostFoundBoardId)).thenReturn(Optional.of(lostFoundBoard));
         when(waterPlaceRepository.findById(waterPlaceId)).thenReturn(Optional.of(waterPlace));
 
         try {
@@ -151,7 +151,7 @@ class LostFoundBoardServiceImplTest extends DummyObject {
             imageUrlList.add( "fileUrl" + i);
         }
 
-        when(lostFoundBoardRepository.findByIdWithMember(lostFoundBoardId)).thenReturn(Optional.of(lostFoundBoard));
+        when(lostFoundBoardRepository.findByIdWithMemberAndWaterPlace(lostFoundBoardId)).thenReturn(Optional.of(lostFoundBoard));
         when(waterPlaceRepository.findById(waterPlaceId)).thenReturn(Optional.of(waterPlace));
 
         try {
@@ -187,7 +187,7 @@ class LostFoundBoardServiceImplTest extends DummyObject {
             imageUrlList.add( "fileUrl" + i);
         }
 
-        when(lostFoundBoardRepository.findByIdWithMember(lostFoundBoardId)).thenReturn(Optional.of(lostFoundBoard));
+        when(lostFoundBoardRepository.findByIdWithMemberAndWaterPlace(lostFoundBoardId)).thenReturn(Optional.of(lostFoundBoard));
         when(waterPlaceRepository.findById(waterPlaceId)).thenReturn(Optional.of(waterPlace));
         when(lostFoundBoardImageRepository.findImageByLostFoundBoardId(lostFoundBoardId)).thenReturn(imageUrlList);
 
