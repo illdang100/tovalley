@@ -10,7 +10,6 @@ import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberEnum;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlace;
 import kr.ac.kumoh.illdang100.tovalley.dummy.DummyObject;
-import kr.ac.kumoh.illdang100.tovalley.security.auth.PrincipalDetails;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtProcess;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,8 +39,6 @@ class LostFoundBoardServiceImplTest extends DummyObject {
     private CommentRepository commentRepository;
     @Mock
     private LostFoundBoardImageRepository lostFoundBoardImageRepository;
-    @Mock
-    private JwtProcess jwtProcess;
 
     @Test
     public void getLostFoundBoardDetails() {
@@ -67,10 +64,9 @@ class LostFoundBoardServiceImplTest extends DummyObject {
         when(commentRepository.findCommentByLostFoundBoardId(anyLong())).thenReturn(comments);
         when(lostFoundBoardImageRepository.findImageByLostFoundBoardId(anyLong())).thenReturn(postImages);
         when(commentRepository.countByLostFoundBoardId(anyLong())).thenReturn((long)comments.size());
-        when(jwtProcess.verify(any())).thenReturn(new PrincipalDetails(member));
 
         // when
-        LostFoundBoardDetailRespDto lostFoundBoardDetail = pageService.getLostFoundBoardDetail(lostFoundBoardId, "refreshToken");
+        LostFoundBoardDetailRespDto lostFoundBoardDetail = pageService.getLostFoundBoardDetail(lostFoundBoardId, member);
 
         // then
         assertThat(lostFoundBoardDetail.getTitle()).isEqualTo("지갑 찾아요");

@@ -6,7 +6,6 @@ import kr.ac.kumoh.illdang100.tovalley.dto.ResponseDto;
 import kr.ac.kumoh.illdang100.tovalley.dto.lost_found_board.LostFoundBoardReqDto;
 import kr.ac.kumoh.illdang100.tovalley.security.auth.PrincipalDetails;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtProcess;
-import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtVO;
 import kr.ac.kumoh.illdang100.tovalley.service.page.PageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -76,10 +75,10 @@ public class PageApiController {
     }
 
     @GetMapping("/lostItem/{lostFoundBoardId}")
-    public ResponseEntity<?> getLostFoundBoardDetail(@PathVariable long lostFoundBoardId,
-                                                     @CookieValue(JwtVO.REFRESH_TOKEN) String refreshToken) {
+    public ResponseEntity<?> getLostFoundBoardDetail(@PathVariable Long lostFoundBoardId,
+                                                     @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
-        LostFoundBoardDetailRespDto lostFoundBoardDetail = pageService.getLostFoundBoardDetail(lostFoundBoardId, refreshToken);
+        LostFoundBoardDetailRespDto lostFoundBoardDetail = pageService.getLostFoundBoardDetail(lostFoundBoardId, principalDetails.getMember());
 
         return new ResponseEntity<>(new ResponseDto<>(1, "분실물 찾기 상세 페이지 조회를 성공했습니다", lostFoundBoardDetail), HttpStatus.OK);
     }
