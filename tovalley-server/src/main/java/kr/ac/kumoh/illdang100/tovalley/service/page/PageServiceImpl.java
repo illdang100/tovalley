@@ -172,6 +172,7 @@ public class PageServiceImpl implements PageService{
                 .waterPlaceName(findLostFoundBoard.getWaterPlace().getWaterPlaceName())
                 .waterPlaceAddress(findLostFoundBoard.getWaterPlace().getAddress())
                 .postCreateAt(findLostFoundBoard.getCreatedDate())
+                .isResolved(findLostFoundBoard.getIsResolved())
                 .isMyBoard(isMyBoard(findLostFoundBoard, principalDetails.getMember().getId()))
                 .boardAuthorProfile(findLostFoundBoard.getMember().getImageFile() != null ? findLostFoundBoard.getMember().getImageFile().getStoreFileUrl(): null)
                 .comments(findCommentDetails(lostFoundBoardId, principalDetails.getMember().getEmail()))

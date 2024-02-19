@@ -39,6 +39,7 @@ public class LostFoundBoardRespDto {
         @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
         private LocalDateTime postCreateAt;
         private List<String> postImages;
+        private Boolean isResolved;
         private Boolean isMyBoard;
         private String boardAuthorProfile;
         private Long commentCnt;
