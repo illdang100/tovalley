@@ -72,6 +72,6 @@ public class EntityFinder {
     }
 
     public static LostFoundBoard findLostFoundBoardByIdWithMemberOrElseThrow(LostFoundBoardRepository lostFoundBoardRepository, long lostFoundBoardId) {
-        return lostFoundBoardRepository.findByIdWithMember(lostFoundBoardId).orElseThrow(() -> new CustomApiException("분실물 찾기 게시글[" + lostFoundBoardId + "]이 존재하지 않습니다"));
+        return lostFoundBoardRepository.findByIdWithMemberAndWaterPlace(lostFoundBoardId).orElseThrow(() -> new CustomApiException("분실물 찾기 게시글[" + lostFoundBoardId + "]이 존재하지 않습니다"));
     }
 }
