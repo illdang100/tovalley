@@ -271,7 +271,6 @@ public class ChatServiceImpl implements ChatService {
         if (!allMembersParticipatingInChatRoom) {
             // 상대방에게 알림 전송
             sendNotification(message, senderId, chatRoomId);
-            return;
         }
 
         // 메시지 전송
