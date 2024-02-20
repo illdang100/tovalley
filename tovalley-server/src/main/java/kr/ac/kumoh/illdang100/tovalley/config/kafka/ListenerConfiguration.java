@@ -2,7 +2,8 @@ package kr.ac.kumoh.illdang100.tovalley.config.kafka;
 
 import com.google.common.collect.ImmutableMap;
 import java.util.Map;
-import kr.ac.kumoh.illdang100.tovalley.kafka.Message;
+import kr.ac.kumoh.illdang100.tovalley.domain.chat.kafka.Message;
+import kr.ac.kumoh.illdang100.tovalley.domain.chat.kafka.Notification;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,6 +22,7 @@ public class ListenerConfiguration {
     @Value("${kafka.server}")
     private String kafkaServer;
 
+    // 같은 토픽의 메시지를 소비하면서 서로 다른 역할을 하는 Consumer들이 아니라면, 같은 Consumer Group ID를 사용해도 된다.
     @Value("${kafka.consumer.id}")
     private String kafkaConsumerGroupId;
 
@@ -31,7 +33,7 @@ public class ListenerConfiguration {
     여기서 ConsumerFactory는 Kafka Consumer를 생성하고, ContainerProperties는 리스너 컨테이너의 구성을 정의한다.
      */
     @Bean
-    ConcurrentKafkaListenerContainerFactory<String, Message> kafkaListenerContainerFactory() {
+    ConcurrentKafkaListenerContainerFactory<String, Message> kafkaChatContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, Message> factory = new ConcurrentKafkaListenerContainerFactory<>();
 
         /*
@@ -39,13 +41,13 @@ public class ListenerConfiguration {
         여기서는 DefaultKafkaConsumerFactory를 사용하며,
         이 클래스는 Kafka Consumer를 생성하는 데 필요한 설정들을 받아서 Kafka Consumer를 생성한다.
          */
-        factory.setConsumerFactory(consumerFactory());
+        factory.setConsumerFactory(kafkaChatConsumer());
         return factory;
     }
 
     // Kafka ConsumerFactory를 생성하는 Bean 메서드
     @Bean
-    public ConsumerFactory<String, Message> consumerFactory() {
+    public ConsumerFactory<String, Message> kafkaChatConsumer() {
         /*
         JsonDeserializer : Kafka에서 메시지를 받을 때 JSON 형태의 메시지를 자바 객체로 역직렬화하는 데 사용된다.
         여기서는 Message 클래스의 인스턴스로 역직렬화하도록 설정되어 있다.
@@ -63,6 +65,33 @@ public class ListenerConfiguration {
         값의 역직렬화 클래스(VALUE_DESERIALIZER_CLASS_CONFIG),
         그리고 오프셋 리셋 설정(AUTO_OFFSET_RESET_CONFIG) 등을 설정하고 있다.
          */
+        Map<String, Object> consumerConfigurations =
+                ImmutableMap.<String, Object>builder()
+                        .put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer)
+                        .put(ConsumerConfig.GROUP_ID_CONFIG, kafkaConsumerGroupId)
+                        .put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class)
+                        .put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, deserializer)
+                        .put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest")
+                        .build();
+
+        return new DefaultKafkaConsumerFactory<>(consumerConfigurations, new StringDeserializer(), deserializer);
+    }
+
+    @Bean
+    ConcurrentKafkaListenerContainerFactory<String, Notification> kafkaNotificationContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, Notification> factory = new ConcurrentKafkaListenerContainerFactory<>();
+
+        factory.setConsumerFactory(kafkaNotificationConsumer());
+        return factory;
+    }
+
+    @Bean
+    public ConsumerFactory<String, Notification> kafkaNotificationConsumer() {
+
+        JsonDeserializer<Notification> deserializer = new JsonDeserializer<>();
+        // 패키지 신뢰 오류로 인해 모든 패키지를 신뢰하도록 작성
+        deserializer.addTrustedPackages("*");
+
         Map<String, Object> consumerConfigurations =
                 ImmutableMap.<String, Object>builder()
                         .put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer)
