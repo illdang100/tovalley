@@ -28,11 +28,11 @@ public class ChatRoom extends BaseTimeEntity {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "sender_id")
+    @JoinColumn(name = "sender_id", nullable = false)
     private Member sender;
 
     @ManyToOne
-    @JoinColumn(name = "recipient_id")
+    @JoinColumn(name = "recipient_id", nullable = false)
     private Member recipient;
 
     public static ChatRoom createNewChatRoom(Member sender, Member recipient) {

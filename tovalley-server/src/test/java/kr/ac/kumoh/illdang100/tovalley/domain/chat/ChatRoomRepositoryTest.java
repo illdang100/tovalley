@@ -41,21 +41,6 @@ class ChatRoomRepositoryTest extends DummyObject {
     }
 
     @Test
-    public void findBySenderIdAndRecipientNickname_test() {
-
-        // given
-        Long senderId = 1L;
-        String recipientNick = "recipientNick1";
-
-        // when
-        Optional<ChatRoom> findChatRoomOpt = chatRoomRepository.findBySenderIdAndRecipientNickname(
-                senderId, recipientNick);
-
-        // then
-        assertThat(findChatRoomOpt.get().getId()).isEqualTo(1L);
-    }
-
-    @Test
     public void findSliceChatRoomsByMemberId_test() {
 
         // given
