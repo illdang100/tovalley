@@ -2,6 +2,7 @@ package kr.ac.kumoh.illdang100.tovalley.config.chat;
 
 import static kr.ac.kumoh.illdang100.tovalley.util.CookieUtil.findCookieValue;
 
+import java.io.IOException;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,37 +30,41 @@ public class HttpHandshakeInterceptor implements HandshakeInterceptor {
 
     private final JwtProcess jwtProcess;
 
+    private static final String ERROR_MESSAGE = "웹소켓 연결 오류!!";
+
     /*
-    일반적으로 웹소켓에서의 사용자 인증은 핸드셰이크 과정에서 한 번만 수행하고,
-    그 이후에는 웹소켓 연결이 유지되는 동안 해당 연결을 신뢰하는 방식을 사용한다.
+    일반적으로 웹소켓에서의 사용자 인증은 핸드셰이크 과정에서 한 번만 수행하고, 그 이후에는 웹소켓 연결이 유지되는 동안 해당 연결을 신뢰하는 방식을 사용한다.
      */
     @Override
     public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler,
                                    Map<String, Object> attributes) throws Exception {
 
-        // 웹소켓 세션의 생명주기는 웹소켓 연결이 시작되는 순간부터 연결이 종료되는 순간까지이다.
-
         HttpServletRequest req = ((ServletServerHttpRequest) request).getServletRequest();
         HttpServletResponse resp = ((ServletServerHttpResponse) response).getServletResponse();
 
+        String accessToken = extractAccessToken(req);
+        return verifyTokenAndStoreMemberId(accessToken, attributes, resp);
+    }
 
-        // "ACCESSTOKEN" 쿠키 값 추출
-        String accessToken = findCookieValue(req, JwtVO.ACCESS_TOKEN).replace(JwtVO.TOKEN_PREFIX, "");
+    private String extractAccessToken(HttpServletRequest req) {
+        return findCookieValue(req, JwtVO.ACCESS_TOKEN).replace(JwtVO.TOKEN_PREFIX, "");
+    }
+
+    private boolean verifyTokenAndStoreMemberId(String accessToken, Map<String, Object> attributes, HttpServletResponse resp)
+            throws IOException {
         try {
             PrincipalDetails principalDetails = jwtProcess.verify(accessToken);
             Long memberId = principalDetails.getMember().getId();
 
-            // Spring Session을 이용하여 세션에 사용자 정보 저장
-            HttpSession session = req.getSession();
-            session.setAttribute(ChatUtil.MEMBER_ID, principalDetails.getMember().getId());
+            log.debug("beforeHandshake - memberId={}", memberId);
+            attributes.put(ChatUtil.MEMBER_ID, memberId);
 
             return true;
         } catch (Exception e) {
+            log.error(ERROR_MESSAGE);
             CustomResponseUtil.handleTokenVerificationFailure(resp);
+            return false;
         }
-        return false;
-//        log.debug("HttpHandshakeInterceptor.beforeHandshake 동작!!");
-//        return true;
     }
 
     @Override
