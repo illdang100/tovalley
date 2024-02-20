@@ -175,6 +175,19 @@ CREATE TABLE IF NOT EXISTS `chat_room` (
                                             FOREIGN KEY (recipient_id) REFERENCES member(member_id)
 ) engine=InnoDB;
 
+CREATE TABLE IF NOT EXISTS `chat_notification` (
+                                     `chat_notification_id` BIGINT NOT NULL AUTO_INCREMENT,
+                                     `sender_id` BIGINT NOT NULL,
+                                     `recipient_id` BIGINT NOT NULL,
+                                     `chat_room_id` BIGINT NOT NULL,
+                                     `content` VARCHAR(1000) NOT NULL,
+                                     `has_read` BIT NOT NULL,
+                                     `created_date` datetime(6) NOT NULL,
+                                     `last_modified_date` datetime(6) NOT NULL,
+                                     PRIMARY KEY (`chat_notification_id`),
+                                     FOREIGN KEY (`sender_id`) REFERENCES `member` (`member_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
 CREATE TABLE `lost_found_board` (
                                   `id` BIGINT AUTO_INCREMENT PRIMARY KEY,
                                   `waterPlace_id` BIGINT,
