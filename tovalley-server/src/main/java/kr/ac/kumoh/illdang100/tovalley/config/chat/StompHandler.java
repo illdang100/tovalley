@@ -71,8 +71,8 @@ public class StompHandler implements ChannelInterceptor { // WebSocket을 이용
         validateChatRoomParticipant(chatRoomId, memberId);
 
         // 이미 구독중인 방이 존재한다면 삭제
-        chatService.deleteChatRoomParticipantFromRedis(memberId);
         deleteSubscriptionIfNotNull(sessionAttributes, subscriptions);
+        chatService.deleteChatRoomParticipantFromRedis(memberId);
 
         // 현재 채팅방 구독 정보를 웹소켓 세션에 저장
         sessionAttributes.put(ChatUtil.SUBSCRIPTIONS, chatRoomId);
