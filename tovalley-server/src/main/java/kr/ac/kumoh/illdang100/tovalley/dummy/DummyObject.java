@@ -1,5 +1,6 @@
 package kr.ac.kumoh.illdang100.tovalley.dummy;
 
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import kr.ac.kumoh.illdang100.tovalley.domain.Coordinate;
 import kr.ac.kumoh.illdang100.tovalley.domain.ImageFile;
@@ -426,8 +427,8 @@ public class DummyObject {
                 .chatRoomId(chatRoomId)
                 .senderId(senderId)
                 .content(content)
-                .createdAt(ZonedDateTime.now().toString())
-//                .readCount(1)
+                .createdAt(ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toString())
+                .readCount(1)
                 .build();
     }
 }
