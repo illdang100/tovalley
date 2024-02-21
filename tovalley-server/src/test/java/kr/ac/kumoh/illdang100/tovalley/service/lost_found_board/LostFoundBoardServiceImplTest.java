@@ -11,7 +11,6 @@ import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlace;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlaceRepository;
 import kr.ac.kumoh.illdang100.tovalley.dummy.DummyObject;
 import kr.ac.kumoh.illdang100.tovalley.handler.ex.CustomApiException;
-import kr.ac.kumoh.illdang100.tovalley.security.auth.PrincipalDetails;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtProcess;
 import kr.ac.kumoh.illdang100.tovalley.service.page.PageServiceImpl;
 import org.junit.jupiter.api.DisplayName;
@@ -33,7 +32,6 @@ import static kr.ac.kumoh.illdang100.tovalley.dto.lost_found_board.LostFoundBoar
 import static kr.ac.kumoh.illdang100.tovalley.dto.lost_found_board.LostFoundBoardRespDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.util.ImageUtil.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ActiveProfiles("test")
@@ -78,9 +76,8 @@ class LostFoundBoardServiceImplTest extends DummyObject {
 
         // stub2
         when(lostFoundBoardRepository.findByIdWithMemberAndWaterPlace(lostFoundBoardId)).thenReturn(Optional.of(lostFoundBoard));
-        when(jwtProcess.verify(any())).thenReturn(new PrincipalDetails(member));
 
-        LostFoundBoardDetailRespDto lostFoundBoardDetail = pageService.getLostFoundBoardDetail(lostFoundBoardId, accessToken);
+        LostFoundBoardDetailRespDto lostFoundBoardDetail = pageService.getLostFoundBoardDetail(lostFoundBoardId, member);
 
         // then
         assertEquals(lostFoundBoardUpdateReqDto.getTitle(), lostFoundBoardDetail.getTitle());
@@ -198,9 +195,8 @@ class LostFoundBoardServiceImplTest extends DummyObject {
 
         // stub2
         when(lostFoundBoardRepository.findByIdWithMemberAndWaterPlace(lostFoundBoardId)).thenReturn(Optional.of(lostFoundBoard));
-        when(jwtProcess.verify(any())).thenReturn(new PrincipalDetails(member));
 
-        LostFoundBoardDetailRespDto lostFoundBoardDetail = pageService.getLostFoundBoardDetail(lostFoundBoardId, accessToken);
+        LostFoundBoardDetailRespDto lostFoundBoardDetail = pageService.getLostFoundBoardDetail(lostFoundBoardId, member);
 
         // then
         assertEquals(lostFoundBoardDetail.getPostImages().size(), imageUrlList.size());
@@ -226,9 +222,8 @@ class LostFoundBoardServiceImplTest extends DummyObject {
 
         // stub2
         when(lostFoundBoardRepository.findByIdWithMemberAndWaterPlace(lostFoundBoardId)).thenReturn(Optional.of(lostFoundBoard));
-        when(jwtProcess.verify(any())).thenReturn(new PrincipalDetails(member));
 
-        LostFoundBoardDetailRespDto lostFoundBoardDetail = pageService.getLostFoundBoardDetail(lostFoundBoardId, accessToken);
+        LostFoundBoardDetailRespDto lostFoundBoardDetail = pageService.getLostFoundBoardDetail(lostFoundBoardId, member);
 
         // then
         assertEquals(lostFoundBoardDetail.getIsResolved(), true);

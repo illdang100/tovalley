@@ -1,5 +1,6 @@
 package kr.ac.kumoh.illdang100.tovalley.service.page;
 
+import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.dto.lost_found_board.LostFoundBoardReqDto;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -17,5 +18,5 @@ public interface PageService {
 
     Slice<LostFoundBoardListRespDto> getLostFoundBoardList(LostFoundBoardReqDto.LostFoundBoardListReqDto lostFoundBoardListReqDto, Pageable pageable);
 
-    LostFoundBoardDetailRespDto getLostFoundBoardDetail(long lostFoundBoardId, String accessToken);
+    LostFoundBoardDetailRespDto getLostFoundBoardDetail(long lostFoundBoardId, Member member);
 }

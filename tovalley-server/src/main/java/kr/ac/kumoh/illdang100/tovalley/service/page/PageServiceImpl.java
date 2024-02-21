@@ -5,6 +5,7 @@ import kr.ac.kumoh.illdang100.tovalley.domain.comment.CommentRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.lost_found_board.LostFoundBoard;
 import kr.ac.kumoh.illdang100.tovalley.domain.lost_found_board.LostFoundBoardImageRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.lost_found_board.LostFoundBoardRepository;
+import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.security.auth.PrincipalDetails;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtProcess;
 import kr.ac.kumoh.illdang100.tovalley.service.accident.AccidentService;
@@ -156,17 +157,15 @@ public class PageServiceImpl implements PageService{
     /**
      * 분실물 찾기 게시글 상세 페이지 조회
      * @param lostFoundBoardId
-     * @param accessToken
+     * @param member
      * @return
      */
     @Override
-    public LostFoundBoardDetailRespDto getLostFoundBoardDetail(long lostFoundBoardId, String accessToken) {
+    public LostFoundBoardDetailRespDto getLostFoundBoardDetail(long lostFoundBoardId, Member member) {
 
         LostFoundBoard findLostFoundBoard = findLostFoundBoardByIdWithMemberOrElseThrowEx(lostFoundBoardRepository, lostFoundBoardId);
 
-        PrincipalDetails principalDetails = jwtProcess.verify(accessToken);
-
-        return createLostFoundBoardDetailRespDto(findLostFoundBoard, isMyBoard(findLostFoundBoard, principalDetails.getMember().getId()), findCommentDetails(lostFoundBoardId, principalDetails.getMember().getEmail()),
+        return createLostFoundBoardDetailRespDto(findLostFoundBoard, isMyBoard(findLostFoundBoard, member.getId()), findCommentDetails(lostFoundBoardId, member.getEmail()),
                  lostFoundBoardImageRepository.findImageByLostFoundBoardId(lostFoundBoardId), commentRepository.countByLostFoundBoardId(lostFoundBoardId));
     }
 

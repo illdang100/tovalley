@@ -79,7 +79,9 @@ public class PageApiController {
     public ResponseEntity<?> getLostFoundBoardDetail(@PathVariable Long lostFoundBoardId,
                                                      @CookieValue(JwtVO.ACCESS_TOKEN) String accessToken) {
 
-        LostFoundBoardDetailRespDto lostFoundBoardDetail = pageService.getLostFoundBoardDetail(lostFoundBoardId, accessToken);
+        PrincipalDetails principalDetails = jwtProcess.verify(accessToken);
+
+        LostFoundBoardDetailRespDto lostFoundBoardDetail = pageService.getLostFoundBoardDetail(lostFoundBoardId, principalDetails.getMember());
 
         return new ResponseEntity<>(new ResponseDto<>(1, "분실물 찾기 상세 페이지 조회를 성공했습니다", lostFoundBoardDetail), HttpStatus.OK);
     }
