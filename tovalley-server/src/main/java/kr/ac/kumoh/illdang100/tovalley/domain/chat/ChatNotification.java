@@ -7,7 +7,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 import kr.ac.kumoh.illdang100.tovalley.domain.BaseTimeEntity;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import lombok.AccessLevel;
@@ -23,15 +23,13 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ChatNotification extends BaseTimeEntity {
 
-    // TODO: 알림 확장성 고려하기(채팅, 댓글, 게시글 등등)
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "chat_notification_id", nullable = false)
     private String id;
 
     // 상대방의 정보가 변경되면 반영해서 보여줄 것이므로 연관 관계를 맺도록 한다.
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sender_id", nullable = false)
     private Member sender;
 
