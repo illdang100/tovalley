@@ -20,4 +20,14 @@ public class Notification implements Serializable {
     private String senderNick;
     private LocalDateTime createdDate;
     private String content;
+    private NotificationType notificationType;
+
+    public static Notification createReadCountUpdateNotification(Long chatRoomId, Long otherMemberId) {
+        return new Notification(chatRoomId,
+                otherMemberId,
+                null,
+                LocalDateTime.now(),
+                null,
+                NotificationType.READ_COUNT_UPDATE);
+    }
 }

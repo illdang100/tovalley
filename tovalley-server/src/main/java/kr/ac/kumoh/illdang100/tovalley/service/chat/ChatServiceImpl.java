@@ -14,6 +14,7 @@ import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatRoom;
 import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatRoomRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.chat.kafka.Message;
 import kr.ac.kumoh.illdang100.tovalley.domain.chat.kafka.Notification;
+import kr.ac.kumoh.illdang100.tovalley.domain.chat.kafka.NotificationType;
 import kr.ac.kumoh.illdang100.tovalley.domain.chat.redis.ChatRoomParticipant;
 import kr.ac.kumoh.illdang100.tovalley.domain.chat.redis.ChatRoomParticipantRedisRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
@@ -278,8 +279,7 @@ public class ChatServiceImpl implements ChatService {
     }
 
     private boolean isAllMembersParticipatingInChatRoom(Long chatRoomId) {
-        List<ChatRoomParticipant> chatRoomParticipants
-                = chatRoomParticipantRedisRepository.findByChatRoomId(chatRoomId);
+        List<ChatRoomParticipant> chatRoomParticipants = getChatRoomParticipants(chatRoomId);
         return chatRoomParticipants.size() == ChatUtil.MAX_PARTICIPANTS_PER_CHATROOM;
     }
 
@@ -293,7 +293,7 @@ public class ChatServiceImpl implements ChatService {
     }
 
     private void updateMessageBeforeSending(Message message, Long senderId, int readCount) {
-        message.processSendMessage(senderId, ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toString(), readCount);
+        message.prepareMessageForSending(senderId, ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toString(), readCount);
     }
 
     private void sendNotification(Message message, Long senderId, Long chatRoomId) {
@@ -311,7 +311,7 @@ public class ChatServiceImpl implements ChatService {
 
             // Kafka로는 Notification 객체 전송
             Notification notification = new Notification(chatRoomId, recipient.getId(), sender.getNickname(),
-                    LocalDateTime.now(), message.getContent());
+                    LocalDateTime.now(), message.getContent(), NotificationType.CHAT);
 
             // "알림 토픽 + {memberId}"로 알림 메시지 전송하기!!
             kafkaSender.sendNotification(KafkaVO.KAFKA_NOTIFICATION_TOPIC, notification);
@@ -356,5 +356,23 @@ public class ChatServiceImpl implements ChatService {
 
         Update update = new Update().set("readCount", 0);
         mongoTemplate.updateMulti(query, update, ChatMessage.class);
+    }
+
+    @Override
+    public Optional<Long> getOtherMemberIdByChatRoomId(Long chatRoomId, Long memberId) {
+        List<ChatRoomParticipant> chatRoomParticipants = getChatRoomParticipants(chatRoomId);
+
+        return chatRoomParticipants == null ? Optional.empty() : findOtherMember(chatRoomParticipants, memberId);
+    }
+
+    private List<ChatRoomParticipant> getChatRoomParticipants(Long chatRoomId) {
+        return chatRoomParticipantRedisRepository.findByChatRoomId(chatRoomId);
+    }
+
+    private Optional<Long> findOtherMember(List<ChatRoomParticipant> chatRoomParticipants, Long memberId) {
+        return chatRoomParticipants.stream()
+                .map(ChatRoomParticipant::getMemberId)
+                .filter(id -> !id.equals(memberId))
+                .findFirst();
     }
 }

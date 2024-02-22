@@ -1,9 +1,11 @@
 package kr.ac.kumoh.illdang100.tovalley.config.chat;
 
-import java.util.Map;
 import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatRoomRepository;
+import kr.ac.kumoh.illdang100.tovalley.domain.chat.kafka.Notification;
 import kr.ac.kumoh.illdang100.tovalley.service.chat.ChatService;
+import kr.ac.kumoh.illdang100.tovalley.service.chat.KafkaSender;
 import kr.ac.kumoh.illdang100.tovalley.util.ChatUtil;
+import kr.ac.kumoh.illdang100.tovalley.util.KafkaVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;
@@ -23,6 +25,7 @@ public class StompHandler implements ChannelInterceptor { // WebSocket을 이용
 
     private final ChatService chatService;
     private final ChatRoomRepository chatRoomRepository;
+    private final KafkaSender kafkaSender;
 
     private static final String TOPIC_NOTIFICATION = "/sub/notification";
 
@@ -38,75 +41,97 @@ public class StompHandler implements ChannelInterceptor { // WebSocket을 이용
     }
 
     private void handleStompCommand(StompCommand stompCommand, StompHeaderAccessor accessor) {
-        if (stompCommand.equals(StompCommand.CONNECT)) {
-            log.debug("CONNECT");
-        } else if (stompCommand.equals(StompCommand.SUBSCRIBE)) {
-            handleSubscribe(accessor);
-        } else if (stompCommand.equals(StompCommand.UNSUBSCRIBE)) {
-            handleUnsubscribe(accessor);
-        } else if (stompCommand.equals(StompCommand.SEND)) {
-            log.debug("SEND");
-        } else if (stompCommand.equals(StompCommand.DISCONNECT)) {
-            handleDisconnect(accessor);
-        } else if (stompCommand.equals(StompCommand.ERROR)) {
-            log.debug("WebSocket Error 처리 코드!!");
+        switch (stompCommand) {
+            case CONNECT:
+                log.debug("CONNECT");
+                break;
+            case SUBSCRIBE:
+                handleSubscribe(accessor);
+                break;
+            case UNSUBSCRIBE:
+                handleUnsubscribe(accessor);
+                break;
+            case SEND:
+                log.debug("SEND");
+                break;
+            case DISCONNECT:
+                handleDisconnect(accessor);
+                break;
+            case ERROR:
+                log.debug("WebSocket Error 처리 코드!!");
+                break;
         }
     }
 
     private void handleSubscribe(StompHeaderAccessor accessor) {
-        String destination = accessor.getDestination();
-        if (destination.startsWith(TOPIC_NOTIFICATION)) {
+        if (accessor.getDestination().startsWith(TOPIC_NOTIFICATION)) {
             log.debug("알림 SUBSCRIBE");
             return;
         }
 
+        handleChatRoomSubscription(accessor);
+    }
+
+    private void handleChatRoomSubscription(StompHeaderAccessor accessor) {
+        log.debug("채팅방 SUBSCRIBE");
+
         Long chatRoomId = getChatRoomId(accessor);
         Long memberId = getMemberId(accessor);
-        Map<String, Object> sessionAttributes = accessor.getSessionAttributes();
-        Long subscriptions = (Long) sessionAttributes.get(ChatUtil.SUBSCRIPTIONS);
-
-        log.debug("채팅방 SUBSCRIBE");
 
         // 구독하려는 채팅방 참여자가 맞는지 검증
         validateChatRoomParticipant(chatRoomId, memberId);
 
+        updateSubscription(accessor, chatRoomId, memberId);
+
+        chatService.getOtherMemberIdByChatRoomId(chatRoomId, memberId)
+                .ifPresent(otherMemberId -> notifyReadCountUpdate(chatRoomId, otherMemberId));
+    }
+
+    private void updateSubscription(StompHeaderAccessor accessor, Long chatRoomId, Long memberId) {
         // 이미 구독중인 방이 존재한다면 삭제
-        deleteSubscriptionIfNotNull(sessionAttributes, subscriptions);
+        deleteExistingSubscription(accessor);
         chatService.deleteChatRoomParticipantFromRedis(memberId);
-
         // 현재 채팅방 구독 정보를 웹소켓 세션에 저장
-        sessionAttributes.put(ChatUtil.SUBSCRIPTIONS, chatRoomId);
-
+        accessor.getSessionAttributes().put(ChatUtil.SUBSCRIPTIONS, chatRoomId);
         // 채팅방 입장을 Redis에 저장
         chatService.saveChatRoomParticipantToRedis(memberId, chatRoomId);
-
         // 읽지 않은 메시지 읽음 처리
         chatService.updateUnreadMessages(memberId, chatRoomId);
     }
 
+    private void deleteExistingSubscription(StompHeaderAccessor accessor) {
+        Long subscriptions = (Long) accessor.getSessionAttributes().get(ChatUtil.SUBSCRIPTIONS);
+        if (subscriptions != null) {
+            accessor.getSessionAttributes().remove(ChatUtil.SUBSCRIPTIONS);
+        }
+    }
+
+    private void notifyReadCountUpdate(Long chatRoomId, Long otherMemberId) {
+        log.debug("상대방에게 readCount값 갱신 알림 전송");
+        Notification readCountUpdateNotification = Notification.createReadCountUpdateNotification(chatRoomId, otherMemberId);
+        kafkaSender.sendNotification(KafkaVO.KAFKA_NOTIFICATION_TOPIC, readCountUpdateNotification);
+    }
+
     private void handleUnsubscribe(StompHeaderAccessor accessor) {
-        String destination = accessor.getDestination();
-        if (destination.startsWith(TOPIC_NOTIFICATION)) {
+        if (accessor.getDestination().startsWith(TOPIC_NOTIFICATION)) {
             log.debug("알림 UNSUBSCRIBE");
             return;
         }
 
-        log.debug("채팅방 UNSUBSCRIBE");
-        Long memberId = getMemberId(accessor);
-        Map<String, Object> sessionAttributes = accessor.getSessionAttributes();
-        Long subscriptions = (Long) sessionAttributes.get(ChatUtil.SUBSCRIPTIONS);
+        handleChatRoomUnsubscription(accessor);
+    }
 
-        deleteSubscriptionIfNotNull(sessionAttributes, subscriptions);
+    private void handleChatRoomUnsubscription(StompHeaderAccessor accessor) {
+        log.debug("채팅방 UNSUBSCRIBE");
+
+        Long memberId = getMemberId(accessor);
+        deleteExistingSubscription(accessor);
         chatService.deleteChatRoomParticipantFromRedis(memberId);
     }
 
     private void handleDisconnect(StompHeaderAccessor accessor) {
-        Long memberId = getMemberId(accessor);
-        Map<String, Object> sessionAttributes = accessor.getSessionAttributes();
-        Long subscriptions = (Long) sessionAttributes.get(ChatUtil.SUBSCRIPTIONS);
-
-        deleteSubscriptionIfNotNull(sessionAttributes, subscriptions);
-        chatService.deleteChatRoomParticipantFromRedis(memberId);
+        log.debug("웹소켓 DISCONNECT");
+        handleChatRoomUnsubscription(accessor);
     }
 
     private void validateChatRoomParticipant(Long chatRoomId, Long memberId) {
@@ -121,11 +146,5 @@ public class StompHandler implements ChannelInterceptor { // WebSocket을 이용
 
     private Long getMemberId(StompHeaderAccessor accessor) {
         return (Long) accessor.getSessionAttributes().get(ChatUtil.MEMBER_ID);
-    }
-
-    private void deleteSubscriptionIfNotNull(Map<String, Object> sessionAttributes, Long subscriptions) {
-        if (subscriptions != null) {
-            sessionAttributes.remove(ChatUtil.SUBSCRIPTIONS);
-        }
     }
 }

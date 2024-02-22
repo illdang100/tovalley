@@ -1,5 +1,6 @@
 package kr.ac.kumoh.illdang100.tovalley.service.chat;
 
+import java.util.Optional;
 import kr.ac.kumoh.illdang100.tovalley.domain.chat.kafka.Message;
 import kr.ac.kumoh.illdang100.tovalley.dto.chat.ChatReqDto.CreateNewChatRoomReqDto;
 import kr.ac.kumoh.illdang100.tovalley.dto.chat.ChatRespDto.ChatMessageListRespDto;
@@ -26,4 +27,6 @@ public interface ChatService {
     void deleteChatRoomParticipantFromRedis(Long memberId);
 
     void updateUnreadMessages(Long memberId, Long chatRoomId);
+
+    Optional<Long> getOtherMemberIdByChatRoomId(Long chatRoomId, Long memberId);
 }
