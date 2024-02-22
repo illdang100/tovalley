@@ -4,12 +4,14 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.ac.kumoh.illdang100.tovalley.dto.ResponseDto;
 import kr.ac.kumoh.illdang100.tovalley.dto.lost_found_board.LostFoundBoardReqDto;
+import kr.ac.kumoh.illdang100.tovalley.handler.ex.CustomApiException;
 import kr.ac.kumoh.illdang100.tovalley.security.auth.PrincipalDetails;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtProcess;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtVO;
 import kr.ac.kumoh.illdang100.tovalley.service.page.PageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
@@ -79,8 +81,11 @@ public class PageApiController {
     public ResponseEntity<?> getLostFoundBoardDetail(@PathVariable Long lostFoundBoardId,
                                                      @CookieValue(JwtVO.ACCESS_TOKEN) String accessToken) {
 
-        PrincipalDetails principalDetails = jwtProcess.verify(accessToken);
+        if (accessToken == null || StringUtils.isBlank(accessToken)) {
+            throw new CustomApiException("분실물 찾기 상세 페이지에 접근할 수 없습니다");
+        }
 
+        PrincipalDetails principalDetails = jwtProcess.verify(accessToken);
         LostFoundBoardDetailRespDto lostFoundBoardDetail = pageService.getLostFoundBoardDetail(lostFoundBoardId, principalDetails.getMember());
 
         return new ResponseEntity<>(new ResponseDto<>(1, "분실물 찾기 상세 페이지 조회를 성공했습니다", lostFoundBoardDetail), HttpStatus.OK);

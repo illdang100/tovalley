@@ -10,7 +10,6 @@ import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberEnum;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlace;
 import kr.ac.kumoh.illdang100.tovalley.dummy.DummyObject;
-import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtProcess;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -38,8 +37,6 @@ class LostFoundBoardServiceImplTest extends DummyObject {
     private CommentRepository commentRepository;
     @Mock
     private LostFoundBoardImageRepository lostFoundBoardImageRepository;
-    @Mock
-    private JwtProcess jwtProcess;
     private final static String accessToken = "TestAccessToken";
 
     @Test

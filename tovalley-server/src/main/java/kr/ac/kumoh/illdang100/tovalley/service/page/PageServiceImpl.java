@@ -6,8 +6,6 @@ import kr.ac.kumoh.illdang100.tovalley.domain.lost_found_board.LostFoundBoard;
 import kr.ac.kumoh.illdang100.tovalley.domain.lost_found_board.LostFoundBoardImageRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.lost_found_board.LostFoundBoardRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
-import kr.ac.kumoh.illdang100.tovalley.security.auth.PrincipalDetails;
-import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtProcess;
 import kr.ac.kumoh.illdang100.tovalley.service.accident.AccidentService;
 import kr.ac.kumoh.illdang100.tovalley.service.member.MemberService;
 import kr.ac.kumoh.illdang100.tovalley.service.review.ReviewService;
@@ -54,7 +52,6 @@ public class PageServiceImpl implements PageService{
     private final LostFoundBoardRepository lostFoundBoardRepository;
     private final CommentRepository commentRepository;
     private final LostFoundBoardImageRepository lostFoundBoardImageRepository;
-    private final JwtProcess jwtProcess;
 
     /**
      * @methodnme: getMainPageAllData
