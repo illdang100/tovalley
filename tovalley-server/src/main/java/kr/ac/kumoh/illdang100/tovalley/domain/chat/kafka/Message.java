@@ -33,7 +33,7 @@ public class Message implements Serializable {
 
 //    private String contentType;
 
-    public void processSendMessage(Long senderId, String createdAt, int readCount) {
+    public void prepareMessageForSending(Long senderId, String createdAt, int readCount) {
         this.senderId = senderId;
         this.createdAt = createdAt;
         this.readCount = readCount;
