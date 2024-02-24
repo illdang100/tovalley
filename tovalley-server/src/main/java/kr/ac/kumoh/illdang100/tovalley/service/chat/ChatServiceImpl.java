@@ -3,6 +3,7 @@ package kr.ac.kumoh.illdang100.tovalley.service.chat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -123,32 +124,38 @@ public class ChatServiceImpl implements ChatService {
      */
     @Override
     public Slice<ChatRoomRespDto> getChatRooms(Long memberId, Pageable pageable) {
-        // TODO: 현재 시간 정보가 맞지 않음
-        Slice<ChatRoomRespDto> sliceChatRoomsByMemberId = chatRoomRepository.findSliceChatRoomsByMemberId(memberId,
-                pageable);
 
-        List<ChatRoomRespDto> content = processChatRooms(sliceChatRoomsByMemberId.getContent(), memberId);
+        Slice<ChatRoomRespDto> sliceChatRoomsByMemberId
+                = chatRoomRepository.findSliceChatRoomsByMemberId(memberId, pageable);
 
-        return new SliceImpl<>(content, pageable, sliceChatRoomsByMemberId.hasNext());
+        List<ChatRoomRespDto> processedChatRooms = processChatRooms(sliceChatRoomsByMemberId.getContent(), memberId);
+
+        // 마지막 메시지 시간으로 내림차순 정렬
+        List<ChatRoomRespDto> sortedChatRooms = sortChatRoomsByLastMessageTime(processedChatRooms);
+
+        return new SliceImpl<>(sortedChatRooms, pageable, sliceChatRoomsByMemberId.hasNext());
     }
 
     private List<ChatRoomRespDto> processChatRooms(List<ChatRoomRespDto> chatRooms, Long memberId) {
         for (ChatRoomRespDto chatRoom : chatRooms) {
-            long unreadMessageCount = countUnReadMessages(chatRoom.getChatRoomId(), memberId);
-            chatRoom.changeUnReadMessageCount(unreadMessageCount);
-            processChatRoom(chatRoom);
+            processSingleChatRoom(chatRoom, memberId);
         }
         return chatRooms;
     }
 
-    private void processChatRoom(ChatRoomRespDto chatRoom) {
-        Long chatRoomId = chatRoom.getChatRoomId();
-        Optional<ChatMessage> lastMessageOpt = chatMessageRepository.findTopByChatRoomIdOrderByCreatedAtDesc(
-                chatRoomId);
+    private void processSingleChatRoom(ChatRoomRespDto chatRoom, Long memberId) {
+        long unreadMessageCount = countUnReadMessages(chatRoom.getChatRoomId(), memberId);
+        chatRoom.changeUnReadMessageCount(unreadMessageCount);
+        updateChatRoomWithLastMessageIfExists(chatRoom);
+    }
 
-        lastMessageOpt.ifPresent((lastMessage) -> {
-            updateChatRoomWithLastMessage(chatRoom, lastMessage);
-        });
+    private void updateChatRoomWithLastMessageIfExists(ChatRoomRespDto chatRoom) {
+        Optional<ChatMessage> lastMessageOpt = findLastMessageInChatRoom(chatRoom.getChatRoomId());
+        lastMessageOpt.ifPresent((lastMessage) -> updateChatRoomWithLastMessage(chatRoom, lastMessage));
+    }
+
+    private Optional<ChatMessage> findLastMessageInChatRoom(Long chatRoomId) {
+        return chatMessageRepository.findTopByChatRoomIdOrderByCreatedAtDesc(chatRoomId);
     }
 
     private void updateChatRoomWithLastMessage(ChatRoomRespDto chatRoom, ChatMessage lastMessage) {
@@ -162,6 +169,12 @@ public class ChatServiceImpl implements ChatService {
                 .and("senderId").ne(memberId));
 
         return mongoTemplate.count(query, ChatMessage.class);
+    }
+
+    private List<ChatRoomRespDto> sortChatRoomsByLastMessageTime(List<ChatRoomRespDto> chatRooms) {
+        return chatRooms.stream()
+                .sorted(Comparator.comparing(ChatRoomRespDto::getLastMessageTime, Comparator.nullsLast(Comparator.naturalOrder())).reversed())
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -228,7 +241,7 @@ public class ChatServiceImpl implements ChatService {
                         chatMessage.getReadCount()))
                 .collect(Collectors.toList());
 
-        return new ChatMessageListRespDto(chatRoomId, collect);
+        return new ChatMessageListRespDto(memberId, chatRoomId, collect);
     }
 
 
