@@ -48,8 +48,8 @@ public class ChatApiController {
             @RequestBody @Valid final CreateNewChatRoomReqDto requestDto,
             BindingResult bindingResult) {
 
-        CreateNewChatRoomRespDto respDto = chatService.createOrGetChatRoom(principalDetails.getMember().getId(),
-                requestDto);
+        CreateNewChatRoomRespDto respDto =
+                chatService.createOrGetChatRoom(principalDetails.getMember().getId(), requestDto);
         if (respDto.isNew()) {
             return new ResponseEntity<>(new ResponseDto<>(1, "채팅방이 생성되었습니다", respDto), HttpStatus.CREATED);
         } else {
@@ -59,7 +59,7 @@ public class ChatApiController {
 
     @GetMapping("/api/auth/chatroom")
     public ResponseEntity<?> findChatRoomList(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                          @PageableDefault(size = 10, sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable) {
+                                          @PageableDefault(size = 10) Pageable pageable) {
         Slice<ChatRoomRespDto> result = chatService.getChatRooms(principalDetails.getMember().getId(), pageable);
         return new ResponseEntity<>(new ResponseDto<>(1, "채팅방 목록 조회를 성공했습니다", result), HttpStatus.OK);
     }
