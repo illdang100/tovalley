@@ -17,7 +17,6 @@ public class LostFoundBoardReqDto {
         @Pattern(regexp = "(LOST|FOUND)$")
         private String category;
 
-        @NotEmpty
         private List<Long> valleyId;
 
         @Nullable
