@@ -24,10 +24,11 @@ public class ChatRespDto {
         private String chatRoomTitle;
         private String otherUserProfileImage;
         private String otherUserNick;
-        @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "Asia/Seoul")
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
         private LocalDateTime createdChatRoomDate;
         private String lastMessageContent;
-        @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "Asia/Seoul")
+        private long unReadMessageCount;
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
         private LocalDateTime lastMessageTime;
 
         public ChatRoomRespDto(Long chatRoomId, String chatRoomTitle, String otherUserProfileImage,
@@ -44,11 +45,17 @@ public class ChatRespDto {
             this.lastMessageContent = lastMessageContent;
             this.lastMessageTime = lastMessageTime;
         }
+
+        public void changeUnReadMessageCount(long unReadMessageCount) {
+            this.unReadMessageCount = unReadMessageCount;
+        }
     }
 
     @Data
     @AllArgsConstructor
     public static class ChatMessageListRespDto{
+        // TODO: 사용자의 pk도 함께 반환해주기!!
+        private Long memberId;
         private Long chatRoomId;
         private List<ChatMessageRespDto> chatMessages;
     }
@@ -60,8 +67,8 @@ public class ChatRespDto {
         private Long senderId;
         private boolean myMsg;
         private String content;
-        @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "Asia/Seoul")
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
         private LocalDateTime createdAt;
-//        private int reaCount;
+        private int reaCount;
     }
 }
