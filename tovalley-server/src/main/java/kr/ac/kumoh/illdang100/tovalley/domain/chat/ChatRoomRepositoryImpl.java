@@ -6,6 +6,7 @@ import static kr.ac.kumoh.illdang100.tovalley.domain.member.QMember.member;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.PathBuilder;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -32,24 +33,25 @@ public class ChatRoomRepositoryImpl implements ChatRoomRepositoryCustom {
         JPAQuery<ChatRoomRespDto> query = queryFactory
                 .select(Projections.constructor(ChatRoomRespDto.class,
                         chatRoom.id,
-                        Expressions.asString(chatRoom.recipient.nickname.concat(" 와(과)의 채팅방입니다.")),
-                        chatRoom.recipient.imageFile.storeFileUrl,
-                        chatRoom.recipient.nickname,
+                        new CaseBuilder()
+                                .when(chatRoom.sender.id.eq(memberId))
+                                .then(chatRoom.recipient.nickname.concat(" 와(과)의 채팅방입니다."))
+                                .otherwise(chatRoom.sender.nickname.concat(" 와(과)의 채팅방입니다.")),
+                        new CaseBuilder()
+                                .when(chatRoom.sender.id.eq(memberId))
+                                .then(chatRoom.recipient.imageFile.storeFileUrl)
+                                .otherwise(chatRoom.sender.imageFile.storeFileUrl),
+                        new CaseBuilder()
+                                .when(chatRoom.sender.id.eq(memberId))
+                                .then(chatRoom.recipient.nickname)
+                                .otherwise(chatRoom.sender.nickname),
                         chatRoom.createdDate
                 ))
                 .from(chatRoom)
-                .join(chatRoom.sender, member)
-                .where(member.id.eq(memberId))
+                .where(chatRoom.sender.id.eq(memberId)
+                        .or(chatRoom.recipient.id.eq(memberId)))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize() + 1);
-
-        for (Sort.Order o : pageable.getSort()) {
-            PathBuilder pathBuilder = new PathBuilder(
-                    chatRoom.getType(), chatRoom.getMetadata()
-            );
-            query.orderBy(new OrderSpecifier(o.isAscending() ? Order.ASC : Order.DESC,
-                    pathBuilder.get(o.getProperty())));
-        }
 
         List<ChatRoomRespDto> result = query.fetch();
 
