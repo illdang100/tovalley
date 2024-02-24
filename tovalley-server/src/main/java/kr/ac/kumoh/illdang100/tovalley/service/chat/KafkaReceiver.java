@@ -18,7 +18,7 @@ public class KafkaReceiver {
 
     @KafkaListener(topics = KafkaVO.KAFKA_CHAT_TOPIC, containerFactory = "kafkaChatContainerFactory")
     public void receiveChatMessage(Message message) {
-        log.debug("전송 위치 = /sub/chat/room/"+ message.getChatRoomId());
+        log.debug("채팅 메시지 전송 위치 = /sub/chat/room/"+ message.getChatRoomId());
         log.debug("채팅 방으로 메시지 전송 = {}", message);
 
         template.convertAndSend("/sub/chat/room/" + message.getChatRoomId(), message);
@@ -26,7 +26,7 @@ public class KafkaReceiver {
 
     @KafkaListener(topics = KafkaVO.KAFKA_NOTIFICATION_TOPIC, containerFactory = "kafkaNotificationContainerFactory")
     public void receiveNotificationMessage(Notification notification) {
-        log.debug("전송 위치 = /sub/notification/"+ notification.getRecipientId());
+        log.debug("알림 메시지 전송 위치 = /sub/notification/"+ notification.getRecipientId());
         log.debug("알림 메시지 전송 = {}", notification);
 
         template.convertAndSend("/sub/notification/" + notification.getRecipientId(), notification);
