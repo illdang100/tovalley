@@ -37,7 +37,6 @@ class LostFoundBoardServiceImplTest extends DummyObject {
     private CommentRepository commentRepository;
     @Mock
     private LostFoundBoardImageRepository lostFoundBoardImageRepository;
-    private final static String accessToken = "TestAccessToken";
 
     @Test
     public void getLostFoundBoardDetails() {

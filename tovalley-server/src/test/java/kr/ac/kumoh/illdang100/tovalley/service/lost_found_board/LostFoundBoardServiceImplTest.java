@@ -51,7 +51,6 @@ class LostFoundBoardServiceImplTest extends DummyObject {
     private LostFoundBoardImageRepository lostFoundBoardImageRepository;
     @Mock
     private JwtProcess jwtProcess;
-    private final static String accessToken = "TestAccessToken";
 
     @Test
     @DisplayName(value = "분실물 게시글 수정")
