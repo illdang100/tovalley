@@ -71,7 +71,11 @@ public class EntityFinder {
                 .orElseThrow(() -> new CustomApiException("물놀이 장소[" + waterPlaceId + "]에 대한 사고[" + accidentId + "]가 존재하지 않습니다"));
     }
 
-    public static LostFoundBoard findLostFoundBoardByIdWithMemberOrElseThrow(LostFoundBoardRepository lostFoundBoardRepository, long lostFoundBoardId) {
+    public static LostFoundBoard findLostFoundBoardByIdWithMemberOrElseThrowEx(LostFoundBoardRepository lostFoundBoardRepository, Long lostFoundBoardId) {
         return lostFoundBoardRepository.findByIdWithMemberAndWaterPlace(lostFoundBoardId).orElseThrow(() -> new CustomApiException("분실물 찾기 게시글[" + lostFoundBoardId + "]이 존재하지 않습니다"));
+    }
+
+    public static LostFoundBoard findLostFoundBoardOrElseThrowEx(LostFoundBoardRepository lostFoundBoardRepository, Long lostFoundBoardId) {
+        return lostFoundBoardRepository.findById(lostFoundBoardId).orElseThrow(() -> new CustomApiException("분실물 찾기 게시글[" + lostFoundBoardId + "]이 존재하지 않습니다"));
     }
 }

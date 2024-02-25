@@ -5,8 +5,7 @@ import kr.ac.kumoh.illdang100.tovalley.domain.comment.CommentRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.lost_found_board.LostFoundBoard;
 import kr.ac.kumoh.illdang100.tovalley.domain.lost_found_board.LostFoundBoardImageRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.lost_found_board.LostFoundBoardRepository;
-import kr.ac.kumoh.illdang100.tovalley.security.auth.PrincipalDetails;
-import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtProcess;
+import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.service.accident.AccidentService;
 import kr.ac.kumoh.illdang100.tovalley.service.member.MemberService;
 import kr.ac.kumoh.illdang100.tovalley.service.review.ReviewService;
@@ -22,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 import static kr.ac.kumoh.illdang100.tovalley.dto.accident.AccidentRespDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.lost_found_board.LostFoundBoardReqDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.lost_found_board.LostFoundBoardRespDto.*;
+import static kr.ac.kumoh.illdang100.tovalley.dto.lost_found_board.LostFoundBoardRespDto.LostFoundBoardDetailRespDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.member.MemberRespDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.page.PageRespDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.rescue_supply.RescueSupplyRespDto.*;
@@ -36,7 +37,7 @@ import static kr.ac.kumoh.illdang100.tovalley.dto.review.ReviewRespDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.trip_schedule.TripScheduleRespDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.water_place.WaterPlaceRespDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.weather.WeatherRespDto.*;
-import static kr.ac.kumoh.illdang100.tovalley.util.EntityFinder.findLostFoundBoardByIdWithMemberOrElseThrow;
+import static kr.ac.kumoh.illdang100.tovalley.util.EntityFinder.findLostFoundBoardByIdWithMemberOrElseThrowEx;
 
 @Slf4j
 @Service
@@ -52,7 +53,6 @@ public class PageServiceImpl implements PageService{
     private final LostFoundBoardRepository lostFoundBoardRepository;
     private final CommentRepository commentRepository;
     private final LostFoundBoardImageRepository lostFoundBoardImageRepository;
-    private final JwtProcess jwtProcess;
 
     /**
      * @methodnme: getMainPageAllData
@@ -155,30 +155,20 @@ public class PageServiceImpl implements PageService{
     /**
      * 분실물 찾기 게시글 상세 페이지 조회
      * @param lostFoundBoardId
-     * @param refreshToken
+     * @param member
      * @return
      */
     @Override
-    public LostFoundBoardDetailRespDto getLostFoundBoardDetail(long lostFoundBoardId, String refreshToken) {
+    public LostFoundBoardDetailRespDto getLostFoundBoardDetail(long lostFoundBoardId, Member member) {
 
-        LostFoundBoard findLostFoundBoard = findLostFoundBoardByIdWithMemberOrElseThrow(lostFoundBoardRepository, lostFoundBoardId);
+        LostFoundBoard foundLostFoundBoard = findLostFoundBoardByIdWithMemberOrElseThrowEx(lostFoundBoardRepository, lostFoundBoardId);
 
-        PrincipalDetails principalDetails = jwtProcess.verify(refreshToken);
+        boolean isMyBoard = member != null && isMyBoard(foundLostFoundBoard, member.getId());
+        List<CommentDetailRespDto> commentDetails = findCommentDetails(lostFoundBoardId, member != null ? member.getEmail() : null);
+        List<String> imageUrls = lostFoundBoardImageRepository.findImageByLostFoundBoardId(lostFoundBoardId);
+        long commentCount = commentRepository.countByLostFoundBoardId(lostFoundBoardId);
 
-        return LostFoundBoardDetailRespDto.builder()
-                .title(findLostFoundBoard.getTitle())
-                .content(findLostFoundBoard.getContent())
-                .author(findLostFoundBoard.getMember().getNickname())
-                .waterPlaceName(findLostFoundBoard.getWaterPlace().getWaterPlaceName())
-                .waterPlaceAddress(findLostFoundBoard.getWaterPlace().getAddress())
-                .postCreateAt(findLostFoundBoard.getCreatedDate())
-                .isResolved(findLostFoundBoard.getIsResolved())
-                .isMyBoard(isMyBoard(findLostFoundBoard, principalDetails.getMember().getId()))
-                .boardAuthorProfile(findLostFoundBoard.getMember().getImageFile() != null ? findLostFoundBoard.getMember().getImageFile().getStoreFileUrl(): null)
-                .comments(findCommentDetails(lostFoundBoardId, principalDetails.getMember().getEmail()))
-                .postImages(lostFoundBoardImageRepository.findImageByLostFoundBoardId(lostFoundBoardId))
-                .commentCnt(commentRepository.countByLostFoundBoardId(lostFoundBoardId))
-                .build();
+        return createLostFoundBoardDetailRespDto(foundLostFoundBoard, isMyBoard, commentDetails, imageUrls, commentCount);
     }
 
     private Boolean isMyBoard(LostFoundBoard lostFoundBoard, Long memberId) {
@@ -188,7 +178,7 @@ public class PageServiceImpl implements PageService{
     private List<CommentDetailRespDto> findCommentDetails(long lostFoundBoardId, String memberEmail) {
         return commentRepository.findCommentByLostFoundBoardId(lostFoundBoardId)
                 .stream()
-                .map(c -> new CommentDetailRespDto(c.getId(), c.getAuthorEmail(), c.getContent(), c.getCreatedDate(), isMyComment(memberEmail, c.getAuthorEmail())))
+                .map(c -> new CommentDetailRespDto(c.getId(), c.getAuthorEmail(), c.getContent(), c.getCreatedDate(), memberEmail != null && isMyComment(memberEmail, c.getAuthorEmail())))
                 .collect(Collectors.toList());
     }
 

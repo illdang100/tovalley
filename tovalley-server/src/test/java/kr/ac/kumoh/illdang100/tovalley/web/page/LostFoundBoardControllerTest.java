@@ -133,7 +133,23 @@ class LostFoundBoardControllerTest extends DummyObject {
 
         // then
         resultActions
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    @DisplayName(value = "분실물 게시글 상세 - 로그인하지 않은 사용자")
+    void getLostFoundBoardDetails_noAccessToken() throws Exception {
+        // given
+        Long lostFoundBoardId = 1L;
+
+        // when
+        ResultActions resultActions = mvc.perform(get("/api/lostItem/" + lostFoundBoardId)
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // then
+        resultActions
+                .andExpect(status().isOk())
                 .andDo(MockMvcResultHandlers.print());
     }
 

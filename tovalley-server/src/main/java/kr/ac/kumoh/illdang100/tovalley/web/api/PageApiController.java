@@ -2,8 +2,9 @@ package kr.ac.kumoh.illdang100.tovalley.web.api;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.dto.ResponseDto;
-import kr.ac.kumoh.illdang100.tovalley.dto.lost_found_board.LostFoundBoardReqDto;
+import kr.ac.kumoh.illdang100.tovalley.dto.lost_found_board.LostFoundBoardReqDto.LostFoundBoardListReqDto;
 import kr.ac.kumoh.illdang100.tovalley.security.auth.PrincipalDetails;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtProcess;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtVO;
@@ -21,6 +22,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+
+import java.util.Optional;
 
 import static kr.ac.kumoh.illdang100.tovalley.dto.lost_found_board.LostFoundBoardRespDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.page.PageRespDto.*;
@@ -66,7 +69,7 @@ public class PageApiController {
     }
 
     @GetMapping("/lostItem")
-    public ResponseEntity<?> getLostFoundBoardList(@ModelAttribute @Valid LostFoundBoardReqDto.LostFoundBoardListReqDto lostFoundBoardListReqDto,
+    public ResponseEntity<?> getLostFoundBoardList(@ModelAttribute @Valid LostFoundBoardListReqDto lostFoundBoardListReqDto,
                                                    BindingResult bindingResult,
                                                    @PageableDefault(size = 5, sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable) {
 
@@ -76,10 +79,16 @@ public class PageApiController {
     }
 
     @GetMapping("/lostItem/{lostFoundBoardId}")
-    public ResponseEntity<?> getLostFoundBoardDetail(@PathVariable long lostFoundBoardId,
-                                                     @CookieValue(JwtVO.REFRESH_TOKEN) String refreshToken) {
+    public ResponseEntity<?> getLostFoundBoardDetail(@PathVariable Long lostFoundBoardId,
+                                                     @CookieValue(value = JwtVO.ACCESS_TOKEN, required = false) String accessToken) {
+        PrincipalDetails principalDetails = null;
+        if (accessToken != null) {
+            principalDetails = jwtProcess.verify(accessToken);
+        }
 
-        LostFoundBoardDetailRespDto lostFoundBoardDetail = pageService.getLostFoundBoardDetail(lostFoundBoardId, refreshToken);
+        Optional<Member> optionalMember = Optional.ofNullable(principalDetails)
+                .map(PrincipalDetails::getMember);
+        LostFoundBoardDetailRespDto lostFoundBoardDetail = pageService.getLostFoundBoardDetail(lostFoundBoardId, optionalMember.orElse(null));
 
         return new ResponseEntity<>(new ResponseDto<>(1, "분실물 찾기 상세 페이지 조회를 성공했습니다", lostFoundBoardDetail), HttpStatus.OK);
     }
