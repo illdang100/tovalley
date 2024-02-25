@@ -6,6 +6,8 @@ import axiosInstance from "../../axios_interceptor";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { BiUser } from "react-icons/bi";
 import { FiLogOut } from "react-icons/fi";
+import { FaRegBell } from "react-icons/fa";
+import Chat from "./Chat";
 
 const cookies = new Cookies();
 
@@ -14,6 +16,7 @@ const Header = () => {
   const location = useLocation();
   const [login, setLogin] = useState(false);
   const [navClick, setNavClick] = useState(false);
+  const [chatView, setChatView] = useState(false);
 
   useEffect(() => {
     const loginStatus = cookies.get("ISLOGIN");
@@ -40,6 +43,10 @@ const Header = () => {
       .catch((err) => console.log(err));
   };
 
+  const outChatting = () => {
+    setChatView(false);
+  };
+
   return (
     <div className={styles.header}>
       <div className={styles.headerWrapper}>
@@ -63,6 +70,13 @@ const Header = () => {
           </div>
           {login ? (
             <div className={styles.login}>
+              <div
+                className={styles.alarm}
+                onClick={() => setChatView(!chatView)}
+              >
+                <FaRegBell />
+                <span>•</span>
+              </div>
               <span onClick={() => navigation("/mypage")}>마이페이지</span>
               <span onClick={handleLogout}>로그아웃</span>
               <span
@@ -106,6 +120,18 @@ const Header = () => {
             }
           >
             전국 계곡
+          </span>
+          <span
+            onClick={() => {
+              navigation("/lost-item");
+            }}
+            className={
+              location.pathname === "/lost-item"
+                ? styles.navMenuClicked
+                : styles.navMenu
+            }
+          >
+            분실물 찾기
           </span>
           <span
             onClick={() => {
@@ -154,6 +180,7 @@ const Header = () => {
           안전 가이드
         </span>
       </div>
+      <Chat outChatting={outChatting} chatView={chatView} />
     </div>
   );
 };

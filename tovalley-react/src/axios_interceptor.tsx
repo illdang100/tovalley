@@ -32,6 +32,8 @@ axiosInstance.interceptors.response.use(
           window.location.reload();
         } else if (errMsg === "사용 불가능한 닉네임입니다.") {
           alert("사용 불가능한 닉네임입니다.");
+        } else if (errMsg === "닉네임은 필수 값 입니다.") {
+          window.location.replace("/mypage");
         }
       } else if (errResponseStatus === 401) {
         console.log("인증 실패");

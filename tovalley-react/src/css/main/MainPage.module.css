@@ -1,5 +1,6 @@
 .mainPage {
   min-width: 360px;
+  margin-top: 120px;
 }
 
 .body {
@@ -9,6 +10,10 @@
 .top {
   display: flex;
   margin-bottom: 3em;
+}
+
+.lostContents {
+  display: flex;
 }
 
 @media screen and (max-width: 1000px) {

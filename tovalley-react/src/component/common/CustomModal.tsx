@@ -1,18 +1,13 @@
 import React, { FC, useEffect } from "react";
-import styles from "../../css/common/ConfirmModal.module.css";
+import styles from "../../css/common/CustomModal.module.css";
 
 interface Props {
   content: string;
-  handleModal?: React.Dispatch<
-    React.SetStateAction<{
-      view: boolean;
-      content: string;
-    }>
-  >;
-  CustomFunc?: () => void;
+  customFunc: () => void;
+  handleModal: () => void;
 }
 
-const ConfirmModal: FC<Props> = ({ content, handleModal, CustomFunc }) => {
+const CustomModal: FC<Props> = ({ content, customFunc, handleModal }) => {
   useEffect(() => {
     document.body.style.cssText = `
           position: fixed; 
@@ -32,21 +27,13 @@ const ConfirmModal: FC<Props> = ({ content, handleModal, CustomFunc }) => {
         <div className={styles.modalContent}>
           <span>{content}</span>
         </div>
-        <div
-          className={styles.confirm}
-          onClick={() =>
-            handleModal
-              ? handleModal({ view: false, content: content })
-              : CustomFunc
-              ? CustomFunc()
-              : window.location.reload()
-          }
-        >
-          확인
+        <div className={styles.confirm}>
+          <div onClick={customFunc}>확인</div>
+          <div onClick={handleModal}>취소</div>
         </div>
       </div>
     </div>
   );
 };
 
-export default ConfirmModal;
+export default CustomModal;

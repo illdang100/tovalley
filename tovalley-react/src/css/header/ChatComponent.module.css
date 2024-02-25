@@ -1,0 +1,65 @@
+.chatComponent {
+  width: 100%;
+  height: 72vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin: 2em 0;
+}
+
+.speechBubble {
+  display: flex;
+  justify-content: right;
+  padding: 0 1.2em;
+}
+
+.bubbleComponent {
+  display: flex;
+  align-items: flex-end;
+}
+
+.bubbleComponent span {
+  color: #b0b0b0;
+  font-size: 0.8rem;
+  margin-right: 0.6em;
+}
+
+.bubbleComponent div {
+  background-color: #d6e6fd;
+  padding: 0.8em 1em;
+  font-size: 0.9rem;
+  border-radius: 10px;
+  max-width: 300px;
+}
+
+.sendMessage {
+  width: 90%;
+  display: flex;
+  margin: 0 auto;
+}
+
+.sendMessage input {
+  width: 100%;
+  box-sizing: border-box;
+  background-color: #f2f2f2;
+  border: none;
+  border-radius: 30px;
+  font-size: 0.9rem;
+  padding: 0.8em 1.4em;
+  margin-right: 1em;
+}
+
+input::placeholder {
+  color: #939393;
+}
+
+.sendMessage button {
+  background-color: transparent;
+  border: none;
+  width: fit-content;
+  cursor: pointer;
+  white-space: nowrap;
+  color: #66a5fc;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
