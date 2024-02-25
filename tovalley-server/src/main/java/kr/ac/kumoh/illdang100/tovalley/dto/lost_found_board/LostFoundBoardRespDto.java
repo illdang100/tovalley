@@ -21,7 +21,7 @@ public class LostFoundBoardRespDto {
         private String content;
         private String author;
         private Long commentCnt;
-        @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
         private LocalDateTime postCreateAt;
         private String postImage;
         private LostFoundEnum category;
@@ -37,7 +37,7 @@ public class LostFoundBoardRespDto {
         private String author;
         private String waterPlaceName;
         private String waterPlaceAddress;
-        @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
         private LocalDateTime postCreateAt;
         private List<String> postImages;
         private Boolean isResolved;
@@ -70,7 +70,7 @@ public class LostFoundBoardRespDto {
         private Long commentId;
         private String commentAuthor;
         private String commentContent;
-        @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
         private LocalDateTime commentCreateAt;
         private boolean isMyComment;
     }

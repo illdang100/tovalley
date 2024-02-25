@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -160,10 +161,14 @@ public class PageServiceImpl implements PageService{
     @Override
     public LostFoundBoardDetailRespDto getLostFoundBoardDetail(long lostFoundBoardId, Member member) {
 
-        LostFoundBoard findLostFoundBoard = findLostFoundBoardByIdWithMemberOrElseThrowEx(lostFoundBoardRepository, lostFoundBoardId);
+        LostFoundBoard foundLostFoundBoard = findLostFoundBoardByIdWithMemberOrElseThrowEx(lostFoundBoardRepository, lostFoundBoardId);
 
-        return createLostFoundBoardDetailRespDto(findLostFoundBoard, isMyBoard(findLostFoundBoard, member.getId()), findCommentDetails(lostFoundBoardId, member.getEmail()),
-                 lostFoundBoardImageRepository.findImageByLostFoundBoardId(lostFoundBoardId), commentRepository.countByLostFoundBoardId(lostFoundBoardId));
+        boolean isMyBoard = member != null && isMyBoard(foundLostFoundBoard, member.getId());
+        List<CommentDetailRespDto> commentDetails = findCommentDetails(lostFoundBoardId, member != null ? member.getEmail() : null);
+        List<String> imageUrls = lostFoundBoardImageRepository.findImageByLostFoundBoardId(lostFoundBoardId);
+        long commentCount = commentRepository.countByLostFoundBoardId(lostFoundBoardId);
+
+        return createLostFoundBoardDetailRespDto(foundLostFoundBoard, isMyBoard, commentDetails, imageUrls, commentCount);
     }
 
     private Boolean isMyBoard(LostFoundBoard lostFoundBoard, Long memberId) {
@@ -173,7 +178,7 @@ public class PageServiceImpl implements PageService{
     private List<CommentDetailRespDto> findCommentDetails(long lostFoundBoardId, String memberEmail) {
         return commentRepository.findCommentByLostFoundBoardId(lostFoundBoardId)
                 .stream()
-                .map(c -> new CommentDetailRespDto(c.getId(), c.getAuthorEmail(), c.getContent(), c.getCreatedDate(), isMyComment(memberEmail, c.getAuthorEmail())))
+                .map(c -> new CommentDetailRespDto(c.getId(), c.getAuthorEmail(), c.getContent(), c.getCreatedDate(), memberEmail != null && isMyComment(memberEmail, c.getAuthorEmail())))
                 .collect(Collectors.toList());
     }
 
