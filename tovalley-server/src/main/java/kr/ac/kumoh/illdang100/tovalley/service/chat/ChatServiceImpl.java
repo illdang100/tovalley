@@ -190,60 +190,25 @@ public class ChatServiceImpl implements ChatService {
      * @param pageable   페이징 상세 정보
      * @return 채팅 메시지 목록
      */
-//    @Override
-//    public Slice<ChatMessageListRespDto> getChatMessages(Long memberId, Long chatRoomId, Pageable pageable) {
-//        validateChatRoom(memberId, chatRoomId);
-//        Slice<ChatMessage> chatMessages = chatMessageRepository.findByChatRoomIdOrderByCreatedAtDesc(chatRoomId, pageable);
-//        List<ChatMessageRespDto> chatMessageRespDtoList = chatMessages.stream()
-//                .map(chatMessage -> new ChatMessageRespDto(
-//                        chatMessage.getId().toString(),
-//                        chatMessage.getSenderId(),
-//                        chatMessage.getSenderId().equals(memberId),
-//                        chatMessage.getContent(),
-//                        ChatUtil.convertZdtStringToLocalDateTime(chatMessage.getCreatedAt()),
-//                        chatMessage.getReadCount()))
-//                .collect(Collectors.toList());
-//        ChatMessageListRespDto chatMessageListRespDto = new ChatMessageListRespDto(chatRoomId, chatMessageRespDtoList);
-//        return new SliceImpl<>(Arrays.asList(chatMessageListRespDto), pageable, chatMessages.hasNext());
-//    }
-//    @Override
-//    public ChatMessageListRespDto getMessages(Long chatRoomId, String lastMessageId, int size) {
-//        Pageable pageable = PageRequest.of(0, size, Sort.by(Sort.Direction.DESC, "createdAt"));
-//
-//        if (lastMessageId == null) {
-//            return chatMessageRepository.findByChatRoomIdOrderByCreatedAtDesc(chatRoomId, pageable);
-//        } else {
-//            return chatMessageRepository.findByChatRoomIdAndIdLessThanOrderByCreatedAtDesc(chatRoomId, lastMessageId, pageable);
-//        }
-//    }
     @Override
-    public ChatMessageListRespDto getChatMessages(Long memberId, Long chatRoomId, String lastMessageId,
-                                                  Pageable pageable) {
-        // TODO: 사용자의 pk도 함께 반환해주기!!
+    public ChatMessageListRespDto getChatMessages(Long memberId, Long chatRoomId, Pageable pageable) {
+        // 0. 요청한 사용자가 속한 채팅방이 맞는지 검증
         validateChatRoom(memberId, chatRoomId);
 
-        List<ChatMessage> chatMessages;
-        if (lastMessageId == null) {
-            chatMessages = chatMessageRepository.findByChatRoomIdOrderByCreatedAtDesc(
-                    chatRoomId, pageable);
-        } else {
-            chatMessages = chatMessageRepository.findByChatRoomIdAndIdLessThanOrderByIdDesc(
-                    chatRoomId, lastMessageId, pageable);
-        }
+        // 1. MongoDB로부터 원하는 페이지 번호와 크기에 해당하는 데이터를 가져옵니다.
+        Slice<ChatMessage> chatMessageSlice = chatMessageRepository.findByChatRoomIdOrderByCreatedAtDesc(chatRoomId, pageable);
 
-        List<ChatMessageRespDto> collect = chatMessages.stream()
-                .map(chatMessage -> new ChatMessageRespDto(
-                        chatMessage.getId(),
-                        chatMessage.getSenderId(),
-                        chatMessage.getSenderId().equals(memberId),
-                        chatMessage.getContent(),
-                        LocalDateTime.now(),
-                        chatMessage.getReadCount()))
+        // 2. 가져온 데이터를 DTO로 변환합니다.
+        List<ChatMessageRespDto> chatMessageRespDtos = chatMessageSlice.getContent().stream()
+                .map(chatMessage -> new ChatMessageRespDto(chatMessage, memberId))
                 .collect(Collectors.toList());
 
-        return new ChatMessageListRespDto(memberId, chatRoomId, collect);
-    }
+        // 3. 변환된 DTO를 기반으로 새로운 Slice를 생성합니다.
+        Slice<ChatMessageRespDto> chatMessageRespDtoSlice = new SliceImpl<>(chatMessageRespDtos, pageable, chatMessageSlice.hasNext());
 
+        // 4. Slice 객체와 함께 응답 DTO를 생성하고 반환합니다.
+        return new ChatMessageListRespDto(memberId, chatRoomId, chatMessageRespDtoSlice);
+    }
 
     private void validateChatRoom(Long memberId, Long chatRoomId) {
         Optional<ChatRoom> chatRoom = chatRoomRepository.findByIdAndMemberId(chatRoomId, memberId);
@@ -251,25 +216,6 @@ public class ChatServiceImpl implements ChatService {
             throw new CustomApiException("해당 사용자가 속한 채팅방이 아닙니다");
         }
     }
-//
-//
-//    private ChatMessageListRespDto mapToChatMessageListRespDto(Long memberId, Long chatRoomId, List<ChatMessage> chatMessages) {
-//        List<ChatMessageRespDto> content = chatMessages.stream()
-//                .map(chatMessage -> createChatMessageRespDto(chatMessage, memberId))
-//                .collect(Collectors.toList());
-//
-//        ChatMessageListRespDto result = new ChatMessageListRespDto(chatRoomId, content);
-//        return result;
-//    }
-//
-//    private ChatMessageRespDto createChatMessageRespDto(ChatMessage chatMessage, Long memberId) {
-//        return new ChatMessageRespDto(
-//                chatMessage.getId(),
-//                chatMessage.getSenderId(),
-//                chatMessage.getSenderId().equals(memberId),  // myMsg는 요청한 사용자가 메시지를 보낸 경우 true
-//                chatMessage.getContent(),
-//                ChatUtil.convertZdtStringToLocalDateTime(chatMessage.getCreatedAt()));
-//    }
 
     @Override
     @Transactional

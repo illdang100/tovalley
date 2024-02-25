@@ -3,9 +3,12 @@ package kr.ac.kumoh.illdang100.tovalley.dto.chat;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;
 import java.util.List;
+import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatMessage;
+import kr.ac.kumoh.illdang100.tovalley.util.ChatUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import org.springframework.data.domain.Slice;
 
 public class ChatRespDto {
 
@@ -57,7 +60,7 @@ public class ChatRespDto {
         // TODO: 사용자의 pk도 함께 반환해주기!!
         private Long memberId;
         private Long chatRoomId;
-        private List<ChatMessageRespDto> chatMessages;
+        private Slice<ChatMessageRespDto> chatMessages;
     }
 
     @Data
@@ -70,5 +73,14 @@ public class ChatRespDto {
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
         private LocalDateTime createdAt;
         private int reaCount;
+
+        public ChatMessageRespDto(ChatMessage chatMessage, Long memberId) {
+            this.chatMessageId = chatMessage.getId();
+            this.senderId = chatMessage.getSenderId();
+            this.myMsg = chatMessage.getSenderId().equals(memberId);
+            this.content = chatMessage.getContent();
+            this.createdAt = ChatUtil.convertZdtStringToLocalDateTime(chatMessage.getCreatedAt());
+            this.reaCount = chatMessage.getReadCount();
+        }
     }
 }

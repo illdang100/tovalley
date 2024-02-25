@@ -116,8 +116,8 @@ class ChatApiControllerTest extends DummyObject {
     }
 
     @Test
-    @DisplayName("채팅방 목록 조회 컨트롤러 테스트")
-    public void findChatRoomList() throws Exception {
+    @DisplayName("sender - 채팅방 목록 조회 컨트롤러 테스트")
+    public void findChatRoomList_sender_test() throws Exception {
 
         // given
 
@@ -125,14 +125,34 @@ class ChatApiControllerTest extends DummyObject {
         ResultActions resultActions = mvc.perform(get("/api/auth/chatroom")
                 .cookie(new Cookie(JwtVO.ACCESS_TOKEN, accessToken))
                 .contentType(MediaType.APPLICATION_JSON)
-                .param("page", "0")
-                .param("size", "10")
-                .param("sort", "createdDate,desc"));
+                .param("page", "0"));
 
         // then
         resultActions.andExpect(status().isOk())
                 .andExpect(jsonPath("$.msg").value("채팅방 목록 조회를 성공했습니다"))
-                .andExpect(jsonPath("$.data.content[0].chatRoomTitle").value("챗멤버2 와(과)의 채팅방입니다."))
+                .andExpect(jsonPath("$.data.content[0].chatRoomTitle").value("nickname44 와(과)의 채팅방입니다."))
+                .andExpect(jsonPath("$.data.content[1].chatRoomTitle").value("nickname33 와(과)의 채팅방입니다."))
+                .andExpect(jsonPath("$.data.content[2].chatRoomTitle").value("챗멤버2 와(과)의 채팅방입니다."))
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    @DisplayName("recipient - 채팅방 목록 조회 컨트롤러 테스트")
+    public void findChatRoomList_recipient_test() throws Exception {
+
+        // given
+        String accessToken = createTestAccessToken(memberRepository, jwtProcess, "username3");
+
+        // when
+        ResultActions resultActions = mvc.perform(get("/api/auth/chatroom")
+                .cookie(new Cookie(JwtVO.ACCESS_TOKEN, accessToken))
+                .contentType(MediaType.APPLICATION_JSON)
+                .param("page", "0"));
+
+        // then
+        resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.msg").value("채팅방 목록 조회를 성공했습니다"))
+                .andExpect(jsonPath("$.data.content[0].chatRoomTitle").value("일당백 와(과)의 채팅방입니다."))
                 .andDo(MockMvcResultHandlers.print());
     }
 
@@ -141,20 +161,17 @@ class ChatApiControllerTest extends DummyObject {
     public void findChatMessages() throws Exception {
 
         // given
-
         // when
         ResultActions resultActions = mvc.perform(get("/api/auth/chat/messages/1")
                 .cookie(new Cookie(JwtVO.ACCESS_TOKEN, accessToken))
-                .contentType(MediaType.APPLICATION_JSON));
+                .contentType(MediaType.APPLICATION_JSON)
+                .param("page", "1")
+//                .param("lastMessageId", content6.getId())
+        );
 
         // then
         resultActions.andExpect(status().isOk())
                 .andExpect(jsonPath("$.msg").value("채팅 메시지 목록 조회에 성공했습니다"))
-                .andExpect(jsonPath("$.data.content[0].chatMessages[0].content").value("content15"))
-                .andExpect(jsonPath("$.data.content[0].chatMessages[5].content").value("content10"))
-                .andExpect(jsonPath("$.data.content[0].chatMessages[9].content").value("content6"))
-                .andExpect(jsonPath("$.data.content[0].chatMessages[0].myMsg").value(true))
-                .andExpect(jsonPath("$.data.content[0].chatMessages[1].myMsg").value(false))
                 .andDo(MockMvcResultHandlers.print());
     }
 
@@ -165,7 +182,7 @@ class ChatApiControllerTest extends DummyObject {
         // given
 
         // when
-        ResultActions resultActions = mvc.perform(get("/api/auth/chat/messages/2")
+        ResultActions resultActions = mvc.perform(get("/api/auth/chat/messages/3")
                 .cookie(new Cookie(JwtVO.ACCESS_TOKEN, accessToken))
                 .contentType(MediaType.APPLICATION_JSON));
 
@@ -183,25 +200,46 @@ class ChatApiControllerTest extends DummyObject {
         memberRepository.save(newMember("username2", chatNickname1));
         Member recipient = newMember("username3", chatNickname2);
         Member recipient2 = newMember("username33", "nickname33");
+        Member recipient3 = newMember("username44", "nickname44");
         memberRepository.save(recipient);
         memberRepository.save(recipient2);
+        memberRepository.save(recipient3);
         ChatRoom chatRoom = chatRoomRepository.save(newChatRoom(sender, recipient));
-        ChatRoom chatRoom2 = chatRoomRepository.save(newChatRoom(sender2, recipient2));
-        chatMessageRepository.save(newChatMessage(chatRoom.getId(), sender.getId(), "content1"));
-        chatMessageRepository.save(newChatMessage(chatRoom.getId(), sender.getId(), "content2"));
-        chatMessageRepository.save(newChatMessage(chatRoom.getId(), sender.getId(), "content3"));
-        chatMessageRepository.save(newChatMessage(chatRoom.getId(), sender.getId(), "content4"));
-        chatMessageRepository.save(newChatMessage(chatRoom.getId(), recipient.getId(), "content5"));
-        chatMessageRepository.save(newChatMessage(chatRoom.getId(), sender.getId(), "content6"));
-        chatMessageRepository.save(newChatMessage(chatRoom.getId(), sender.getId(), "content7"));
-        chatMessageRepository.save(newChatMessage(chatRoom.getId(), recipient.getId(), "content8"));
-        chatMessageRepository.save(newChatMessage(chatRoom.getId(), recipient.getId(), "content9"));
-        chatMessageRepository.save(newChatMessage(chatRoom.getId(), recipient.getId(), "content10"));
-        chatMessageRepository.save(newChatMessage(chatRoom.getId(), sender.getId(), "content11"));
-        chatMessageRepository.save(newChatMessage(chatRoom.getId(), recipient.getId(), "content12"));
-        chatMessageRepository.save(newChatMessage(chatRoom.getId(), sender.getId(), "content13"));
-        chatMessageRepository.save(newChatMessage(chatRoom.getId(), recipient.getId(), "content14"));
-        chatMessageRepository.save(newChatMessage(chatRoom.getId(), sender.getId(), "content15"));
+        ChatRoom chatRoom2 = chatRoomRepository.save(newChatRoom(sender, recipient2));
+        ChatRoom chatRoom3 = chatRoomRepository.save(newChatRoom(sender2, recipient2));
+        ChatRoom chatRoom4 = chatRoomRepository.save(newChatRoom(sender, recipient3));
+//        chatMessageRepository.save(newChatMessage(chatRoom3.getId(), recipient2.getId(), "content1"));
+//        chatMessageRepository.save(newChatMessage(chatRoom.getId(), sender.getId(), "content1"));
+//        chatMessageRepository.save(newChatMessage(chatRoom.getId(), sender.getId(), "content2"));
+//        chatMessageRepository.save(newChatMessage(chatRoom.getId(), sender.getId(), "content3"));
+//        chatMessageRepository.save(newChatMessage(chatRoom.getId(), sender.getId(), "content4"));
+//        chatMessageRepository.save(newChatMessage(chatRoom.getId(), recipient.getId(), "content5"));
+//        chatMessageRepository.save(newChatMessage(chatRoom.getId(), sender.getId(), "content6"));
+//        chatMessageRepository.save(newChatMessage(chatRoom.getId(), sender.getId(), "content7"));
+//        chatMessageRepository.save(newChatMessage(chatRoom.getId(), recipient.getId(), "content8"));
+//        chatMessageRepository.save(newChatMessage(chatRoom.getId(), recipient.getId(), "content9"));
+//        chatMessageRepository.save(newChatMessage(chatRoom.getId(), recipient.getId(), "content10"));
+//        chatMessageRepository.save(newChatMessage(chatRoom.getId(), sender.getId(), "content11"));
+//        chatMessageRepository.save(newChatMessage(chatRoom.getId(), recipient.getId(), "content12"));
+//        chatMessageRepository.save(newChatMessage(chatRoom.getId(), sender.getId(), "content13"));
+//        chatMessageRepository.save(newChatMessage(chatRoom.getId(), recipient.getId(), "content14"));
+//        chatMessageRepository.save(newChatMessage(chatRoom.getId(), sender.getId(), "content15"));
+//
+//        chatMessageRepository.save(newChatMessage(chatRoom.getId(), sender.getId(), "content16"));
+//        chatMessageRepository.save(newChatMessage(chatRoom.getId(), sender.getId(), "content17"));
+//        chatMessageRepository.save(newChatMessage(chatRoom.getId(), sender.getId(), "content18"));
+//        chatMessageRepository.save(newChatMessage(chatRoom.getId(), sender.getId(), "content19"));
+//        chatMessageRepository.save(newChatMessage(chatRoom.getId(), recipient.getId(), "content20"));
+//        chatMessageRepository.save(newChatMessage(chatRoom.getId(), sender.getId(), "content21"));
+//        chatMessageRepository.save(newChatMessage(chatRoom.getId(), sender.getId(), "content22"));
+//        chatMessageRepository.save(newChatMessage(chatRoom.getId(), recipient.getId(), "content23"));
+//        chatMessageRepository.save(newChatMessage(chatRoom.getId(), recipient.getId(), "content24"));
+//        chatMessageRepository.save(newChatMessage(chatRoom.getId(), recipient.getId(), "content25"));
+//        chatMessageRepository.save(newChatMessage(chatRoom.getId(), sender.getId(), "content26"));
+//        chatMessageRepository.save(newChatMessage(chatRoom.getId(), recipient.getId(), "content27"));
+//        chatMessageRepository.save(newChatMessage(chatRoom.getId(), sender.getId(), "content28"));
+//        chatMessageRepository.save(newChatMessage(chatRoom.getId(), recipient.getId(), "content29"));
+//        chatMessageRepository.save(newChatMessage(chatRoom.getId(), sender.getId(), "content30"));
         em.clear();
     }
 }

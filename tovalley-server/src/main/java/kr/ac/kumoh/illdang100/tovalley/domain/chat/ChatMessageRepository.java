@@ -7,6 +7,5 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface ChatMessageRepository extends MongoRepository<ChatMessage, String> {
     Optional<ChatMessage> findTopByChatRoomIdOrderByCreatedAtDesc(Long chatRoomId);
-
     Slice<ChatMessage> findByChatRoomIdOrderByCreatedAtDesc(Long chatRoomId, Pageable pageable);
 }

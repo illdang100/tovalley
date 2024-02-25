@@ -69,14 +69,10 @@ public class ChatApiController {
     public ResponseEntity<?> findChatMessages(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @PathVariable("chatRoomId") Long chatRoomId,
-            @RequestParam(required = false) String lastMessageId,
-            @PageableDefault(size = 10, sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable) {
-        ChatMessageListRespDto result
-                = chatService.getChatMessages(principalDetails.getMember().getId(), chatRoomId, lastMessageId, pageable);
+            @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
 
-        if (result.getChatMessages().isEmpty()) {
-            return new ResponseEntity<>(new ResponseDto<>(1, "더이상 채팅 메시지가 없습니다", result), HttpStatus.NOT_FOUND);
-        }
+        ChatMessageListRespDto result
+                = chatService.getChatMessages(principalDetails.getMember().getId(), chatRoomId, pageable);
 
         return new ResponseEntity<>(new ResponseDto<>(1, "채팅 메시지 목록 조회에 성공했습니다", result), HttpStatus.OK);
     }
