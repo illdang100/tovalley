@@ -16,10 +16,11 @@ import javax.persistence.*;
 public class LostFoundBoard extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "lost_found_board_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "waterPlace_id")
+    @JoinColumn(name = "water_place_id")
     private WaterPlace waterPlace;
 
     @ManyToOne(fetch = FetchType.LAZY)

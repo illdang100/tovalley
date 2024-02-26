@@ -16,6 +16,7 @@ public class LostFoundBoardImage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "lost_found_board_image_id")
     private Long id;
 
     @Column(nullable = false)
