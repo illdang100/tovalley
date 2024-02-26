@@ -71,8 +71,12 @@ public class LostFoundBoardServiceImpl implements LostFoundBoardService {
 
     @Override
     @Transactional
-    public void updateResolvedStatus(Long lostFoundBoardId, Boolean isResolved) {
+    public void updateResolvedStatus(Long lostFoundBoardId, Boolean isResolved, Long memberId) {
         LostFoundBoard findLostFoundBoard = findLostFoundBoardOrElseThrowEx(lostFoundBoardRepository, lostFoundBoardId);
+        if(!isAuthorizedToAccessBoard(findLostFoundBoard, memberId)) {
+            throw new CustomApiException("게시글 작성자에게만 수정 권한이 있습니다");
+        }
+
         findLostFoundBoard.updateResolvedStatus(isResolved);
     }
 }

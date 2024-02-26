@@ -15,5 +15,5 @@ public interface LostFoundBoardService {
 
     Boolean isAuthorizedToAccessBoard(LostFoundBoard lostFoundBoard, Long memberId);
 
-    void updateResolvedStatus(Long lostFoundBoardId, Boolean isResolved);
+    void updateResolvedStatus(Long lostFoundBoardId, Boolean isResolved, Long memberId);
 }
