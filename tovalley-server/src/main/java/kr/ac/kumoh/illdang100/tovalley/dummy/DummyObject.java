@@ -7,6 +7,7 @@ import kr.ac.kumoh.illdang100.tovalley.domain.ImageFile;
 import kr.ac.kumoh.illdang100.tovalley.domain.accident.Accident;
 import kr.ac.kumoh.illdang100.tovalley.domain.accident.AccidentEnum;
 import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatMessage;
+import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatNotification;
 import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatRoom;
 import kr.ac.kumoh.illdang100.tovalley.domain.comment.Comment;
 import kr.ac.kumoh.illdang100.tovalley.domain.lost_found_board.LostFoundBoard;
@@ -429,6 +430,16 @@ public class DummyObject {
                 .content(content)
                 .createdAt(ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toString())
                 .readCount(1)
+                .build();
+    }
+
+    protected ChatNotification newChatNotification(Member sender, Long recipientId, Long chatRoomId, String content, Boolean hasRead) {
+        return ChatNotification.builder()
+                .sender(sender)
+                .recipientId(recipientId)
+                .chatRoomId(chatRoomId)
+                .content(content)
+                .hasRead(hasRead)
                 .build();
     }
 }

@@ -56,4 +56,8 @@ public class ChatNotification extends BaseTimeEntity {
         this.content = content;
         this.hasRead = false;
     }
+
+    public void changeHasReadToTrue() {
+        this.hasRead = true;
+    }
 }
