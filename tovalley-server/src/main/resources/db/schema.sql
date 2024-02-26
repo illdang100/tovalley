@@ -165,35 +165,58 @@ CREATE TABLE IF NOT EXISTS `email_code` (
     primary key (email_code_id)
     ) engine=InnoDB;
 
-CREATE TABLE `lost_found_board` (
-                                    `lost_found_board_id` BIGINT AUTO_INCREMENT PRIMARY KEY,
-                                    `water_place_id` BIGINT,
-                                    `member_id` BIGINT,
-                                    `title` VARCHAR(20) NOT NULL,
-                                    `content` VARCHAR(256) NOT NULL,
-                                    `isPosting` BOOLEAN,
-                                    `isResolved` BOOLEAN,
-                                    `lostFoundEnum` VARCHAR(255),
-                                    `created_date` TIMESTAMP,
-                                    `modified_date` TIMESTAMP,
+CREATE TABLE IF NOT EXISTS `chat_room` (
+                                           `chat_room_id`	BIGINT	NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                                           `sender_id`	BIGINT,
+                                           `recipient_id`	BIGINT,
+                                           `created_date`	DATETIME(6)	NOT NULL,
+    `last_modified_date`	DATETIME(6)	NOT NULL,
+    FOREIGN KEY (sender_id) REFERENCES member(member_id),
+    FOREIGN KEY (recipient_id) REFERENCES member(member_id)
+    ) engine=InnoDB;
 
-                                    FOREIGN KEY (water_place_id) REFERENCES water_place(water_place_id),
-                                    FOREIGN KEY (member_id) REFERENCES member(member_id)
-) engine=InnoDB;
+CREATE TABLE IF NOT EXISTS `chat_notification` (
+                                                   `chat_notification_id` BIGINT NOT NULL AUTO_INCREMENT,
+                                                   `sender_id` BIGINT NOT NULL,
+                                                   `recipient_id` BIGINT NOT NULL,
+                                                   `chat_room_id` BIGINT NOT NULL,
+                                                   `content` VARCHAR(1000) NOT NULL,
+    `has_read` BIT NOT NULL,
+    `created_date` datetime(6) NOT NULL,
+    `last_modified_date` datetime(6) NOT NULL,
+    PRIMARY KEY (`chat_notification_id`),
+    FOREIGN KEY (`sender_id`) REFERENCES `member` (`member_id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE `comment` (
-                           `comment_id`	BIGINT	NOT NULL primary key COMMENT '댓글 아이디',
-                           `lost_found_id`	BIGINT	NOT NULL COMMENT '분실물 찾기 게시글 아이디',
-                           `author_email`	VARCHAR(30)	NOT NULL COMMENT '댓글 작성자 이메일',
-                           `content`	VARCHAR(256)	NOT NULL COMMENT '댓글 내용'
-) engine=InnoDB;
+CREATE TABLE IF NOT EXISTS `lost_found_board` (
+                                                  `lost_found_board_id` BIGINT AUTO_INCREMENT PRIMARY KEY,
+                                                  `water_place_id` BIGINT,
+                                                  `member_id` BIGINT,
+                                                  `title` VARCHAR(20) NOT NULL,
+    `content` VARCHAR(256) NOT NULL,
+    `is_posting` BOOLEAN,
+    `is_resolved` BOOLEAN,
+    `lost_found_enum` VARCHAR(255),
+    `created_date` TIMESTAMP,
+    `modified_date` TIMESTAMP,
 
-create table `lost_found_board_image` (
-                                          `lost_found_board_image_id` BIGINT auto_increment primary key,
-                                          `store_file_name`     varchar(100) null,
-                                          `store_file_url`      varchar(250) null,
-                                          `lost_found_board_id` bigint       null
-) engine=InnoDB;
+    FOREIGN KEY (water_place_id) REFERENCES water_place(water_place_id),
+    FOREIGN KEY (member_id) REFERENCES member(member_id)
+    ) engine=InnoDB;
+
+CREATE TABLE IF NOT EXISTS `comment` (
+                                         `comment_id`	BIGINT	NOT NULL primary key COMMENT '댓글 아이디',
+                                         `lost_found_board_id`	BIGINT	NOT NULL COMMENT '분실물 찾기 게시글 아이디',
+                                         `author_email`	VARCHAR(30)	NOT NULL COMMENT '댓글 작성자 이메일',
+    `content`	VARCHAR(256)	NOT NULL COMMENT '댓글 내용'
+    ) engine=InnoDB;
+
+CREATE TABLE IF NOT EXISTS `lost_found_board_image` (
+                                                        `lost_found_board_image_id` BIGINT auto_increment primary key,
+                                                        `store_file_name`     varchar(100) null,
+    `store_file_url`      varchar(250) null,
+    `lost_found_board_id` bigint       null
+    ) engine=InnoDB;
 
 
 alter table member
