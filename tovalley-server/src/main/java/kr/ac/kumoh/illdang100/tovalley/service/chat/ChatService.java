@@ -18,7 +18,7 @@ public interface ChatService {
     void exitChatRoom(Long memberId, Long chatRoomId);
 
     //    Slice<ChatMessageListRespDto> getChatMessages(Long memberId, Long chatRoomId, Pageable pageable);
-    ChatMessageListRespDto getChatMessages(Long memberId, Long chatRoomId, Pageable pageable);
+    ChatMessageListRespDto getChatMessages(Long memberId, Long chatRoomId, String cursor, Pageable pageable);
 
     void sendMessage(Message message, Long senderId);
 

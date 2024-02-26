@@ -57,7 +57,6 @@ public class ChatRespDto {
     @Data
     @AllArgsConstructor
     public static class ChatMessageListRespDto{
-        // TODO: 사용자의 pk도 함께 반환해주기!!
         private Long memberId;
         private Long chatRoomId;
         private Slice<ChatMessageRespDto> chatMessages;

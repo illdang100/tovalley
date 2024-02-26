@@ -64,15 +64,15 @@ public class ChatApiController {
         return new ResponseEntity<>(new ResponseDto<>(1, "채팅방 목록 조회를 성공했습니다", result), HttpStatus.OK);
     }
 
-    // TODO: 응답 dto 필드에서 myMsg 필드 제외 나머지를 Message 필드와 통일 시키기
     @GetMapping("/api/auth/chat/messages/{chatRoomId}")
     public ResponseEntity<?> findChatMessages(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @PathVariable("chatRoomId") Long chatRoomId,
+            @RequestParam(required = false) String cursor,
             @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
 
         ChatMessageListRespDto result
-                = chatService.getChatMessages(principalDetails.getMember().getId(), chatRoomId, pageable);
+                = chatService.getChatMessages(principalDetails.getMember().getId(), chatRoomId, cursor, pageable);
 
         return new ResponseEntity<>(new ResponseDto<>(1, "채팅 메시지 목록 조회에 성공했습니다", result), HttpStatus.OK);
     }

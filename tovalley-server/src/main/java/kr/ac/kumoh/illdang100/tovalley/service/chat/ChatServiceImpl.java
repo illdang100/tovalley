@@ -28,6 +28,8 @@ import kr.ac.kumoh.illdang100.tovalley.dto.chat.ChatRespDto.CreateNewChatRoomRes
 import kr.ac.kumoh.illdang100.tovalley.handler.ex.CustomApiException;
 import kr.ac.kumoh.illdang100.tovalley.util.ChatUtil;
 import kr.ac.kumoh.illdang100.tovalley.util.KafkaVO;
+import org.bson.types.ObjectId;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -191,22 +193,21 @@ public class ChatServiceImpl implements ChatService {
      * @return 채팅 메시지 목록
      */
     @Override
-    public ChatMessageListRespDto getChatMessages(Long memberId, Long chatRoomId, Pageable pageable) {
+    public ChatMessageListRespDto getChatMessages(Long memberId, Long chatRoomId, String lastChatMessageId, Pageable pageable) {
         // 0. 요청한 사용자가 속한 채팅방이 맞는지 검증
         validateChatRoom(memberId, chatRoomId);
 
-        // 1. MongoDB로부터 원하는 페이지 번호와 크기에 해당하는 데이터를 가져옵니다.
-        Slice<ChatMessage> chatMessageSlice = chatMessageRepository.findByChatRoomIdOrderByCreatedAtDesc(chatRoomId, pageable);
+        // 1. MongoDB로부터 원하는 페이지 번호와 크기에 해당하는 데이터를 가져온다.
+        Slice<ChatMessage> chatMessageSlice = getChatMessageSlice(chatRoomId, lastChatMessageId, pageable);
 
-        // 2. 가져온 데이터를 DTO로 변환합니다.
-        List<ChatMessageRespDto> chatMessageRespDtos = chatMessageSlice.getContent().stream()
-                .map(chatMessage -> new ChatMessageRespDto(chatMessage, memberId))
-                .collect(Collectors.toList());
+        // 2. 가져온 데이터를 DTO로 변환한다.
+        List<ChatMessageRespDto> chatMessageRespDtos = convertToChatMessageRespDto(chatMessageSlice.getContent(), memberId);
 
-        // 3. 변환된 DTO를 기반으로 새로운 Slice를 생성합니다.
-        Slice<ChatMessageRespDto> chatMessageRespDtoSlice = new SliceImpl<>(chatMessageRespDtos, pageable, chatMessageSlice.hasNext());
+        // 3. 변환된 DTO를 기반으로 새로운 Slice를 생성한다.
+        Slice<ChatMessageRespDto> chatMessageRespDtoSlice
+                = new SliceImpl<>(chatMessageRespDtos, pageable, chatMessageSlice.hasNext());
 
-        // 4. Slice 객체와 함께 응답 DTO를 생성하고 반환합니다.
+        // 4. Slice 객체와 함께 응답 DTO를 생성하고 반환한다.
         return new ChatMessageListRespDto(memberId, chatRoomId, chatMessageRespDtoSlice);
     }
 
@@ -215,6 +216,41 @@ public class ChatServiceImpl implements ChatService {
         if (chatRoom.isEmpty()) {
             throw new CustomApiException("해당 사용자가 속한 채팅방이 아닙니다");
         }
+    }
+
+    private Slice<ChatMessage> getChatMessageSlice(Long chatRoomId, String lastChatMessageId, Pageable pageable) {
+        return lastChatMessageId == null
+                ? chatMessageRepository.findByChatRoomIdOrderByCreatedAtDesc(chatRoomId, pageable)
+                : findChatMessagesWithObjectId(chatRoomId, lastChatMessageId, pageable);
+    }
+
+    public Slice<ChatMessage> findChatMessagesWithObjectId(Long chatRoomId, String lastChatMessageId, Pageable pageable) {
+        Query query = getChatMessagesQuery(chatRoomId, lastChatMessageId, pageable);
+        List<ChatMessage> messages = mongoTemplate.find(query, ChatMessage.class);
+        return createChatMessagesSlice(messages, pageable);
+    }
+
+    private Query getChatMessagesQuery(Long chatRoomId, String lastChatMessageId, Pageable pageable) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("chatRoomId").is(chatRoomId)
+                .andOperator(Criteria.where("_id").lt(new ObjectId(lastChatMessageId))));
+        query.with(Sort.by(Sort.Direction.DESC, "createdAt"));
+        query.limit(pageable.getPageSize() + 1);
+        return query;
+    }
+
+    private Slice<ChatMessage> createChatMessagesSlice(List<ChatMessage> messages, Pageable pageable) {
+        boolean hasNext = messages.size() > pageable.getPageSize();
+        if (hasNext) {
+            messages = messages.subList(0, pageable.getPageSize());
+        }
+        return new SliceImpl<>(messages, pageable, hasNext);
+    }
+
+    private List<ChatMessageRespDto> convertToChatMessageRespDto(List<ChatMessage> chatMessages, Long memberId) {
+        return chatMessages.stream()
+                .map(chatMessage -> new ChatMessageRespDto(chatMessage, memberId))
+                .collect(Collectors.toList());
     }
 
     @Override
