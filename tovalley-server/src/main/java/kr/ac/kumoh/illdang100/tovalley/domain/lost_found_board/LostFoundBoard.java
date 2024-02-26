@@ -37,6 +37,7 @@ public class LostFoundBoard extends BaseTimeEntity {
 
     private Boolean isResolved; // 해결 완료
 
+    @Enumerated(EnumType.STRING)
     private LostFoundEnum lostFoundEnum; // 찾아요/찾았어요 카테고리
 
     @PrePersist

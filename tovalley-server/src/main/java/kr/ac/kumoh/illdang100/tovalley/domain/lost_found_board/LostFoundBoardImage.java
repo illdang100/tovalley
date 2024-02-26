@@ -22,6 +22,7 @@ public class LostFoundBoardImage {
     @Column(nullable = false)
     private Long lostFoundBoardId;
 
+    @Embedded
     private ImageFile imageFile;
 
     @Builder

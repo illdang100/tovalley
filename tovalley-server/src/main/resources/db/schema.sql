@@ -189,7 +189,7 @@ CREATE TABLE IF NOT EXISTS `chat_notification` (
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE IF NOT EXISTS `lost_found_board` (
-    `lost_found_board_id` BIGINT AUTO_INCREMENT PRIMARY KEY,
+    `lost_found_board_id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `water_place_id` BIGINT,
     `member_id` BIGINT,
     `title` VARCHAR(20) NOT NULL,
@@ -205,17 +205,17 @@ CREATE TABLE IF NOT EXISTS `lost_found_board` (
     ) engine=InnoDB;
 
 CREATE TABLE IF NOT EXISTS `comment` (
-    `comment_id`	BIGINT	NOT NULL primary key COMMENT '댓글 아이디',
+    `comment_id`	BIGINT  NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '댓글 아이디',
     `lost_found_board_id`	BIGINT	NOT NULL COMMENT '분실물 찾기 게시글 아이디',
     `author_email`	VARCHAR(30)	NOT NULL COMMENT '댓글 작성자 이메일',
     `content`	VARCHAR(256)	NOT NULL COMMENT '댓글 내용'
     ) engine=InnoDB;
 
 CREATE TABLE IF NOT EXISTS `lost_found_board_image` (
-    `lost_found_board_image_id` BIGINT auto_increment primary key,
-    `store_file_name`     varchar(100) null,
-    `store_file_url`      varchar(250) null,
-    `lost_found_board_id` bigint       null
+    `lost_found_board_image_id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `store_file_name`     VARCHAR(100) NOT NULL,
+    `store_file_url`      VARCHAR(250) NOT NULL,
+    `lost_found_board_id` BIGINT       NOT NULL
     ) engine=InnoDB;
 
 
