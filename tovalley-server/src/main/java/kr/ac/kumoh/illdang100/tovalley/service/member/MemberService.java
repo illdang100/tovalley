@@ -49,4 +49,6 @@ public interface MemberService {
     void changeMemberRole(Long memberId, MemberEnum role);
 
     void deleteRefreshTokenByMemberId(Long memberId);
+
+    Boolean isEmptyMemberNickname(Member member);
 }

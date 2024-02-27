@@ -151,4 +151,30 @@ class MemberServiceImplTest extends DummyObject {
         verify(reviewRepository, times(1)).deleteAllByTripScheduleIds(eq(List.of(tripSchedule.getId())));
         verify(memberRepository, times(1)).delete(member);
     }
+
+    @Test
+    @DisplayName("사용자 닉네임 필수 값 - null")
+    void isEmptyMemberNicknameNullTest() {
+        // given
+        Member member = newMockMember(1L, "test3", null, MemberEnum.CUSTOMER);
+
+        // when
+        Boolean hasNickname = memberService.isEmptyMemberNickname(member);
+
+        // then
+        assertThat(hasNickname).isTrue();
+    }
+
+    @Test
+    @DisplayName("사용자 닉네임 필수 값 - 빈 문자열")
+    void isEmptyMemberNicknameEmptyStringTest() {
+        // given
+        Member member = newMockMember(1L, "test3", "", MemberEnum.CUSTOMER);
+
+        // when
+        Boolean hasNickname = memberService.isEmptyMemberNickname(member);
+
+        // then
+        assertThat(hasNickname).isTrue();
+    }
 }
