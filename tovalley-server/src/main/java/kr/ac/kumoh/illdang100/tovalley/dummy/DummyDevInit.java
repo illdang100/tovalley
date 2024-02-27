@@ -107,7 +107,7 @@ public class DummyDevInit extends DummyObject {
     }
 
     private void fetchAndSaveDataForProd() {
-//        openApiService.fetchAndSaveWaterPlacesData();
+       openApiService.fetchAndSaveWaterPlacesData();
         openApiService.fetchAndSaveSpecialWeatherData();
         openApiService.fetchAndSaveNationalWeatherData();
     }
