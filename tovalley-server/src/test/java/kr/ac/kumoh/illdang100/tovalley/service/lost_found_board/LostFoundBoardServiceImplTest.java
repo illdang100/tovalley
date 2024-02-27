@@ -7,11 +7,13 @@ import kr.ac.kumoh.illdang100.tovalley.domain.lost_found_board.LostFoundBoardRep
 import kr.ac.kumoh.illdang100.tovalley.domain.lost_found_board.LostFoundEnum;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberEnum;
+import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlace;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlaceRepository;
 import kr.ac.kumoh.illdang100.tovalley.dummy.DummyObject;
 import kr.ac.kumoh.illdang100.tovalley.handler.ex.CustomApiException;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtProcess;
+import kr.ac.kumoh.illdang100.tovalley.service.member.MemberService;
 import kr.ac.kumoh.illdang100.tovalley.service.page.PageServiceImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -51,6 +53,10 @@ class LostFoundBoardServiceImplTest extends DummyObject {
     private LostFoundBoardImageRepository lostFoundBoardImageRepository;
     @Mock
     private JwtProcess jwtProcess;
+    @Mock
+    private MemberRepository memberRepository;
+    @Mock
+    private MemberService memberService;
 
     @Test
     @DisplayName(value = "분실물 게시글 수정")
@@ -217,7 +223,7 @@ class LostFoundBoardServiceImplTest extends DummyObject {
         when(lostFoundBoardRepository.findById(waterPlaceId)).thenReturn(Optional.of(lostFoundBoard));
 
         // when
-        lostFoundBoardService.updateResolvedStatus(lostFoundBoardId, true);
+        lostFoundBoardService.updateResolvedStatus(lostFoundBoardId, true, memberId);
 
         // stub2
         when(lostFoundBoardRepository.findByIdWithMemberAndWaterPlace(lostFoundBoardId)).thenReturn(Optional.of(lostFoundBoard));
@@ -226,5 +232,87 @@ class LostFoundBoardServiceImplTest extends DummyObject {
 
         // then
         assertEquals(lostFoundBoardDetail.getIsResolved(), true);
+    }
+
+    @Test
+    @DisplayName("게시물 해결완료 상태 변경 - 게시글 작성자 외 요청 시 예외 발생")
+    public void updateResolvedStatusNotAuthorAccess() {
+        // given
+        Long memberId = 1L;
+        Long memberId2 = 2L;
+        Long waterPlaceId = 1L;
+        Long lostFoundBoardId = 1L;
+
+        // stub
+        Member member = newMockMember(memberId, "kakao_1234", "일당백", MemberEnum.CUSTOMER);
+        Member member2 = newMockMember(memberId2, "kakao_5678", "일당백22", MemberEnum.CUSTOMER);
+        WaterPlace waterPlace = newWaterPlace(waterPlaceId, "금오계곡", "경북", 3.0, 3);
+        LostFoundBoard lostFoundBoard = newMockLostFoundBoard(lostFoundBoardId, "title", "content", member, false, LostFoundEnum.LOST, waterPlace);
+
+        when(lostFoundBoardRepository.findById(waterPlaceId)).thenReturn(Optional.of(lostFoundBoard));
+
+        try {
+            // when
+            lostFoundBoardService.updateResolvedStatus(lostFoundBoardId, true, member2.getId());
+        } catch (CustomApiException e) {
+            // then
+            assertEquals("게시글 작성자에게만 수정 권한이 있습니다", e.getMessage());
+        }
+    }
+
+    @Test
+    @DisplayName("분실물 게시글 수정 - 게시글 사용자 외 요청 시 예외 발생")
+    public void updateLostFoundBoardNotAuthorAccess() {
+        // given
+        Long memberId = 1L;
+        Long memberId2 = 2L;
+        Long waterPlaceId = 1L;
+        Long lostFoundBoardId = 1L;
+
+        List<MultipartFile> newImages = new ArrayList<>();
+        List<String> deleteImages = new ArrayList<>();
+        LostFoundBoardUpdateReqDto lostFoundBoardUpdateReqDto = new LostFoundBoardUpdateReqDto(
+                lostFoundBoardId, "LOST", waterPlaceId, "잃어버렸어요ㅠㅠ", "지갑 보신 분 계신가요?", newImages, deleteImages
+        );
+
+        // stub
+        Member member = newMockMember(memberId, "kakao_1234", "일당백", MemberEnum.CUSTOMER);
+        Member member2 = newMockMember(memberId2, "kakao_5678", "일당백22", MemberEnum.CUSTOMER);
+        WaterPlace waterPlace = newWaterPlace(waterPlaceId, "금오계곡", "경북", 3.0, 3);
+        LostFoundBoard lostFoundBoard = newMockLostFoundBoard(lostFoundBoardId, "title", "content", member, false, LostFoundEnum.LOST, waterPlace);
+
+        when(lostFoundBoardRepository.findByIdWithMemberAndWaterPlace(lostFoundBoardId)).thenReturn(Optional.of(lostFoundBoard));
+
+        try {
+            // when
+            lostFoundBoardService.updateLostFoundBoard(lostFoundBoardUpdateReqDto, member2.getId());
+        } catch (CustomApiException e) {
+            // then
+            assertEquals("게시글 작성자에게만 수정 권한이 있습니다", e.getMessage());
+        }
+    }
+
+    @Test
+    @DisplayName("분실물 게시글 등록 - 사용자 닉네임이 등록되지 않은 경우 예외 발생")
+    public void saveLostFoundBoardNoNickNameOfMember() {
+        // given
+        Long memberId = 1L;
+        Long waterPlaceId = 1L;
+
+        // stub
+        Member member = newMockMember(memberId, "kakao_1234", null, MemberEnum.CUSTOMER);
+
+        LostFoundBoardSaveReqDto lostFoundBoardSaveReqDto = new LostFoundBoardSaveReqDto("LOST", waterPlaceId, "title", "content", null);
+
+        when(memberRepository.findById(memberId)).thenReturn(Optional.of(member));
+        when(memberService.isEmptyMemberNickname(member)).thenReturn(true);
+
+        try {
+            // when
+            lostFoundBoardService.saveLostFoundBoard(lostFoundBoardSaveReqDto, memberId);
+        } catch (CustomApiException e) {
+            // then
+            assertEquals("닉네임은 필수 값 입니다", e.getMessage());
+        }
     }
 }

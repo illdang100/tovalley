@@ -16,10 +16,11 @@ import javax.persistence.*;
 public class LostFoundBoard extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "lost_found_board_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "waterPlace_id")
+    @JoinColumn(name = "water_place_id")
     private WaterPlace waterPlace;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -36,6 +37,7 @@ public class LostFoundBoard extends BaseTimeEntity {
 
     private Boolean isResolved; // 해결 완료
 
+    @Enumerated(EnumType.STRING)
     private LostFoundEnum lostFoundEnum; // 찾아요/찾았어요 카테고리
 
     @PrePersist

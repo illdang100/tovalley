@@ -7,6 +7,7 @@ import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlace;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlaceRepository;
 import kr.ac.kumoh.illdang100.tovalley.handler.ex.CustomApiException;
+import kr.ac.kumoh.illdang100.tovalley.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,11 +27,16 @@ public class LostFoundBoardServiceImpl implements LostFoundBoardService {
     private final MemberRepository memberRepository;
     private final LostFoundBoardImageRepository lostFoundBoardImageRepository;
     private final WaterPlaceRepository waterPlaceRepository;
+    private final MemberService memberService;
 
     @Override
     @Transactional
     public Long saveLostFoundBoard(LostFoundBoardSaveReqDto lostFoundBoardSaveReqDto, Long memberId) {
         Member findMember = findMemberByIdOrElseThrowEx(memberRepository, memberId);
+
+        if (memberService.isEmptyMemberNickname(findMember)) {
+            throw new CustomApiException("닉네임은 필수 값 입니다");
+        }
 
         WaterPlace findWaterPlace = findWaterPlaceByIdOrElseThrowEx(waterPlaceRepository, lostFoundBoardSaveReqDto.getValleyId());
 
@@ -71,8 +77,12 @@ public class LostFoundBoardServiceImpl implements LostFoundBoardService {
 
     @Override
     @Transactional
-    public void updateResolvedStatus(Long lostFoundBoardId, Boolean isResolved) {
+    public void updateResolvedStatus(Long lostFoundBoardId, Boolean isResolved, Long memberId) {
         LostFoundBoard findLostFoundBoard = findLostFoundBoardOrElseThrowEx(lostFoundBoardRepository, lostFoundBoardId);
+        if(!isAuthorizedToAccessBoard(findLostFoundBoard, memberId)) {
+            throw new CustomApiException("게시글 작성자에게만 수정 권한이 있습니다");
+        }
+
         findLostFoundBoard.updateResolvedStatus(isResolved);
     }
 }
