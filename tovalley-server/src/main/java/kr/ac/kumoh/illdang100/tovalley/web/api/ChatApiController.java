@@ -23,7 +23,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,7 +39,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class ChatApiController {
 
     private final ChatService chatService;
-    private final SimpMessagingTemplate template;
 
     @PostMapping("/api/auth/chatroom")
     public ResponseEntity<?> createChatRoom(

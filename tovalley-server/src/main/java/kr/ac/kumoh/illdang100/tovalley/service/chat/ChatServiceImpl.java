@@ -26,6 +26,7 @@ import kr.ac.kumoh.illdang100.tovalley.dto.chat.ChatRespDto.ChatMessageRespDto;
 import kr.ac.kumoh.illdang100.tovalley.dto.chat.ChatRespDto.ChatRoomRespDto;
 import kr.ac.kumoh.illdang100.tovalley.dto.chat.ChatRespDto.CreateNewChatRoomRespDto;
 import kr.ac.kumoh.illdang100.tovalley.handler.ex.CustomApiException;
+import kr.ac.kumoh.illdang100.tovalley.service.notification.NotificationService;
 import kr.ac.kumoh.illdang100.tovalley.util.ChatUtil;
 import kr.ac.kumoh.illdang100.tovalley.util.KafkaVO;
 import org.bson.types.ObjectId;
@@ -55,6 +56,7 @@ public class ChatServiceImpl implements ChatService {
     private final ChatRoomParticipantRedisRepository chatRoomParticipantRedisRepository;
     private final ChatNotificationRepository chatNotificationRepository;
     private final MongoTemplate mongoTemplate;
+    private final NotificationService notificationService;
 
     /**
      * 특정 상대방과의 채팅방이 존재하지 않는다면, 새로운 채팅방 생성해서 응답 만약 상대방과 기존 채팅방이 존재한다면 기존 채팅방 pk 응답
@@ -175,13 +177,9 @@ public class ChatServiceImpl implements ChatService {
 
     private List<ChatRoomRespDto> sortChatRoomsByLastMessageTime(List<ChatRoomRespDto> chatRooms) {
         return chatRooms.stream()
-                .sorted(Comparator.comparing(ChatRoomRespDto::getLastMessageTime, Comparator.nullsLast(Comparator.naturalOrder())).reversed())
+                .sorted(Comparator.comparing(ChatRoomRespDto::getLastMessageTime,
+                        Comparator.nullsLast(Comparator.naturalOrder())).reversed())
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    public void exitChatRoom(Long memberId, Long chatRoomId) {
-
     }
 
     /**
@@ -193,7 +191,8 @@ public class ChatServiceImpl implements ChatService {
      * @return 채팅 메시지 목록
      */
     @Override
-    public ChatMessageListRespDto getChatMessages(Long memberId, Long chatRoomId, String lastChatMessageId, Pageable pageable) {
+    public ChatMessageListRespDto getChatMessages(Long memberId, Long chatRoomId, String lastChatMessageId,
+                                                  Pageable pageable) {
         // 0. 요청한 사용자가 속한 채팅방이 맞는지 검증
         validateChatRoom(memberId, chatRoomId);
 
@@ -201,7 +200,8 @@ public class ChatServiceImpl implements ChatService {
         Slice<ChatMessage> chatMessageSlice = getChatMessageSlice(chatRoomId, lastChatMessageId, pageable);
 
         // 2. 가져온 데이터를 DTO로 변환한다.
-        List<ChatMessageRespDto> chatMessageRespDtos = convertToChatMessageRespDto(chatMessageSlice.getContent(), memberId);
+        List<ChatMessageRespDto> chatMessageRespDtos = convertToChatMessageRespDto(chatMessageSlice.getContent(),
+                memberId);
 
         // 3. 변환된 DTO를 기반으로 새로운 Slice를 생성한다.
         Slice<ChatMessageRespDto> chatMessageRespDtoSlice
@@ -224,7 +224,8 @@ public class ChatServiceImpl implements ChatService {
                 : findChatMessagesWithObjectId(chatRoomId, lastChatMessageId, pageable);
     }
 
-    public Slice<ChatMessage> findChatMessagesWithObjectId(Long chatRoomId, String lastChatMessageId, Pageable pageable) {
+    public Slice<ChatMessage> findChatMessagesWithObjectId(Long chatRoomId, String lastChatMessageId,
+                                                           Pageable pageable) {
         Query query = getChatMessagesQuery(chatRoomId, lastChatMessageId, pageable);
         List<ChatMessage> messages = mongoTemplate.find(query, ChatMessage.class);
         return createChatMessagesSlice(messages, pageable);
@@ -266,7 +267,7 @@ public class ChatServiceImpl implements ChatService {
 
         if (!allMembersParticipatingInChatRoom) {
             // 상대방에게 알림 전송
-            sendNotification(message, senderId, chatRoomId);
+            notificationService.sendNotification(message, senderId, chatRoomId);
         }
 
         // 메시지 전송
@@ -290,41 +291,6 @@ public class ChatServiceImpl implements ChatService {
     private void updateMessageBeforeSending(Message message, Long senderId, int readCount) {
         message.prepareMessageForSending(senderId, ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toString(), readCount);
     }
-
-    private void sendNotification(Message message, Long senderId, Long chatRoomId) {
-        try {
-            ChatRoom findChatRoom = chatRoomRepository.findByIdWithMembers(chatRoomId)
-                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 채팅방입니다."));
-
-            Member recipient = getRecipientFromChatRoom(findChatRoom, senderId);
-            Member sender = getSenderFromChatRoom(findChatRoom, senderId);
-
-            // 알림 정보를 RDBMS에 저장
-            ChatNotification chatNotification = new ChatNotification(sender, recipient.getId(), chatRoomId,
-                    message.getContent());
-            chatNotificationRepository.save(chatNotification);
-
-            // Kafka로는 Notification 객체 전송
-            Notification notification = new Notification(chatRoomId, recipient.getId(), sender.getNickname(),
-                    LocalDateTime.now(), message.getContent(), NotificationType.CHAT);
-
-            // "알림 토픽 + {memberId}"로 알림 메시지 전송하기!!
-            kafkaSender.sendNotification(KafkaVO.KAFKA_NOTIFICATION_TOPIC, notification);
-        } catch (Exception e) {
-            log.error("메시지 알림 전송 에러");
-        }
-    }
-
-    private Member getRecipientFromChatRoom(ChatRoom findChatRoom, Long senderId) {
-        return findChatRoom.getSender().getId().equals(senderId) ? findChatRoom.getRecipient()
-                : findChatRoom.getSender();
-    }
-
-    private Member getSenderFromChatRoom(ChatRoom findChatRoom, Long senderId) {
-        return findChatRoom.getSender().getId().equals(senderId) ? findChatRoom.getSender()
-                : findChatRoom.getRecipient();
-    }
-
 
     @Override
     public void saveChatRoomParticipantToRedis(Long memberId, Long chatRoomId) {
