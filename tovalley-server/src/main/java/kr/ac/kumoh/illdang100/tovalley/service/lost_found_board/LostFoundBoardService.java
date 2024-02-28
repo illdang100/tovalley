@@ -12,6 +12,7 @@ public interface LostFoundBoardService {
     LostFoundBoard updateLostFoundBoard(LostFoundBoardUpdateReqDto lostFoundBoardUpdateReqDto, Long memberId);
 
     // 분실물 게시글 삭제
+    void deleteLostFoundBoard(Long lostFoundBoardId, Long memberId);
 
     Boolean isAuthorizedToAccessBoard(LostFoundBoard lostFoundBoard, Long memberId);
 

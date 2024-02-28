@@ -1,12 +1,12 @@
 package kr.ac.kumoh.illdang100.tovalley.service.lost_found_board;
 
-import kr.ac.kumoh.illdang100.tovalley.domain.comment.CommentRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.lost_found_board.*;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlace;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlaceRepository;
 import kr.ac.kumoh.illdang100.tovalley.handler.ex.CustomApiException;
+import kr.ac.kumoh.illdang100.tovalley.service.comment.CommentService;
 import kr.ac.kumoh.illdang100.tovalley.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,11 +23,10 @@ import static kr.ac.kumoh.illdang100.tovalley.util.EntityFinder.*;
 public class LostFoundBoardServiceImpl implements LostFoundBoardService {
 
     private final LostFoundBoardRepository lostFoundBoardRepository;
-    private final CommentRepository commentRepository;
     private final MemberRepository memberRepository;
-    private final LostFoundBoardImageRepository lostFoundBoardImageRepository;
     private final WaterPlaceRepository waterPlaceRepository;
     private final MemberService memberService;
+    private final CommentService commentService;
 
     @Override
     @Transactional
@@ -55,9 +54,7 @@ public class LostFoundBoardServiceImpl implements LostFoundBoardService {
     @Transactional
     public LostFoundBoard updateLostFoundBoard(LostFoundBoardUpdateReqDto lostFoundBoardUpdateReqDto, Long memberId) {
         LostFoundBoard findLostFoundBoard = findLostFoundBoardByIdWithMemberOrElseThrowEx(lostFoundBoardRepository, lostFoundBoardUpdateReqDto.getLostFoundBoardId());
-        if(!isAuthorizedToAccessBoard(findLostFoundBoard, memberId)) {
-            throw new CustomApiException("게시글 작성자에게만 수정 권한이 있습니다");
-        }
+        checkBoardAccessPermission(findLostFoundBoard, memberId);
 
         WaterPlace findWaterPlace = findWaterPlaceByIdOrElseThrowEx(waterPlaceRepository, lostFoundBoardUpdateReqDto.getValleyId());
         findLostFoundBoard.updateLostFoundBoard(findWaterPlace, lostFoundBoardUpdateReqDto.getTitle(), lostFoundBoardUpdateReqDto.getContent(), LostFoundEnum.valueOf(lostFoundBoardUpdateReqDto.getCategory()));
@@ -67,22 +64,33 @@ public class LostFoundBoardServiceImpl implements LostFoundBoardService {
 
     @Override
     public Boolean isAuthorizedToAccessBoard(LostFoundBoard lostFoundBoard, Long memberId) {
-        boolean result = false;
         Member member = lostFoundBoard.getMember();
-        if (member != null) {
-            result = lostFoundBoard.getMember().getId().equals(memberId);
-        }
-        return result;
+        return member != null && member.getId().equals(memberId);
     }
 
     @Override
     @Transactional
     public void updateResolvedStatus(Long lostFoundBoardId, Boolean isResolved, Long memberId) {
         LostFoundBoard findLostFoundBoard = findLostFoundBoardOrElseThrowEx(lostFoundBoardRepository, lostFoundBoardId);
-        if(!isAuthorizedToAccessBoard(findLostFoundBoard, memberId)) {
-            throw new CustomApiException("게시글 작성자에게만 수정 권한이 있습니다");
-        }
+        checkBoardAccessPermission(findLostFoundBoard, memberId);
 
         findLostFoundBoard.updateResolvedStatus(isResolved);
+    }
+
+    @Override
+    @Transactional
+    public void deleteLostFoundBoard(Long lostFoundBoardId, Long memberId) {
+        LostFoundBoard findLostFoundBoard = findLostFoundBoardByIdWithMemberOrElseThrowEx(lostFoundBoardRepository, lostFoundBoardId);
+        checkBoardAccessPermission(findLostFoundBoard, memberId);
+
+        commentService.deleteCommentByLostFoundBoardIdInBatch(lostFoundBoardId);
+
+        lostFoundBoardRepository.delete(findLostFoundBoard);
+    }
+
+    private void checkBoardAccessPermission(LostFoundBoard lostFoundBoard, Long memberId) {
+        if (!isAuthorizedToAccessBoard(lostFoundBoard, memberId)) {
+            throw new CustomApiException("게시글 작성자에게만 권한이 있습니다");
+        }
     }
 }

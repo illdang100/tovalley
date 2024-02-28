@@ -5,6 +5,7 @@ import kr.ac.kumoh.illdang100.tovalley.domain.lost_found_board.LostFoundBoard;
 import kr.ac.kumoh.illdang100.tovalley.dto.ResponseDto;
 import kr.ac.kumoh.illdang100.tovalley.security.auth.PrincipalDetails;
 import kr.ac.kumoh.illdang100.tovalley.service.S3Service;
+import kr.ac.kumoh.illdang100.tovalley.service.comment.CommentService;
 import kr.ac.kumoh.illdang100.tovalley.service.lost_found_board.LostFoundBoardImageService;
 import kr.ac.kumoh.illdang100.tovalley.service.lost_found_board.LostFoundBoardService;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,7 @@ public class LostFoundBoardController {
     private final LostFoundBoardService lostFoundBoardService;
     private final LostFoundBoardImageService lostFoundBoardImageService;
     private final S3Service s3Service;
+    private final CommentService commentService;
 
     @PostMapping(value = "/auth/lostItem")
     public ResponseEntity<?> saveLostFoundBoard(@RequestBody @Valid LostFoundBoardSaveReqDto lostFoundBoardSaveReqDto,
@@ -77,5 +79,22 @@ public class LostFoundBoardController {
 
         String result = isResolved ? "해결 완료" : "해결 미완료";
         return new ResponseEntity<>(new ResponseDto<>(1, "분실물 게시글 상태[" + result + "]가 변경되었습니다", null), HttpStatus.OK);
+    }
+
+    @DeleteMapping(value = "/auth/lostItem/{lostFoundBoardId}")
+    public ResponseEntity<?> deleteLostFoundBoard(@PathVariable("lostFoundBoardId") long lostFoundBoardId,
+                                                  @AuthenticationPrincipal PrincipalDetails principalDetails) {
+
+        // 사진 파일 삭제
+        List<String> deleteLostFoundBoardImageFileName = lostFoundBoardImageService.deleteLostFoundBoardImageInBatch(lostFoundBoardId);
+        s3Service.deleteFiles(deleteLostFoundBoardImageFileName);
+
+        // 댓글 삭제
+        commentService.deleteCommentByLostFoundBoardIdInBatch(lostFoundBoardId);
+
+        // 분실물 게시글 삭제
+        lostFoundBoardService.deleteLostFoundBoard(lostFoundBoardId, principalDetails.getMember().getId());
+
+        return new ResponseEntity<>(new ResponseDto<>(1, "분실물 게시글이 정상적으로 삭제되었습니다", null), HttpStatus.OK);
     }
 }

@@ -76,4 +76,19 @@ public class LostFoundBoardImageServiceImpl implements LostFoundBoardImageServic
             throw new CustomApiException("게시글에 저장할 수 있는 최대 이미지 개수를 초과했습니다");
         }
     }
+
+    @Override
+    public List<String> deleteLostFoundBoardImageInBatch(Long lostFoundBoardId) {
+        List<LostFoundBoardImage> findLostFoundBoardImageList = lostFoundBoardImageRepository.findByLostFoundBoardId(lostFoundBoardId);
+
+        if (!findLostFoundBoardImageList.isEmpty()) {
+            lostFoundBoardImageRepository.deleteAllByIdInBatch(findLostFoundBoardImageList.stream()
+                    .map(LostFoundBoardImage::getId)
+                    .collect(Collectors.toList()));
+        }
+
+        return findLostFoundBoardImageList.stream()
+                .map(image -> image.getImageFile().getStoreFileName())
+                .collect(Collectors.toList());
+    }
 }
