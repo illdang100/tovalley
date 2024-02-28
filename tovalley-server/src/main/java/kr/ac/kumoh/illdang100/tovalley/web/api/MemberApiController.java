@@ -102,4 +102,14 @@ public class MemberApiController {
 
         return new ResponseEntity<>(new ResponseDto<>(1, "회원탈퇴를 성공했습니다", null), HttpStatus.OK);
     }
+
+    @GetMapping(value = "/auth/members/me")
+    public ResponseEntity<?> findMemberId(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+
+        Long memberId = principalDetails.getMember().getId();
+        return new ResponseEntity<>(new ResponseDto<>(1
+                , "사용자 Id 조회에 성공하였습니다"
+                , memberId)
+                , HttpStatus.OK);
+    }
 }

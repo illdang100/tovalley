@@ -1,9 +1,14 @@
 package kr.ac.kumoh.illdang100.tovalley.dummy;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import kr.ac.kumoh.illdang100.tovalley.domain.Coordinate;
 import kr.ac.kumoh.illdang100.tovalley.domain.ImageFile;
 import kr.ac.kumoh.illdang100.tovalley.domain.accident.Accident;
 import kr.ac.kumoh.illdang100.tovalley.domain.accident.AccidentEnum;
+import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatMessage;
+import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatNotification;
+import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatRoom;
 import kr.ac.kumoh.illdang100.tovalley.domain.comment.Comment;
 import kr.ac.kumoh.illdang100.tovalley.domain.lost_found_board.LostFoundBoard;
 import kr.ac.kumoh.illdang100.tovalley.domain.lost_found_board.LostFoundBoardImage;
@@ -101,8 +106,8 @@ public class DummyObject {
     }
 
 
-
-    protected WaterPlace newWaterPlaceWithCity(String name, String province, String city, Double rating, Integer reviewCnt) {
+    protected WaterPlace newWaterPlaceWithCity(String name, String province, String city, Double rating,
+                                               Integer reviewCnt) {
 
         return WaterPlace.builder()
                 .waterPlaceName(name)
@@ -291,8 +296,8 @@ public class DummyObject {
                 .build();
     }
 
-    protected SpecialWeather newSpecialWeather (LocalDateTime time, WeatherAlertType weatherAlertType,
-                                                SpecialWeatherEnum category, String title) {
+    protected SpecialWeather newSpecialWeather(LocalDateTime time, WeatherAlertType weatherAlertType,
+                                               SpecialWeatherEnum category, String title) {
 
         return SpecialWeather.builder()
                 .announcementTime(time)
@@ -303,7 +308,7 @@ public class DummyObject {
                 .build();
     }
 
-    protected SpecialWeatherDetail newSpecialWeatherDetail (SpecialWeather specialWeather, String content) {
+    protected SpecialWeatherDetail newSpecialWeatherDetail(SpecialWeather specialWeather, String content) {
 
         return SpecialWeatherDetail.builder()
                 .specialWeather(specialWeather)
@@ -312,7 +317,7 @@ public class DummyObject {
 
     }
 
-    protected WaterPlaceWeather newWaterPlaceWeather (WaterPlace waterPlace, LocalDate date) {
+    protected WaterPlaceWeather newWaterPlaceWeather(WaterPlace waterPlace, LocalDate date) {
 
         return WaterPlaceWeather.builder()
                 .waterPlace(waterPlace)
@@ -330,7 +335,7 @@ public class DummyObject {
                 .build();
     }
 
-    protected WaterPlaceDetail newWaterPlaceDetail (WaterPlace waterPlace) {
+    protected WaterPlaceDetail newWaterPlaceDetail(WaterPlace waterPlace) {
 
         return WaterPlaceDetail.builder()
                 .waterPlace(waterPlace)
@@ -347,7 +352,7 @@ public class DummyObject {
                 .build();
     }
 
-    protected RescueSupply newRescueSupply (WaterPlace waterPlace) {
+    protected RescueSupply newRescueSupply(WaterPlace waterPlace) {
 
         return RescueSupply.builder()
                 .waterPlace(waterPlace)
@@ -360,7 +365,7 @@ public class DummyObject {
                 .build();
     }
 
-    protected RefreshToken newRefreshToken (String refreshToken) {
+    protected RefreshToken newRefreshToken(String refreshToken) {
 
         return RefreshToken.builder()
                 .refreshToken(refreshToken)
@@ -397,6 +402,43 @@ public class DummyObject {
                 .id(id)
                 .lostFoundBoardId(lostFoundBoardId)
                 .imageFile(imageFile)
+                .build();
+    }
+
+    protected ChatRoom newChatRoom(Member sender, Member recipient) {
+
+        return ChatRoom.builder()
+                .sender(sender)
+                .recipient(recipient)
+                .build();
+    }
+
+    protected ChatRoom newMockChatRoom(Long id, Member sender, Member recipient) {
+
+        return ChatRoom.builder()
+                .id(id)
+                .sender(sender)
+                .recipient(recipient)
+                .build();
+    }
+
+    protected ChatMessage newChatMessage(Long chatRoomId, Long senderId, String content) {
+        return ChatMessage.builder()
+                .chatRoomId(chatRoomId)
+                .senderId(senderId)
+                .content(content)
+                .createdAt(ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toString())
+                .readCount(1)
+                .build();
+    }
+
+    protected ChatNotification newChatNotification(Member sender, Long recipientId, Long chatRoomId, String content, Boolean hasRead) {
+        return ChatNotification.builder()
+                .sender(sender)
+                .recipientId(recipientId)
+                .chatRoomId(chatRoomId)
+                .content(content)
+                .hasRead(hasRead)
                 .build();
     }
 }
