@@ -6,7 +6,6 @@ import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlace;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlaceRepository;
 import kr.ac.kumoh.illdang100.tovalley.handler.ex.CustomApiException;
-import kr.ac.kumoh.illdang100.tovalley.service.comment.CommentService;
 import kr.ac.kumoh.illdang100.tovalley.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +25,6 @@ public class LostFoundBoardServiceImpl implements LostFoundBoardService {
     private final MemberRepository memberRepository;
     private final WaterPlaceRepository waterPlaceRepository;
     private final MemberService memberService;
-    private final CommentService commentService;
 
     @Override
     @Transactional
@@ -82,8 +80,6 @@ public class LostFoundBoardServiceImpl implements LostFoundBoardService {
     public void deleteLostFoundBoard(Long lostFoundBoardId, Long memberId) {
         LostFoundBoard findLostFoundBoard = findLostFoundBoardByIdWithMemberOrElseThrowEx(lostFoundBoardRepository, lostFoundBoardId);
         checkBoardAccessPermission(findLostFoundBoard, memberId);
-
-        commentService.deleteCommentByLostFoundBoardIdInBatch(lostFoundBoardId);
 
         lostFoundBoardRepository.delete(findLostFoundBoard);
     }
