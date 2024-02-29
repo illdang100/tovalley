@@ -40,7 +40,7 @@ public class LostFoundBoardServiceImpl implements LostFoundBoardService {
             throw new CustomApiException("닉네임은 필수 값 입니다");
         }
 
-        WaterPlace findWaterPlace = findWaterPlaceByIdOrElseThrowEx(waterPlaceRepository, lostFoundBoardSaveReqDto.getValleyId());
+        WaterPlace findWaterPlace = findWaterPlaceByIdOrElseThrowEx(waterPlaceRepository, lostFoundBoardSaveReqDto.getWaterPlaceId());
 
         LostFoundBoard lostFoundBoard = lostFoundBoardRepository.save(LostFoundBoard.builder()
                 .member(findMember)
@@ -59,7 +59,7 @@ public class LostFoundBoardServiceImpl implements LostFoundBoardService {
         LostFoundBoard findLostFoundBoard = findLostFoundBoardByIdWithMemberOrElseThrowEx(lostFoundBoardRepository, lostFoundBoardUpdateReqDto.getLostFoundBoardId());
         checkBoardAccessPermission(findLostFoundBoard, memberId);
 
-        WaterPlace findWaterPlace = findWaterPlaceByIdOrElseThrowEx(waterPlaceRepository, lostFoundBoardUpdateReqDto.getValleyId());
+        WaterPlace findWaterPlace = findWaterPlaceByIdOrElseThrowEx(waterPlaceRepository, lostFoundBoardUpdateReqDto.getWaterPlaceId());
         findLostFoundBoard.updateLostFoundBoard(findWaterPlace, lostFoundBoardUpdateReqDto.getTitle(), lostFoundBoardUpdateReqDto.getContent(), LostFoundEnum.valueOf(lostFoundBoardUpdateReqDto.getCategory()));
 
         return findLostFoundBoard;

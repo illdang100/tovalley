@@ -73,10 +73,10 @@ class LostFoundBoardControllerTest extends DummyObject {
     @DisplayName(value = "기본 파라미터 - 카테고리, 물놀이 장소 아이디 1개, 검색어, 해결 완료 여부")
     void getLostFoundBoardList() throws Exception {
         // given
-        long valleyId = 1L;
+        long waterPlaceId = 1L;
 
         // when
-        ResultActions resultActions = mvc.perform(get("/api/lostItem?" + "category=LOST&valleyId=" + valleyId + "&searchWord=지갑&isResolved=false")
+        ResultActions resultActions = mvc.perform(get("/api/lostItem?" + "category=LOST&waterPlaceId=" + waterPlaceId + "&searchWord=지갑&isResolved=false")
                 .cookie(new Cookie(JwtVO.ACCESS_TOKEN, accessToken))
                 .contentType(MediaType.APPLICATION_JSON));
 
@@ -90,11 +90,11 @@ class LostFoundBoardControllerTest extends DummyObject {
     @DisplayName(value = "물놀이 장소 아이디 2개")
     void getLostFoundBoardList_valleys() throws Exception {
         // given
-        long valleyId1 = 1L;
-        long valleyId2 = 2L;
+        long waterPlaceId1 = 1L;
+        long waterPlaceId2 = 2L;
 
         // when
-        ResultActions resultActions = mvc.perform(get("/api/lostItem?" + "category=LOST&valleyId=" + valleyId1 + "&valleyId=" + valleyId2 + "&searchWord=지갑&isResolved=false")
+        ResultActions resultActions = mvc.perform(get("/api/lostItem?" + "category=LOST&waterPlaceId=" + waterPlaceId1 + "&waterPlaceId=" + waterPlaceId2 + "&searchWord=지갑&isResolved=false")
                 .cookie(new Cookie(JwtVO.ACCESS_TOKEN, accessToken))
                 .contentType(MediaType.APPLICATION_JSON));
 
@@ -108,10 +108,10 @@ class LostFoundBoardControllerTest extends DummyObject {
     @DisplayName(value = "카테고리 형식 에러")
     void getLostFoundBoardList_category_error() throws Exception {
         // given
-        long valleyId = 1L;
+        long waterPlaceId = 1L;
 
         // when
-        ResultActions resultActions = mvc.perform(get("/api/lostItem?category=error&" + "valleyId" + valleyId + "&searchWord=지갑&isResolved=false")
+        ResultActions resultActions = mvc.perform(get("/api/lostItem?category=error&" + "waterPlaceId" + waterPlaceId + "&searchWord=지갑&isResolved=false")
                 .cookie(new Cookie(JwtVO.ACCESS_TOKEN, accessToken))
                 .contentType(MediaType.APPLICATION_JSON));
 
