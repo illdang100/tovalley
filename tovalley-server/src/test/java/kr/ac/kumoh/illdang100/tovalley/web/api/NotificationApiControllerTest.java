@@ -81,8 +81,11 @@ class NotificationApiControllerTest extends DummyObject {
         // then
         resultActions.andExpect(status().isOk())
                 .andExpect(jsonPath("$.msg").value("메시지 알림 목록 조회에 성공하였습니다"))
-                .andExpect(jsonPath("$.data[0].hasRead").value(false))
-                .andExpect(jsonPath("$.data[5].hasRead").value(true))
+                .andExpect(jsonPath("$.data.content.size()").value(9))
+                .andExpect(jsonPath("$.data.content[0].hasRead").value(false))
+                .andExpect(jsonPath("$.data.content[4].hasRead").value(false))
+                .andExpect(jsonPath("$.data.content[6].hasRead").value(true))
+                .andExpect(jsonPath("$.data.content[8].hasRead").value(true))
                 .andDo(MockMvcResultHandlers.print());
 
         List<ChatNotification> all = chatNotificationRepository.findAll();
@@ -96,26 +99,31 @@ class NotificationApiControllerTest extends DummyObject {
         assertThat(all.get(7).getHasRead()).isTrue();
         assertThat(all.get(8).getHasRead()).isTrue();
         assertThat(all.get(9).getHasRead()).isTrue();
+        assertThat(all.get(10).getHasRead()).isFalse();
     }
 
     private void dataSetting() {
         Member sender = newMember("username1", "nickname1");
         Member recipient = newMember(username, nickname);
+        Member recipient2 = newMember("username2222", "nickname2222");
         memberRepository.save(sender);
         memberRepository.save(recipient);
+        memberRepository.save(recipient2);
 
         Long recipientId = recipient.getId();
+        Long recipientId2 = recipient2.getId();
         chatNotificationRepository.save(newChatNotification(sender, recipientId, 1L, "test", true));
         chatNotificationRepository.save(newChatNotification(sender, recipientId, 1L, "test", true));
         chatNotificationRepository.save(newChatNotification(sender, recipientId, 1L, "test", true));
         chatNotificationRepository.save(newChatNotification(sender, recipientId, 1L, "test", true));
-        chatNotificationRepository.save(newChatNotification(sender, recipientId, 1L, "test", true));
+        chatNotificationRepository.save(newChatNotification(sender, recipientId2, 1L, "test", true));
 
         chatNotificationRepository.save(newChatNotification(sender, recipientId, 1L, "test", false));
         chatNotificationRepository.save(newChatNotification(sender, recipientId, 1L, "test", false));
         chatNotificationRepository.save(newChatNotification(sender, recipientId, 1L, "test", false));
         chatNotificationRepository.save(newChatNotification(sender, recipientId, 1L, "test", false));
         chatNotificationRepository.save(newChatNotification(sender, recipientId, 1L, "test", false));
+        chatNotificationRepository.save(newChatNotification(sender, recipientId2, 1L, "test22", false));
 
         em.clear();
     }

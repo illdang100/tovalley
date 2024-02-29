@@ -16,6 +16,9 @@ import kr.ac.kumoh.illdang100.tovalley.service.chat.KafkaSender;
 import kr.ac.kumoh.illdang100.tovalley.util.KafkaVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -65,30 +68,26 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     @Transactional
-    public List<ChatNotificationRespDto> getChatNotificationsByMemberId(Long memberId) {
-        List<ChatNotification> chatNotifications = chatNotificationRepository.findWithSenderByRecipientIdOrderByCreatedDateDesc(
-                memberId);
+    public Slice<ChatNotificationRespDto> getChatNotificationsByMemberId(Long memberId, Pageable pageable) {
+        Slice<ChatNotification> sliceChatNotificationsByMemberId
+                = chatNotificationRepository.findSliceChatNotificationsByMemberId(memberId, pageable);
 
-        List<ChatNotificationRespDto> result = convertToResponseDto(chatNotifications);
+        List<ChatNotification> notifications = sliceChatNotificationsByMemberId.getContent();
 
-        for (ChatNotification chatNotification : chatNotifications) {
-            if (!chatNotification.getHasRead()) {
-                chatNotification.changeHasReadToTrue();
-            }
-        }
+        List<ChatNotificationRespDto> notificationDtos = mapToDto(notifications);
 
-        updateHasReadToTrue(chatNotifications);
+        markNotificationsAsRead(notifications);
 
-        return result;
+        return new SliceImpl<>(notificationDtos, pageable, sliceChatNotificationsByMemberId.hasNext());
     }
 
-    private List<ChatNotificationRespDto> convertToResponseDto(List<ChatNotification> chatNotifications) {
+    private List<ChatNotificationRespDto> mapToDto(List<ChatNotification> chatNotifications) {
         return chatNotifications.stream()
                 .map(ChatNotificationRespDto::new)
                 .collect(Collectors.toList());
     }
 
-    private void updateHasReadToTrue(List<ChatNotification> chatNotifications) {
+    private void markNotificationsAsRead(List<ChatNotification> chatNotifications) {
         for (ChatNotification chatNotification : chatNotifications) {
             if (!chatNotification.getHasRead()) {
                 chatNotification.changeHasReadToTrue();
