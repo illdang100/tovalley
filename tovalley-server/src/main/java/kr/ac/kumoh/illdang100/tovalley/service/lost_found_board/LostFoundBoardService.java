@@ -2,6 +2,8 @@ package kr.ac.kumoh.illdang100.tovalley.service.lost_found_board;
 
 import kr.ac.kumoh.illdang100.tovalley.domain.lost_found_board.LostFoundBoard;
 
+import java.util.List;
+
 import static kr.ac.kumoh.illdang100.tovalley.dto.lost_found_board.LostFoundBoardReqDto.*;
 
 public interface LostFoundBoardService {
@@ -12,7 +14,7 @@ public interface LostFoundBoardService {
     LostFoundBoard updateLostFoundBoard(LostFoundBoardUpdateReqDto lostFoundBoardUpdateReqDto, Long memberId);
 
     // 분실물 게시글 삭제
-    void deleteLostFoundBoard(Long lostFoundBoardId, Long memberId);
+    List<String> deleteLostFoundBoard(Long lostFoundBoardId, Long memberId);
 
     Boolean isAuthorizedToAccessBoard(LostFoundBoard lostFoundBoard, Long memberId);
 

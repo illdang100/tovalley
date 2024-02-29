@@ -21,7 +21,6 @@ public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
 
     @Override
-    @Transactional
     public void deleteCommentByLostFoundBoardIdInBatch(Long lostFoundBoardId) {
         List<Comment> findCommentList = commentRepository.findCommentByLostFoundBoardId(lostFoundBoardId);
 

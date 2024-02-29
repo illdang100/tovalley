@@ -5,6 +5,7 @@ import kr.ac.kumoh.illdang100.tovalley.domain.lost_found_board.LostFoundBoard;
 import kr.ac.kumoh.illdang100.tovalley.domain.lost_found_board.LostFoundBoardImage;
 import kr.ac.kumoh.illdang100.tovalley.domain.lost_found_board.LostFoundBoardImageRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.lost_found_board.LostFoundBoardRepository;
+import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.handler.ex.CustomApiException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +29,6 @@ import static kr.ac.kumoh.illdang100.tovalley.util.ListUtil.isEmptyList;
 public class LostFoundBoardImageServiceImpl implements LostFoundBoardImageService {
     private final LostFoundBoardImageRepository lostFoundBoardImageRepository;
     private final LostFoundBoardRepository lostFoundBoardRepository;
-    private final LostFoundBoardService lostFoundBoardService;
 
     @Override
     @Transactional
@@ -62,8 +62,8 @@ public class LostFoundBoardImageServiceImpl implements LostFoundBoardImageServic
     }
 
     public Boolean isAuthorizedToAccessLostFoundBoardImage(Long lostFoundBoardId, Long memberId) {
-        LostFoundBoard findLostFoundBoard = findLostFoundBoardByIdWithMemberOrElseThrowEx(lostFoundBoardRepository, lostFoundBoardId);
-        return lostFoundBoardService.isAuthorizedToAccessBoard(findLostFoundBoard, memberId);
+        Member member = findLostFoundBoardByIdWithMemberOrElseThrowEx(lostFoundBoardRepository, lostFoundBoardId).getMember();
+        return member != null && member.getId().equals(memberId);
     }
 
     @Override
@@ -78,13 +78,8 @@ public class LostFoundBoardImageServiceImpl implements LostFoundBoardImageServic
     }
 
     @Override
-    @Transactional
     public List<String> deleteLostFoundBoardImageInBatch(Long lostFoundBoardId, Long memberId) {
         List<LostFoundBoardImage> findLostFoundBoardImageList = lostFoundBoardImageRepository.findByLostFoundBoardId(lostFoundBoardId);
-
-        if (!isAuthorizedToAccessLostFoundBoardImage(lostFoundBoardId, memberId)) {
-            throw new CustomApiException("게시글 작성자에게만 권한이 있습니다");
-        }
 
         if (!isEmptyList(findLostFoundBoardImageList)) {
             lostFoundBoardImageRepository.deleteAllByIdInBatch(findLostFoundBoardImageList.stream()

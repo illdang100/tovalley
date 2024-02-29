@@ -5,7 +5,6 @@ import kr.ac.kumoh.illdang100.tovalley.domain.lost_found_board.LostFoundBoard;
 import kr.ac.kumoh.illdang100.tovalley.dto.ResponseDto;
 import kr.ac.kumoh.illdang100.tovalley.security.auth.PrincipalDetails;
 import kr.ac.kumoh.illdang100.tovalley.service.S3Service;
-import kr.ac.kumoh.illdang100.tovalley.service.comment.CommentService;
 import kr.ac.kumoh.illdang100.tovalley.service.lost_found_board.LostFoundBoardImageService;
 import kr.ac.kumoh.illdang100.tovalley.service.lost_found_board.LostFoundBoardService;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +30,6 @@ public class LostFoundBoardController {
     private final LostFoundBoardService lostFoundBoardService;
     private final LostFoundBoardImageService lostFoundBoardImageService;
     private final S3Service s3Service;
-    private final CommentService commentService;
 
     @PostMapping(value = "/auth/lostItem")
     public ResponseEntity<?> saveLostFoundBoard(@RequestBody @Valid LostFoundBoardSaveReqDto lostFoundBoardSaveReqDto,
@@ -85,16 +83,8 @@ public class LostFoundBoardController {
     public ResponseEntity<?> deleteLostFoundBoard(@PathVariable("lostFoundBoardId") long lostFoundBoardId,
                                                   @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
-        Long memberId = principalDetails.getMember().getId();
-
-        // 사진 파일 삭제
-        List<String> deleteLostFoundBoardImageFileName = lostFoundBoardImageService.deleteLostFoundBoardImageInBatch(lostFoundBoardId, memberId);
-
-        // 댓글 삭제
-        commentService.deleteCommentByLostFoundBoardIdInBatch(lostFoundBoardId);
-
         // 분실물 게시글 삭제
-        lostFoundBoardService.deleteLostFoundBoard(lostFoundBoardId, memberId);
+        List<String> deleteLostFoundBoardImageFileName = lostFoundBoardService.deleteLostFoundBoard(lostFoundBoardId, principalDetails.getMember().getId());
 
         // s3 파일 삭제
         s3Service.deleteFiles(deleteLostFoundBoardImageFileName);

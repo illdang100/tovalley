@@ -6,11 +6,14 @@ import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlace;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlaceRepository;
 import kr.ac.kumoh.illdang100.tovalley.handler.ex.CustomApiException;
+import kr.ac.kumoh.illdang100.tovalley.service.comment.CommentService;
 import kr.ac.kumoh.illdang100.tovalley.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static kr.ac.kumoh.illdang100.tovalley.dto.lost_found_board.LostFoundBoardReqDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.util.EntityFinder.*;
@@ -25,6 +28,8 @@ public class LostFoundBoardServiceImpl implements LostFoundBoardService {
     private final MemberRepository memberRepository;
     private final WaterPlaceRepository waterPlaceRepository;
     private final MemberService memberService;
+    private final CommentService commentService;
+    private final LostFoundBoardImageService lostFoundBoardImageService;
 
     @Override
     @Transactional
@@ -77,11 +82,19 @@ public class LostFoundBoardServiceImpl implements LostFoundBoardService {
 
     @Override
     @Transactional
-    public void deleteLostFoundBoard(Long lostFoundBoardId, Long memberId) {
+    public List<String> deleteLostFoundBoard(Long lostFoundBoardId, Long memberId) {
         LostFoundBoard findLostFoundBoard = findLostFoundBoardByIdWithMemberOrElseThrowEx(lostFoundBoardRepository, lostFoundBoardId);
         checkBoardAccessPermission(findLostFoundBoard, memberId);
 
+        // 사진 파일 삭제
+        List<String> deleteLostFoundBoardImageFileName = lostFoundBoardImageService.deleteLostFoundBoardImageInBatch(lostFoundBoardId, memberId);
+
+        // 댓글 삭제
+        commentService.deleteCommentByLostFoundBoardIdInBatch(lostFoundBoardId);
+
         lostFoundBoardRepository.delete(findLostFoundBoard);
+
+        return deleteLostFoundBoardImageFileName;
     }
 
     private void checkBoardAccessPermission(LostFoundBoard lostFoundBoard, Long memberId) {
