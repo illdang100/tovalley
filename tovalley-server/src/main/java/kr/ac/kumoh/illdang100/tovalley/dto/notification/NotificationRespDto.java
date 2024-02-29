@@ -11,7 +11,7 @@ public class NotificationRespDto {
     @Data
     @AllArgsConstructor
     public static class ChatNotificationRespDto{
-        private String chatNotificationId;
+        private Long chatNotificationId;
         private Long chatRoomId;
         private String senderNick;
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
