@@ -1,6 +1,5 @@
 package kr.ac.kumoh.illdang100.tovalley.service.chat;
 
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Comparator;
@@ -9,13 +8,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatMessage;
 import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatMessageRepository;
-import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatNotification;
-import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatNotificationRepository;
+import kr.ac.kumoh.illdang100.tovalley.domain.notification.ChatNotificationRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatRoom;
 import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatRoomRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.chat.kafka.Message;
-import kr.ac.kumoh.illdang100.tovalley.domain.chat.kafka.Notification;
-import kr.ac.kumoh.illdang100.tovalley.domain.chat.kafka.NotificationType;
 import kr.ac.kumoh.illdang100.tovalley.domain.chat.redis.ChatRoomParticipant;
 import kr.ac.kumoh.illdang100.tovalley.domain.chat.redis.ChatRoomParticipantRedisRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;

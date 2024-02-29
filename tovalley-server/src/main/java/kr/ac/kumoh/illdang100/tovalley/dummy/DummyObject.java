@@ -7,7 +7,7 @@ import kr.ac.kumoh.illdang100.tovalley.domain.ImageFile;
 import kr.ac.kumoh.illdang100.tovalley.domain.accident.Accident;
 import kr.ac.kumoh.illdang100.tovalley.domain.accident.AccidentEnum;
 import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatMessage;
-import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatNotification;
+import kr.ac.kumoh.illdang100.tovalley.domain.notification.ChatNotification;
 import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatRoom;
 import kr.ac.kumoh.illdang100.tovalley.domain.comment.Comment;
 import kr.ac.kumoh.illdang100.tovalley.domain.lost_found_board.LostFoundBoard;

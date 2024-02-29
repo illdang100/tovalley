@@ -1,4 +1,4 @@
-package kr.ac.kumoh.illdang100.tovalley.domain.chat;
+package kr.ac.kumoh.illdang100.tovalley.domain.notification;
 
 import java.util.List;
 import org.springframework.data.jpa.repository.EntityGraph;

@@ -1,4 +1,4 @@
-package kr.ac.kumoh.illdang100.tovalley.domain.chat;
+package kr.ac.kumoh.illdang100.tovalley.domain.notification;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
