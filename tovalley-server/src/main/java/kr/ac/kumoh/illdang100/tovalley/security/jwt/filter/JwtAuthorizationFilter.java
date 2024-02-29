@@ -49,8 +49,9 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             return;
         }
 
-        if (!isCookieVerified(request)) {
+        if (!isCookieVerify(request, JwtVO.ACCESS_TOKEN)) {
             sendLoginRequiredResponse(response);
+            return;
         }
 
         String accessToken = findAccessTokenFromCookie(request);
@@ -75,10 +76,6 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
     private boolean isAdminRequest(String requestUrl) {
         return requestUrl.contains("/th/admin/");
-    }
-
-    private boolean isCookieVerified(HttpServletRequest request) {
-        return isCookieVerify(request, JwtVO.ACCESS_TOKEN);
     }
 
     private String findAccessTokenFromCookie(HttpServletRequest request) {
