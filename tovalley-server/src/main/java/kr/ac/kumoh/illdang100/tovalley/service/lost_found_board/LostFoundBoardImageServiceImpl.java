@@ -43,7 +43,7 @@ public class LostFoundBoardImageServiceImpl implements LostFoundBoardImageServic
     public void deleteLostFoundImageFiles(List<String> imageFileUrls, Long lostFoundBoardId, Long memberId) {
 
         if (!isAuthorizedToAccessLostFoundBoardImage(lostFoundBoardId, memberId)) {
-            throw new CustomApiException("게시글 작성자에게만 사진 삭제 권한이 있습니다");
+            throw new CustomApiException("게시글 작성자에게만 권한이 있습니다");
         }
 
         Map<String, LostFoundBoardImage> imageFileMap = lostFoundBoardImageRepository.findByLostFoundBoardId(lostFoundBoardId)
@@ -78,10 +78,15 @@ public class LostFoundBoardImageServiceImpl implements LostFoundBoardImageServic
     }
 
     @Override
-    public List<String> deleteLostFoundBoardImageInBatch(Long lostFoundBoardId) {
+    @Transactional
+    public List<String> deleteLostFoundBoardImageInBatch(Long lostFoundBoardId, Long memberId) {
         List<LostFoundBoardImage> findLostFoundBoardImageList = lostFoundBoardImageRepository.findByLostFoundBoardId(lostFoundBoardId);
 
-        if (!findLostFoundBoardImageList.isEmpty()) {
+        if (!isAuthorizedToAccessLostFoundBoardImage(lostFoundBoardId, memberId)) {
+            throw new CustomApiException("게시글 작성자에게만 권한이 있습니다");
+        }
+
+        if (!isEmptyList(findLostFoundBoardImageList)) {
             lostFoundBoardImageRepository.deleteAllByIdInBatch(findLostFoundBoardImageList.stream()
                     .map(LostFoundBoardImage::getId)
                     .collect(Collectors.toList()));

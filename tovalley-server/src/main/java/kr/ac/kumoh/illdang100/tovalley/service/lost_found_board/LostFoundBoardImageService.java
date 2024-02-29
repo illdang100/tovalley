@@ -13,5 +13,5 @@ public interface LostFoundBoardImageService {
 
     void validateImageCount(LostFoundBoardReqDto.LostFoundBoardUpdateReqDto lostFoundBoardUpdateReqDto, LostFoundBoard findLostFoundBoard);
 
-    List<String> deleteLostFoundBoardImageInBatch(Long lostFoundBoardId);
+    List<String> deleteLostFoundBoardImageInBatch(Long lostFoundBoardId, Long memberId);
 }
