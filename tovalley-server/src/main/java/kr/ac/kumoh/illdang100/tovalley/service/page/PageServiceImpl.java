@@ -182,7 +182,8 @@ public class PageServiceImpl implements PageService{
                 .map(c -> {
                     Member member = c.getMember();
                     boolean isMyComment = memberEmail != null && isMyCommentByMemberEmail(memberEmail, member);
-                    return new CommentDetailRespDto(c.getId(), member.getEmail(), c.getContent(), c.getCreatedDate(), isMyComment, member.getImageFile().getStoreFileUrl());
+                    String storeFileUrl = member.getImageFile() != null ? member.getImageFile().getStoreFileUrl() : null;
+                    return new CommentDetailRespDto(c.getId(), member.getEmail(), c.getContent(), c.getCreatedDate(), isMyComment, storeFileUrl);
                 })
                 .collect(Collectors.toList());
     }
