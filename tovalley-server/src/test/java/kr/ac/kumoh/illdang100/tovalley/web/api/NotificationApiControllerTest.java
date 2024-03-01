@@ -2,6 +2,7 @@ package kr.ac.kumoh.illdang100.tovalley.web.api;
 
 import static kr.ac.kumoh.illdang100.tovalley.util.TokenUtil.createTestAccessToken;
 import static org.assertj.core.api.Assertions.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -18,6 +19,7 @@ import kr.ac.kumoh.illdang100.tovalley.dummy.DummyObject;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtProcess;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtVO;
 import kr.ac.kumoh.illdang100.tovalley.service.notification.NotificationService;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,7 +74,6 @@ class NotificationApiControllerTest extends DummyObject {
 
         // given
 
-
         // when
         ResultActions resultActions = mvc.perform(get("/api/auth/notifications")
                 .cookie(new Cookie(JwtVO.ACCESS_TOKEN, accessToken))
@@ -100,6 +101,44 @@ class NotificationApiControllerTest extends DummyObject {
         assertThat(all.get(8).getHasRead()).isTrue();
         assertThat(all.get(9).getHasRead()).isTrue();
         assertThat(all.get(10).getHasRead()).isFalse();
+    }
+
+    @Test
+    public void deleteNotifications_test() throws Exception {
+
+        // given
+
+        // when
+        ResultActions resultActions = mvc.perform(delete("/api/auth/notifications")
+                .cookie(new Cookie(JwtVO.ACCESS_TOKEN, accessToken))
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // then
+        resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.msg").value("채팅 메시지 알림 삭제에 성공하였습니다"))
+                .andDo(MockMvcResultHandlers.print());
+
+        List<ChatNotification> all = chatNotificationRepository.findAll();
+        assertThat(all.size()).isEqualTo(2);
+    }
+
+    @Test
+    public void deleteSingleNotification_test() throws Exception {
+
+        // given
+
+        // when
+        ResultActions resultActions = mvc.perform(delete("/api/auth/notifications/1")
+                .cookie(new Cookie(JwtVO.ACCESS_TOKEN, accessToken))
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // then
+        resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.msg").value("채팅 메시지 알림 삭제에 성공하였습니다"))
+                .andDo(MockMvcResultHandlers.print());
+
+        List<ChatNotification> all = chatNotificationRepository.findAll();
+        assertThat(all.size()).isEqualTo(10);
     }
 
     private void dataSetting() {

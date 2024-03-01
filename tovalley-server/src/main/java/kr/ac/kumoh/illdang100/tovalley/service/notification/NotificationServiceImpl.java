@@ -12,6 +12,7 @@ import kr.ac.kumoh.illdang100.tovalley.domain.chat.kafka.Notification;
 import kr.ac.kumoh.illdang100.tovalley.domain.chat.kafka.NotificationType;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.dto.notification.NotificationRespDto.ChatNotificationRespDto;
+import kr.ac.kumoh.illdang100.tovalley.handler.ex.CustomApiException;
 import kr.ac.kumoh.illdang100.tovalley.service.chat.KafkaSender;
 import kr.ac.kumoh.illdang100.tovalley.util.KafkaVO;
 import lombok.RequiredArgsConstructor;
@@ -96,7 +97,24 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public void deleteChatNotifications(List<String> chatNotifications) {
+    @Transactional
+    public void deleteSingleChatNotification(Long memberId, Long chatNotificationId) {
+        int deletedCount = chatNotificationRepository.deleteByIdAndRecipientId(chatNotificationId, memberId);
 
+        if (deletedCount == 0) {
+            throw new CustomApiException("해당 알림을 삭제할 권한이 없습니다");
+        }
+    }
+
+    @Override
+    @Transactional
+    public void deleteAllNotificationsOfMember(Long memberId) {
+        chatNotificationRepository.deleteByRecipientId(memberId);
+    }
+
+    @Override
+    @Transactional
+    public void deleteAllNotificationsInChatRoomByMember(Long memberId, Long chatRoomId) {
+        chatNotificationRepository.deleteByRecipientIdAndChatRoomId(memberId, chatRoomId);
     }
 }

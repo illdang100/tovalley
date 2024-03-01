@@ -8,7 +8,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatMessage;
 import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatMessageRepository;
-import kr.ac.kumoh.illdang100.tovalley.domain.notification.ChatNotificationRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatRoom;
 import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatRoomRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.chat.kafka.Message;
@@ -50,7 +49,6 @@ public class ChatServiceImpl implements ChatService {
     private final MemberRepository memberRepository;
     private final KafkaSender kafkaSender;
     private final ChatRoomParticipantRedisRepository chatRoomParticipantRedisRepository;
-    private final ChatNotificationRepository chatNotificationRepository;
     private final MongoTemplate mongoTemplate;
     private final NotificationService notificationService;
 

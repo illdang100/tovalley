@@ -4,6 +4,7 @@ import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatRoomRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.chat.kafka.Notification;
 import kr.ac.kumoh.illdang100.tovalley.service.chat.ChatService;
 import kr.ac.kumoh.illdang100.tovalley.service.chat.KafkaSender;
+import kr.ac.kumoh.illdang100.tovalley.service.notification.NotificationService;
 import kr.ac.kumoh.illdang100.tovalley.util.ChatUtil;
 import kr.ac.kumoh.illdang100.tovalley.util.KafkaVO;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ import org.springframework.stereotype.Component;
 public class StompHandler implements ChannelInterceptor { // WebSocket을 이용한 채팅 기능에서 메시지를 가공하고 처리하는 역할
 
     private final ChatService chatService;
+    private final NotificationService notificationService;
     private final ChatRoomRepository chatRoomRepository;
     private final KafkaSender kafkaSender;
 
@@ -85,6 +87,8 @@ public class StompHandler implements ChannelInterceptor { // WebSocket을 이용
 
         chatService.getOtherMemberIdByChatRoomId(chatRoomId, memberId)
                 .ifPresent(otherMemberId -> notifyReadCountUpdate(chatRoomId, otherMemberId));
+
+        notificationService.deleteAllNotificationsInChatRoomByMember(memberId, chatRoomId);
     }
 
     private void updateSubscription(StompHeaderAccessor accessor, Long chatRoomId, Long memberId) {
