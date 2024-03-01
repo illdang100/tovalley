@@ -12,7 +12,6 @@ import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlace;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlaceRepository;
 import kr.ac.kumoh.illdang100.tovalley.dummy.DummyObject;
 import kr.ac.kumoh.illdang100.tovalley.handler.ex.CustomApiException;
-import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtProcess;
 import kr.ac.kumoh.illdang100.tovalley.service.member.MemberService;
 import kr.ac.kumoh.illdang100.tovalley.service.page.PageServiceImpl;
 import org.junit.jupiter.api.DisplayName;
@@ -51,8 +50,6 @@ class LostFoundBoardServiceImplTest extends DummyObject {
     private CommentRepository commentRepository;
     @Mock
     private LostFoundBoardImageRepository lostFoundBoardImageRepository;
-    @Mock
-    private JwtProcess jwtProcess;
     @Mock
     private MemberRepository memberRepository;
     @Mock
@@ -256,7 +253,7 @@ class LostFoundBoardServiceImplTest extends DummyObject {
             lostFoundBoardService.updateResolvedStatus(lostFoundBoardId, true, member2.getId());
         } catch (CustomApiException e) {
             // then
-            assertEquals("게시글 작성자에게만 수정 권한이 있습니다", e.getMessage());
+            assertEquals("게시글 작성자에게만 권한이 있습니다", e.getMessage());
         }
     }
 
@@ -288,7 +285,7 @@ class LostFoundBoardServiceImplTest extends DummyObject {
             lostFoundBoardService.updateLostFoundBoard(lostFoundBoardUpdateReqDto, member2.getId());
         } catch (CustomApiException e) {
             // then
-            assertEquals("게시글 작성자에게만 수정 권한이 있습니다", e.getMessage());
+            assertEquals("게시글 작성자에게만 권한이 있습니다", e.getMessage());
         }
     }
 

@@ -76,8 +76,8 @@ class LostFoundBoardControllerTest extends DummyObject {
     @DisplayName(value = "분실물 게시글 등록")
     void saveLostFoundBoard() throws Exception {
         // given
-        Long valleyId = 1L;
-        LostFoundBoardSaveReqDto lostFoundBoardSaveReqDto = new LostFoundBoardSaveReqDto("LOST", valleyId, "잃어버림", "지갑 잃어버렸어요", null);
+        Long waterPlaceId = 1L;
+        LostFoundBoardSaveReqDto lostFoundBoardSaveReqDto = new LostFoundBoardSaveReqDto("LOST", waterPlaceId, "잃어버림", "지갑 잃어버렸어요", null);
 
         String requestBody = om.writeValueAsString(lostFoundBoardSaveReqDto);
 
@@ -97,9 +97,9 @@ class LostFoundBoardControllerTest extends DummyObject {
     @DisplayName(value = "분실물 게시글 수정")
     void updateLostFoundBoard() throws Exception {
         // given
-        Long valleyId = 2L;
+        Long waterPlaceId = 2L;
         Long lostFoundBoardId = 2L;
-        LostFoundBoardUpdateReqDto lostFoundBoardUpdateReqDto = new LostFoundBoardUpdateReqDto(lostFoundBoardId, "LOST", valleyId, "지갑 잃어버렸습니다ㅠㅠ", "지갑 좀 찾아주세요 검정색 카드지갑 입니다!!", null, null);
+        LostFoundBoardUpdateReqDto lostFoundBoardUpdateReqDto = new LostFoundBoardUpdateReqDto(lostFoundBoardId, "LOST", waterPlaceId, "지갑 잃어버렸습니다ㅠㅠ", "지갑 좀 찾아주세요 검정색 카드지갑 입니다!!", null, null);
 
         String requestBody = om.writeValueAsString(lostFoundBoardUpdateReqDto);
 
