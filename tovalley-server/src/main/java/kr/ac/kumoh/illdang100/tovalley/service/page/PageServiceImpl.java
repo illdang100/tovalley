@@ -67,8 +67,6 @@ public class PageServiceImpl implements PageService{
         AlertRespDto alertRespDto = weatherService.getAllSpecialWeathers();
         AccidentCountDto nationalAccidentCountDto = accidentService.getAccidentCntPerMonthByProvince(ProvinceEnum.NATIONWIDE.getValue());
         List<NationalPopularWaterPlacesDto> popularWaterPlaces = waterPlaceService.getPopularWaterPlaces("RATING");
-        // TODO 1. 최근 분실물 게시글
-        // TODO 2. 최근 리뷰
 
         return new MainPageAllRespDto(nationalWeatherDto, alertRespDto, nationalAccidentCountDto, popularWaterPlaces);
     }
