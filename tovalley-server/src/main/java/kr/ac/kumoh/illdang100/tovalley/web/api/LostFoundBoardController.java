@@ -78,4 +78,17 @@ public class LostFoundBoardController {
         String result = isResolved ? "해결 완료" : "해결 미완료";
         return new ResponseEntity<>(new ResponseDto<>(1, "분실물 게시글 상태[" + result + "]가 변경되었습니다", null), HttpStatus.OK);
     }
+
+    @DeleteMapping(value = "/auth/lostItem/{lostFoundBoardId}")
+    public ResponseEntity<?> deleteLostFoundBoard(@PathVariable("lostFoundBoardId") long lostFoundBoardId,
+                                                  @AuthenticationPrincipal PrincipalDetails principalDetails) {
+
+        // 분실물 게시글 삭제
+        List<String> deleteLostFoundBoardImageFileName = lostFoundBoardService.deleteLostFoundBoard(lostFoundBoardId, principalDetails.getMember().getId());
+
+        // s3 파일 삭제
+        s3Service.deleteFiles(deleteLostFoundBoardImageFileName);
+
+        return new ResponseEntity<>(new ResponseDto<>(1, "분실물 게시글이 정상적으로 삭제되었습니다", null), HttpStatus.OK);
+    }
 }

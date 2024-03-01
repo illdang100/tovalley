@@ -21,6 +21,7 @@ import static kr.ac.kumoh.illdang100.tovalley.domain.lost_found_board.QLostFound
 import static kr.ac.kumoh.illdang100.tovalley.domain.member.QMember.*;
 import static kr.ac.kumoh.illdang100.tovalley.domain.water_place.QWaterPlace.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.lost_found_board.LostFoundBoardRespDto.*;
+import static kr.ac.kumoh.illdang100.tovalley.util.ListUtil.*;
 
 public class LostFoundBoardRepositoryImpl implements LostFoundBoardRepositoryCustom {
 
@@ -64,9 +65,9 @@ public class LostFoundBoardRepositoryImpl implements LostFoundBoardRepositoryCus
         }
 
         // 계곡 아이디
-        List<Long> valleyIds = lostFoundBoardListReqDto.getValleyId();
-        if (valleyIds != null && !valleyIds.isEmpty()) {
-            booleanBuilder.and(lostFoundBoard.waterPlace.id.in(valleyIds));
+        List<Long> waterPlaceIds = lostFoundBoardListReqDto.getWaterPlaceId();
+        if (!isEmptyList(waterPlaceIds)) {
+            booleanBuilder.and(lostFoundBoard.waterPlace.id.in(waterPlaceIds));
         }
 
         // 해결된 게시글 제외

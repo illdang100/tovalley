@@ -17,7 +17,7 @@ public class LostFoundBoardReqDto {
         @Pattern(regexp = "(LOST|FOUND)$")
         private String category;
 
-        private List<Long> valleyId;
+        private List<Long> waterPlaceId;
 
         @Nullable
         private String searchWord;
@@ -33,7 +33,7 @@ public class LostFoundBoardReqDto {
         private String category;
 
         @NotNull
-        private Long valleyId;
+        private Long waterPlaceId;
 
         @NotBlank
         @Size(max = 20, message = "제목은 20자 이하로 작성해주세요")
@@ -57,7 +57,7 @@ public class LostFoundBoardReqDto {
         private String category;
 
         @NotNull
-        private Long valleyId;
+        private Long waterPlaceId;
 
         @NotBlank
         @Size(max = 20, message = "제목은 20자 이하로 작성해주세요")

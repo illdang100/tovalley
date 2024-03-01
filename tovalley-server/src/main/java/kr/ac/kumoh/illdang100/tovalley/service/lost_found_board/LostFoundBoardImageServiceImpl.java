@@ -5,6 +5,7 @@ import kr.ac.kumoh.illdang100.tovalley.domain.lost_found_board.LostFoundBoard;
 import kr.ac.kumoh.illdang100.tovalley.domain.lost_found_board.LostFoundBoardImage;
 import kr.ac.kumoh.illdang100.tovalley.domain.lost_found_board.LostFoundBoardImageRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.lost_found_board.LostFoundBoardRepository;
+import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.handler.ex.CustomApiException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +29,6 @@ import static kr.ac.kumoh.illdang100.tovalley.util.ListUtil.isEmptyList;
 public class LostFoundBoardImageServiceImpl implements LostFoundBoardImageService {
     private final LostFoundBoardImageRepository lostFoundBoardImageRepository;
     private final LostFoundBoardRepository lostFoundBoardRepository;
-    private final LostFoundBoardService lostFoundBoardService;
 
     @Override
     @Transactional
@@ -43,7 +43,7 @@ public class LostFoundBoardImageServiceImpl implements LostFoundBoardImageServic
     public void deleteLostFoundImageFiles(List<String> imageFileUrls, Long lostFoundBoardId, Long memberId) {
 
         if (!isAuthorizedToAccessLostFoundBoardImage(lostFoundBoardId, memberId)) {
-            throw new CustomApiException("게시글 작성자에게만 사진 삭제 권한이 있습니다");
+            throw new CustomApiException("게시글 작성자에게만 권한이 있습니다");
         }
 
         Map<String, LostFoundBoardImage> imageFileMap = lostFoundBoardImageRepository.findByLostFoundBoardId(lostFoundBoardId)
@@ -62,8 +62,8 @@ public class LostFoundBoardImageServiceImpl implements LostFoundBoardImageServic
     }
 
     public Boolean isAuthorizedToAccessLostFoundBoardImage(Long lostFoundBoardId, Long memberId) {
-        LostFoundBoard findLostFoundBoard = findLostFoundBoardByIdWithMemberOrElseThrowEx(lostFoundBoardRepository, lostFoundBoardId);
-        return lostFoundBoardService.isAuthorizedToAccessBoard(findLostFoundBoard, memberId);
+        Member member = findLostFoundBoardByIdWithMemberOrElseThrowEx(lostFoundBoardRepository, lostFoundBoardId).getMember();
+        return member != null && member.getId().equals(memberId);
     }
 
     @Override
@@ -75,5 +75,20 @@ public class LostFoundBoardImageServiceImpl implements LostFoundBoardImageServic
         if (currentImageSize - deleteImageSize + newImageSize > MAX_IMAGE_COUNT) {
             throw new CustomApiException("게시글에 저장할 수 있는 최대 이미지 개수를 초과했습니다");
         }
+    }
+
+    @Override
+    public List<String> deleteLostFoundBoardImageInBatch(Long lostFoundBoardId, Long memberId) {
+        List<LostFoundBoardImage> findLostFoundBoardImageList = lostFoundBoardImageRepository.findByLostFoundBoardId(lostFoundBoardId);
+
+        if (!isEmptyList(findLostFoundBoardImageList)) {
+            lostFoundBoardImageRepository.deleteAllByIdInBatch(findLostFoundBoardImageList.stream()
+                    .map(LostFoundBoardImage::getId)
+                    .collect(Collectors.toList()));
+        }
+
+        return findLostFoundBoardImageList.stream()
+                .map(image -> image.getImageFile().getStoreFileName())
+                .collect(Collectors.toList());
     }
 }
