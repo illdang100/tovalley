@@ -1,5 +1,6 @@
 package kr.ac.kumoh.illdang100.tovalley.domain.notification;
 
+import static kr.ac.kumoh.illdang100.tovalley.domain.member.QMember.member;
 import static kr.ac.kumoh.illdang100.tovalley.domain.notification.QChatNotification.chatNotification;
 
 import com.querydsl.core.types.Order;
@@ -28,6 +29,7 @@ public class ChatNotificationRepositoryImpl implements ChatNotificationRepositor
         JPAQuery<ChatNotification> query = queryFactory
                 .select(chatNotification)
                 .from(chatNotification)
+                .leftJoin(chatNotification.sender, member).fetchJoin()
                 .where(chatNotification.recipientId.eq(memberId))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize() + 1);
