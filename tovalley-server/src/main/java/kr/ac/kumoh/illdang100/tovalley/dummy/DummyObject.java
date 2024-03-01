@@ -386,12 +386,12 @@ public class DummyObject {
                 .build();
     }
 
-    protected Comment newMockComment(Long id, Long lostFoundBoardId) {
+    protected Comment newMockComment(Long id, Long lostFoundBoardId, Member member) {
 
         return Comment.builder()
                 .id(id)
                 .lostFoundBoardId(lostFoundBoardId)
-                .authorEmail("user@naver.com")
+                .member(member)
                 .content("comment")
                 .build();
     }

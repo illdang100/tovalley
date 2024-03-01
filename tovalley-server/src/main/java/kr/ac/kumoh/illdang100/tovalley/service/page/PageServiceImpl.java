@@ -21,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -59,7 +58,7 @@ public class PageServiceImpl implements PageService{
      * @author: JYeonJun
      * @description: 메인페이지 정보 요청시 데이터를 취합해서 보내주는 메서드
      *
-     * @return: 전국 날씨 정보, 특보, 예비 특보, 지역별 사건 사고 발생률, 인기 계곡 현황
+     * @return: 전국 날씨 정보, 특보, 예비 특보, 지역별 사건 사고 발생률, 인기 계곡 현황, 최신 분실물 게시글, 최근 리뷰
      */
     @Override
     public MainPageAllRespDto getMainPageAllData() {
@@ -68,6 +67,8 @@ public class PageServiceImpl implements PageService{
         AlertRespDto alertRespDto = weatherService.getAllSpecialWeathers();
         AccidentCountDto nationalAccidentCountDto = accidentService.getAccidentCntPerMonthByProvince(ProvinceEnum.NATIONWIDE.getValue());
         List<NationalPopularWaterPlacesDto> popularWaterPlaces = waterPlaceService.getPopularWaterPlaces("RATING");
+        // TODO 1. 최근 분실물 게시글
+        // TODO 2. 최근 리뷰
 
         return new MainPageAllRespDto(nationalWeatherDto, alertRespDto, nationalAccidentCountDto, popularWaterPlaces);
     }
@@ -176,13 +177,17 @@ public class PageServiceImpl implements PageService{
     }
 
     private List<CommentDetailRespDto> findCommentDetails(long lostFoundBoardId, String memberEmail) {
-        return commentRepository.findCommentByLostFoundBoardId(lostFoundBoardId)
+        return commentRepository.findCommentByLostFoundBoardIdFetchJoinMember(lostFoundBoardId)
                 .stream()
-                .map(c -> new CommentDetailRespDto(c.getId(), c.getAuthorEmail(), c.getContent(), c.getCreatedDate(), memberEmail != null && isMyComment(memberEmail, c.getAuthorEmail())))
+                .map(c -> {
+                    Member member = c.getMember();
+                    boolean isMyComment = memberEmail != null && isMyCommentByMemberEmail(memberEmail, member);
+                    return new CommentDetailRespDto(c.getId(), member.getEmail(), c.getContent(), c.getCreatedDate(), isMyComment, member.getImageFile().getStoreFileUrl());
+                })
                 .collect(Collectors.toList());
     }
 
-    private boolean isMyComment(String memberEmail, String authorEmail) {
-        return (memberEmail.equals(authorEmail));
+    private boolean isMyCommentByMemberEmail(String memberEmail, Member member) {
+        return (memberEmail.equals(member.getEmail()));
     }
 }

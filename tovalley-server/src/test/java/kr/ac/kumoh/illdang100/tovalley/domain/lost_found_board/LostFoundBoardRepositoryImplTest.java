@@ -126,8 +126,8 @@ class LostFoundBoardRepositoryImplTest extends DummyObject {
         lostFoundBoardRepository.save(newMockLostFoundBoard(3L, "title3", "content3", member, false, LostFoundEnum.FOUND, waterPlace2));
         lostFoundBoardRepository.save(newMockLostFoundBoard(4L, "title4", "content4", member, true, LostFoundEnum.FOUND, waterPlace2));
 
-        commentRepository.save(newMockComment(1L, 1L));
-        commentRepository.save(newMockComment(2L, 1L));
+        commentRepository.save(newMockComment(1L, 1L, member));
+        commentRepository.save(newMockComment(2L, 1L, member));
         lostFoundBoardImageRepository.save(newMockLostFoundBoardImage(1L, 3L, new ImageFile("fileName", "fileUrl")));
     }
     private void autoIncrementReset() {

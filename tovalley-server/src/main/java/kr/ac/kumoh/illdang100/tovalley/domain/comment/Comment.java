@@ -1,6 +1,7 @@
 package kr.ac.kumoh.illdang100.tovalley.domain.comment;
 
 import kr.ac.kumoh.illdang100.tovalley.domain.BaseTimeEntity;
+import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import lombok.*;
 
 import javax.persistence.*;
@@ -18,17 +19,18 @@ public class Comment extends BaseTimeEntity {
     @Column(nullable = false)
     private Long lostFoundBoardId;
 
-    @Column(nullable = false, length = 30)
-    private String authorEmail;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     @Column(nullable = false, length = 256)
     private String content;
 
     @Builder
-    public Comment(Long id, Long lostFoundBoardId, String authorEmail, String content) {
+    public Comment(Long id, Long lostFoundBoardId, Member member, String content) {
         this.id = id;
         this.lostFoundBoardId = lostFoundBoardId;
-        this.authorEmail = authorEmail;
+        this.member = member;
         this.content = content;
     }
 }

@@ -207,7 +207,7 @@ CREATE TABLE IF NOT EXISTS `lost_found_board` (
 CREATE TABLE IF NOT EXISTS `comment` (
     `comment_id`	BIGINT  NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '댓글 아이디',
     `lost_found_board_id`	BIGINT	NOT NULL COMMENT '분실물 찾기 게시글 아이디',
-    `author_email`	VARCHAR(30)	NOT NULL COMMENT '댓글 작성자 이메일',
+    `member_id` BIGINT COMMENT '댓글 작성자',
     `content`	VARCHAR(256)	NOT NULL COMMENT '댓글 내용'
     ) engine=InnoDB;
 
