@@ -3,6 +3,7 @@ package kr.ac.kumoh.illdang100.tovalley.web.api;
 import static kr.ac.kumoh.illdang100.tovalley.dto.chat.ChatReqDto.*;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import javax.validation.Valid;
 import kr.ac.kumoh.illdang100.tovalley.dto.ResponseDto;
 import kr.ac.kumoh.illdang100.tovalley.dto.chat.ChatRespDto.ChatMessageListRespDto;
@@ -56,9 +57,8 @@ public class ChatApiController {
     }
 
     @GetMapping("/api/auth/chatroom")
-    public ResponseEntity<?> findChatRoomList(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                          @PageableDefault(size = 10) Pageable pageable) {
-        Slice<ChatRoomRespDto> result = chatService.getChatRooms(principalDetails.getMember().getId(), pageable);
+    public ResponseEntity<?> findChatRoomList(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        List<ChatRoomRespDto> result = chatService.getChatRooms(principalDetails.getMember().getId());
         return new ResponseEntity<>(new ResponseDto<>(1, "채팅방 목록 조회를 성공했습니다", result), HttpStatus.OK);
     }
 

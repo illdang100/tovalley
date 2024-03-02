@@ -2,7 +2,7 @@ package kr.ac.kumoh.illdang100.tovalley.dto.notification;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;
-import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatNotification;
+import kr.ac.kumoh.illdang100.tovalley.domain.notification.ChatNotification;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -11,7 +11,7 @@ public class NotificationRespDto {
     @Data
     @AllArgsConstructor
     public static class ChatNotificationRespDto{
-        private String chatNotificationId;
+        private Long chatNotificationId;
         private Long chatRoomId;
         private String senderNick;
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
