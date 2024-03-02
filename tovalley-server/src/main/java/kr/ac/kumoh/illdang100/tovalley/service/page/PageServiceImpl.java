@@ -58,7 +58,7 @@ public class PageServiceImpl implements PageService{
      * @author: JYeonJun
      * @description: 메인페이지 정보 요청시 데이터를 취합해서 보내주는 메서드
      *
-     * @return: 전국 날씨 정보, 특보, 예비 특보, 지역별 사건 사고 발생률, 인기 계곡 현황, 최신 분실물 게시글, 최근 리뷰
+     * @return: 전국 날씨 정보, 특보, 예비 특보, 지역별 사건 사고 발생률, 인기 계곡 현황
      */
     @Override
     public MainPageAllRespDto getMainPageAllData() {
