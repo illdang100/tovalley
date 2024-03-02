@@ -1,0 +1,58 @@
+.modalContainer {
+  z-index: 7;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #eeeeeebd;
+}
+
+.modalBox {
+  width: 280px;
+  height: 110px;
+  border-radius: 15px;
+  background-color: #ffffff;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -130px;
+  margin-top: -55px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.modalContent {
+  height: 70px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  font-size: 0.8rem;
+  box-sizing: border-box;
+}
+
+.confirm {
+  border-top: 1px solid rgb(231, 231, 231);
+  cursor: pointer;
+  display: flex;
+  font-weight: bold;
+}
+
+.confirm div {
+  text-align: center;
+  width: calc(100% / 2);
+  font-size: 0.9rem;
+  padding: 0.6em;
+}
+
+.confirm div:first-child {
+  color: #66a5fc;
+  border-right: 1px solid rgb(231, 231, 231);
+}
+
+.confirm div:last-child {
+  color: rgb(191, 191, 191);
+}
