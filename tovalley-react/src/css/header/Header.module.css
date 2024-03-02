@@ -37,9 +37,9 @@
 
 .alarm {
   color: #66a5fc;
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   position: relative;
-  margin-right: 1.3em;
+  margin-right: 1em;
   cursor: pointer;
   padding-top: 0.3em;
 }
@@ -51,7 +51,16 @@
   right: -4px;
 }
 
-.login > span {
+.chatIcon {
+  color: #66a5fc;
+  font-size: 1.5rem;
+  cursor: pointer;
+  margin-right: 0.8em;
+  padding-top: 0.2em;
+}
+
+.myPage,
+.logout {
   border: 1px solid #dadada;
   padding: 0.8em 1.5em;
   border-radius: 30px;
@@ -59,7 +68,7 @@
   cursor: pointer;
 }
 
-.login > span:nth-child(2) {
+.myPage {
   margin-right: 1em;
   border: 1px solid #66a5fc;
   color: #66a5fc;
@@ -176,8 +185,8 @@
     justify-content: end;
   }
 
-  .login span:first-child,
-  .login span:nth-child(2) {
+  .myPage,
+  .logout {
     display: none;
   }
 

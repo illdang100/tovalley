@@ -55,7 +55,7 @@ const LostItemListPage = () => {
       .get(`${localhost}/api/lostItem`, { params })
       .then((res) => {
         console.log(res);
-        setLostList({ data: res.data.data });
+        setLostList({ data: res.data.data.content });
       })
       .catch((err) => {
         console.log(err);

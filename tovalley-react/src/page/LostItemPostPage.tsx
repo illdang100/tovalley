@@ -11,6 +11,9 @@ import axiosInstance from "../axios_interceptor";
 import { elapsedTime } from "../composables/elapsedTime";
 import CustomModal from "../component/common/CustomModal";
 import { FaCheck } from "react-icons/fa6";
+import { useDispatch } from "react-redux";
+import { view } from "../store/chat/chatViewSlice";
+import { enterChatRoom } from "../store/chat/chatRoomIdSlice";
 
 const LostItemPostPage = () => {
   const [lostPost, setLostPost] = useState<LostPost>();
@@ -20,47 +23,48 @@ const LostItemPostPage = () => {
   const [deleteModal, setDeleteModal] = useState(false);
   const [resolveCheck, setResolveCheck] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    // setLostPost({
-    //   data: {
-    //     title: "금오계곡에서 찾았어요",
-    //     content: "아이폰15 입니다.",
-    //     author: "illdang100",
-    //     waterPlaceName: "금오계곡",
-    //     waterPlaceAddress: "경상북도 구미시 옥계동",
-    //     postCreateAt: "2024-01-19 21:33:10",
-    //     postImages: [
-    //       "/img/dummy/계곡이미지5.jpg",
-    //       "/img/dummy/계곡이미지5.jpg",
-    //       "/img/dummy/계곡이미지5.jpg",
-    //     ],
-    //     isResolved: false,
-    //     isMyBoard: true,
-    //     boardAuthorProfile: "",
-    //     commentCnt: 3,
-    //     comments: [
-    //       {
-    //         commentId: 1,
-    //         commentAuthor: "행복한 어피치",
-    //         commentContent: "혹시 흰색인가요?",
-    //         commentCreatedAt: "2024-01-23 09:00:02",
-    //         isMyComment: false, // 현재 유저가 작성한 댓글인지 확인
-    //         commentAuthorProfile: "",
-    //       },
-    //     ],
-    //   },
-    // });
-    // setCommentList([
-    //   {
-    //     commentId: 1,
-    //     commentAuthor: "행복한 어피치",
-    //     commentContent: "혹시 흰색인가요?",
-    //     commentCreatedAt: "2024-01-23 09:00:02",
-    //     isMyComment: true, // 현재 유저가 작성한 댓글인지 확인,
-    //     commentAuthorProfile: "",
-    //   },
-    // ]);
+    setLostPost({
+      data: {
+        title: "금오계곡에서 찾았어요",
+        content: "아이폰15 입니다.",
+        author: "illdang100",
+        waterPlaceName: "금오계곡",
+        waterPlaceAddress: "경상북도 구미시 옥계동",
+        postCreateAt: "2024-01-19 21:33:10",
+        postImages: [
+          "/img/dummy/계곡이미지5.jpg",
+          "/img/dummy/계곡이미지5.jpg",
+          "/img/dummy/계곡이미지5.jpg",
+        ],
+        isResolved: false,
+        isMyBoard: false,
+        boardAuthorProfile: "",
+        commentCnt: 3,
+        comments: [
+          {
+            commentId: 1,
+            commentAuthor: "행복한 어피치",
+            commentContent: "혹시 흰색인가요?",
+            commentCreatedAt: "2024-01-23 09:00:02",
+            isMyComment: false, // 현재 유저가 작성한 댓글인지 확인
+            commentAuthorProfile: "",
+          },
+        ],
+      },
+    });
+    setCommentList([
+      {
+        commentId: 1,
+        commentAuthor: "행복한 어피치",
+        commentContent: "혹시 흰색인가요?",
+        commentCreatedAt: "2024-01-23 09:00:02",
+        isMyComment: true, // 현재 유저가 작성한 댓글인지 확인,
+        commentAuthorProfile: "",
+      },
+    ]);
 
     axiosInstance
       .get(`/api/lostItem/${id}`)
@@ -132,6 +136,19 @@ const LostItemPostPage = () => {
     navigate(`/lost-item/${category}/${id}/update`);
   };
 
+  const newChatRoom = () => {
+    axiosInstance
+      .post("/api/auth/chatroom", {
+        // 채팅방 생성 or 기존채팅방 id 요청
+        recipientNick: lostPost?.data.author,
+      })
+      .then((res) => {
+        console.log(res);
+        dispatch(enterChatRoom(res.data.data.chatRoomId));
+        dispatch(view(true));
+      });
+  };
+
   return (
     <div>
       <Header />
@@ -162,7 +179,7 @@ const LostItemPostPage = () => {
               </div>
             </div>
             {!lostPost?.data.isMyBoard && (
-              <div className={styles.chatBtn}>
+              <div className={styles.chatBtn} onClick={() => newChatRoom()}>
                 <AiOutlineComment size="22px" />
                 <span>채팅하기</span>
               </div>

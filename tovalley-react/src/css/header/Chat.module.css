@@ -1,7 +1,7 @@
 .chatContainer {
-  z-index: 5;
+  z-index: 10;
   position: fixed;
-  top: 124px;
+  top: 90px;
   left: 0;
   right: 0;
   bottom: 0;
@@ -10,12 +10,13 @@
 .chatWrap {
   width: 420px;
   box-sizing: border-box;
-  height: 100vh;
+  height: 550px;
   background-color: #ffffff;
   position: absolute;
   right: -420px;
   padding: 1.7em 0;
   box-shadow: -8px 0 10px rgba(213, 213, 213, 0.185);
+  border-radius: 20px 0 0 20px;
 }
 
 /* @keyframes slide {
@@ -48,7 +49,7 @@
 }
 
 .header h1 {
-  margin: 0;
+  margin: 0 0 0 0.2em;
   font-size: 1.2rem;
 }
 
@@ -61,17 +62,24 @@
 .chatWrap h4 {
   color: #66a5fc;
   padding: 0 1.2em;
-  margin: 2em 0 0.6em;
+  margin: 0 0 0.6em;
 }
 
 .chatList {
   border-top: 1px solid #ececec;
+  height: 450px;
+  overflow-y: scroll;
+}
+
+.chatList::-webkit-scrollbar {
+  display: none;
 }
 
 .chatItem {
   border-bottom: 1px solid #ececec;
   padding: 1em 1.2em;
   cursor: pointer;
+  min-height: 55px;
 }
 
 .chatTitle {
@@ -95,6 +103,7 @@
 }
 
 .profileImg img {
+  width: 100%;
   object-fit: cover;
 }
 

@@ -1,41 +1,66 @@
 .chatComponent {
   width: 100%;
-  height: 72vh;
+  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  margin: 2em 0;
+  padding: 1em 0;
+  box-sizing: border-box;
+}
+
+.messageList {
+  overflow-y: scroll;
+}
+
+.messageList::-webkit-scrollbar {
+  display: none;
 }
 
 .speechBubble {
-  display: flex;
-  justify-content: right;
   padding: 0 1.2em;
+  margin-bottom: 0.5em;
 }
 
-.bubbleComponent {
+.speechBubble > div {
   display: flex;
   align-items: flex-end;
 }
 
-.bubbleComponent span {
-  color: #b0b0b0;
-  font-size: 0.8rem;
-  margin-right: 0.6em;
-}
-
-.bubbleComponent div {
-  background-color: #d6e6fd;
+.mySpeechBubble,
+.opponentSpeechBubble {
   padding: 0.8em 1em;
   font-size: 0.9rem;
   border-radius: 10px;
   max-width: 300px;
 }
 
+.readCount {
+  color: #66a5fc;
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: block;
+}
+
+.sendTime {
+  color: #b0b0b0;
+  font-size: 0.8rem;
+}
+
+.mySpeechBubble {
+  background-color: #d6e6fd;
+  margin-left: 0.6em;
+}
+
+.opponentSpeechBubble {
+  border: 1px solid #d7d7d7;
+  margin-right: 0.6em;
+}
+
 .sendMessage {
   width: 90%;
   display: flex;
   margin: 0 auto;
+  margin-top: 0.5em;
 }
 
 .sendMessage input {

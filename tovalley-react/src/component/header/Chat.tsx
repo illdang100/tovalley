@@ -1,16 +1,41 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "../../css/header/Chat.module.css";
 import { MdLogout } from "react-icons/md";
 import ChatComponent from "./ChatComponent";
 import { MdArrowBackIos } from "react-icons/md";
 import axiosInstance from "../../axios_interceptor";
-import { ChatRoomItem } from "../../typings/db";
+import { ChatRoomItem, NotificationType } from "../../typings/db";
+import { elapsedTime } from "../../composables/elapsedTime";
+import { RootState } from "../../store/store";
+import { useDispatch, useSelector } from "react-redux";
+import { enterChatRoom } from "../../store/chat/chatRoomIdSlice";
+import { view } from "../../store/chat/chatViewSlice";
+import { Client } from "@stomp/stompjs";
 
-interface Props {
-  outChatting: () => void;
-  chatView: boolean;
-}
-const Chat: FC<Props> = ({ outChatting, chatView }) => {
+const Chat = () => {
+  const chatView = useSelector((state: RootState) => state.view.value);
+  const [appear, setAppear] = useState("");
+  const [chatRoomList, setChatRoomList] = useState<ChatRoomItem[]>([]);
+  const dispatch = useDispatch();
+  const [client, setClient] = useState<Client | null>();
+  const [notification, setNotification] = useState<NotificationType | null>();
+  const clientSelector = useSelector((state: RootState) => state.client.value);
+  const chatRoomId = useSelector((state: RootState) => state.chatRoomId.value);
+  const chatId = useSelector((state: RootState) => state.chatId.value);
+  const notificationSelector = useSelector(
+    (state: RootState) => state.notification.value
+  );
+
+  useEffect(() => {
+    if (clientSelector) {
+      setClient(clientSelector);
+    }
+  }, [clientSelector]);
+
+  useEffect(() => {
+    setNotification(notificationSelector);
+  }, [notificationSelector]);
+
   useEffect(() => {
     if (chatView) {
       document.body.style.cssText = `
@@ -26,12 +51,7 @@ const Chat: FC<Props> = ({ outChatting, chatView }) => {
     }
   }, [chatView]);
 
-  const [appear, setAppear] = useState("");
-  const [enterChatRoom, setEnterChatRoom] = useState("");
-  const [chatRoomList, setChatRoomList] = useState<ChatRoomItem[]>([]);
-
   useEffect(() => {
-    console.log(chatView);
     if (chatView) {
       setAppear("start");
     } else {
@@ -39,37 +59,26 @@ const Chat: FC<Props> = ({ outChatting, chatView }) => {
     }
   }, [chatView]);
 
-  const getChatRoomList = () => {
-    setChatRoomList([
-      {
-        chatRoomId: 1,
-        chatRoomTitle: "누구누구와(과)의 채팅방입니다.",
-        otherUserProfileImage: "프로필 이미지 URL",
-        otherUserNick: "누구누구",
-        createdChatRoomDate: "2024-02-15 05:05:04",
-        lastMessageContent: "안녕하세요",
-        lastMessageTime: "2024-02-15 05:05:04",
-      },
-
-      {
-        chatRoomId: 2,
-        chatRoomTitle: "호호와(과)의 채팅방입니다.",
-        otherUserProfileImage: "프로필 이미지 URL",
-        otherUserNick: "호호",
-        createdChatRoomDate: "2024-02-15 05:05:04",
-        lastMessageContent: "안녕하세요!!",
-        lastMessageTime: "2024-02-15 05:06:04",
-      },
-    ]);
-    // axiosInstance
-    //   .get("/api/auth/chatroom")
-    //   .then((res) => console.log(res))
-    //   .catch((err) => console.log(err));
-  };
-
   useEffect(() => {
-    getChatRoomList();
-  }, []);
+    if (clientSelector) {
+      console.log("clientSelector 있음");
+      console.log(clientSelector);
+      axiosInstance
+        .get("/api/auth/chatroom") // 채팅방 목록
+        .then((res) => {
+          console.log(res);
+          setChatRoomList(res.data.data.content);
+        })
+        .catch((err) => console.log(err));
+    }
+  }, [clientSelector]);
+
+  const outChatting = () => {
+    dispatch(view(false));
+    if (client && chatId) {
+      client.unsubscribe(chatId);
+    }
+  };
 
   return (
     <div className={chatView ? styles.chatContainer : ""}>
@@ -83,17 +92,17 @@ const Chat: FC<Props> = ({ outChatting, chatView }) => {
         }
       >
         <div className={styles.header}>
-          {enterChatRoom !== "" && (
-            <span onClick={() => setEnterChatRoom("")}>
+          {chatRoomId && (
+            <span onClick={() => dispatch(enterChatRoom(null))}>
               <MdArrowBackIos />
             </span>
           )}
-          <h1>illdang100</h1>
+          {!chatRoomId && <h1>illdang100</h1>}
           <span onClick={outChatting}>
             <MdLogout />
           </span>
         </div>
-        {enterChatRoom === "" ? (
+        {!chatRoomId ? (
           <>
             <h4>채팅목록 {chatRoomList.length}</h4>
             <div className={styles.chatList}>
@@ -101,37 +110,48 @@ const Chat: FC<Props> = ({ outChatting, chatView }) => {
                 <div
                   key={chatRoom.chatRoomId}
                   className={styles.chatItem}
-                  onClick={() => setEnterChatRoom(chatRoom.otherUserNick)}
+                  onClick={() => dispatch(enterChatRoom(chatRoom.chatRoomId))}
                 >
                   <div className={styles.chatTitle}>
                     <div className={styles.userInfo}>
                       <div className={styles.profileImg}>
-                        <div
-                          style={{
-                            backgroundColor: "grey",
-                            width: "50px",
-                            height: "50px",
-                          }}
+                        <img
+                          src={
+                            chatRoom.otherUserProfileImage
+                              ? chatRoom.otherUserProfileImage
+                              : process.env.PUBLIC_URL + "/img/user-profile.png"
+                          }
+                          alt="profile-img"
                         />
                       </div>
                       <span className={styles.nickName}>
                         {chatRoom.otherUserNick}
                       </span>
                     </div>
-                    <span>5분전</span>
+                    <span>
+                      {chatRoom.lastMessageTime
+                        ? elapsedTime(chatRoom.lastMessageTime)
+                        : ""}
+                    </span>
                   </div>
                   <div className={styles.chatContent}>
                     <span className={styles.content}>
-                      {chatRoom.lastMessageContent}
+                      {chatRoom.lastMessageContent
+                        ? chatRoom.lastMessageContent
+                        : "(대화 내용이 없습니다.)"}
                     </span>
-                    <div className={styles.count}>1</div>
+                    {chatRoom.unReadMessageCount !== 0 && (
+                      <div className={styles.count}>
+                        {chatRoom.unReadMessageCount}
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}
             </div>
           </>
         ) : (
-          <ChatComponent recipientNick={enterChatRoom} />
+          <ChatComponent />
         )}
       </div>
     </div>

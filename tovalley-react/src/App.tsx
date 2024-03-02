@@ -12,10 +12,21 @@ import LostItemListPage from "./page/LostItemListPage";
 import LostItemPostPage from "./page/LostItemPostPage";
 import LostItemWritePage from "./page/LostItemWritePage";
 import LostItemUpdatePage from "./page/LostItemUpdatePage";
+import Alarm from "./component/common/Alarm";
+import { useState } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "./store/store";
+import { NotificationType } from "./typings/db";
 
 function App() {
+  const notification = useSelector(
+    (state: RootState) => state.notification.value
+  );
+  const [alarm, setAlarm] = useState<NotificationType | null>(notification);
+
   return (
     <div>
+      {alarm && <Alarm alarm={alarm} setAlarm={setAlarm} />}
       <Routes>
         <Route path="/" element={<MainPage />} />
         <Route path="/login" element={<LoginPage />} />
