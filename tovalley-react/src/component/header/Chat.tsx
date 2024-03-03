@@ -67,7 +67,7 @@ const Chat = () => {
         .get("/api/auth/chatroom") // 채팅방 목록
         .then((res) => {
           console.log(res);
-          setChatRoomList(res.data.data.content);
+          res.data !== "" && setChatRoomList(res.data.data);
         })
         .catch((err) => console.log(err));
     }

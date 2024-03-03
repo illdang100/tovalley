@@ -140,7 +140,8 @@ const LostItemPostPage = () => {
     axiosInstance
       .post("/api/auth/chatroom", {
         // 채팅방 생성 or 기존채팅방 id 요청
-        recipientNick: lostPost?.data.author,
+        // recipientNick: lostPost?.data.author,
+        recipientNick: "test1",
       })
       .then((res) => {
         console.log(res);

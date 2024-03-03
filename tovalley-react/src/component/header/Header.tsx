@@ -81,6 +81,7 @@ const Header = () => {
   };
 
   const handleLogout = () => {
+    dispatch(view(false));
     axiosInstance
       .delete(`/api/logout`)
       .then((res) => {
@@ -131,7 +132,10 @@ const Header = () => {
               </div>
               <span
                 className={styles.myPage}
-                onClick={() => navigation("/mypage")}
+                onClick={() => {
+                  dispatch(view(false));
+                  navigation("/mypage");
+                }}
               >
                 마이페이지
               </span>
@@ -170,6 +174,7 @@ const Header = () => {
         <div className={styles.nav}>
           <span
             onClick={() => {
+              dispatch(view(false));
               navigation("/valleylist");
             }}
             className={
@@ -182,6 +187,7 @@ const Header = () => {
           </span>
           <span
             onClick={() => {
+              dispatch(view(false));
               navigation("/lost-item");
             }}
             className={
@@ -194,6 +200,7 @@ const Header = () => {
           </span>
           <span
             onClick={() => {
+              dispatch(view(false));
               navigation("/safety-guide");
             }}
             className={
