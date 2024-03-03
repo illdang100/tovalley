@@ -2,6 +2,7 @@ package kr.ac.kumoh.illdang100.tovalley.web.api;
 
 import static kr.ac.kumoh.illdang100.tovalley.util.TokenUtil.createTestAccessToken;
 import static org.assertj.core.api.Assertions.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -10,8 +11,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.servlet.http.Cookie;
-import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatNotification;
-import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatNotificationRepository;
+import kr.ac.kumoh.illdang100.tovalley.domain.notification.ChatNotification;
+import kr.ac.kumoh.illdang100.tovalley.domain.notification.ChatNotificationRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberRepository;
 import kr.ac.kumoh.illdang100.tovalley.dummy.DummyObject;
@@ -73,7 +74,6 @@ class NotificationApiControllerTest extends DummyObject {
 
         // given
 
-
         // when
         ResultActions resultActions = mvc.perform(get("/api/auth/notifications")
                 .cookie(new Cookie(JwtVO.ACCESS_TOKEN, accessToken))
@@ -82,8 +82,11 @@ class NotificationApiControllerTest extends DummyObject {
         // then
         resultActions.andExpect(status().isOk())
                 .andExpect(jsonPath("$.msg").value("메시지 알림 목록 조회에 성공하였습니다"))
-                .andExpect(jsonPath("$.data[0].hasRead").value(false))
-                .andExpect(jsonPath("$.data[5].hasRead").value(true))
+                .andExpect(jsonPath("$.data.content.size()").value(9))
+                .andExpect(jsonPath("$.data.content[0].hasRead").value(false))
+                .andExpect(jsonPath("$.data.content[4].hasRead").value(false))
+                .andExpect(jsonPath("$.data.content[6].hasRead").value(true))
+                .andExpect(jsonPath("$.data.content[8].hasRead").value(true))
                 .andDo(MockMvcResultHandlers.print());
 
         List<ChatNotification> all = chatNotificationRepository.findAll();
@@ -97,26 +100,69 @@ class NotificationApiControllerTest extends DummyObject {
         assertThat(all.get(7).getHasRead()).isTrue();
         assertThat(all.get(8).getHasRead()).isTrue();
         assertThat(all.get(9).getHasRead()).isTrue();
+        assertThat(all.get(10).getHasRead()).isFalse();
+    }
+
+    @Test
+    public void deleteNotifications_test() throws Exception {
+
+        // given
+
+        // when
+        ResultActions resultActions = mvc.perform(delete("/api/auth/notifications")
+                .cookie(new Cookie(JwtVO.ACCESS_TOKEN, accessToken))
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // then
+        resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.msg").value("채팅 메시지 알림 삭제에 성공하였습니다"))
+                .andDo(MockMvcResultHandlers.print());
+
+        List<ChatNotification> all = chatNotificationRepository.findAll();
+        assertThat(all.size()).isEqualTo(2);
+    }
+
+    @Test
+    public void deleteSingleNotification_test() throws Exception {
+
+        // given
+
+        // when
+        ResultActions resultActions = mvc.perform(delete("/api/auth/notifications/1")
+                .cookie(new Cookie(JwtVO.ACCESS_TOKEN, accessToken))
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // then
+        resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.msg").value("채팅 메시지 알림 삭제에 성공하였습니다"))
+                .andDo(MockMvcResultHandlers.print());
+
+        List<ChatNotification> all = chatNotificationRepository.findAll();
+        assertThat(all.size()).isEqualTo(10);
     }
 
     private void dataSetting() {
         Member sender = newMember("username1", "nickname1");
         Member recipient = newMember(username, nickname);
+        Member recipient2 = newMember("username2222", "nickname2222");
         memberRepository.save(sender);
         memberRepository.save(recipient);
+        memberRepository.save(recipient2);
 
         Long recipientId = recipient.getId();
+        Long recipientId2 = recipient2.getId();
         chatNotificationRepository.save(newChatNotification(sender, recipientId, 1L, "test", true));
         chatNotificationRepository.save(newChatNotification(sender, recipientId, 1L, "test", true));
         chatNotificationRepository.save(newChatNotification(sender, recipientId, 1L, "test", true));
         chatNotificationRepository.save(newChatNotification(sender, recipientId, 1L, "test", true));
-        chatNotificationRepository.save(newChatNotification(sender, recipientId, 1L, "test", true));
+        chatNotificationRepository.save(newChatNotification(sender, recipientId2, 1L, "test", true));
 
         chatNotificationRepository.save(newChatNotification(sender, recipientId, 1L, "test", false));
         chatNotificationRepository.save(newChatNotification(sender, recipientId, 1L, "test", false));
         chatNotificationRepository.save(newChatNotification(sender, recipientId, 1L, "test", false));
         chatNotificationRepository.save(newChatNotification(sender, recipientId, 1L, "test", false));
         chatNotificationRepository.save(newChatNotification(sender, recipientId, 1L, "test", false));
+        chatNotificationRepository.save(newChatNotification(sender, recipientId2, 1L, "test22", false));
 
         em.clear();
     }

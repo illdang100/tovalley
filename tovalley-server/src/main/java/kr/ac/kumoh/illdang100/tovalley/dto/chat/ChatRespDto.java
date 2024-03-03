@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;
 import java.util.List;
 import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatMessage;
+import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatRoom;
+import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.util.ChatUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -42,6 +44,14 @@ public class ChatRespDto {
             this.otherUserProfileImage = otherUserProfileImage;
             this.otherUserNick = otherUserNick;
             this.createdChatRoomDate = createdChatRoomDate;
+        }
+
+        public ChatRoomRespDto(ChatRoom chatRoom, Member otherMember) {
+            this.chatRoomId = chatRoom.getId();
+            this.otherUserProfileImage = otherMember.getImageFile() != null ? otherMember.getImageFile().getStoreFileUrl() : null;
+            this.otherUserNick = otherMember.getNickname();
+            this.chatRoomTitle = otherUserNick.concat(" 와(과)의 채팅방입니다.");
+            this.createdChatRoomDate = chatRoom.getCreatedDate();
         }
 
         public void changeLastMessage(String lastMessageContent, LocalDateTime lastMessageTime) {

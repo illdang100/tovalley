@@ -163,10 +163,17 @@ const WriteReview: FC<Props> = ({ setWriteReviewView, valleyInfo }) => {
         <div className={styles.writeDetail}>
           <div className={styles.valleyInfo}>
             <img
+              // src={
+              //   valleyInfo.img === null
+              //     ? process.env.PUBLIC_URL + "/img/default-image.png"
+              //     : valleyInfo.img
+              // }
               src={
-                valleyInfo.img === null
-                  ? process.env.PUBLIC_URL + "/img/default-image.png"
-                  : valleyInfo.img
+                valleyInfo.id === 48
+                  ? process.env.PUBLIC_URL + "/img/dummy/계곡이미지5.jpg"
+                  : valleyInfo.id === 44
+                  ? process.env.PUBLIC_URL + "/img/dummy/계곡이미지6.jpg"
+                  : process.env.PUBLIC_URL + "/img/dummy/계곡이미지7.jpg"
               }
               alt="계곡 이미지"
               width="120px"

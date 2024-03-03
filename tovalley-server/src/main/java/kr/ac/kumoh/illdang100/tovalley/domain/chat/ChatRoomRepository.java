@@ -1,5 +1,6 @@
 package kr.ac.kumoh.illdang100.tovalley.domain.chat;
 
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -16,4 +17,7 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long>, ChatR
 
     @Query("SELECT cr FROM ChatRoom cr JOIN FETCH cr.sender s JOIN FETCH cr.recipient r WHERE cr.id = :id")
     Optional<ChatRoom> findByIdWithMembers(@Param("id") Long id);
+
+    @Query("SELECT cr FROM ChatRoom cr JOIN FETCH cr.sender s JOIN FETCH cr.recipient r WHERE s.id =:memberId OR r.id =:memberId")
+    List<ChatRoom> findWithMembersByMemberId(@Param("memberId") Long memberId);
 }

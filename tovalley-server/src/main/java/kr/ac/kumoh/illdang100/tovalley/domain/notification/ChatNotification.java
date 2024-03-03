@@ -1,4 +1,4 @@
-package kr.ac.kumoh.illdang100.tovalley.domain.chat;
+package kr.ac.kumoh.illdang100.tovalley.domain.notification;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,7 +26,7 @@ public class ChatNotification extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "chat_notification_id", nullable = false)
-    private String id;
+    private Long id;
 
     // 상대방의 정보가 변경되면 반영해서 보여줄 것이므로 연관 관계를 맺도록 한다.
     @ManyToOne(fetch = FetchType.LAZY)

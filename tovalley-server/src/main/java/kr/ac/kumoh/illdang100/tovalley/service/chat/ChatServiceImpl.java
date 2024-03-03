@@ -1,6 +1,5 @@
 package kr.ac.kumoh.illdang100.tovalley.service.chat;
 
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Comparator;
@@ -9,13 +8,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatMessage;
 import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatMessageRepository;
-import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatNotification;
-import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatNotificationRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatRoom;
 import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatRoomRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.chat.kafka.Message;
-import kr.ac.kumoh.illdang100.tovalley.domain.chat.kafka.Notification;
-import kr.ac.kumoh.illdang100.tovalley.domain.chat.kafka.NotificationType;
 import kr.ac.kumoh.illdang100.tovalley.domain.chat.redis.ChatRoomParticipant;
 import kr.ac.kumoh.illdang100.tovalley.domain.chat.redis.ChatRoomParticipantRedisRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
@@ -54,7 +49,6 @@ public class ChatServiceImpl implements ChatService {
     private final MemberRepository memberRepository;
     private final KafkaSender kafkaSender;
     private final ChatRoomParticipantRedisRepository chatRoomParticipantRedisRepository;
-    private final ChatNotificationRepository chatNotificationRepository;
     private final MongoTemplate mongoTemplate;
     private final NotificationService notificationService;
 
@@ -123,21 +117,33 @@ public class ChatServiceImpl implements ChatService {
      * 채팅방 목록을 Slice 형태로 전달
      *
      * @param memberId 채팅방 목록을 요청하는 사용자 pk
-     * @param pageable 페이징 상세 정보
      * @return 채팅방 목록
      */
     @Override
-    public Slice<ChatRoomRespDto> getChatRooms(Long memberId, Pageable pageable) {
+    public List<ChatRoomRespDto> getChatRooms(Long memberId) {
 
-        Slice<ChatRoomRespDto> sliceChatRoomsByMemberId
-                = chatRoomRepository.findSliceChatRoomsByMemberId(memberId, pageable);
+        List<ChatRoom> chatRooms = chatRoomRepository.findWithMembersByMemberId(memberId);
 
-        List<ChatRoomRespDto> processedChatRooms = processChatRooms(sliceChatRoomsByMemberId.getContent(), memberId);
+        List<ChatRoomRespDto> chatRoomRespDtos = chatRooms.stream()
+                .map(chatRoom -> createChatRoomRespDto(chatRoom, memberId))
+                .collect(Collectors.toList());
+
+        List<ChatRoomRespDto> processedChatRooms = processChatRooms(chatRoomRespDtos, memberId);
 
         // 마지막 메시지 시간으로 내림차순 정렬
-        List<ChatRoomRespDto> sortedChatRooms = sortChatRoomsByLastMessageTime(processedChatRooms);
+        return sortChatRoomsByLastMessageTime(processedChatRooms);
+    }
 
-        return new SliceImpl<>(sortedChatRooms, pageable, sliceChatRoomsByMemberId.hasNext());
+    private ChatRoomRespDto createChatRoomRespDto(ChatRoom chatRoom, Long memberId) {
+        Member otherMember = getOtherMember(chatRoom, memberId);
+        return new ChatRoomRespDto(chatRoom, otherMember);
+    }
+
+    private Member getOtherMember(ChatRoom chatRoom, Long memberId) {
+        if (chatRoom.getSender().getId().equals(memberId)) {
+            return chatRoom.getRecipient();
+        }
+        return chatRoom.getSender();
     }
 
     private List<ChatRoomRespDto> processChatRooms(List<ChatRoomRespDto> chatRooms, Long memberId) {

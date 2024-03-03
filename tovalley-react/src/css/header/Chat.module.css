@@ -1,0 +1,132 @@
+.chatContainer {
+  z-index: 5;
+  position: fixed;
+  top: 124px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.chatWrap {
+  width: 420px;
+  box-sizing: border-box;
+  height: 100vh;
+  background-color: #ffffff;
+  position: absolute;
+  right: -420px;
+  padding: 1.7em 0;
+  box-shadow: -8px 0 10px rgba(213, 213, 213, 0.185);
+}
+
+/* @keyframes slide {
+  from {
+    transform: translateX(420px);
+  }
+  to {
+    transform: translateX(0);
+  }
+} */
+
+.startSlideAnimation {
+  transform: translateX(-420px);
+  transition: all 0.5s;
+  /* animation: slide 0.5s ease-in-out 0s 1 normal forwards; */
+  /* animation: name duration timing-function delay iteration-count direction fill-mode; */
+}
+
+.endSlideAnimation {
+  transform: translateX(420px);
+  transition: all 1s;
+  /* animation: slide 0.5s ease-in-out 0s 1 reverse forwards; */
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.2em;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.header span {
+  color: #cecece;
+  font-size: 1.4rem;
+  cursor: pointer;
+}
+
+.chatWrap h4 {
+  color: #66a5fc;
+  padding: 0 1.2em;
+  margin: 2em 0 0.6em;
+}
+
+.chatList {
+  border-top: 1px solid #ececec;
+}
+
+.chatItem {
+  border-bottom: 1px solid #ececec;
+  padding: 1em 1.2em;
+  cursor: pointer;
+}
+
+.chatTitle {
+  display: flex;
+  justify-content: space-between;
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+}
+
+.profileImg {
+  width: 26px;
+  height: 26px;
+  border-radius: 5px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  margin-right: 0.5em;
+}
+
+.profileImg img {
+  object-fit: cover;
+}
+
+.nickName {
+  font-weight: 800;
+}
+
+.chatTitle > span {
+  color: #bebebe;
+  font-size: 0.9rem;
+}
+
+.chatContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.8em;
+}
+
+.content {
+  color: #8e8e8e;
+}
+
+.count {
+  background-color: #fe4f4f;
+  width: 18px;
+  height: 18px;
+  border-radius: 100%;
+  color: white;
+  font-weight: 500;
+  font-size: 0.7rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

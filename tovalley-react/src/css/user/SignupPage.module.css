@@ -1,7 +1,7 @@
 /* 헤더와 푸터 사이 바디 */
 .body {
   margin: auto;
-  margin-top: 4em;
+  margin-top: 12em;
   width: 70%;
   max-width: 25em;
 }

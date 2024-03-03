@@ -1,0 +1,178 @@
+.body {
+  margin: 180px 0;
+  padding: 0 10%;
+}
+
+.writeContainer {
+  border: 2px solid #cccccc;
+  border-radius: 10px;
+}
+
+.contentWrap {
+  display: flex;
+  border-bottom: 1px solid #cccccc;
+  padding: 0.7em 1.5em;
+}
+
+.category {
+  display: flex;
+  align-items: center;
+  margin-right: 3em;
+}
+
+.category h4 {
+  margin: 0;
+  margin-right: 1.4em;
+}
+
+.categoryBtn {
+  background-color: #f2f2f2;
+  padding: 0.3em 1.3em;
+  border-radius: 30px;
+  margin-right: 0.5em;
+  cursor: pointer;
+}
+
+.clickCategory {
+  background-color: #66a5fc;
+  color: white;
+  padding: 0.3em 1.3em;
+  border-radius: 30px;
+  margin-right: 0.5em;
+  cursor: pointer;
+}
+
+.contentWrap input {
+  border: none;
+  width: 100%;
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+
+.contentWrap input::placeholder {
+  color: #898989;
+  font-size: 1.2rem;
+}
+
+.contentWrap input:focus,
+.contentWrap textarea:focus {
+  outline: none;
+}
+
+.contentWrap textarea {
+  font-size: 1rem;
+  width: 100%;
+  min-height: 300px;
+  resize: none;
+  border: none;
+}
+
+.contentWrap textarea::placeholder {
+  color: #888888;
+}
+
+.addImgIcon {
+  color: #888888;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.3em 1em;
+}
+
+.addImg {
+  border: 1px solid #cccccc;
+  width: 170px;
+  height: 130px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #b1b1b1;
+  font-size: 2rem;
+  cursor: pointer;
+}
+
+.imgInput[type="file"] {
+  display: none;
+}
+
+.previewImg {
+  height: 200px;
+  display: flex;
+  align-items: center;
+  overflow-x: auto;
+  white-space: nowrap;
+  padding: 0 1.5em;
+}
+
+.imageContainer {
+  display: inline-block;
+  position: relative;
+  margin-right: 1.5em;
+  border: 1px solid #b5b5b5;
+  border-radius: 10px;
+}
+
+.imageContainer > div {
+  width: 170px;
+  height: 130px;
+  overflow: hidden;
+}
+
+.imageContainer > div > img {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 9px;
+}
+
+.imageContainer > span {
+  position: absolute;
+  cursor: pointer;
+  top: -15px;
+  right: -15px;
+}
+
+.uploadBtn {
+  display: flex;
+  justify-content: right;
+  align-items: center;
+  margin-top: 1em;
+}
+
+.uploadBtn button {
+  border: none;
+  background-color: #66a5fc;
+  color: white;
+  padding: 0.7em 1.5em;
+  font-size: 1rem;
+  font-weight: 700;
+  border-radius: 30px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  margin-right: 0.8em;
+}
+
+.uploadBtn span {
+  margin-right: 0.5em;
+}
+
+.cancleBtn {
+  background-color: #f1f1f1;
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 0.7em 1.5em;
+  border-radius: 30px;
+  cursor: pointer;
+}
+
+.valleySeleted {
+  border: 1px solid #66a5fc;
+  padding: 0.3em 1.3em;
+  border-radius: 30px;
+  margin-left: 0.5em;
+  cursor: pointer;
+  color: #66a5fc;
+  font-weight: 600;
+}

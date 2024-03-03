@@ -1,0 +1,56 @@
+.lostPostWrap {
+  box-shadow: 0 2px 8px rgb(219, 219, 219);
+  border-radius: 10px;
+  width: calc(100% / 2);
+  padding: 0.5em 1.5em 0 1.5em;
+  min-height: 400px;
+  margin-bottom: 5em;
+}
+
+.lostPostHeader {
+  color: #66a5fc;
+  font-size: 1.4rem;
+  margin: 0;
+  padding: 0.8em 0 1em 0.5em;
+}
+
+.lostPostContents {
+  border-top: 1px solid #cccccc;
+  padding: 1em 0.5em 1.5em 0.5em;
+}
+
+.contentsTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0.5em 0;
+}
+
+.contentsTop > span {
+  color: #bebebe;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+}
+
+.categoryFind {
+  background-color: #c8dafc;
+  color: #215cce;
+  font-weight: bold;
+  padding: 0.3em 0.8em;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  margin-right: 1em;
+}
+
+.title h4 {
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.lostPostContents > p {
+  color: #898989;
+  margin: 0;
+}

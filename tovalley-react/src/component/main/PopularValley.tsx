@@ -54,7 +54,7 @@ const PopularValley: FC<Props> = ({ place, setPopularValley }) => {
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setNum((num) => num + 1);
+      //setNum((num) => num + 1);
       setCarouselTransition("transform 500ms ease-in-out");
     }, 2500);
 

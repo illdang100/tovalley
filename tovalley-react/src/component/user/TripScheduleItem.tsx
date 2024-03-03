@@ -81,12 +81,19 @@ const TripScheduleItem: FC<Props> = ({
         <div>
           <div className={styles.imageContainer}>
             <img
+              // src={
+              //   schedule.waterPlaceImg === null
+              //     ? process.env.PUBLIC_URL + "/img/default-image.png"
+              //     : schedule.waterPlaceImg
+              // }
+              // alt="계곡 사진"
               src={
-                schedule.waterPlaceImg === null
-                  ? process.env.PUBLIC_URL + "/img/default-image.png"
-                  : schedule.waterPlaceImg
+                schedule.tripScheduleId === 48
+                  ? process.env.PUBLIC_URL + "/img/dummy/계곡이미지5.jpg"
+                  : schedule.tripScheduleId === 44
+                  ? process.env.PUBLIC_URL + "/img/dummy/계곡이미지6.jpg"
+                  : process.env.PUBLIC_URL + "/img/dummy/계곡이미지7.jpg"
               }
-              alt="계곡 사진"
             />
           </div>
           <div

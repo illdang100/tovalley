@@ -6,7 +6,7 @@
 
 /* 헤더와 푸터 사이 바디 */
 .body {
-  margin-top: 5em;
+  margin-top: 12em;
   display: flex;
   flex-direction: column;
   align-items: center;

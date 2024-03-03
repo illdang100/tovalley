@@ -3,8 +3,8 @@ package kr.ac.kumoh.illdang100.tovalley.service.notification;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
-import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatNotification;
-import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatNotificationRepository;
+import kr.ac.kumoh.illdang100.tovalley.domain.notification.ChatNotification;
+import kr.ac.kumoh.illdang100.tovalley.domain.notification.ChatNotificationRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatRoom;
 import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatRoomRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.chat.kafka.Message;
@@ -12,10 +12,14 @@ import kr.ac.kumoh.illdang100.tovalley.domain.chat.kafka.Notification;
 import kr.ac.kumoh.illdang100.tovalley.domain.chat.kafka.NotificationType;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.dto.notification.NotificationRespDto.ChatNotificationRespDto;
+import kr.ac.kumoh.illdang100.tovalley.handler.ex.CustomApiException;
 import kr.ac.kumoh.illdang100.tovalley.service.chat.KafkaSender;
 import kr.ac.kumoh.illdang100.tovalley.util.KafkaVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -65,30 +69,26 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     @Transactional
-    public List<ChatNotificationRespDto> getChatNotificationsByMemberId(Long memberId) {
-        List<ChatNotification> chatNotifications = chatNotificationRepository.findWithSenderByRecipientIdOrderByCreatedDateDesc(
-                memberId);
+    public Slice<ChatNotificationRespDto> getChatNotificationsByMemberId(Long memberId, Pageable pageable) {
+        Slice<ChatNotification> sliceChatNotificationsByMemberId
+                = chatNotificationRepository.findSliceChatNotificationsByMemberId(memberId, pageable);
 
-        List<ChatNotificationRespDto> result = convertToResponseDto(chatNotifications);
+        List<ChatNotification> notifications = sliceChatNotificationsByMemberId.getContent();
 
-        for (ChatNotification chatNotification : chatNotifications) {
-            if (!chatNotification.getHasRead()) {
-                chatNotification.changeHasReadToTrue();
-            }
-        }
+        List<ChatNotificationRespDto> notificationDtos = mapToDto(notifications);
 
-        updateHasReadToTrue(chatNotifications);
+        markNotificationsAsRead(notifications);
 
-        return result;
+        return new SliceImpl<>(notificationDtos, pageable, sliceChatNotificationsByMemberId.hasNext());
     }
 
-    private List<ChatNotificationRespDto> convertToResponseDto(List<ChatNotification> chatNotifications) {
+    private List<ChatNotificationRespDto> mapToDto(List<ChatNotification> chatNotifications) {
         return chatNotifications.stream()
                 .map(ChatNotificationRespDto::new)
                 .collect(Collectors.toList());
     }
 
-    private void updateHasReadToTrue(List<ChatNotification> chatNotifications) {
+    private void markNotificationsAsRead(List<ChatNotification> chatNotifications) {
         for (ChatNotification chatNotification : chatNotifications) {
             if (!chatNotification.getHasRead()) {
                 chatNotification.changeHasReadToTrue();
@@ -97,7 +97,24 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public void deleteChatNotifications(List<String> chatNotifications) {
+    @Transactional
+    public void deleteSingleChatNotification(Long memberId, Long chatNotificationId) {
+        int deletedCount = chatNotificationRepository.deleteByIdAndRecipientId(chatNotificationId, memberId);
 
+        if (deletedCount == 0) {
+            throw new CustomApiException("해당 알림을 삭제할 권한이 없습니다");
+        }
+    }
+
+    @Override
+    @Transactional
+    public void deleteAllNotificationsOfMember(Long memberId) {
+        chatNotificationRepository.deleteByRecipientId(memberId);
+    }
+
+    @Override
+    @Transactional
+    public void deleteAllNotificationsInChatRoomByMember(Long memberId, Long chatRoomId) {
+        chatNotificationRepository.deleteByRecipientIdAndChatRoomId(memberId, chatRoomId);
     }
 }
