@@ -9,7 +9,7 @@ public interface NotificationService {
 
     void sendNotification(Message message, Long senderId, Long chatRoomId);
 
-    Slice<ChatNotificationRespDto> getChatNotificationsByMemberId(Long memberId, Pageable pageable);
+    Slice<ChatNotificationRespDto> getChatNotificationsByMemberId(Long memberId, Long cursorId, Pageable pageable);
 
     void deleteSingleChatNotification(Long memberId, Long chatNotificationId);
 
