@@ -48,9 +48,9 @@ class LostFoundBoardServiceImplTest extends DummyObject {
         LostFoundBoard lostFoundBoard = newMockLostFoundBoard(1L, "지갑 찾아요", "금오계곡에서 지갑 잃어버림 검정색 지갑", member, false, LostFoundEnum.LOST, waterPlace);
 
         List<Comment> comments = new ArrayList<>();
-        comments.add(newMockComment(1L, 1L));
-        comments.add(newMockComment(2L, 1L));
-        comments.add(newMockComment(3L, 1L));
+        comments.add(newMockComment(1L, 1L, member));
+        comments.add(newMockComment(2L, 1L, member));
+        comments.add(newMockComment(3L, 1L, member));
 
         List<String> postImages = new ArrayList<>();
         postImages.add("https://imageUrl1.com");
@@ -59,7 +59,7 @@ class LostFoundBoardServiceImplTest extends DummyObject {
 
         // stub
         when(lostFoundBoardRepository.findByIdWithMemberAndWaterPlace(anyLong())).thenReturn(Optional.of(lostFoundBoard));
-        when(commentRepository.findCommentByLostFoundBoardId(anyLong())).thenReturn(comments);
+        when(commentRepository.findCommentByLostFoundBoardIdFetchJoinMember(anyLong())).thenReturn(comments);
         when(lostFoundBoardImageRepository.findImageByLostFoundBoardId(anyLong())).thenReturn(postImages);
         when(commentRepository.countByLostFoundBoardId(anyLong())).thenReturn((long)comments.size());
 

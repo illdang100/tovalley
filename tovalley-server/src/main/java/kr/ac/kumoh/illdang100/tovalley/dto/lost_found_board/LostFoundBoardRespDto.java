@@ -14,6 +14,7 @@ import java.util.List;
 public class LostFoundBoardRespDto {
 
     @Data
+    @Builder
     @AllArgsConstructor
     public static class LostFoundBoardListRespDto {
         private Long id;
@@ -72,6 +73,7 @@ public class LostFoundBoardRespDto {
         private String commentContent;
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
         private LocalDateTime commentCreateAt;
-        private boolean isMyComment;
+        private boolean commentByUser;
+        private String commentAuthorProfile;
     }
 }

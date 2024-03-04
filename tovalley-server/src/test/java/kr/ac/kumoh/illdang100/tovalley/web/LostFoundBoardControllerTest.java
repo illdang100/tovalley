@@ -129,8 +129,8 @@ class LostFoundBoardControllerTest extends DummyObject {
         lostFoundBoardRepository.save(newMockLostFoundBoard(3L, "폰 찾았어요", "아이폰14", member, false, LostFoundEnum.FOUND, waterPlace2));
         lostFoundBoardRepository.save(newMockLostFoundBoard(4L, "폰 잃어버리신 분", "갤럭시S20", member, true, LostFoundEnum.FOUND, waterPlace2));
 
-        commentRepository.save(newMockComment(1L, 1L));
-        commentRepository.save(newMockComment(2L, 1L));
+        commentRepository.save(newMockComment(1L, 1L, member));
+        commentRepository.save(newMockComment(2L, 1L, member));
 
         em.clear();
     }

@@ -21,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -176,13 +175,18 @@ public class PageServiceImpl implements PageService{
     }
 
     private List<CommentDetailRespDto> findCommentDetails(long lostFoundBoardId, String memberEmail) {
-        return commentRepository.findCommentByLostFoundBoardId(lostFoundBoardId)
+        return commentRepository.findCommentByLostFoundBoardIdFetchJoinMember(lostFoundBoardId)
                 .stream()
-                .map(c -> new CommentDetailRespDto(c.getId(), c.getAuthorEmail(), c.getContent(), c.getCreatedDate(), memberEmail != null && isMyComment(memberEmail, c.getAuthorEmail())))
+                .map(c -> {
+                    Member member = c.getMember();
+                    boolean isMyComment = memberEmail != null && isMyCommentByMemberEmail(memberEmail, member);
+                    String storeFileUrl = member.getImageFile() != null ? member.getImageFile().getStoreFileUrl() : null;
+                    return new CommentDetailRespDto(c.getId(), member.getEmail(), c.getContent(), c.getCreatedDate(), isMyComment, storeFileUrl);
+                })
                 .collect(Collectors.toList());
     }
 
-    private boolean isMyComment(String memberEmail, String authorEmail) {
-        return (memberEmail.equals(authorEmail));
+    private boolean isMyCommentByMemberEmail(String memberEmail, Member member) {
+        return (memberEmail.equals(member.getEmail()));
     }
 }
