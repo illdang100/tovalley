@@ -15,7 +15,8 @@ import ConfirmModal from "../component/common/ConfirmModal";
 
 const LostItemUpdatePage = () => {
   const { category, id } = useParams();
-  const { uploadImg, imgFiles, saveImgFile, handleDeleteImage } = useSaveImg();
+  const { uploadImg, setUploadImg, imgFiles, saveImgFile, handleDeleteImage } =
+    useSaveImg();
   const [currentCategory, setCurrentCategory] = useState(
     category === "LOST" ? "찾아요" : "찾았어요"
   );
@@ -28,6 +29,7 @@ const LostItemUpdatePage = () => {
   });
   const [modalView, setModalView] = useState(false);
   const [selectedPlace, setSelectedPlace] = useState<PlaceName[]>([]);
+  const [deleteImg, setDeleteImg] = useState<string[]>([]);
   const [confirm, setConfirm] = useState({ view: false, content: "" });
   const [alert, setAlert] = useState({ view: false, content: "" });
   const navigation = useNavigate();
@@ -36,34 +38,40 @@ const LostItemUpdatePage = () => {
   };
 
   useEffect(() => {
-    setSelectedPlace([
-      {
-        waterPlaceId: -1,
-        waterPlaceName: "금오계곡",
-        address: "경북 구미시 금오계곡",
-      },
-    ]);
-    setWrite({
-      title: "금오계곡",
-      content: "금오계곡",
-    });
-    // axiosInstance
-    //   .get(`/api/lostItem/${id}`)
-    //   .then((res) => {
-    //     console.log(res);
-    //     setSelectedPlace([
-    //       {
-    //         waterPlaceId: -1,
-    //         waterPlaceName: res.data.data.waterPlaceName,
-    //         address: res.data.data.waterPlaceAddress,
-    //       },
-    //     ]);
-    //     setWrite({
-    //       title: res.data.data.title,
-    //       content: res.data.data.content,
-    //     });
-    //   })
-    //   .catch((err) => console.log(err));
+    // setSelectedPlace([
+    //   {
+    //     waterPlaceId: -1,
+    //     waterPlaceName: "금오계곡",
+    //     address: "경북 구미시 금오계곡",
+    //   },
+    // ]);
+    // setWrite({
+    //   title: "금오계곡",
+    //   content: "금오계곡",
+    // });
+    // setUploadImg([
+    //   "/img/dummy/계곡이미지5.jpg",
+    //   "/img/dummy/계곡이미지5.jpg",
+    //   "/img/dummy/계곡이미지6.jpg",
+    // ]);
+    axiosInstance
+      .get(`/api/lostItem/${id}`)
+      .then((res) => {
+        console.log(res);
+        setSelectedPlace([
+          {
+            waterPlaceId: -1,
+            waterPlaceName: res.data.data.waterPlaceName,
+            address: res.data.data.waterPlaceAddress,
+          },
+        ]);
+        setWrite({
+          title: res.data.data.title,
+          content: res.data.data.content,
+        });
+        setUploadImg(res.data.data.postImages);
+      })
+      .catch((err) => console.log(err));
   }, [id]);
 
   const closeModal = () => {
@@ -87,7 +95,7 @@ const LostItemUpdatePage = () => {
     ) {
       setAlert({ view: true, content: "항목을 모두 입력해주세요." });
     } else {
-      formData.append("currentCategory", currentCategory);
+      formData.append("category", currentCategory);
       formData.append("valleyId", `${selectedPlace[0].waterPlaceId}`);
       formData.append("title", write.title);
       formData.append("content", write.content);
@@ -96,9 +104,14 @@ const LostItemUpdatePage = () => {
           formData.append("postImage", imgFiles[i]);
         }
       }
+      if (deleteImg.length !== 0) {
+        for (let i = 0; i < deleteImg.length; i++) {
+          formData.append("deleteImage", deleteImg[i]);
+        }
+      }
 
       axiosInstance
-        .post("/api/auth/lostItem", formData)
+        .patch("/api/auth/lostItem", formData)
         .then((res) => {
           console.log(res);
           res.status === 200 &&
@@ -192,7 +205,13 @@ const LostItemUpdatePage = () => {
                   <div>
                     <img src={`${image}`} alt={`${image}-${id}`} />
                   </div>
-                  <span onClick={() => handleDeleteImage(id)}>
+                  <span
+                    onClick={() => {
+                      handleDeleteImage(id);
+                      const deleteUrlList = deleteImg.concat([`${image}`]);
+                      setDeleteImg(deleteUrlList);
+                    }}
+                  >
                     <IoIosCloseCircle color="#F6483D" size="30px" />
                   </span>
                 </div>

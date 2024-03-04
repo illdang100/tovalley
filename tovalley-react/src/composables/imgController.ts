@@ -40,6 +40,7 @@ export const useSaveImg = () => {
 
   return {
     uploadImg,
+    setUploadImg,
     imgFiles,
     saveImgFile,
     handleDeleteImage,

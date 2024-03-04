@@ -53,7 +53,7 @@ const LostItemWritePage = () => {
     ) {
       setAlert({ view: true, content: "항목을 모두 입력해주세요." });
     } else {
-      formData.append("currentCategory", currentCategory);
+      formData.append("category", currentCategory);
       formData.append("valleyId", `${selectedPlace[0].waterPlaceId}`);
       formData.append("title", write.title);
       formData.append("content", write.content);
@@ -64,7 +64,12 @@ const LostItemWritePage = () => {
       }
 
       axiosInstance
-        .post("/api/auth/lostItem", formData)
+        .post("/api/auth/lostItem", {
+          category: currentCategory,
+          valleyId: selectedPlace[0].waterPlaceId,
+          title: write.title,
+          content: write.content,
+        })
         .then((res) => {
           console.log(res);
           res.status === 200 &&

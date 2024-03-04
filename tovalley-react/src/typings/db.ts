@@ -75,9 +75,69 @@ export interface ChatRoomList {
 export interface ChatRoomItem {
   chatRoomId: number;
   chatRoomTitle: string;
-  otherUserProfileImage: string;
+  otherUserProfileImage: string | null;
   otherUserNick: string;
   createdChatRoomDate: string;
-  lastMessageContent: string;
-  lastMessageTime: string;
+  lastMessageContent: string | null;
+  unReadMessageCount: number;
+  lastMessageTime: string | null;
+}
+
+export interface ChatMessage {
+  chatMessageId: string;
+  senderId: number;
+  myMsg: boolean;
+  content: string;
+  createdAt: string;
+  readCount: number;
+}
+
+export interface MessageType {
+  chatRoomId: number;
+  senderId: number;
+  content: string;
+  createdAt: string;
+  readCount: number;
+}
+
+export interface MessageListType {
+  data: {
+    memberId: number;
+    chatRoomId: number;
+    chatMessages: {
+      content: ChatMessage[];
+      pageable: {
+        sort: {
+          empty: boolean;
+          sorted: boolean;
+          unsorted: boolean;
+        };
+        offset: number;
+        pageNumber: number;
+        pageSize: number;
+        paged: boolean;
+        unpaged: boolean;
+      };
+      first: boolean;
+      last: boolean;
+      size: number;
+      number: number;
+      sort: {
+        empty: boolean;
+        sorted: boolean;
+        unsorted: boolean;
+      };
+      numberOfElements: number;
+      empty: boolean;
+    };
+  };
+}
+
+export interface NotificationType {
+  chatRoomId: number;
+  recipientId: string;
+  senderNick: number;
+  createdDate: string;
+  content: string;
+  notificationType: string;
 }

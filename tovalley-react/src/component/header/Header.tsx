@@ -7,28 +7,81 @@ import { RxHamburgerMenu } from "react-icons/rx";
 import { BiUser } from "react-icons/bi";
 import { FiLogOut } from "react-icons/fi";
 import { FaRegBell } from "react-icons/fa";
+import { IoChatbubblesSharp } from "react-icons/io5";
 import Chat from "./Chat";
+import SockJS from "sockjs-client";
+import { Client } from "@stomp/stompjs";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../store/store";
+import { newClient } from "../../store/client/clientSlice";
+import { view } from "../../store/chat/chatViewSlice";
+import { setNotification } from "../../store/notification/notificationSlice";
 
 const cookies = new Cookies();
+const localhost = process.env.REACT_APP_HOST;
 
 const Header = () => {
   const navigation = useNavigate();
   const location = useLocation();
   const [login, setLogin] = useState(false);
   const [navClick, setNavClick] = useState(false);
-  const [chatView, setChatView] = useState(false);
+  const dispatch = useDispatch();
+  const client = useSelector((state: RootState) => state.client.value);
+  const chatView = useSelector((state: RootState) => state.view.value);
 
   useEffect(() => {
     const loginStatus = cookies.get("ISLOGIN");
-
     if (loginStatus === true) {
       setLogin(true);
+      if (!client) connectSocket(); // 웹 소켓이 연결되어 있다면 연결 요청 x
     } else {
       setLogin(false);
     }
-  }, [login]);
+  }, [login, client]);
+
+  const connectSocket = () => {
+    const socket = new SockJS(`${localhost}/stomp/chat`); // 서버와 웹소켓 연결
+
+    const stompClient = new Client({
+      webSocketFactory: () => socket,
+      debug: (str) => {
+        console.log(str);
+      },
+      reconnectDelay: 5000,
+      // 웹 소켓이 끊어졌을 때 얼마나 빨리 연결을 시도할 지 설정.
+      // recconectDelay에 설정된 대기 시간이 지난 후 다시 연결을 자동으로 시도한다.
+    });
+
+    stompClient.activate();
+    // 웹소켓 연결 활성화
+    // 활성화가 성공하면 onConnect가 실행 됨
+
+    stompClient.onConnect = () => {
+      console.log("connected!!");
+      dispatch(newClient(stompClient));
+
+      const getMemberId = async () => {
+        try {
+          const res = await axiosInstance.get("/api/auth/members/me");
+          console.log(res);
+          stompClient.subscribe(
+            `/sub/notification/${res.data.data}`, // 알림 토픽 구독
+            (notify) => {
+              console.log(JSON.parse(notify.body));
+              //dispatch(setNotification([JSON.parse(notify.body)]));
+            }
+          );
+        } catch (err) {
+          console.log(err);
+        }
+      };
+
+      getMemberId();
+    };
+  };
 
   const handleLogout = () => {
+    dispatch(view(false));
     axiosInstance
       .delete(`/api/logout`)
       .then((res) => {
@@ -43,12 +96,9 @@ const Header = () => {
       .catch((err) => console.log(err));
   };
 
-  const outChatting = () => {
-    setChatView(false);
-  };
-
   return (
     <div className={styles.header}>
+      <Chat />
       <div className={styles.headerWrapper}>
         <div className={styles.headertop}>
           <div className={styles.hamburger}>
@@ -70,15 +120,28 @@ const Header = () => {
           </div>
           {login ? (
             <div className={styles.login}>
-              <div
-                className={styles.alarm}
-                onClick={() => setChatView(!chatView)}
-              >
+              <div className={styles.alarm}>
                 <FaRegBell />
                 <span>•</span>
               </div>
-              <span onClick={() => navigation("/mypage")}>마이페이지</span>
-              <span onClick={handleLogout}>로그아웃</span>
+              <div
+                className={styles.chatIcon}
+                onClick={() => dispatch(view(!chatView))}
+              >
+                <IoChatbubblesSharp />
+              </div>
+              <span
+                className={styles.myPage}
+                onClick={() => {
+                  dispatch(view(false));
+                  navigation("/mypage");
+                }}
+              >
+                마이페이지
+              </span>
+              <span className={styles.logout} onClick={handleLogout}>
+                로그아웃
+              </span>
               <span
                 className={styles.myPageIcon}
                 onClick={() => navigation("/mypage")}
@@ -111,6 +174,7 @@ const Header = () => {
         <div className={styles.nav}>
           <span
             onClick={() => {
+              dispatch(view(false));
               navigation("/valleylist");
             }}
             className={
@@ -123,6 +187,7 @@ const Header = () => {
           </span>
           <span
             onClick={() => {
+              dispatch(view(false));
               navigation("/lost-item");
             }}
             className={
@@ -135,6 +200,7 @@ const Header = () => {
           </span>
           <span
             onClick={() => {
+              dispatch(view(false));
               navigation("/safety-guide");
             }}
             className={
@@ -180,7 +246,6 @@ const Header = () => {
           안전 가이드
         </span>
       </div>
-      <Chat outChatting={outChatting} chatView={chatView} />
     </div>
   );
 };
