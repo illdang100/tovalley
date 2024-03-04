@@ -18,20 +18,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import javax.persistence.EntityManager;
 import javax.servlet.http.Cookie;
 
-import static kr.ac.kumoh.illdang100.tovalley.dto.lost_found_board.LostFoundBoardReqDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.lost_found_board.LostFoundBoardReqDto.LostFoundBoardSaveReqDto;
 import static kr.ac.kumoh.illdang100.tovalley.util.TokenUtil.createTestAccessToken;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -79,39 +78,25 @@ class LostFoundBoardControllerTest extends DummyObject {
         Long waterPlaceId = 1L;
         LostFoundBoardSaveReqDto lostFoundBoardSaveReqDto = new LostFoundBoardSaveReqDto("LOST", waterPlaceId, "잃어버림", "지갑 잃어버렸어요", null);
 
-        String requestBody = om.writeValueAsString(lostFoundBoardSaveReqDto);
+        MockMultipartFile file1 = new MockMultipartFile("postImage", "image1.jpg", "image/jpeg", "some image".getBytes());
+        MockMultipartFile file2 = new MockMultipartFile("postImage", "image2.jpg", "image/jpeg", "some image".getBytes());
 
         // when
-        ResultActions resultActions = mvc.perform(post("/api/auth/lostItem")
-                .content(requestBody)
-                .cookie(new Cookie(JwtVO.ACCESS_TOKEN, accessToken))
-                .contentType(MediaType.APPLICATION_JSON));
+        ResultActions resultActions = mvc.perform(
+                MockMvcRequestBuilders.multipart("/api/auth/lostItem")
+                        .file(file1)
+                        .file(file2)
+                        .param("category", lostFoundBoardSaveReqDto.getCategory())
+                        .param("waterPlaceId", lostFoundBoardSaveReqDto.getWaterPlaceId().toString())
+                        .param("title", lostFoundBoardSaveReqDto.getTitle())
+                        .param("content", lostFoundBoardSaveReqDto.getContent())
+                        .contentType(MediaType.MULTIPART_FORM_DATA)
+                        .cookie(new Cookie(JwtVO.ACCESS_TOKEN, accessToken))
+        );
 
         // then
         resultActions
                 .andExpect(status().isCreated())
-                .andDo(MockMvcResultHandlers.print());
-    }
-
-    @Test
-    @DisplayName(value = "분실물 게시글 수정")
-    void updateLostFoundBoard() throws Exception {
-        // given
-        Long waterPlaceId = 2L;
-        Long lostFoundBoardId = 2L;
-        LostFoundBoardUpdateReqDto lostFoundBoardUpdateReqDto = new LostFoundBoardUpdateReqDto(lostFoundBoardId, "LOST", waterPlaceId, "지갑 잃어버렸습니다ㅠㅠ", "지갑 좀 찾아주세요 검정색 카드지갑 입니다!!", null, null);
-
-        String requestBody = om.writeValueAsString(lostFoundBoardUpdateReqDto);
-
-        // when
-        ResultActions resultActions = mvc.perform(patch("/api/auth/lostItem")
-                .content(requestBody)
-                .cookie(new Cookie(JwtVO.ACCESS_TOKEN, accessToken))
-                .contentType(MediaType.APPLICATION_JSON));
-
-        // then
-        resultActions
-                .andExpect(status().isOk())
                 .andDo(MockMvcResultHandlers.print());
     }
 

@@ -58,7 +58,7 @@ class LostFoundBoardServiceImplTest extends DummyObject {
         postImages.add("https://imageUrl3.com");
 
         // stub
-        when(lostFoundBoardRepository.findByIdWithMemberAndWaterPlace(anyLong())).thenReturn(Optional.of(lostFoundBoard));
+        when(lostFoundBoardRepository.findByIdWithMember(anyLong())).thenReturn(Optional.of(lostFoundBoard));
         when(commentRepository.findCommentByLostFoundBoardIdFetchJoinMember(anyLong())).thenReturn(comments);
         when(lostFoundBoardImageRepository.findImageByLostFoundBoardId(anyLong())).thenReturn(postImages);
         when(commentRepository.countByLostFoundBoardId(anyLong())).thenReturn((long)comments.size());
