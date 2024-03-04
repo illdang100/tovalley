@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
@@ -14,4 +15,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     @Query("select c from Comment c JOIN FETCH c.member m where c.lostFoundBoardId = :lostFoundBoardId")
     List<Comment> findCommentByLostFoundBoardIdFetchJoinMember(@Param("lostFoundBoardId")Long lostFoundBoardId);
+    
+    @Query("select c from Comment c JOIN FETCH c.member m where c.id = :commentId")
+    Optional<Comment> findCommentByIdFetchJoinMember(@Param("commentId")Long commentId);
 }
