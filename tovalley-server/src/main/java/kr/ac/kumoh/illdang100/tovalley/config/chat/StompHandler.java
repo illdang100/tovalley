@@ -85,9 +85,11 @@ public class StompHandler implements ChannelInterceptor { // WebSocket을 이용
 
         updateSubscription(accessor, chatRoomId, memberId);
 
+        // 채팅방에 입장했는데 상대방이 채팅방에 입장한 상태라면, 메시지 읽음 처리 갱신 요청
         chatService.getOtherMemberIdByChatRoomId(chatRoomId, memberId)
                 .ifPresent(otherMemberId -> notifyReadCountUpdate(chatRoomId, otherMemberId));
 
+        // 입장한 채팅방과 관련된 채팅 알림 메시지 삭제
         notificationService.deleteAllNotificationsInChatRoomByMember(memberId, chatRoomId);
     }
 
