@@ -61,16 +61,10 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public void deleteComment(Long lostFoundBoardId, Long commentId, Long memberId) {
-        Member findMember = findMemberByIdOrElseThrowEx(memberRepository, memberId);
-        Comment findComment = findCommentByIdWithMemberOrElseThrowEx(commentRepository, commentId);
+        int deletedCount = commentRepository.deleteByIdAndLostFoundBoardId(commentId, lostFoundBoardId);
 
-        if (!isMyComment(findComment, findMember.getId())) {
+        if (deletedCount == 0) {
             throw new CustomApiException("댓글 작성자에게만 권한이 있습니다");
         }
-        commentRepository.delete(findComment);
-    }
-
-    private Boolean isMyComment(Comment comment, Long memberId) {
-        return comment.getMember().getId().equals(memberId);
     }
 }
