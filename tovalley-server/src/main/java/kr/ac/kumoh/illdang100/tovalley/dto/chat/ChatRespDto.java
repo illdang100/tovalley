@@ -81,7 +81,7 @@ public class ChatRespDto {
         private String content;
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
         private LocalDateTime createdAt;
-        private int reaCount;
+        private int readCount;
 
         public ChatMessageRespDto(ChatMessage chatMessage, Long memberId) {
             this.chatMessageId = chatMessage.getId();
@@ -89,7 +89,7 @@ public class ChatRespDto {
             this.myMsg = chatMessage.getSenderId().equals(memberId);
             this.content = chatMessage.getContent();
             this.createdAt = ChatUtil.convertZdtStringToLocalDateTime(chatMessage.getCreatedAt());
-            this.reaCount = chatMessage.getReadCount();
+            this.readCount = chatMessage.getReadCount();
         }
     }
 }

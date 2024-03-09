@@ -24,14 +24,19 @@ public class ChatNotificationRepositoryImpl implements ChatNotificationRepositor
     }
 
     @Override
-    public Slice<ChatNotification> findSliceChatNotificationsByMemberId(Long memberId, Pageable pageable) {
+    public Slice<ChatNotification> findSliceChatNotificationsByMemberId(Long memberId, Long cursorId, Pageable pageable) {
 
         JPAQuery<ChatNotification> query = queryFactory
                 .select(chatNotification)
                 .from(chatNotification)
                 .leftJoin(chatNotification.sender, member).fetchJoin()
-                .where(chatNotification.recipientId.eq(memberId))
-                .offset(pageable.getOffset())
+                .where(chatNotification.recipientId.eq(memberId));
+
+        if (cursorId != null) {
+            query.where(chatNotification.id.lt(cursorId));
+        }
+
+        query.offset(pageable.getOffset())
                 .limit(pageable.getPageSize() + 1);
 
         for (Sort.Order o : pageable.getSort()) {

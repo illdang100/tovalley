@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -29,6 +30,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
@@ -46,9 +48,6 @@ class NotificationApiControllerTest extends DummyObject {
 
     @Autowired
     private EntityManager em;
-
-    @Autowired
-    private NotificationService notificationService;
 
     @Autowired
     private MemberRepository memberRepository;
@@ -72,21 +71,29 @@ class NotificationApiControllerTest extends DummyObject {
     @Test
     public void findChatNotifications_test() throws Exception {
 
-        // given
-
-        // when
-        ResultActions resultActions = mvc.perform(get("/api/auth/notifications")
-                .cookie(new Cookie(JwtVO.ACCESS_TOKEN, accessToken))
-                .contentType(MediaType.APPLICATION_JSON));
-
-        // then
-        resultActions.andExpect(status().isOk())
+        // 첫 페이지 조회
+        MvcResult firstPageResult = mvc.perform(get("/api/auth/notifications")
+                        .cookie(new Cookie(JwtVO.ACCESS_TOKEN, accessToken))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.msg").value("메시지 알림 목록 조회에 성공하였습니다"))
-                .andExpect(jsonPath("$.data.content.size()").value(9))
-                .andExpect(jsonPath("$.data.content[0].hasRead").value(false))
-                .andExpect(jsonPath("$.data.content[4].hasRead").value(false))
-                .andExpect(jsonPath("$.data.content[6].hasRead").value(true))
-                .andExpect(jsonPath("$.data.content[8].hasRead").value(true))
+                .andExpect(jsonPath("$.data.content[0].chatNotificationId").value(49))
+                .andDo(MockMvcResultHandlers.print())
+                .andReturn();
+
+        // 첫 페이지의 마지막 채팅 메시지 ID를 cursor로 사용
+        String responseJson = firstPageResult.getResponse().getContentAsString();
+        JsonNode rootNode = om.readTree(responseJson);
+        String lastChatNotificationId = rootNode.path("data").path("content").get(19).path("chatNotificationId").asText();
+
+        // 두 번째 페이지 조회
+        mvc.perform(get("/api/auth/notifications")
+                        .cookie(new Cookie(JwtVO.ACCESS_TOKEN, accessToken))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("cursorId", lastChatNotificationId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.msg").value("메시지 알림 목록 조회에 성공하였습니다"))
+                .andExpect(jsonPath("$.data.content[0].chatNotificationId").value(24))
                 .andDo(MockMvcResultHandlers.print());
 
         List<ChatNotification> all = chatNotificationRepository.findAll();
@@ -94,13 +101,7 @@ class NotificationApiControllerTest extends DummyObject {
         assertThat(all.get(1).getHasRead()).isTrue();
         assertThat(all.get(2).getHasRead()).isTrue();
         assertThat(all.get(3).getHasRead()).isTrue();
-        assertThat(all.get(4).getHasRead()).isTrue();
-        assertThat(all.get(5).getHasRead()).isTrue();
-        assertThat(all.get(6).getHasRead()).isTrue();
-        assertThat(all.get(7).getHasRead()).isTrue();
-        assertThat(all.get(8).getHasRead()).isTrue();
-        assertThat(all.get(9).getHasRead()).isTrue();
-        assertThat(all.get(10).getHasRead()).isFalse();
+        assertThat(all.get(4).getHasRead()).isFalse();
     }
 
     @Test
@@ -119,7 +120,7 @@ class NotificationApiControllerTest extends DummyObject {
                 .andDo(MockMvcResultHandlers.print());
 
         List<ChatNotification> all = chatNotificationRepository.findAll();
-        assertThat(all.size()).isEqualTo(2);
+        assertThat(all.size()).isEqualTo(10);
     }
 
     @Test
@@ -138,7 +139,7 @@ class NotificationApiControllerTest extends DummyObject {
                 .andDo(MockMvcResultHandlers.print());
 
         List<ChatNotification> all = chatNotificationRepository.findAll();
-        assertThat(all.size()).isEqualTo(10);
+        assertThat(all.size()).isEqualTo(49);
     }
 
     private void dataSetting() {
@@ -151,18 +152,20 @@ class NotificationApiControllerTest extends DummyObject {
 
         Long recipientId = recipient.getId();
         Long recipientId2 = recipient2.getId();
-        chatNotificationRepository.save(newChatNotification(sender, recipientId, 1L, "test", true));
-        chatNotificationRepository.save(newChatNotification(sender, recipientId, 1L, "test", true));
-        chatNotificationRepository.save(newChatNotification(sender, recipientId, 1L, "test", true));
-        chatNotificationRepository.save(newChatNotification(sender, recipientId, 1L, "test", true));
-        chatNotificationRepository.save(newChatNotification(sender, recipientId2, 1L, "test", true));
-
-        chatNotificationRepository.save(newChatNotification(sender, recipientId, 1L, "test", false));
-        chatNotificationRepository.save(newChatNotification(sender, recipientId, 1L, "test", false));
-        chatNotificationRepository.save(newChatNotification(sender, recipientId, 1L, "test", false));
-        chatNotificationRepository.save(newChatNotification(sender, recipientId, 1L, "test", false));
-        chatNotificationRepository.save(newChatNotification(sender, recipientId, 1L, "test", false));
-        chatNotificationRepository.save(newChatNotification(sender, recipientId2, 1L, "test22", false));
+        for (int i = 0; i < 5; i++) {
+            chatNotificationRepository.save(newChatNotification(sender, recipientId, 1L, "test" + i, false));
+            chatNotificationRepository.save(newChatNotification(sender, recipientId, 1L, "test" + i, false));
+            chatNotificationRepository.save(newChatNotification(sender, recipientId, 1L, "test" + i, false));
+            chatNotificationRepository.save(newChatNotification(sender, recipientId, 1L, "test" + i, false));
+            chatNotificationRepository.save(newChatNotification(sender, recipientId2, 2L, "test" + i, false));
+        }
+        for (int i = 0; i < 5; i++) {
+            chatNotificationRepository.save(newChatNotification(sender, recipientId, 1L, "test" + i, true));
+            chatNotificationRepository.save(newChatNotification(sender, recipientId, 1L, "test" + i, true));
+            chatNotificationRepository.save(newChatNotification(sender, recipientId, 1L, "test" + i, true));
+            chatNotificationRepository.save(newChatNotification(sender, recipientId, 1L, "test" + i, true));
+            chatNotificationRepository.save(newChatNotification(sender, recipientId2, 2L, "test" + i, true));
+        }
 
         em.clear();
     }
