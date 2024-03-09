@@ -2,6 +2,7 @@ package kr.ac.kumoh.illdang100.tovalley.service.chat;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -255,9 +256,11 @@ public class ChatServiceImpl implements ChatService {
     }
 
     private List<ChatMessageRespDto> convertToChatMessageRespDto(List<ChatMessage> chatMessages, Long memberId) {
-        return chatMessages.stream()
+        List<ChatMessageRespDto> chatMessageRespDtos = chatMessages.stream()
                 .map(chatMessage -> new ChatMessageRespDto(chatMessage, memberId))
                 .collect(Collectors.toList());
+        Collections.reverse(chatMessageRespDtos);
+        return chatMessageRespDtos;
     }
 
     @Override

@@ -158,7 +158,7 @@ class ChatApiControllerTest extends DummyObject {
     }
 
     @Test
-    @DisplayName("채팅방 목록 조회 컨트롤러 테스트")
+    @DisplayName("채팅방 메시지 목록 조회 컨트롤러 테스트")
     public void findChatMessages() throws Exception {
 
         // 첫 페이지 조회
@@ -174,7 +174,7 @@ class ChatApiControllerTest extends DummyObject {
         String responseJson = firstPageResult.getResponse().getContentAsString();
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode rootNode = objectMapper.readTree(responseJson);
-        String lastChatMessageId = rootNode.path("data").path("chatMessages").path("content").get(19).path("chatMessageId").asText();
+        String lastChatMessageId = rootNode.path("data").path("chatMessages").path("content").get(0).path("chatMessageId").asText();
         System.out.println("lastChatMessageId = " + lastChatMessageId);
 
         // 두 번째 페이지 조회

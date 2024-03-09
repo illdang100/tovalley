@@ -69,17 +69,17 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     @Transactional
-    public Slice<ChatNotificationRespDto> getChatNotificationsByMemberId(Long memberId, Pageable pageable) {
-        Slice<ChatNotification> sliceChatNotificationsByMemberId
-                = chatNotificationRepository.findSliceChatNotificationsByMemberId(memberId, pageable);
+    public Slice<ChatNotificationRespDto> getChatNotificationsByMemberId(Long memberId, Long cursorId, Pageable pageable) {
+        Slice<ChatNotification> sliceChatNotifications
+                = chatNotificationRepository.findSliceChatNotificationsByMemberId(memberId, cursorId, pageable);
 
-        List<ChatNotification> notifications = sliceChatNotificationsByMemberId.getContent();
+        List<ChatNotification> notifications = sliceChatNotifications.getContent();
 
         List<ChatNotificationRespDto> notificationDtos = mapToDto(notifications);
 
         markNotificationsAsRead(notifications);
 
-        return new SliceImpl<>(notificationDtos, pageable, sliceChatNotificationsByMemberId.hasNext());
+        return new SliceImpl<>(notificationDtos, pageable, sliceChatNotifications.hasNext());
     }
 
     private List<ChatNotificationRespDto> mapToDto(List<ChatNotification> chatNotifications) {
