@@ -39,6 +39,7 @@ const Header = () => {
     if (loginStatus === true) {
       setLogin(true);
       if (!client) {
+        console.log("connectSocket");
         connectSocket();
       } // 웹 소켓이 연결되어 있다면 연결 요청 x
     } else {

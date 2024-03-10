@@ -9,7 +9,6 @@ import { elapsedTime } from "../../composables/elapsedTime";
 import { RootState } from "../../store/store";
 import { useDispatch, useSelector } from "react-redux";
 import { enterChatRoom } from "../../store/chat/chatRoomIdSlice";
-import { Client } from "@stomp/stompjs";
 
 const Chat = () => {
   const chatView = useSelector((state: RootState) => state.view.value);
@@ -18,17 +17,12 @@ const Chat = () => {
   const dispatch = useDispatch();
   const clientSelector = useSelector((state: RootState) => state.client.value);
   const chatRoomId = useSelector((state: RootState) => state.chatRoomId.value);
-  const chatId = useSelector((state: RootState) => state.chatId.value);
   const notification = useSelector(
     (state: RootState) => state.notification.value
   );
-  const [client, setClient] = useState<Client | null>(clientSelector);
-
-  useEffect(() => {
-    if (clientSelector) {
-      setClient(clientSelector);
-    }
-  }, [clientSelector]);
+  const subscription = useSelector(
+    (state: RootState) => state.subscription.value
+  );
 
   useEffect(() => {
     if (chatView) {
@@ -54,7 +48,7 @@ const Chat = () => {
   }, [chatView]);
 
   useEffect(() => {
-    if (clientSelector && chatView) {
+    if (clientSelector && chatView && !chatRoomId) {
       console.log("clientSelector 있음");
       console.log(clientSelector);
       axiosInstance
@@ -107,7 +101,12 @@ const Chat = () => {
     }
   }, [notification]);
 
-  const outChatting = () => {};
+  const outChatting = () => {
+    if (clientSelector?.connected && subscription) {
+      console.log("구독해제!!");
+      clientSelector.unsubscribe(subscription.id);
+    }
+  };
 
   return (
     <div className={chatView ? styles.chatContainer : ""}>
