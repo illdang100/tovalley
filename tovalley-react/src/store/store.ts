@@ -8,6 +8,7 @@ import notificationViewSlice from "./notification/notificationViewSlice";
 import loginSlice from "./login/loginSlice";
 import { persistReducer } from "redux-persist";
 import storageSession from "redux-persist/lib/storage/session";
+import subscriptionSlice from "./chat/subscriptionSlice";
 
 // const store = configureStore({
 //   reducer: {
@@ -31,6 +32,7 @@ const rootReducer = combineReducers({
   notification: notificationSlice.reducer,
   login: loginSlice.reducer,
   notificationView: notificationViewSlice.reducer,
+  subscription: subscriptionSlice.reducer,
 });
 
 const persistConfig = {

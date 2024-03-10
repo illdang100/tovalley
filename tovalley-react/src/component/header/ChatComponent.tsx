@@ -2,10 +2,10 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import styles from "../../css/header/ChatComponent.module.css";
 import axiosInstance from "../../axios_interceptor";
 import { MessageListType, MessageType } from "../../typings/db";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store/store";
 import { DateTime } from "luxon";
-import { StompSubscription } from "@stomp/stompjs";
+import { setSubscription } from "../../store/chat/subscriptionSlice";
 
 const ChatComponent = () => {
   const [messageList, setMessageList] = useState<MessageListType>();
@@ -22,7 +22,7 @@ const ChatComponent = () => {
   const [isPageEnd, setIsPageEnd] = useState<boolean>(false);
   const messageEndRef = useRef<HTMLDivElement>(null);
   const [reqMsg, setReqMsg] = useState(false);
-  const [subscription, setSubscription] = useState<StompSubscription>();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const requestMessageList = async () => {
@@ -42,20 +42,18 @@ const ChatComponent = () => {
             setMessage(JSON.parse(msg.body));
           }
         );
-        setSubscription(subscribe);
+        dispatch(setSubscription(subscribe));
       }
     };
 
     if (clientSelector) requestMessageList();
 
     return () => {
-      console.log("컴포넌트 언마운트");
-      console.log(subscription);
-      if (clientSelector?.connected && subscription) {
-        console.log("구독해제!!");
-        subscription.unsubscribe();
-        //clientSelector.deactivate(); // 컴포넌트 unmount 시 웹소켓 연결 비활성화
-      }
+      // if (clientSelector?.connected && subscription) {
+      //   console.log("구독해제!!");
+      //   subscription.unsubscribe();
+      //   //clientSelector.deactivate(); // 컴포넌트 unmount 시 웹소켓 연결 비활성화
+      // }
     };
   }, []);
 

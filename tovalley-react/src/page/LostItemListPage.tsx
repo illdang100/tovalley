@@ -31,7 +31,7 @@ const LostItemListPage = () => {
     let params: {
       searchWord?: string;
       isResolved: boolean;
-      valleyId?: number[];
+      waterPlaceId?: number[];
       currentCategory?: string;
     } = {
       isResolved: except,
@@ -42,7 +42,7 @@ const LostItemListPage = () => {
     }
 
     if (selectedPlaceName.length !== 0) {
-      params = { ...params, valleyId: selectedPlaceName };
+      params = { ...params, waterPlaceId: selectedPlaceName };
     }
 
     if (currentCategory === "찾아요") {
