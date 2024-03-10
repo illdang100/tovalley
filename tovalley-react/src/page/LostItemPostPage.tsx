@@ -84,7 +84,7 @@ const LostItemPostPage = () => {
         {},
         {
           params: {
-            status: !resolveCheck,
+            status: resolveCheck,
           },
         }
       )
