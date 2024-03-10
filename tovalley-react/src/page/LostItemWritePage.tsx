@@ -54,7 +54,7 @@ const LostItemWritePage = () => {
       setAlert({ view: true, content: "항목을 모두 입력해주세요." });
     } else {
       formData.append("category", currentCategory);
-      formData.append("valleyId", `${selectedPlace[0].waterPlaceId}`);
+      formData.append("waterPlaceId", `${selectedPlace[0].waterPlaceId}`);
       formData.append("title", write.title);
       formData.append("content", write.content);
       if (imgFiles.length !== 0) {
@@ -64,15 +64,10 @@ const LostItemWritePage = () => {
       }
 
       axiosInstance
-        .post("/api/auth/lostItem", {
-          category: currentCategory,
-          valleyId: selectedPlace[0].waterPlaceId,
-          title: write.title,
-          content: write.content,
-        })
+        .post("/api/auth/lostItem", formData)
         .then((res) => {
           console.log(res);
-          res.status === 200 &&
+          res.status === 201 &&
             setConfirm({
               view: true,
               content: "글이 등록되었습니다.",

@@ -13,20 +13,27 @@ import LostItemPostPage from "./page/LostItemPostPage";
 import LostItemWritePage from "./page/LostItemWritePage";
 import LostItemUpdatePage from "./page/LostItemUpdatePage";
 import Alarm from "./component/common/Alarm";
-import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "./store/store";
-import { NotificationType } from "./typings/db";
+import AlarmList from "./component/common/AlarmList";
+import { setNotificationView } from "./store/notification/notificationViewSlice";
 
 function App() {
   const notification = useSelector(
     (state: RootState) => state.notification.value
   );
-  const [alarm, setAlarm] = useState<NotificationType | null>(notification);
+  const chatView = useSelector((state: RootState) => state.view.value);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (chatView) dispatch(setNotificationView(false));
+  }, [chatView]);
 
   return (
     <div>
-      {alarm && <Alarm alarm={alarm} setAlarm={setAlarm} />}
+      {notification && notification.notificationType === "CHAT" && <Alarm />}
+      <AlarmList />
       <Routes>
         <Route path="/" element={<MainPage />} />
         <Route path="/login" element={<LoginPage />} />

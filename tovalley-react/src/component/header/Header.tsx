@@ -16,6 +16,8 @@ import { RootState } from "../../store/store";
 import { newClient } from "../../store/client/clientSlice";
 import { view } from "../../store/chat/chatViewSlice";
 import { setNotification } from "../../store/notification/notificationSlice";
+import { setNotificationView } from "../../store/notification/notificationViewSlice";
+import { enterChatRoom } from "../../store/chat/chatRoomIdSlice";
 
 const cookies = new Cookies();
 const localhost = process.env.REACT_APP_HOST;
@@ -28,16 +30,25 @@ const Header = () => {
   const dispatch = useDispatch();
   const client = useSelector((state: RootState) => state.client.value);
   const chatView = useSelector((state: RootState) => state.view.value);
+  const notificationView = useSelector(
+    (state: RootState) => state.notificationView.value
+  );
 
   useEffect(() => {
     const loginStatus = cookies.get("ISLOGIN");
     if (loginStatus === true) {
       setLogin(true);
-      if (!client) connectSocket(); // 웹 소켓이 연결되어 있다면 연결 요청 x
+      if (!client) {
+        connectSocket();
+      } // 웹 소켓이 연결되어 있다면 연결 요청 x
     } else {
       setLogin(false);
     }
   }, [login, client]);
+
+  useEffect(() => {
+    if (notificationView) dispatch(view(false));
+  }, [notificationView]);
 
   const connectSocket = () => {
     const socket = new SockJS(`${localhost}/stomp/chat`); // 서버와 웹소켓 연결
@@ -47,7 +58,7 @@ const Header = () => {
       debug: (str) => {
         console.log(str);
       },
-      reconnectDelay: 5000,
+      reconnectDelay: 1000,
       // 웹 소켓이 끊어졌을 때 얼마나 빨리 연결을 시도할 지 설정.
       // recconectDelay에 설정된 대기 시간이 지난 후 다시 연결을 자동으로 시도한다.
     });
@@ -68,7 +79,7 @@ const Header = () => {
             `/sub/notification/${res.data.data}`, // 알림 토픽 구독
             (notify) => {
               console.log(JSON.parse(notify.body));
-              //dispatch(setNotification([JSON.parse(notify.body)]));
+              dispatch(setNotification(JSON.parse(notify.body)));
             }
           );
         } catch (err) {
@@ -121,12 +132,22 @@ const Header = () => {
           {login ? (
             <div className={styles.login}>
               <div className={styles.alarm}>
-                <FaRegBell />
+                <div
+                  onClick={() => {
+                    dispatch(setNotificationView(!notificationView));
+                    dispatch(enterChatRoom(null));
+                  }}
+                >
+                  <FaRegBell />
+                </div>
                 <span>•</span>
               </div>
               <div
                 className={styles.chatIcon}
-                onClick={() => dispatch(view(!chatView))}
+                onClick={() => {
+                  dispatch(view(!chatView));
+                  dispatch(enterChatRoom(null));
+                }}
               >
                 <IoChatbubblesSharp />
               </div>
@@ -175,6 +196,7 @@ const Header = () => {
           <span
             onClick={() => {
               dispatch(view(false));
+              dispatch(enterChatRoom(null));
               navigation("/valleylist");
             }}
             className={
@@ -188,6 +210,7 @@ const Header = () => {
           <span
             onClick={() => {
               dispatch(view(false));
+              dispatch(enterChatRoom(null));
               navigation("/lost-item");
             }}
             className={
@@ -201,6 +224,7 @@ const Header = () => {
           <span
             onClick={() => {
               dispatch(view(false));
+              dispatch(enterChatRoom(null));
               navigation("/safety-guide");
             }}
             className={

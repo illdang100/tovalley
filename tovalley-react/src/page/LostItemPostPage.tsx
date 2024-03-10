@@ -26,45 +26,45 @@ const LostItemPostPage = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    setLostPost({
-      data: {
-        title: "금오계곡에서 찾았어요",
-        content: "아이폰15 입니다.",
-        author: "illdang100",
-        waterPlaceName: "금오계곡",
-        waterPlaceAddress: "경상북도 구미시 옥계동",
-        postCreateAt: "2024-01-19 21:33:10",
-        postImages: [
-          "/img/dummy/계곡이미지5.jpg",
-          "/img/dummy/계곡이미지5.jpg",
-          "/img/dummy/계곡이미지5.jpg",
-        ],
-        isResolved: false,
-        isMyBoard: false,
-        boardAuthorProfile: "",
-        commentCnt: 3,
-        comments: [
-          {
-            commentId: 1,
-            commentAuthor: "행복한 어피치",
-            commentContent: "혹시 흰색인가요?",
-            commentCreatedAt: "2024-01-23 09:00:02",
-            isMyComment: false, // 현재 유저가 작성한 댓글인지 확인
-            commentAuthorProfile: "",
-          },
-        ],
-      },
-    });
-    setCommentList([
-      {
-        commentId: 1,
-        commentAuthor: "행복한 어피치",
-        commentContent: "혹시 흰색인가요?",
-        commentCreatedAt: "2024-01-23 09:00:02",
-        isMyComment: true, // 현재 유저가 작성한 댓글인지 확인,
-        commentAuthorProfile: "",
-      },
-    ]);
+    // setLostPost({
+    //   data: {
+    //     title: "금오계곡에서 찾았어요",
+    //     content: "아이폰15 입니다.",
+    //     author: "illdang100",
+    //     waterPlaceName: "금오계곡",
+    //     waterPlaceAddress: "경상북도 구미시 옥계동",
+    //     postCreateAt: "2024-01-19 21:33:10",
+    //     postImages: [
+    //       "/img/dummy/계곡이미지5.jpg",
+    //       "/img/dummy/계곡이미지5.jpg",
+    //       "/img/dummy/계곡이미지5.jpg",
+    //     ],
+    //     isResolved: false,
+    //     isMyBoard: false,
+    //     boardAuthorProfile: "",
+    //     commentCnt: 3,
+    //     comments: [
+    //       {
+    //         commentId: 1,
+    //         commentAuthor: "행복한 어피치",
+    //         commentContent: "혹시 흰색인가요?",
+    //         commentCreatedAt: "2024-01-23 09:00:02",
+    //         isMyComment: false, // 현재 유저가 작성한 댓글인지 확인
+    //         commentAuthorProfile: "",
+    //       },
+    //     ],
+    //   },
+    // });
+    // setCommentList([
+    //   {
+    //     commentId: 1,
+    //     commentAuthor: "행복한 어피치",
+    //     commentContent: "혹시 흰색인가요?",
+    //     commentCreatedAt: "2024-01-23 09:00:02",
+    //     isMyComment: true, // 현재 유저가 작성한 댓글인지 확인,
+    //     commentAuthorProfile: "",
+    //   },
+    // ]);
 
     axiosInstance
       .get(`/api/lostItem/${id}`)
