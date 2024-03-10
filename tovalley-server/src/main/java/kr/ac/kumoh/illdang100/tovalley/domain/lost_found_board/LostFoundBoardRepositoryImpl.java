@@ -1,12 +1,13 @@
 package kr.ac.kumoh.illdang100.tovalley.domain.lost_found_board;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
-import com.querydsl.core.types.dsl.CaseBuilder;
+import com.querydsl.core.types.dsl.PathBuilder;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import kr.ac.kumoh.illdang100.tovalley.dto.chat.ChatRespDto.ChatRoomRespDto;
 import kr.ac.kumoh.illdang100.tovalley.dto.lost_found_board.LostFoundBoardReqDto.LostFoundBoardListReqDto;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Pageable;
@@ -16,8 +17,8 @@ import org.springframework.data.domain.SliceImpl;
 import javax.persistence.EntityManager;
 
 import java.util.List;
+import org.springframework.data.domain.Sort;
 
-import static kr.ac.kumoh.illdang100.tovalley.domain.chat.QChatRoom.chatRoom;
 import static kr.ac.kumoh.illdang100.tovalley.domain.comment.QComment.*;
 import static kr.ac.kumoh.illdang100.tovalley.domain.lost_found_board.QLostFoundBoard.*;
 import static kr.ac.kumoh.illdang100.tovalley.domain.lost_found_board.QLostFoundBoardImage.*;
@@ -100,6 +101,14 @@ public class LostFoundBoardRepositoryImpl implements LostFoundBoardRepositoryCus
                 .where(lostFoundBoard.member.id.eq(memberId))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize() + 1);
+
+        for (Sort.Order o : pageable.getSort()) {
+            PathBuilder pathBuilder = new PathBuilder(
+                    lostFoundBoard.getType(), lostFoundBoard.getMetadata()
+            );
+            query.orderBy(new OrderSpecifier(o.isAscending() ? Order.ASC : Order.DESC,
+                    pathBuilder.get(o.getProperty())));
+        }
 
         List<MyLostFoundBoardRespDto> result = query.fetch();
 
