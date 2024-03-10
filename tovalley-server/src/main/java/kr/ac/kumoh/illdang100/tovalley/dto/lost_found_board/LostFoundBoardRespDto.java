@@ -66,4 +66,13 @@ public class LostFoundBoardRespDto {
                     .build();
         }
     }
+
+    @AllArgsConstructor
+    @Data
+    public static class MyLostFoundBoardRespDto {
+        private Long lostFoundBoardId;
+        private String title;
+        @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
+        private LocalDateTime postCreateAt;
+    }
 }

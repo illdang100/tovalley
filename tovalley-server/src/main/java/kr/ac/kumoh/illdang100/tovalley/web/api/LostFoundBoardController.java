@@ -3,12 +3,17 @@ package kr.ac.kumoh.illdang100.tovalley.web.api;
 import kr.ac.kumoh.illdang100.tovalley.domain.ImageFile;
 import kr.ac.kumoh.illdang100.tovalley.domain.lost_found_board.LostFoundBoard;
 import kr.ac.kumoh.illdang100.tovalley.dto.ResponseDto;
+import kr.ac.kumoh.illdang100.tovalley.dto.lost_found_board.LostFoundBoardRespDto.MyLostFoundBoardRespDto;
 import kr.ac.kumoh.illdang100.tovalley.security.auth.PrincipalDetails;
 import kr.ac.kumoh.illdang100.tovalley.service.S3Service;
 import kr.ac.kumoh.illdang100.tovalley.service.lost_found_board.LostFoundBoardImageService;
 import kr.ac.kumoh.illdang100.tovalley.service.lost_found_board.LostFoundBoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -90,5 +95,14 @@ public class LostFoundBoardController {
         s3Service.deleteFiles(deleteLostFoundBoardImageFileName);
 
         return new ResponseEntity<>(new ResponseDto<>(1, "분실물 게시글이 정상적으로 삭제되었습니다", null), HttpStatus.OK);
+    }
+
+    @GetMapping("/auth/my-board")
+    public ResponseEntity<?> getMyLostFoundBoards(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                  @PageableDefault(size = 5, sort = "createdDate", direction = Sort.Direction.ASC) Pageable pageable) {
+
+        Slice<MyLostFoundBoardRespDto> result = lostFoundBoardService.getMyLostFoundBoards(
+                principalDetails.getMember().getId(), pageable);
+        return new ResponseEntity<>(new ResponseDto<>(1, "사용자의 게시글 목록 조회에 성공하였습니다", result), HttpStatus.OK);
     }
 }

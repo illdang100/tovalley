@@ -7,6 +7,7 @@ import kr.ac.kumoh.illdang100.tovalley.domain.lost_found_board.LostFoundBoardIma
 import kr.ac.kumoh.illdang100.tovalley.domain.lost_found_board.LostFoundBoardRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.service.accident.AccidentService;
+import kr.ac.kumoh.illdang100.tovalley.service.lost_found_board.LostFoundBoardService;
 import kr.ac.kumoh.illdang100.tovalley.service.member.MemberService;
 import kr.ac.kumoh.illdang100.tovalley.service.review.ReviewService;
 import kr.ac.kumoh.illdang100.tovalley.service.trip_schedule.TripScheduleService;
@@ -50,6 +51,7 @@ public class PageServiceImpl implements PageService{
     private final ReviewService reviewService;
     private final TripScheduleService tripScheduleService;
     private final MemberService memberService;
+    private final LostFoundBoardService lostFoundBoardService;
     private final LostFoundBoardRepository lostFoundBoardRepository;
     private final CommentRepository commentRepository;
     private final LostFoundBoardImageRepository lostFoundBoardImageRepository;
@@ -138,7 +140,10 @@ public class PageServiceImpl implements PageService{
         // 앞으로의 일정
         List<MyTripScheduleRespDto> upcomingTripSchedules = tripScheduleService.getUpcomingTripSchedules(memberId);
 
-        return new MyPageAllRespDto(memberDetail, reviewsByMemberId, upcomingTripSchedules);
+        Slice<MyLostFoundBoardRespDto> myLostFoundBoards
+                = lostFoundBoardService.getMyLostFoundBoards(memberId, pageable);
+
+        return new MyPageAllRespDto(memberDetail, reviewsByMemberId, upcomingTripSchedules, myLostFoundBoards);
     }
 
     /**

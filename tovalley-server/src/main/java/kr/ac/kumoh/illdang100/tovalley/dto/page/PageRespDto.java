@@ -1,5 +1,6 @@
 package kr.ac.kumoh.illdang100.tovalley.dto.page;
 
+import kr.ac.kumoh.illdang100.tovalley.dto.lost_found_board.LostFoundBoardRespDto.MyLostFoundBoardRespDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.data.domain.Slice;
@@ -47,5 +48,6 @@ public class PageRespDto {
         private MemberProfileRespDto userProfile; // 개인정보
         private Slice<MyReviewRespDto> myReviews; // 내 리뷰
         private List<MyTripScheduleRespDto> myUpcomingTripSchedules; // 내 여행일정
+        private Slice<MyLostFoundBoardRespDto> myLostFoundBoards; // 내 게시글
     }
 }
