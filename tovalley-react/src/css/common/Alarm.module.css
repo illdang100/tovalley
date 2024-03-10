@@ -3,12 +3,13 @@
   border-radius: 15px;
   background-color: #fbfdff;
   position: fixed;
-  z-index: 20;
+  z-index: 30;
   right: 20px;
   top: 80px;
   box-shadow: 2px 1px 5px 1px rgba(125, 125, 125, 0.21);
   padding: 0.8em 1em;
   box-sizing: border-box;
+  cursor: pointer;
 }
 
 .closeBtn {

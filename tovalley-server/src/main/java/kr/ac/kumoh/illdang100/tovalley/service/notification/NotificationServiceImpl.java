@@ -48,6 +48,7 @@ public class NotificationServiceImpl implements NotificationService {
 
             // Kafka로는 Notification 객체 전송
             Notification notification = new Notification(chatRoomId, recipient.getId(), sender.getNickname(),
+                    sender.getImageFile() != null ? sender.getImageFile().getStoreFileUrl() : null,
                     LocalDateTime.now(), message.getContent(), NotificationType.CHAT);
 
             // "알림 토픽 + {memberId}"로 알림 메시지 전송하기!!

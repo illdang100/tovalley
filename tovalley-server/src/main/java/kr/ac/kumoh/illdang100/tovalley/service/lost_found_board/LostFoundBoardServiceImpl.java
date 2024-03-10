@@ -56,7 +56,7 @@ public class LostFoundBoardServiceImpl implements LostFoundBoardService {
     @Override
     @Transactional
     public LostFoundBoard updateLostFoundBoard(LostFoundBoardUpdateReqDto lostFoundBoardUpdateReqDto, Long memberId) {
-        LostFoundBoard findLostFoundBoard = findLostFoundBoardByIdWithMemberOrElseThrowEx(lostFoundBoardRepository, lostFoundBoardUpdateReqDto.getLostFoundBoardId());
+        LostFoundBoard findLostFoundBoard = findLostFoundBoardByIdWithMemberAndWaterPlaceOrElseThrowEx(lostFoundBoardRepository, lostFoundBoardUpdateReqDto.getLostFoundBoardId());
         checkBoardAccessPermission(findLostFoundBoard, memberId);
 
         WaterPlace findWaterPlace = findWaterPlaceByIdOrElseThrowEx(waterPlaceRepository, lostFoundBoardUpdateReqDto.getWaterPlaceId());

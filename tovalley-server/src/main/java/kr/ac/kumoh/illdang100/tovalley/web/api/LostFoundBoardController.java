@@ -32,7 +32,7 @@ public class LostFoundBoardController {
     private final S3Service s3Service;
 
     @PostMapping(value = "/auth/lostItem")
-    public ResponseEntity<?> saveLostFoundBoard(@RequestBody @Valid LostFoundBoardSaveReqDto lostFoundBoardSaveReqDto,
+    public ResponseEntity<?> saveLostFoundBoard(@ModelAttribute @Valid LostFoundBoardSaveReqDto lostFoundBoardSaveReqDto,
                                                 BindingResult bindingResult,
                                                 @AuthenticationPrincipal PrincipalDetails principalDetails) throws IOException {
 
@@ -45,7 +45,7 @@ public class LostFoundBoardController {
     }
 
     @PatchMapping(value = "/auth/lostItem")
-    public ResponseEntity<?> updateLostFoundBoard(@RequestBody @Valid LostFoundBoardUpdateReqDto lostFoundBoardUpdateReqDto,
+    public ResponseEntity<?> updateLostFoundBoard(@ModelAttribute @Valid LostFoundBoardUpdateReqDto lostFoundBoardUpdateReqDto,
                                                   BindingResult bindingResult,
                                                   @AuthenticationPrincipal PrincipalDetails principalDetails) throws IOException {
 

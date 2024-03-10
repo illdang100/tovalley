@@ -77,7 +77,7 @@ class LostFoundBoardServiceImplTest extends DummyObject {
         lostFoundBoardService.updateLostFoundBoard(lostFoundBoardUpdateReqDto, memberId);
 
         // stub2
-        when(lostFoundBoardRepository.findByIdWithMemberAndWaterPlace(lostFoundBoardId)).thenReturn(Optional.of(lostFoundBoard));
+        when(lostFoundBoardRepository.findByIdWithMember(lostFoundBoardId)).thenReturn(Optional.of(lostFoundBoard));
 
         LostFoundBoardDetailRespDto lostFoundBoardDetail = pageService.getLostFoundBoardDetail(lostFoundBoardId, member);
 
@@ -196,7 +196,7 @@ class LostFoundBoardServiceImplTest extends DummyObject {
         lostFoundBoardService.updateLostFoundBoard(lostFoundBoardUpdateReqDto, memberId);
 
         // stub2
-        when(lostFoundBoardRepository.findByIdWithMemberAndWaterPlace(lostFoundBoardId)).thenReturn(Optional.of(lostFoundBoard));
+        when(lostFoundBoardRepository.findByIdWithMember(lostFoundBoardId)).thenReturn(Optional.of(lostFoundBoard));
 
         LostFoundBoardDetailRespDto lostFoundBoardDetail = pageService.getLostFoundBoardDetail(lostFoundBoardId, member);
 
@@ -223,7 +223,7 @@ class LostFoundBoardServiceImplTest extends DummyObject {
         lostFoundBoardService.updateResolvedStatus(lostFoundBoardId, true, memberId);
 
         // stub2
-        when(lostFoundBoardRepository.findByIdWithMemberAndWaterPlace(lostFoundBoardId)).thenReturn(Optional.of(lostFoundBoard));
+        when(lostFoundBoardRepository.findByIdWithMember(lostFoundBoardId)).thenReturn(Optional.of(lostFoundBoard));
 
         LostFoundBoardDetailRespDto lostFoundBoardDetail = pageService.getLostFoundBoardDetail(lostFoundBoardId, member);
 

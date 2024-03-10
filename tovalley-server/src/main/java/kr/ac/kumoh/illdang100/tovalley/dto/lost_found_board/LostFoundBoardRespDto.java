@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static kr.ac.kumoh.illdang100.tovalley.dto.comment.CommentRespDto.*;
+
 public class LostFoundBoardRespDto {
 
     @Data
@@ -63,17 +65,5 @@ public class LostFoundBoardRespDto {
                     .commentCnt(commentCnt)
                     .build();
         }
-    }
-
-    @Data
-    @AllArgsConstructor
-    public static class CommentDetailRespDto {
-        private Long commentId;
-        private String commentAuthor;
-        private String commentContent;
-        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
-        private LocalDateTime commentCreateAt;
-        private boolean commentByUser;
-        private String commentAuthorProfile;
     }
 }

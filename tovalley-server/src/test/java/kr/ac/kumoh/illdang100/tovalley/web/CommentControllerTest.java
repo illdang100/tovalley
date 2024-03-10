@@ -18,27 +18,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import javax.persistence.EntityManager;
 import javax.servlet.http.Cookie;
 
-import static kr.ac.kumoh.illdang100.tovalley.dto.lost_found_board.LostFoundBoardReqDto.LostFoundBoardSaveReqDto;
+import static kr.ac.kumoh.illdang100.tovalley.dto.comment.CommentReqDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.util.TokenUtil.createTestAccessToken;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @Sql("classpath:db/teardown.sql")
-class LostFoundBoardControllerTest extends DummyObject {
+class CommentControllerTest extends DummyObject {
     @Autowired
     private MockMvc mvc;
 
@@ -49,20 +47,20 @@ class LostFoundBoardControllerTest extends DummyObject {
     private EntityManager em;
 
     @Autowired
+    private CommentRepository commentRepository;
+
+    @Autowired
     private MemberRepository memberRepository;
 
     @Autowired
     private LostFoundBoardRepository lostFoundBoardRepository;
 
     @Autowired
-    private CommentRepository commentRepository;
-
-    @Autowired
     private WaterPlaceRepository waterPlaceRepository;
 
     @Autowired
     private JwtProcess jwtProcess;
-    
+
     private String accessToken;
 
     @BeforeEach
@@ -72,31 +70,22 @@ class LostFoundBoardControllerTest extends DummyObject {
     }
 
     @Test
-    @DisplayName(value = "분실물 게시글 등록")
-    void saveLostFoundBoard() throws Exception {
+    @DisplayName(value = "분실물 댓글 등록 실패 - 빈 문자열")
+    void saveLostFoundBoardEmptyString() throws Exception {
         // given
-        Long waterPlaceId = 1L;
-        LostFoundBoardSaveReqDto lostFoundBoardSaveReqDto = new LostFoundBoardSaveReqDto("LOST", waterPlaceId, "잃어버림", "지갑 잃어버렸어요", null);
-
-        MockMultipartFile file1 = new MockMultipartFile("postImage", "image1.jpg", "image/jpeg", "some image".getBytes());
-        MockMultipartFile file2 = new MockMultipartFile("postImage", "image2.jpg", "image/jpeg", "some image".getBytes());
+        Long lostFoundBoardId = 3L;
+        CommentSaveReqDto commentSaveReqDto = new CommentSaveReqDto("");
+        String requestBody = om.writeValueAsString(commentSaveReqDto);
 
         // when
-        ResultActions resultActions = mvc.perform(
-                MockMvcRequestBuilders.multipart("/api/auth/lostItem")
-                        .file(file1)
-                        .file(file2)
-                        .param("category", lostFoundBoardSaveReqDto.getCategory())
-                        .param("waterPlaceId", lostFoundBoardSaveReqDto.getWaterPlaceId().toString())
-                        .param("title", lostFoundBoardSaveReqDto.getTitle())
-                        .param("content", lostFoundBoardSaveReqDto.getContent())
-                        .contentType(MediaType.MULTIPART_FORM_DATA)
-                        .cookie(new Cookie(JwtVO.ACCESS_TOKEN, accessToken))
-        );
+        ResultActions resultActions = mvc.perform(post("/api/auth/lostItem/" + lostFoundBoardId + "/comment")
+                .content(requestBody)
+                .cookie(new Cookie(JwtVO.ACCESS_TOKEN, accessToken))
+                .contentType(MediaType.APPLICATION_JSON));
 
         // then
         resultActions
-                .andExpect(status().isCreated())
+                .andExpect(status().isBadRequest())
                 .andDo(MockMvcResultHandlers.print());
     }
 
@@ -119,4 +108,5 @@ class LostFoundBoardControllerTest extends DummyObject {
 
         em.clear();
     }
+
 }

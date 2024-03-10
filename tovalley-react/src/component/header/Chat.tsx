@@ -4,37 +4,25 @@ import { MdLogout } from "react-icons/md";
 import ChatComponent from "./ChatComponent";
 import { MdArrowBackIos } from "react-icons/md";
 import axiosInstance from "../../axios_interceptor";
-import { ChatRoomItem, NotificationType } from "../../typings/db";
+import { ChatRoomItem } from "../../typings/db";
 import { elapsedTime } from "../../composables/elapsedTime";
 import { RootState } from "../../store/store";
 import { useDispatch, useSelector } from "react-redux";
 import { enterChatRoom } from "../../store/chat/chatRoomIdSlice";
-import { view } from "../../store/chat/chatViewSlice";
-import { Client } from "@stomp/stompjs";
 
 const Chat = () => {
   const chatView = useSelector((state: RootState) => state.view.value);
   const [appear, setAppear] = useState("");
   const [chatRoomList, setChatRoomList] = useState<ChatRoomItem[]>([]);
   const dispatch = useDispatch();
-  const [client, setClient] = useState<Client | null>();
-  const [notification, setNotification] = useState<NotificationType | null>();
   const clientSelector = useSelector((state: RootState) => state.client.value);
   const chatRoomId = useSelector((state: RootState) => state.chatRoomId.value);
-  const chatId = useSelector((state: RootState) => state.chatId.value);
-  const notificationSelector = useSelector(
+  const notification = useSelector(
     (state: RootState) => state.notification.value
   );
-
-  useEffect(() => {
-    if (clientSelector) {
-      setClient(clientSelector);
-    }
-  }, [clientSelector]);
-
-  useEffect(() => {
-    setNotification(notificationSelector);
-  }, [notificationSelector]);
+  const subscription = useSelector(
+    (state: RootState) => state.subscription.value
+  );
 
   useEffect(() => {
     if (chatView) {
@@ -60,7 +48,7 @@ const Chat = () => {
   }, [chatView]);
 
   useEffect(() => {
-    if (clientSelector) {
+    if (clientSelector && chatView && !chatRoomId) {
       console.log("clientSelector 있음");
       console.log(clientSelector);
       axiosInstance
@@ -71,12 +59,52 @@ const Chat = () => {
         })
         .catch((err) => console.log(err));
     }
-  }, [clientSelector]);
+  }, [clientSelector, chatView, chatRoomId]);
+
+  useEffect(() => {
+    if (notification && chatView && notification.notificationType === "CHAT") {
+      chatRoomList.forEach((chat, index) => {
+        const chatLastTime = new Date(chat.lastMessageTime);
+        const notificationTime = new Date(notification.createdDate);
+        console.log(chatLastTime.getTime(), notificationTime.getTime());
+        if (
+          chat.chatRoomId === notification.chatRoomId &&
+          chatLastTime.getTime() !== notificationTime.getTime()
+        ) {
+          chatRoomList.splice(index, 1);
+          chatRoomList.splice(0, 0, {
+            chatRoomId: chat.chatRoomId,
+            chatRoomTitle: chat.chatRoomTitle,
+            otherUserProfileImage: chat.otherUserProfileImage,
+            otherUserNick: chat.otherUserNick,
+            createdChatRoomDate: chat.createdChatRoomDate,
+            lastMessageContent: notification.content,
+            unReadMessageCount: chat.unReadMessageCount + 1,
+            lastMessageTime: notification.createdDate,
+          });
+        } else if (chat.chatRoomId !== notification.chatRoomId) {
+          setChatRoomList([
+            {
+              chatRoomId: notification.chatRoomId,
+              chatRoomTitle: "",
+              otherUserProfileImage: null,
+              otherUserNick: notification.senderNick,
+              createdChatRoomDate: notification.createdDate,
+              lastMessageContent: notification.content,
+              unReadMessageCount: 1,
+              lastMessageTime: notification.createdDate,
+            },
+            ...chatRoomList,
+          ]);
+        }
+      });
+    }
+  }, [notification]);
 
   const outChatting = () => {
-    dispatch(view(false));
-    if (client && chatId) {
-      client.unsubscribe(chatId);
+    if (clientSelector?.connected && subscription) {
+      console.log("구독해제!!");
+      clientSelector.unsubscribe(subscription.id);
     }
   };
 
@@ -93,12 +121,17 @@ const Chat = () => {
       >
         <div className={styles.header}>
           {chatRoomId && (
-            <span onClick={() => dispatch(enterChatRoom(null))}>
+            <span
+              onClick={() => {
+                dispatch(enterChatRoom(null));
+                outChatting();
+              }}
+            >
               <MdArrowBackIos />
             </span>
           )}
           {!chatRoomId && <h1>illdang100</h1>}
-          <span onClick={outChatting}>
+          <span>
             <MdLogout />
           </span>
         </div>

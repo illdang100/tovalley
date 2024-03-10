@@ -39,7 +39,7 @@ export interface LostPostComment {
   commentAuthor: string;
   commentContent: string;
   commentCreatedAt: string;
-  isMyComment: boolean;
+  commentByUser: boolean;
   commentAuthorProfile: string;
 }
 
@@ -80,7 +80,7 @@ export interface ChatRoomItem {
   createdChatRoomDate: string;
   lastMessageContent: string | null;
   unReadMessageCount: number;
-  lastMessageTime: string | null;
+  lastMessageTime: string;
 }
 
 export interface ChatMessage {
@@ -136,8 +136,46 @@ export interface MessageListType {
 export interface NotificationType {
   chatRoomId: number;
   recipientId: string;
-  senderNick: number;
+  senderNick: string;
   createdDate: string;
   content: string;
   notificationType: string;
+}
+
+export interface AlarmListType {
+  chatNotificationId: number;
+  chatRoomId: number;
+  senderNick: string;
+  createdDate: string;
+  content: string;
+  hasRead: boolean;
+}
+
+export interface AlarmListResp {
+  data: {
+    content: AlarmListType[];
+    pageable: {
+      sort: {
+        empty: boolean;
+        sorted: boolean;
+        unsorted: boolean;
+      };
+      offset: number;
+      pageNumber: number;
+      pageSize: number;
+      paged: boolean;
+      unpaged: boolean;
+    };
+    first: boolean;
+    last: boolean;
+    size: number;
+    number: number;
+    sort: {
+      empty: boolean;
+      sorted: boolean;
+      unsorted: boolean;
+    };
+    numberOfElements: number;
+    empty: boolean;
+  };
 }
