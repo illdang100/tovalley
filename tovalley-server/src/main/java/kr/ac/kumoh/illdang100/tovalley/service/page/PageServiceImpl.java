@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static kr.ac.kumoh.illdang100.tovalley.dto.accident.AccidentRespDto.*;
+import static kr.ac.kumoh.illdang100.tovalley.dto.comment.CommentRespDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.lost_found_board.LostFoundBoardReqDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.lost_found_board.LostFoundBoardRespDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.lost_found_board.LostFoundBoardRespDto.LostFoundBoardDetailRespDto.*;
@@ -181,7 +182,7 @@ public class PageServiceImpl implements PageService{
                     Member member = c.getMember();
                     boolean isMyComment = memberEmail != null && isMyCommentByMemberEmail(memberEmail, member);
                     String storeFileUrl = member.getImageFile() != null ? member.getImageFile().getStoreFileUrl() : null;
-                    return new CommentDetailRespDto(c.getId(), member.getEmail(), c.getContent(), c.getCreatedDate(), isMyComment, storeFileUrl);
+                    return new CommentDetailRespDto(c.getId(), member.getNickname(), c.getContent(), c.getCreatedDate(), isMyComment, storeFileUrl);
                 })
                 .collect(Collectors.toList());
     }
