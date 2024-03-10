@@ -39,7 +39,7 @@ export interface LostPostComment {
   commentAuthor: string;
   commentContent: string;
   commentCreatedAt: string;
-  isMyComment: boolean;
+  commentByUser: boolean;
   commentAuthorProfile: string;
 }
 
