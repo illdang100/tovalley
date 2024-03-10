@@ -84,7 +84,7 @@ const LostItemPostPage = () => {
         {},
         {
           params: {
-            status: resolveCheck,
+            status: !resolveCheck,
           },
         }
       )
@@ -109,14 +109,42 @@ const LostItemPostPage = () => {
   };
 
   const addComment = () => {
+    const date = new Date();
     axiosInstance
       .post(`/api/auth/lostItem/${id}/comment`, {
         commentContent: comment,
       })
       .then((res) => {
         console.log(res);
-        const newCommentList = commentList?.concat([res.data.data]);
-        setCommentList(newCommentList);
+        if (commentList && commentList?.length > 0) {
+          setCommentList([
+            ...commentList,
+            {
+              commentId: commentList[commentList?.length - 1].commentId + 1,
+              commentAuthor: lostPost ? lostPost.data.author : "",
+              commentContent: comment,
+              commentCreatedAt: `${date}`,
+              commentByUser: true,
+              commentAuthorProfile: lostPost
+                ? lostPost.data.boardAuthorProfile
+                : "",
+            },
+          ]);
+        } else {
+          setCommentList([
+            {
+              commentId: 1,
+              commentAuthor: lostPost ? lostPost.data.author : "",
+              commentContent: comment,
+              commentCreatedAt: `${date}`,
+              commentByUser: true,
+              commentAuthorProfile: lostPost
+                ? lostPost.data.boardAuthorProfile
+                : "",
+            },
+          ]);
+        }
+        // const newCommentList = commentList?.concat([res.data.data]);
       })
       .catch((err) => console.log(err));
   };
@@ -140,8 +168,7 @@ const LostItemPostPage = () => {
     axiosInstance
       .post("/api/auth/chatroom", {
         // 채팅방 생성 or 기존채팅방 id 요청
-        // recipientNick: lostPost?.data.author,
-        recipientNick: "test1",
+        recipientNick: lostPost?.data.author,
       })
       .then((res) => {
         console.log(res);
@@ -254,42 +281,44 @@ const LostItemPostPage = () => {
           </div>
         </div>
         <div className={styles.commentList}>
-          {commentList?.map((item) => (
-            <div key={item.commentAuthor} className={styles.commentItem}>
-              <div className={styles.commentTop}>
-                <div className={styles.commentInfo}>
-                  <div className={styles.commentProfileImage}>
-                    <img
-                      src={
-                        item.commentAuthorProfile
-                          ? item.commentAuthorProfile
-                          : process.env.PUBLIC_URL + "/img/user-profile.png"
-                      }
-                      alt="author-profile"
-                    />
+          {commentList &&
+            commentList.length > 0 &&
+            commentList?.map((item) => (
+              <div key={item.commentAuthor} className={styles.commentItem}>
+                <div className={styles.commentTop}>
+                  <div className={styles.commentInfo}>
+                    <div className={styles.commentProfileImage}>
+                      <img
+                        src={
+                          item.commentAuthorProfile
+                            ? item.commentAuthorProfile
+                            : process.env.PUBLIC_URL + "/img/user-profile.png"
+                        }
+                        alt="author-profile"
+                      />
+                    </div>
+                    <span className={styles.commentWriterName}>
+                      {item.commentAuthor}
+                    </span>
+                    <span>{elapsedTime(item.commentCreatedAt)}</span>
                   </div>
-                  <span className={styles.commentWriterName}>
-                    {item.commentAuthor}
-                  </span>
-                  <span>{elapsedTime(item.commentCreatedAt)}</span>
+                  {item.commentByUser ? (
+                    <div
+                      className={styles.deleteComment}
+                      onClick={() => deleteComment(item)}
+                    >
+                      삭제
+                    </div>
+                  ) : (
+                    <div className={styles.commentChatBtn}>
+                      <AiOutlineComment size="25px" />
+                      <span>채팅</span>
+                    </div>
+                  )}
                 </div>
-                {item.isMyComment ? (
-                  <div
-                    className={styles.deleteComment}
-                    onClick={() => deleteComment(item)}
-                  >
-                    삭제
-                  </div>
-                ) : (
-                  <div className={styles.commentChatBtn}>
-                    <AiOutlineComment size="25px" />
-                    <span>채팅</span>
-                  </div>
-                )}
+                <p>{item.commentContent}</p>
               </div>
-              <p>{item.commentContent}</p>
-            </div>
-          ))}
+            ))}
         </div>
         {deleteModal && (
           <CustomModal
