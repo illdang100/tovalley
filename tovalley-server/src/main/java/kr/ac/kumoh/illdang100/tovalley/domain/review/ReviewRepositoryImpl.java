@@ -3,6 +3,7 @@ package kr.ac.kumoh.illdang100.tovalley.domain.review;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import org.springframework.data.domain.SliceImpl;
 import com.querydsl.core.types.dsl.PathBuilder;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -30,7 +31,10 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
 
     @Override
     public Page<WaterPlaceReviewRespDto> findReviewsByWaterPlaceId(Long waterPlaceId,
+                                                                   Long memberId,
                                                                    Pageable pageable) {
+
+        BooleanExpression isMyReviewExpression = review.tripSchedule.member.id.eq(memberId);
 
         JPAQuery<WaterPlaceReviewRespDto> query = queryFactory
                 .select(Projections.constructor(WaterPlaceReviewRespDto.class,
@@ -40,7 +44,8 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
                         review.rating,
                         review.createdDate,
                         review.reviewContent,
-                        review.waterQualityReview
+                        review.waterQualityReview,
+                        isMyReviewExpression
                 ))
                 .from(review)
                 .join(review.tripSchedule, tripSchedule)
