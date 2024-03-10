@@ -111,7 +111,10 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             String providerId = splitUsername[1];
 
             LocalDateTime now = LocalDateTime.now();
-            nickname = providerId.substring(0, 5) + "_" + now.getYear() + String.format("%02d", now.getMonthValue()) + String.format("%02d", now.getDayOfMonth());
+            nickname = providerId.substring(0, 5) + "_" +
+                    String.format("%02d", now.getYear() % 100) +
+                    String.format("%02d", now.getMonthValue()) +
+                    String.format("%02d", now.getDayOfMonth());
         }
 
         Member member = Member.builder()
