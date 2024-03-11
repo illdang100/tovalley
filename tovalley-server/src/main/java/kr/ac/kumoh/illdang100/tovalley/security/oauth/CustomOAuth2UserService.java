@@ -11,7 +11,6 @@ import kr.ac.kumoh.illdang100.tovalley.security.oauth.provider.NaverUserInfo;
 import kr.ac.kumoh.illdang100.tovalley.security.oauth.provider.OAuth2UserInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -50,7 +49,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         OAuth2UserInfo oAuth2UserInfo = getOAuth2UserInfo(registrationId, attributes);
         Member member = memberRepository.findByUsername(username)
-                .orElseGet(() -> createNewMember(username, oAuth2UserInfo.getEmail(), oAuth2UserInfo.getName(), oAuth2UserInfo.getName()));
+                .orElseGet(() -> createNewMember(username, oAuth2UserInfo.getEmail(), oAuth2UserInfo.getName()));
 
         return new PrincipalDetails(member, attributes);
     }
@@ -93,7 +92,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         }
     }
 
-    private Member createNewMember(String username, String email, String memberName, String name) {
+    private Member createNewMember(String username, String email, String memberName) {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String password = passwordEncoder.encode(UUID.randomUUID().toString());
 
@@ -105,26 +104,25 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             }
         }
 
-        String nickname = null;
-        if (name != null && !StringUtils.isBlank(name)) {
-            String[] splitUsername = username.split("_");
-            String providerId = splitUsername[1];
-
-            LocalDateTime now = LocalDateTime.now();
-            nickname = providerId.substring(0, 5) + "_" +
-                    String.format("%02d", now.getYear() % 100) +
-                    String.format("%02d", now.getMonthValue()) +
-                    String.format("%02d", now.getDayOfMonth());
-        }
-
         Member member = Member.builder()
                 .username(username)
                 .memberName(memberName)
                 .email(email)
                 .password(password)
                 .role(MemberEnum.CUSTOMER)
-                .nickname(nickname)
+                .nickname(createNickname(username))
                 .build();
         return memberRepository.save(member);
+    }
+
+    private static String createNickname(String username) {
+        String[] splitUsername = username.split("_");
+        String providerId = splitUsername[1];
+        LocalDateTime now = LocalDateTime.now();
+
+        return providerId.substring(0, 5) + "_" +
+                String.format("%02d", now.getYear() % 100) +
+                String.format("%02d", now.getMonthValue()) +
+                String.format("%02d", now.getDayOfMonth());
     }
 }
