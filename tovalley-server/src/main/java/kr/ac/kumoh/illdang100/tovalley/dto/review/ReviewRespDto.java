@@ -1,6 +1,7 @@
 package kr.ac.kumoh.illdang100.tovalley.dto.review;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import kr.ac.kumoh.illdang100.tovalley.domain.review.WaterQualityReviewEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,9 +26,12 @@ public class ReviewRespDto {
         private String content;
         private List<String> reviewImages;
         private String waterQuality;
+        @JsonProperty("isMyReview")
+        private boolean isMyReview;
 
         public WaterPlaceReviewRespDto(Long reviewId, String memberProfileImg, String nickname, Integer rating,
-                                       LocalDateTime createdReviewDate, String content, WaterQualityReviewEnum waterQuality) {
+                                       LocalDateTime createdReviewDate, String content, WaterQualityReviewEnum waterQuality,
+                                       boolean isMyReview) {
             this.reviewId = reviewId;
             this.memberProfileImg = memberProfileImg;
             this.nickname = nickname;
@@ -35,6 +39,7 @@ public class ReviewRespDto {
             this.createdReviewDate = createdReviewDate;
             this.content = content;
             this.waterQuality = waterQuality.getValue();
+            this.isMyReview = isMyReview;
         }
     }
 

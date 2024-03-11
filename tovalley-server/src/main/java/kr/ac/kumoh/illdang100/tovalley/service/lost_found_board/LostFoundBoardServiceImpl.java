@@ -5,11 +5,14 @@ import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlace;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlaceRepository;
+import kr.ac.kumoh.illdang100.tovalley.dto.lost_found_board.LostFoundBoardRespDto.MyLostFoundBoardRespDto;
 import kr.ac.kumoh.illdang100.tovalley.handler.ex.CustomApiException;
 import kr.ac.kumoh.illdang100.tovalley.service.comment.CommentService;
 import kr.ac.kumoh.illdang100.tovalley.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -101,5 +104,10 @@ public class LostFoundBoardServiceImpl implements LostFoundBoardService {
         if (!isAuthorizedToAccessBoard(lostFoundBoard, memberId)) {
             throw new CustomApiException("게시글 작성자에게만 권한이 있습니다");
         }
+    }
+
+    @Override
+    public Slice<MyLostFoundBoardRespDto> getMyLostFoundBoards(Long memberId, Pageable pageable) {
+        return lostFoundBoardRepository.findSliceMyLostFoundBoardsByMemberId(memberId, pageable);
     }
 }

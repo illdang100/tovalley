@@ -1,7 +1,10 @@
 package kr.ac.kumoh.illdang100.tovalley.domain.lost_found_board;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.PathBuilder;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -14,6 +17,7 @@ import org.springframework.data.domain.SliceImpl;
 import javax.persistence.EntityManager;
 
 import java.util.List;
+import org.springframework.data.domain.Sort;
 
 import static kr.ac.kumoh.illdang100.tovalley.domain.comment.QComment.*;
 import static kr.ac.kumoh.illdang100.tovalley.domain.lost_found_board.QLostFoundBoard.*;
@@ -82,6 +86,39 @@ public class LostFoundBoardRepositoryImpl implements LostFoundBoardRepositoryCus
                 .fetch();
 
         return new SliceImpl<>(results, pageable, hasNextPage(results, pageable.getPageSize()));
+    }
+
+    @Override
+    public Slice<MyLostFoundBoardRespDto> findSliceMyLostFoundBoardsByMemberId(Long memberId, Pageable pageable) {
+
+        JPAQuery<MyLostFoundBoardRespDto> query = queryFactory
+                .select(Projections.constructor(MyLostFoundBoardRespDto.class,
+                        lostFoundBoard.id,
+                        lostFoundBoard.title,
+                        lostFoundBoard.createdDate
+                ))
+                .from(lostFoundBoard)
+                .where(lostFoundBoard.member.id.eq(memberId))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize() + 1);
+
+        for (Sort.Order o : pageable.getSort()) {
+            PathBuilder pathBuilder = new PathBuilder(
+                    lostFoundBoard.getType(), lostFoundBoard.getMetadata()
+            );
+            query.orderBy(new OrderSpecifier(o.isAscending() ? Order.ASC : Order.DESC,
+                    pathBuilder.get(o.getProperty())));
+        }
+
+        List<MyLostFoundBoardRespDto> result = query.fetch();
+
+        boolean hasNext = false;
+        if (result.size() > pageable.getPageSize()) {
+            result.remove(pageable.getPageSize());
+            hasNext = true;
+        }
+
+        return new SliceImpl<>(result, pageable, hasNext);
     }
 
     private boolean hasNextPage(List<LostFoundBoardListRespDto> contents, int pageSize) {

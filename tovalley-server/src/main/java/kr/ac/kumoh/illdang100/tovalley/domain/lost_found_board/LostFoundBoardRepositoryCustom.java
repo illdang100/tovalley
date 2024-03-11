@@ -8,4 +8,6 @@ import static kr.ac.kumoh.illdang100.tovalley.dto.lost_found_board.LostFoundBoar
 
 public interface LostFoundBoardRepositoryCustom {
     Slice<LostFoundBoardListRespDto> getLostFoundBoardListBySlice(LostFoundBoardListReqDto lostFoundBoardListReqDto, Pageable pageable);
+
+    Slice<MyLostFoundBoardRespDto> findSliceMyLostFoundBoardsByMemberId(Long memberId, Pageable pageable);
 }

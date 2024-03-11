@@ -12,7 +12,7 @@ public interface PageService {
 
     MainPageAllRespDto getMainPageAllData();
 
-    WaterPlaceDetailPageAllRespDto getWaterPlaceDetailPageAllData(Long waterPlaceId, Pageable pageable);
+    WaterPlaceDetailPageAllRespDto getWaterPlaceDetailPageAllData(Long waterPlaceId, Long memberId, Pageable pageable);
 
     MyPageAllRespDto getMyPageAllData(Long memberId, Pageable pageable);
 
