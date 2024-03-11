@@ -84,13 +84,13 @@ public class PageServiceImpl implements PageService{
      */
     @Override
     @Transactional
-    public WaterPlaceDetailPageAllRespDto getWaterPlaceDetailPageAllData(Long waterPlaceId, Pageable pageable) {
+    public WaterPlaceDetailPageAllRespDto getWaterPlaceDetailPageAllData(Long waterPlaceId, Long memberId, Pageable pageable) {
         List<DailyWaterPlaceWeatherDto> waterPlaceWeathers = getWaterPlaceWeathers(waterPlaceId);
         WaterPlaceDetailRespDto waterPlaceDetail = getWaterPlaceDetail(waterPlaceId);
         RescueSupplyByWaterPlaceRespDto rescueSupplies = getRescueSupplies(waterPlaceId);
         WaterPlaceAccidentFor5YearsDto accidentsFor5Years = getAccidentsFor5Years(waterPlaceId);
         Map<LocalDate, Integer> travelPlans = getTravelPlans(waterPlaceId);
-        WaterPlaceReviewDetailRespDto reviewDetailRespDto = getReviews(waterPlaceId, pageable);
+        WaterPlaceReviewDetailRespDto reviewDetailRespDto = getReviews(waterPlaceId, memberId, pageable);
 
         return new WaterPlaceDetailPageAllRespDto(waterPlaceWeathers, waterPlaceDetail, rescueSupplies,
                 accidentsFor5Years, travelPlans, reviewDetailRespDto);
@@ -116,8 +116,8 @@ public class PageServiceImpl implements PageService{
         return tripScheduleService.getTripAttendeesByWaterPlace(waterPlaceId, YearMonth.now());
     }
 
-    private WaterPlaceReviewDetailRespDto getReviews(Long waterPlaceId, Pageable pageable) {
-        return reviewService.getReviewsByWaterPlaceId(waterPlaceId, pageable);
+    private WaterPlaceReviewDetailRespDto getReviews(Long waterPlaceId, Long memberId, Pageable pageable) {
+        return reviewService.getReviewsByWaterPlaceId(waterPlaceId, memberId, pageable);
     }
 
     /**

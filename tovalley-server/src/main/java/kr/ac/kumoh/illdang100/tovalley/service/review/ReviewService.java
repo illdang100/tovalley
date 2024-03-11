@@ -20,5 +20,5 @@ public interface ReviewService {
     Slice<MyReviewRespDto> getReviewsByMemberId(Long memberId, Pageable pageable);
 
     // 특정 물놀이 장소의 리뷰 조회
-    WaterPlaceReviewDetailRespDto getReviewsByWaterPlaceId(Long waterPlaceId, Pageable pageable);
+    WaterPlaceReviewDetailRespDto getReviewsByWaterPlaceId(Long waterPlaceId, Long memberId, Pageable pageable);
 }

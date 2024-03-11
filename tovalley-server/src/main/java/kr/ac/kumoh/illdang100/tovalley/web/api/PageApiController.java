@@ -49,9 +49,11 @@ public class PageApiController {
     @GetMapping("/auth/water-places/{id}")
     @Operation(summary = "물놀이 장소 상세보기 화면", description = "물놀이 장소 상세보기 페이지 정보를 반환합니다.")
     public ResponseEntity<?> getWaterPlaceDetailPage(@PathVariable("id") Long waterPlaceId,
+                                                     @AuthenticationPrincipal PrincipalDetails principalDetails,
                                                      @PageableDefault(size = 5, sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable) {
 
-        WaterPlaceDetailPageAllRespDto result = pageService.getWaterPlaceDetailPageAllData(waterPlaceId, pageable);
+        WaterPlaceDetailPageAllRespDto result
+                = pageService.getWaterPlaceDetailPageAllData(waterPlaceId, principalDetails.getMember().getId(), pageable);
 
         return new ResponseEntity<>(new ResponseDto<>(1, "물놀이 장소 상세보기 페이지 조회에 성공하였습니다", result), HttpStatus.OK);
     }
