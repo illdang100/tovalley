@@ -1,8 +1,9 @@
 package kr.ac.kumoh.illdang100.tovalley.service.review;
 
-import kr.ac.kumoh.illdang100.tovalley.domain.review.Review;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+
+import java.util.List;
 
 import static kr.ac.kumoh.illdang100.tovalley.dto.review.ReviewReqDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.review.ReviewRespDto.*;
@@ -21,4 +22,6 @@ public interface ReviewService {
 
     // 특정 물놀이 장소의 리뷰 조회
     WaterPlaceReviewDetailRespDto getReviewsByWaterPlaceId(Long waterPlaceId, Pageable pageable);
+
+    List<RecentReviewRespDto> getRecentReviewTop3();
 }

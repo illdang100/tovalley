@@ -15,4 +15,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long>, ReviewRep
 
     @Query("select r from Review r where r.tripSchedule.id in :tripScheduleIds")
     void deleteAllByTripScheduleIds(List<Long> tripScheduleIds);
+
+    List<Review> findTop3ByOrderByCreatedDateDesc();
 }

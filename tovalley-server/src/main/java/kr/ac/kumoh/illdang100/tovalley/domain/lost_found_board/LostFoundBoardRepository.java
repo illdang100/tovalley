@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface LostFoundBoardRepository extends JpaRepository<LostFoundBoard, Long>, LostFoundBoardRepositoryCustom {
@@ -13,4 +14,6 @@ public interface LostFoundBoardRepository extends JpaRepository<LostFoundBoard, 
 
     @Query("select lfb from LostFoundBoard lfb JOIN FETCH lfb.member m where lfb.id = :lostFoundBoardId")
     Optional<LostFoundBoard> findByIdWithMember(@Param("lostFoundBoardId")Long lostFoundBoardId);
+
+    List<LostFoundBoard> findTop3ByOrderByCreatedDateDesc();
 }

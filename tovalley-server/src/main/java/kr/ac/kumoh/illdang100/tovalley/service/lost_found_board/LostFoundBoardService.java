@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 
 import static kr.ac.kumoh.illdang100.tovalley.dto.lost_found_board.LostFoundBoardReqDto.*;
+import static kr.ac.kumoh.illdang100.tovalley.dto.lost_found_board.LostFoundBoardRespDto.*;
 
 public interface LostFoundBoardService {
     // 분실물 게시글 등록
@@ -24,4 +25,6 @@ public interface LostFoundBoardService {
     void updateResolvedStatus(Long lostFoundBoardId, Boolean isResolved, Long memberId);
 
     Slice<MyLostFoundBoardRespDto> getMyLostFoundBoards(Long memberId, Pageable pageable);
+
+    List<RecentLostFoundBoardRespDto> getRecentLostFoundBoardTop3();
 }

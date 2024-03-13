@@ -72,4 +72,14 @@ public class ReviewRespDto {
         private Map<Integer, Long> ratingRatio;
         private Page<WaterPlaceReviewRespDto> reviews; // 리뷰
     }
+
+    @AllArgsConstructor
+    @Data
+    public static class RecentReviewRespDto {
+        private Long reviewId;
+        private int reviewRating;
+        private String reviewContent;
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
+        private LocalDateTime reviewCreatedAt;
+    }
 }

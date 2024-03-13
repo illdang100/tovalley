@@ -17,8 +17,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static kr.ac.kumoh.illdang100.tovalley.dto.lost_found_board.LostFoundBoardReqDto.*;
+import static kr.ac.kumoh.illdang100.tovalley.dto.lost_found_board.LostFoundBoardRespDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.util.EntityFinder.*;
 
 @Slf4j
@@ -109,5 +111,12 @@ public class LostFoundBoardServiceImpl implements LostFoundBoardService {
     @Override
     public Slice<MyLostFoundBoardRespDto> getMyLostFoundBoards(Long memberId, Pageable pageable) {
         return lostFoundBoardRepository.findSliceMyLostFoundBoardsByMemberId(memberId, pageable);
+    }
+
+    @Override
+    public List<RecentLostFoundBoardRespDto> getRecentLostFoundBoardTop3() {
+        return lostFoundBoardRepository.findTop3ByOrderByCreatedDateDesc()
+                .stream().map(l -> new RecentLostFoundBoardRespDto(l.getId(), l.getLostFoundEnum().toString(), l.getTitle(), l.getContent(), l.getCreatedDate()))
+                .collect(Collectors.toList());
     }
 }

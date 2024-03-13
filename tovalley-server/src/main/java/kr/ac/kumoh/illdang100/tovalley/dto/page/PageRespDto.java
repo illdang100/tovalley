@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import static kr.ac.kumoh.illdang100.tovalley.dto.accident.AccidentRespDto.*;
+import static kr.ac.kumoh.illdang100.tovalley.dto.lost_found_board.LostFoundBoardRespDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.member.MemberRespDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.rescue_supply.RescueSupplyRespDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.dto.review.ReviewRespDto.*;
@@ -27,6 +28,8 @@ public class PageRespDto {
         private AlertRespDto weatherAlert; // 기상 특보 정보
         private AccidentCountDto accidentCountDto; // 전국 지역 올해 사고 발생수
         private List<NationalPopularWaterPlacesDto> nationalPopularWaterPlaces; // 전국 인기 물놀이 지역 리스트
+        private List<RecentReviewRespDto> recentReviews; // 최근 리뷰
+        private List<RecentLostFoundBoardRespDto> recentLostFoundBoards; // 최근 분실물 찾기 게시글
     }
 
     @AllArgsConstructor

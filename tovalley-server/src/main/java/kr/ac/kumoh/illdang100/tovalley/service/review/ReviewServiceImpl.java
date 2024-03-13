@@ -179,4 +179,11 @@ public class ReviewServiceImpl implements ReviewService {
     private double formatRating(double rating) {
         return Double.parseDouble(String.format("%.1f", rating));
     }
+
+    @Override
+    public List<RecentReviewRespDto> getRecentReviewTop3() {
+        return reviewRepository.findTop3ByOrderByCreatedDateDesc()
+                .stream().map(r -> new RecentReviewRespDto(r.getId(), r.getRating(), r.getReviewContent(), r.getCreatedDate()))
+                .collect(Collectors.toList());
+    }
 }

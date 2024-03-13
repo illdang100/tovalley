@@ -75,4 +75,15 @@ public class LostFoundBoardRespDto {
         @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
         private LocalDateTime postCreateAt;
     }
+
+    @Data
+    @AllArgsConstructor
+    public static class RecentLostFoundBoardRespDto {
+        private Long lostFoundBoardId;
+        private String lostFoundBoardCategory;
+        private String lostFoundBoardTitle;
+        private String lostFoundBoardContent;
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
+        private LocalDateTime lostFoundBoardCreatedAt;
+    }
 }

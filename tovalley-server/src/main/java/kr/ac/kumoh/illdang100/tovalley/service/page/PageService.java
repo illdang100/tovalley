@@ -18,5 +18,5 @@ public interface PageService {
 
     Slice<LostFoundBoardListRespDto> getLostFoundBoardList(LostFoundBoardListReqDto lostFoundBoardListReqDto, Pageable pageable);
 
-    LostFoundBoardDetailRespDto getLostFoundBoardDetail(long lostFoundBoardId, Member member);
+    LostFoundBoardDetailRespDto getLostFoundBoardDetail(Long lostFoundBoardId, Member member);
 }

@@ -70,8 +70,10 @@ public class PageServiceImpl implements PageService{
         AlertRespDto alertRespDto = weatherService.getAllSpecialWeathers();
         AccidentCountDto nationalAccidentCountDto = accidentService.getAccidentCntPerMonthByProvince(ProvinceEnum.NATIONWIDE.getValue());
         List<NationalPopularWaterPlacesDto> popularWaterPlaces = waterPlaceService.getPopularWaterPlaces("RATING");
+        List<RecentLostFoundBoardRespDto> RecentLostFoundBoardRespDto = lostFoundBoardService.getRecentLostFoundBoardTop3();
+        List<RecentReviewRespDto> RecentReviewRespDto = reviewService.getRecentReviewTop3();
 
-        return new MainPageAllRespDto(nationalWeatherDto, alertRespDto, nationalAccidentCountDto, popularWaterPlaces);
+        return new MainPageAllRespDto(nationalWeatherDto, alertRespDto, nationalAccidentCountDto, popularWaterPlaces, RecentReviewRespDto, RecentLostFoundBoardRespDto);
     }
 
     /**
@@ -164,7 +166,7 @@ public class PageServiceImpl implements PageService{
      * @return
      */
     @Override
-    public LostFoundBoardDetailRespDto getLostFoundBoardDetail(long lostFoundBoardId, Member member) {
+    public LostFoundBoardDetailRespDto getLostFoundBoardDetail(Long lostFoundBoardId, Member member) {
 
         LostFoundBoard foundLostFoundBoard = findLostFoundBoardByIdWithMemberOrElseThrowEx(lostFoundBoardRepository, lostFoundBoardId);
 
