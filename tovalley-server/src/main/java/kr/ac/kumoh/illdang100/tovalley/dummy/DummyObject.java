@@ -373,6 +373,18 @@ public class DummyObject {
                 .build();
     }
 
+    protected LostFoundBoard newLostFoundBoard(String title, String content, Member member, Boolean isResolved, LostFoundEnum lostFoundEnum, WaterPlace waterPlace) {
+
+        return LostFoundBoard.builder()
+                .title(title)
+                .content(content)
+                .member(member)
+                .isResolved(isResolved)
+                .lostFoundEnum(lostFoundEnum)
+                .waterPlace(waterPlace)
+                .build();
+    }
+
     protected LostFoundBoard newMockLostFoundBoard(Long id, String title, String content, Member member, Boolean isResolved, LostFoundEnum lostFoundEnum, WaterPlace waterPlace) {
 
         return LostFoundBoard.builder()

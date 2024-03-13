@@ -18,6 +18,8 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -109,7 +111,14 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 .email(email)
                 .password(password)
                 .role(MemberEnum.CUSTOMER)
+                .nickname(createNickname())
                 .build();
         return memberRepository.save(member);
+    }
+
+    private static String createNickname() {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyMMddHHmmss");
+        return UUID.randomUUID().toString().replace("-", "").substring(0, 7) + "_" +
+                LocalDateTime.now().format(dateTimeFormatter);
     }
 }

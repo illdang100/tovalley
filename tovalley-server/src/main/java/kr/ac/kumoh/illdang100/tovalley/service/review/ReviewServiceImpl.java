@@ -135,20 +135,18 @@ public class ReviewServiceImpl implements ReviewService {
      * @return: 평점, 리뷰수, 리뷰 페이징 정보
      */
     @Override
-    public WaterPlaceReviewDetailRespDto getReviewsByWaterPlaceId(Long waterPlaceId, Pageable pageable) {
+    public WaterPlaceReviewDetailRespDto getReviewsByWaterPlaceId(Long waterPlaceId, Long memberId, Pageable pageable) {
         WaterPlace findWaterPlace = findWaterPlaceByIdOrElseThrowEx(waterPlaceRepository, waterPlaceId);
 
         List<Review> allReviews = reviewRepository.findAllByWaterPlace_Id(waterPlaceId);
 
         Map<Integer, Long> ratingRatioMap = calculateRatingRatioMap(allReviews);
 
-        Page<WaterPlaceReviewRespDto> reviewsByWaterPlaceId = reviewRepository.findReviewsByWaterPlaceId(waterPlaceId, pageable);
+        Page<WaterPlaceReviewRespDto> reviewsPage = getReviewsPageByWaterPlaceId(waterPlaceId, memberId, pageable);
 
         double formattedRating = formatRating(findWaterPlace.getRating());
 
-        includeReviewImages(reviewsByWaterPlaceId.getContent());
-
-        return new WaterPlaceReviewDetailRespDto(formattedRating, findWaterPlace.getReviewCount(), ratingRatioMap, reviewsByWaterPlaceId);
+        return new WaterPlaceReviewDetailRespDto(formattedRating, findWaterPlace.getReviewCount(), ratingRatioMap, reviewsPage);
     }
 
     private Map<Integer, Long> calculateRatingRatioMap(List<Review> reviews) {
@@ -165,15 +163,18 @@ public class ReviewServiceImpl implements ReviewService {
         return ratingRatioMap;
     }
 
-    private void includeReviewImages(List<WaterPlaceReviewRespDto> reviews) {
-        for (WaterPlaceReviewRespDto review : reviews) {
-            Long reviewId = review.getReviewId();
-            List<ReviewImage> reviewImages = reviewImageRepository.findByReview_Id(reviewId);
-            List<String> reviewStoreFileUrls = reviewImages.stream()
-                    .map(image -> image.getImageFile().getStoreFileUrl())
-                    .collect(Collectors.toList());
-            review.setReviewImages(reviewStoreFileUrls);
-        }
+    private Page<WaterPlaceReviewRespDto> getReviewsPageByWaterPlaceId(Long waterPlaceId, Long memberId, Pageable pageable) {
+        Page<WaterPlaceReviewRespDto> reviewsPage = reviewRepository.findReviewsByWaterPlaceId(waterPlaceId, memberId, pageable);
+        reviewsPage.getContent().forEach(this::addReviewImagesToDto);
+        return reviewsPage;
+    }
+
+    private void addReviewImagesToDto(WaterPlaceReviewRespDto review) {
+        List<ReviewImage> reviewImages = reviewImageRepository.findByReview_Id(review.getReviewId());
+        List<String> imageUrls = reviewImages.stream()
+                .map(image -> image.getImageFile().getStoreFileUrl())
+                .collect(Collectors.toList());
+        review.setReviewImages(imageUrls);
     }
 
     private double formatRating(double rating) {

@@ -8,7 +8,7 @@ import static kr.ac.kumoh.illdang100.tovalley.dto.review.ReviewRespDto.*;
 
 public interface ReviewRepositoryCustom {
 
-    Page<WaterPlaceReviewRespDto> findReviewsByWaterPlaceId(Long waterPlaceId, Pageable pageable);
+    Page<WaterPlaceReviewRespDto> findReviewsByWaterPlaceId(Long waterPlaceId, Long memberId, Pageable pageable);
 
     Slice<MyReviewRespDto> findSliceMyReviewByMemberId(Long memberId, Pageable pageable);
 }

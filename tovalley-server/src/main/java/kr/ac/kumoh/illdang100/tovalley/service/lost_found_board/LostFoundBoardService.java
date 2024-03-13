@@ -3,6 +3,9 @@ package kr.ac.kumoh.illdang100.tovalley.service.lost_found_board;
 import kr.ac.kumoh.illdang100.tovalley.domain.lost_found_board.LostFoundBoard;
 
 import java.util.List;
+import kr.ac.kumoh.illdang100.tovalley.dto.lost_found_board.LostFoundBoardRespDto.MyLostFoundBoardRespDto;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 
 import static kr.ac.kumoh.illdang100.tovalley.dto.lost_found_board.LostFoundBoardReqDto.*;
 
@@ -19,4 +22,6 @@ public interface LostFoundBoardService {
     Boolean isAuthorizedToAccessBoard(LostFoundBoard lostFoundBoard, Long memberId);
 
     void updateResolvedStatus(Long lostFoundBoardId, Boolean isResolved, Long memberId);
+
+    Slice<MyLostFoundBoardRespDto> getMyLostFoundBoards(Long memberId, Pageable pageable);
 }

@@ -54,7 +54,7 @@ class ReviewRepositoryImplTest extends DummyObject {
 
         // when
         List<WaterPlaceReviewRespDto> content =
-                reviewRepository.findReviewsByWaterPlaceId(waterPlaceId, pageRequest)
+                reviewRepository.findReviewsByWaterPlaceId(waterPlaceId, 1L, pageRequest)
                         .getContent();
 
         // then
@@ -76,7 +76,7 @@ class ReviewRepositoryImplTest extends DummyObject {
 
         // when
         List<WaterPlaceReviewRespDto> content =
-                reviewRepository.findReviewsByWaterPlaceId(waterPlaceId, pageRequest)
+                reviewRepository.findReviewsByWaterPlaceId(waterPlaceId, 1L, pageRequest)
                         .getContent();
 
         // then
@@ -98,7 +98,7 @@ class ReviewRepositoryImplTest extends DummyObject {
 
         // when
         List<WaterPlaceReviewRespDto> content =
-                reviewRepository.findReviewsByWaterPlaceId(waterPlaceId, pageRequest)
+                reviewRepository.findReviewsByWaterPlaceId(waterPlaceId, 1L, pageRequest)
                         .getContent();
 
         // then
