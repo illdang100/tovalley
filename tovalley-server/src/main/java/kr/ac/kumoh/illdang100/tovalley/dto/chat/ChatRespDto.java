@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatMessage;
 import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatRoom;
+import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatType;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.util.ChatUtil;
 import lombok.AllArgsConstructor;
@@ -82,6 +83,8 @@ public class ChatRespDto {
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
         private LocalDateTime createdAt;
         private int readCount;
+        private ChatType chatType; // 채팅 타입 필드('TEXT', 'IMAGE')
+        private String imageUrl; // 이미지 URL
 
         public ChatMessageRespDto(ChatMessage chatMessage, Long memberId) {
             this.chatMessageId = chatMessage.getId();
@@ -90,6 +93,8 @@ public class ChatRespDto {
             this.content = chatMessage.getContent();
             this.createdAt = ChatUtil.convertZdtStringToLocalDateTime(chatMessage.getCreatedAt());
             this.readCount = chatMessage.getReadCount();
+            this.chatType = chatMessage.getChatType();
+            this.imageUrl = chatMessage.getImageUrl();
         }
     }
 }

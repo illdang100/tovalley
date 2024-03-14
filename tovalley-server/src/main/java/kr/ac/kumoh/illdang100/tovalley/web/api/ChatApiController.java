@@ -2,15 +2,20 @@ package kr.ac.kumoh.illdang100.tovalley.web.api;
 
 import static kr.ac.kumoh.illdang100.tovalley.dto.chat.ChatReqDto.*;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import javax.validation.Valid;
+import kr.ac.kumoh.illdang100.tovalley.domain.FileRootPathVO;
+import kr.ac.kumoh.illdang100.tovalley.domain.ImageFile;
 import kr.ac.kumoh.illdang100.tovalley.dto.ResponseDto;
 import kr.ac.kumoh.illdang100.tovalley.dto.chat.ChatRespDto.ChatMessageListRespDto;
 import kr.ac.kumoh.illdang100.tovalley.dto.chat.ChatRespDto.ChatRoomRespDto;
 import kr.ac.kumoh.illdang100.tovalley.dto.chat.ChatRespDto.CreateNewChatRoomRespDto;
 import kr.ac.kumoh.illdang100.tovalley.domain.chat.kafka.Message;
+import kr.ac.kumoh.illdang100.tovalley.handler.ex.CustomApiException;
 import kr.ac.kumoh.illdang100.tovalley.security.auth.PrincipalDetails;
+import kr.ac.kumoh.illdang100.tovalley.service.S3Service;
 import kr.ac.kumoh.illdang100.tovalley.service.chat.ChatService;
 import kr.ac.kumoh.illdang100.tovalley.util.ChatUtil;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +35,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
@@ -39,6 +46,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ChatApiController {
 
     private final ChatService chatService;
+    private final S3Service s3Service;
 
     @PostMapping("/api/auth/chatroom")
     public ResponseEntity<?> createChatRoom(
@@ -83,5 +91,21 @@ public class ChatApiController {
     public void sendMessage(@Payload Message message, SimpMessageHeaderAccessor headerAccessor) {
         Long memberId = (Long)headerAccessor.getSessionAttributes().get(ChatUtil.MEMBER_ID);
         chatService.sendMessage(message, memberId);
+    }
+
+    @PostMapping(value = "/api/auth/chat/images/upload")
+    public ResponseEntity<?> changeProfileImage(@RequestPart(value = "image", required = false) MultipartFile chatImage) {
+
+        // chatImage가 null인 경우 처리
+        if (chatImage == null || chatImage.isEmpty()) {
+            return new ResponseEntity<>(new ResponseDto<>(-1, "업로드할 이미지가 제공되지 않았습니다", null), HttpStatus.BAD_REQUEST);
+        }
+
+        try {
+            ImageFile chatImageFile = s3Service.upload(chatImage, FileRootPathVO.CHAT_PATH);
+            return new ResponseEntity<>(new ResponseDto<>(1, "채팅 메시지 이미지가 저장되었습니다", chatImageFile), HttpStatus.OK);
+        } catch (Exception e) {
+            throw new CustomApiException(e.getMessage());
+        }
     }
 }
