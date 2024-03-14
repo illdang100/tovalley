@@ -119,11 +119,13 @@ public class StompHandler implements ChannelInterceptor { // WebSocket을 이용
     }
 
     private void handleUnsubscribe(StompHeaderAccessor accessor) {
-        if (accessor.getDestination().startsWith(TOPIC_NOTIFICATION)) {
+        String destination = accessor.getDestination();
+        if (destination != null && accessor.getDestination().startsWith(TOPIC_NOTIFICATION)) {
             log.debug("알림 UNSUBSCRIBE");
             return;
         }
 
+        // 채팅방 구독 해지 처리
         handleChatRoomUnsubscription(accessor);
     }
 
