@@ -7,6 +7,7 @@ import kr.ac.kumoh.illdang100.tovalley.domain.ImageFile;
 import kr.ac.kumoh.illdang100.tovalley.domain.accident.Accident;
 import kr.ac.kumoh.illdang100.tovalley.domain.accident.AccidentEnum;
 import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatMessage;
+import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatType;
 import kr.ac.kumoh.illdang100.tovalley.domain.notification.ChatNotification;
 import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatRoom;
 import kr.ac.kumoh.illdang100.tovalley.domain.comment.Comment;
@@ -434,13 +435,17 @@ public class DummyObject {
                 .build();
     }
 
-    protected ChatMessage newChatMessage(Long chatRoomId, Long senderId, String content) {
+    protected ChatMessage newChatMessage(Long chatRoomId, Long senderId, String content,
+                                         ChatType chatType, String imageName, String imageUrl) {
         return ChatMessage.builder()
                 .chatRoomId(chatRoomId)
                 .senderId(senderId)
                 .content(content)
                 .createdAt(ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toString())
                 .readCount(1)
+                .chatType(chatType)
+                .imageName(imageName)
+                .imageUrl(imageUrl)
                 .build();
     }
 

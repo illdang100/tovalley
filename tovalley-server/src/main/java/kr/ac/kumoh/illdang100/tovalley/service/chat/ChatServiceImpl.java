@@ -154,23 +154,23 @@ public class ChatServiceImpl implements ChatService {
         return chatRooms;
     }
 
-    private void processSingleChatRoom(ChatRoomRespDto chatRoom, Long memberId) {
-        long unreadMessageCount = countUnReadMessages(chatRoom.getChatRoomId(), memberId);
-        chatRoom.changeUnReadMessageCount(unreadMessageCount);
-        updateChatRoomWithLastMessageIfExists(chatRoom);
+    private void processSingleChatRoom(ChatRoomRespDto chatRoomRespDto, Long memberId) {
+        long unreadMessageCount = countUnReadMessages(chatRoomRespDto.getChatRoomId(), memberId);
+        chatRoomRespDto.changeUnReadMessageCount(unreadMessageCount);
+        updateChatRoomWithLastMessageIfExists(chatRoomRespDto);
     }
 
-    private void updateChatRoomWithLastMessageIfExists(ChatRoomRespDto chatRoom) {
-        Optional<ChatMessage> lastMessageOpt = findLastMessageInChatRoom(chatRoom.getChatRoomId());
-        lastMessageOpt.ifPresent((lastMessage) -> updateChatRoomWithLastMessage(chatRoom, lastMessage));
+    private void updateChatRoomWithLastMessageIfExists(ChatRoomRespDto chatRoomRespDto) {
+        Optional<ChatMessage> lastMessageOpt = findLastMessageInChatRoom(chatRoomRespDto.getChatRoomId());
+        lastMessageOpt.ifPresent((lastMessage) -> updateChatRoomWithLastMessage(chatRoomRespDto, lastMessage));
     }
 
     private Optional<ChatMessage> findLastMessageInChatRoom(Long chatRoomId) {
         return chatMessageRepository.findTopByChatRoomIdOrderByCreatedAtDesc(chatRoomId);
     }
 
-    private void updateChatRoomWithLastMessage(ChatRoomRespDto chatRoom, ChatMessage lastMessage) {
-        chatRoom.changeLastMessage(lastMessage.getContent(),
+    private void updateChatRoomWithLastMessage(ChatRoomRespDto chatRoomRespDto, ChatMessage lastMessage) {
+        chatRoomRespDto.changeLastMessage(lastMessage.getContent(),
                 ChatUtil.convertZdtStringToLocalDateTime(lastMessage.getCreatedAt()));
     }
 
