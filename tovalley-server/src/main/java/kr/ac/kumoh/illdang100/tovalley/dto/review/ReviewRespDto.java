@@ -2,8 +2,10 @@ package kr.ac.kumoh.illdang100.tovalley.dto.review;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import kr.ac.kumoh.illdang100.tovalley.domain.review.Review;
 import kr.ac.kumoh.illdang100.tovalley.domain.review.WaterQualityReviewEnum;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.domain.Page;
 
@@ -78,13 +80,25 @@ public class ReviewRespDto {
         private Page<WaterPlaceReviewRespDto> reviews; // 리뷰
     }
 
-    @AllArgsConstructor
     @Data
+    @Builder
+    @AllArgsConstructor
     public static class RecentReviewRespDto {
         private Long reviewId;
         private int reviewRating;
         private String reviewContent;
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
         private LocalDateTime reviewCreatedAt;
+        private Long waterPlaceId;
+
+        public static RecentReviewRespDto createRecentReviewRespDto(Review review) {
+            return RecentReviewRespDto.builder()
+                    .reviewId(review.getId())
+                    .reviewContent(review.getReviewContent())
+                    .reviewRating(review.getRating())
+                    .reviewCreatedAt(review.getCreatedDate())
+                    .waterPlaceId(review.getTripSchedule().getWaterPlace().getId())
+                    .build();
+        }
     }
 }

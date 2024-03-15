@@ -116,7 +116,7 @@ public class LostFoundBoardServiceImpl implements LostFoundBoardService {
     @Override
     public List<RecentLostFoundBoardRespDto> getRecentLostFoundBoardTop3() {
         return lostFoundBoardRepository.findTop3ByOrderByCreatedDateDesc()
-                .stream().map(l -> new RecentLostFoundBoardRespDto(l.getId(), l.getLostFoundEnum().toString(), l.getTitle(), l.getContent(), l.getCreatedDate()))
+                .stream().map(RecentLostFoundBoardRespDto::createRecentLostFoundBoardRespDto)
                 .collect(Collectors.toList());
     }
 }

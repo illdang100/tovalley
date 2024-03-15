@@ -77,6 +77,7 @@ public class LostFoundBoardRespDto {
     }
 
     @Data
+    @Builder
     @AllArgsConstructor
     public static class RecentLostFoundBoardRespDto {
         private Long lostFoundBoardId;
@@ -85,5 +86,15 @@ public class LostFoundBoardRespDto {
         private String lostFoundBoardContent;
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
         private LocalDateTime lostFoundBoardCreatedAt;
+
+        public static RecentLostFoundBoardRespDto createRecentLostFoundBoardRespDto(LostFoundBoard lostFoundBoard) {
+            return RecentLostFoundBoardRespDto.builder()
+                    .lostFoundBoardId(lostFoundBoard.getId())
+                    .lostFoundBoardCategory(lostFoundBoard.getLostFoundEnum().toString())
+                    .lostFoundBoardTitle(lostFoundBoard.getTitle())
+                    .lostFoundBoardContent(lostFoundBoard.getContent())
+                    .lostFoundBoardCreatedAt(lostFoundBoard.getCreatedDate())
+                    .build();
+        }
     }
 }
