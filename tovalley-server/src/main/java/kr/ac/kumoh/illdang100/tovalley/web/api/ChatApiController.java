@@ -94,7 +94,7 @@ public class ChatApiController {
     }
 
     @PostMapping(value = "/api/auth/chat/images/upload")
-    public ResponseEntity<?> changeProfileImage(@RequestPart(value = "image", required = false) MultipartFile chatImage) {
+    public ResponseEntity<?> saveChatImage(@RequestPart(value = "image", required = false) MultipartFile chatImage) {
 
         // chatImage가 null인 경우 처리
         if (chatImage == null || chatImage.isEmpty()) {
