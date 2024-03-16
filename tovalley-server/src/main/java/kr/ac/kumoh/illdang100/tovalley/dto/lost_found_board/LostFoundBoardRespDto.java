@@ -75,4 +75,26 @@ public class LostFoundBoardRespDto {
         @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
         private LocalDateTime postCreateAt;
     }
+
+    @Data
+    @Builder
+    @AllArgsConstructor
+    public static class RecentLostFoundBoardRespDto {
+        private Long lostFoundBoardId;
+        private String lostFoundBoardCategory;
+        private String lostFoundBoardTitle;
+        private String lostFoundBoardContent;
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
+        private LocalDateTime lostFoundBoardCreatedAt;
+
+        public static RecentLostFoundBoardRespDto createRecentLostFoundBoardRespDto(LostFoundBoard lostFoundBoard) {
+            return RecentLostFoundBoardRespDto.builder()
+                    .lostFoundBoardId(lostFoundBoard.getId())
+                    .lostFoundBoardCategory(lostFoundBoard.getLostFoundEnum().toString())
+                    .lostFoundBoardTitle(lostFoundBoard.getTitle())
+                    .lostFoundBoardContent(lostFoundBoard.getContent())
+                    .lostFoundBoardCreatedAt(lostFoundBoard.getCreatedDate())
+                    .build();
+        }
+    }
 }
