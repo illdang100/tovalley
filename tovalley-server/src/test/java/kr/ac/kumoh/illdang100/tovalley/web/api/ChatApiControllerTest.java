@@ -13,6 +13,7 @@ import javax.servlet.http.Cookie;
 import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatMessageRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatRoom;
 import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatRoomRepository;
+import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatType;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberRepository;
 import kr.ac.kumoh.illdang100.tovalley.dto.chat.ChatReqDto.CreateNewChatRoomReqDto;
@@ -172,16 +173,30 @@ class ChatApiControllerTest extends DummyObject {
 
         // 첫 페이지의 마지막 채팅 메시지 ID를 cursor로 사용
         String responseJson = firstPageResult.getResponse().getContentAsString();
-        ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode rootNode = objectMapper.readTree(responseJson);
+        JsonNode rootNode = om.readTree(responseJson);
         String lastChatMessageId = rootNode.path("data").path("chatMessages").path("content").get(0).path("chatMessageId").asText();
         System.out.println("lastChatMessageId = " + lastChatMessageId);
 
         // 두 번째 페이지 조회
-        mvc.perform(get("/api/auth/chat/messages/1")
+        MvcResult secondPageResult = mvc.perform(get("/api/auth/chat/messages/1")
                         .cookie(new Cookie(JwtVO.ACCESS_TOKEN, accessToken))
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("cursor", lastChatMessageId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.msg").value("채팅 메시지 목록 조회에 성공했습니다"))
+                .andDo(MockMvcResultHandlers.print())
+                .andReturn();
+
+        String responseJson2 = secondPageResult.getResponse().getContentAsString();
+        JsonNode rootNode2 = om.readTree(responseJson2);
+        String lastChatMessageId2 = rootNode2.path("data").path("chatMessages").path("content").get(0).path("chatMessageId").asText();
+        System.out.println("lastChatMessageId2 = " + lastChatMessageId2);
+
+        // 세 번째 페이지 조회
+        mvc.perform(get("/api/auth/chat/messages/1")
+                        .cookie(new Cookie(JwtVO.ACCESS_TOKEN, accessToken))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("cursor", lastChatMessageId2))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.msg").value("채팅 메시지 목록 조회에 성공했습니다"))
                 .andDo(MockMvcResultHandlers.print());
@@ -220,38 +235,18 @@ class ChatApiControllerTest extends DummyObject {
         ChatRoom chatRoom2 = chatRoomRepository.save(newChatRoom(sender, recipient2));
         ChatRoom chatRoom3 = chatRoomRepository.save(newChatRoom(sender2, recipient2));
         ChatRoom chatRoom4 = chatRoomRepository.save(newChatRoom(sender, recipient3));
-//        chatMessageRepository.save(newChatMessage(chatRoom3.getId(), recipient2.getId(), "content1"));
+//        chatMessageRepository.save(newChatMessage(chatRoom3.getId(), recipient2.getId(), "content1", ChatType.TEXT, null, null));
 
-//        chatMessageRepository.save(newChatMessage(chatRoom.getId(), sender.getId(), "content31"));
-//        chatMessageRepository.save(newChatMessage(chatRoom.getId(), sender.getId(), "content32"));
-//        chatMessageRepository.save(newChatMessage(chatRoom.getId(), sender.getId(), "content33"));
-//        chatMessageRepository.save(newChatMessage(chatRoom.getId(), sender.getId(), "content34"));
-//        chatMessageRepository.save(newChatMessage(chatRoom.getId(), recipient.getId(), "content35"));
-//        chatMessageRepository.save(newChatMessage(chatRoom.getId(), sender.getId(), "content36"));
-//        chatMessageRepository.save(newChatMessage(chatRoom.getId(), sender.getId(), "content37"));
-//        chatMessageRepository.save(newChatMessage(chatRoom.getId(), recipient.getId(), "content38"));
-//        chatMessageRepository.save(newChatMessage(chatRoom.getId(), recipient.getId(), "content39"));
-//        chatMessageRepository.save(newChatMessage(chatRoom.getId(), recipient.getId(), "content40"));
-//        chatMessageRepository.save(newChatMessage(chatRoom.getId(), sender.getId(), "content41"));
-//        chatMessageRepository.save(newChatMessage(chatRoom.getId(), recipient.getId(), "content42"));
-//        chatMessageRepository.save(newChatMessage(chatRoom.getId(), sender.getId(), "content43"));
-//        chatMessageRepository.save(newChatMessage(chatRoom.getId(), recipient.getId(), "content44"));
-//        chatMessageRepository.save(newChatMessage(chatRoom.getId(), sender.getId(), "content45"));
-//        chatMessageRepository.save(newChatMessage(chatRoom.getId(), sender.getId(), "content46"));
-//        chatMessageRepository.save(newChatMessage(chatRoom.getId(), sender.getId(), "content47"));
-//        chatMessageRepository.save(newChatMessage(chatRoom.getId(), sender.getId(), "content48"));
-//        chatMessageRepository.save(newChatMessage(chatRoom.getId(), sender.getId(), "content49"));
-//        chatMessageRepository.save(newChatMessage(chatRoom.getId(), recipient.getId(), "content50"));
-//        chatMessageRepository.save(newChatMessage(chatRoom.getId(), sender.getId(), "content51"));
-//        chatMessageRepository.save(newChatMessage(chatRoom.getId(), sender.getId(), "content52"));
-//        chatMessageRepository.save(newChatMessage(chatRoom.getId(), recipient.getId(), "content53"));
-//        chatMessageRepository.save(newChatMessage(chatRoom.getId(), recipient.getId(), "content54"));
-//        chatMessageRepository.save(newChatMessage(chatRoom.getId(), recipient.getId(), "content55"));
-//        chatMessageRepository.save(newChatMessage(chatRoom.getId(), sender.getId(), "content26"));
-//        chatMessageRepository.save(newChatMessage(chatRoom.getId(), recipient.getId(), "content27"));
-//        chatMessageRepository.save(newChatMessage(chatRoom.getId(), sender.getId(), "content28"));
-//        chatMessageRepository.save(newChatMessage(chatRoom.getId(), recipient.getId(), "content29"));
-//        chatMessageRepository.save(newChatMessage(chatRoom.getId(), sender.getId(), "content30"));
+//        int tmp = 1;
+//        for (int i = 0; i < 10; i++) {
+//            chatMessageRepository.save(newChatMessage(chatRoom.getId(), sender.getId(), "content" + tmp++, ChatType.TEXT, null, null));
+//            chatMessageRepository.save(newChatMessage(chatRoom.getId(), sender.getId(), "content" + tmp++, ChatType.TEXT, null, null));
+//            chatMessageRepository.save(newChatMessage(chatRoom.getId(), sender.getId(), "content" + tmp++, ChatType.TEXT, null, null));
+//            chatMessageRepository.save(newChatMessage(chatRoom.getId(), sender.getId(), "content" + tmp++, ChatType.TEXT, null, null));
+//            chatMessageRepository.save(newChatMessage(chatRoom.getId(), recipient.getId(), "content" + tmp++, ChatType.TEXT, null, null));
+//            chatMessageRepository.save(newChatMessage(chatRoom.getId(), recipient.getId(), "사진을 보냈습니다.", ChatType.IMAGE, "imageName.jpg", "https://imageUrl.com"));
+//            tmp++;
+//        }
         em.clear();
     }
 }

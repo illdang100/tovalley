@@ -129,6 +129,21 @@ class ReviewRepositoryImplTest extends DummyObject {
         assertThat(content.get(1).getWaterPlaceName()).isEqualTo("금오계곡");
     }
 
+    @Test
+    public void findTop3ByOrderByCreatedDateDescTest() {
+        // given
+        PageRequest pageRequest = PageRequest.of(0, 3);
+
+        // when
+        List<Review> recentReviewTop3 = reviewRepository.findTop3ByOrderByCreatedDateDesc(pageRequest);
+
+        // then
+        assertThat(recentReviewTop3.size()).isEqualTo(3);
+        assertThat(recentReviewTop3.get(0).getReviewContent()).isEqualTo("content5");
+        assertThat(recentReviewTop3.get(1).getReviewContent()).isEqualTo("content1");
+        assertThat(recentReviewTop3.get(2).getReviewContent()).isEqualTo("content6");
+    }
+
     private void dataSetting() {
 
         Member member1 = memberRepository.save(newMember("kakao_1234", "member1"));

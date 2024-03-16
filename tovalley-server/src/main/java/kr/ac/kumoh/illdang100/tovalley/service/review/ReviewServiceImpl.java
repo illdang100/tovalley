@@ -15,6 +15,7 @@ import kr.ac.kumoh.illdang100.tovalley.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -179,5 +180,12 @@ public class ReviewServiceImpl implements ReviewService {
 
     private double formatRating(double rating) {
         return Double.parseDouble(String.format("%.1f", rating));
+    }
+
+    @Override
+    public List<RecentReviewRespDto> getRecentReviewTop3() {
+        return reviewRepository.findTop3ByOrderByCreatedDateDesc(PageRequest.of(0, 3))
+                .stream().map(RecentReviewRespDto::createRecentReviewRespDto)
+                .collect(Collectors.toList());
     }
 }

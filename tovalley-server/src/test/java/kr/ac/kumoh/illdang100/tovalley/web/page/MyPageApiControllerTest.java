@@ -91,7 +91,7 @@ public class MyPageApiControllerTest extends DummyObject {
                 .andExpect(jsonPath("$.data.myUpcomingTripSchedules[0].tripScheduleId").value(13))
                 .andExpect(jsonPath("$.data.myUpcomingTripSchedules[1].tripScheduleId").value(14))
                 .andExpect(jsonPath("$.data.myUpcomingTripSchedules[2].tripScheduleId").value(15))
-                .andExpect(jsonPath("$.data.myLostFoundBoards.content[0].title").value("title1"))
+                .andExpect(jsonPath("$.data.myLostFoundBoards.content[0].title").value("title10"))
                 .andExpect(jsonPath("$.data.myLostFoundBoards.content[4].title").value("title6"))
                 .andDo(MockMvcResultHandlers.print());
     }
