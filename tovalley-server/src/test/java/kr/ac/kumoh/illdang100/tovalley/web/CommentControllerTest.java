@@ -70,6 +70,25 @@ class CommentControllerTest extends DummyObject {
     }
 
     @Test
+    void saveCommentSuccess() throws Exception {
+        // given
+        Long lostFoundBoardId = 1L;
+        CommentSaveReqDto commentSaveReqDto = new CommentSaveReqDto("쪽지 주세요");
+        String requestBody = om.writeValueAsString(commentSaveReqDto);
+
+        // when
+        ResultActions resultActions = mvc.perform(post("/api/auth/lostItem/" + lostFoundBoardId + "/comment")
+                .content(requestBody)
+                .cookie(new Cookie(JwtVO.ACCESS_TOKEN, accessToken))
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // then
+        resultActions
+                .andExpect(status().isCreated())
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
     @DisplayName(value = "분실물 댓글 등록 실패 - 빈 문자열")
     void saveLostFoundBoardEmptyString() throws Exception {
         // given
