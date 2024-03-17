@@ -206,7 +206,7 @@ const Header = () => {
                 : styles.navMenu
             }
           >
-            전국 계곡
+            전국 물놀이 장소
           </span>
           <span
             onClick={() => {

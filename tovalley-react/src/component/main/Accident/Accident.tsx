@@ -125,6 +125,81 @@ const Accident: FC<Props> = ({ accident, setRegionAccident }) => {
       });
   };
 
+  const dummyAccident = [
+    {
+      month: 1,
+      deathCnt: 0,
+      disappearanceCnt: 0,
+      injuryCnt: 0,
+    },
+    {
+      month: 2,
+      deathCnt: 0,
+      disappearanceCnt: 0,
+      injuryCnt: 0,
+    },
+    {
+      month: 3,
+      deathCnt: 0,
+      disappearanceCnt: 0,
+      injuryCnt: 2,
+    },
+    {
+      month: 4,
+      deathCnt: 0,
+      disappearanceCnt: 0,
+      injuryCnt: 1,
+    },
+    {
+      month: 5,
+      deathCnt: 0,
+      disappearanceCnt: 0,
+      injuryCnt: 0,
+    },
+    {
+      month: 6,
+      deathCnt: 0,
+      disappearanceCnt: 1,
+      injuryCnt: 6,
+    },
+    {
+      month: 7,
+      deathCnt: 40,
+      disappearanceCnt: 38,
+      injuryCnt: 31,
+    },
+    {
+      month: 8,
+      deathCnt: 61,
+      disappearanceCnt: 45,
+      injuryCnt: 20,
+    },
+    {
+      month: 9,
+      deathCnt: 1,
+      disappearanceCnt: 4,
+      injuryCnt: 10,
+    },
+    {
+      month: 10,
+      deathCnt: 0,
+      disappearanceCnt: 3,
+      injuryCnt: 11,
+    },
+    {
+      month: 11,
+      deathCnt: 0,
+      disappearanceCnt: 0,
+      injuryCnt: 0,
+    },
+    {
+      month: 12,
+      deathCnt: 0,
+      disappearanceCnt: 0,
+      injuryCnt: 0,
+    },
+  ];
+
   return (
     <div className={styles.accident}>
       <h4>올해 사고 발생수</h4>
@@ -167,7 +242,7 @@ const Accident: FC<Props> = ({ accident, setRegionAccident }) => {
         </div>
       </div>
       <div className={styles.lineGraph}>
-        <AccidentChart accidentCnt={accident.accidentCountPerMonth} />
+        <AccidentChart accidentCnt={dummyAccident} />
       </div>
       <div className={styles.graph}>
         <div className={styles.graphTitle}>
@@ -176,9 +251,12 @@ const Accident: FC<Props> = ({ accident, setRegionAccident }) => {
           <span>부상</span>
         </div>
         <div className={styles.graphContent}>
-          <span>{accident.totalDeathCnt}</span>
+          {/* <span>{accident.totalDeathCnt}</span>
           <span>{accident.totalDisappearanceCnt}</span>
-          <span>{accident.totalInjuryCnt}</span>
+          <span>{accident.totalInjuryCnt}</span> */}
+          <span>101</span>
+          <span>80</span>
+          <span>67</span>
         </div>
       </div>
     </div>

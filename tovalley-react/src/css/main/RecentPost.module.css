@@ -1,0 +1,65 @@
+.recentPost {
+  background-color: white;
+  box-shadow: 0 2px 5px #d9d9d9;
+  border-radius: 10px;
+  height: 450px;
+  width: calc(100% / 2 - 1em);
+  padding: 1.2em;
+  box-sizing: border-box;
+  overflow-y: scroll;
+}
+
+.recentPost h1 {
+  color: #66a5fc;
+  font-size: 1.3rem;
+  margin: 0.5em 0.5em 1em;
+}
+
+.recentPostItem {
+  border-top: 1px solid #cccccc;
+  padding: 1em 0.5em;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+}
+
+.title h4 {
+  margin: 0;
+}
+
+.lost {
+  background-color: #c8dafc;
+  color: #215cce;
+  font-weight: bold;
+  font-size: 0.9rem;
+  padding: 0.3em 0.8em;
+  border-radius: 6px;
+  margin-right: 0.8em;
+}
+
+.found {
+  background-color: #cfe5cb;
+  color: #518133;
+  font-weight: bold;
+  font-size: 0.9rem;
+  padding: 0.3em 0.8em;
+  border-radius: 6px;
+  margin-right: 0.8em;
+}
+
+.header > span {
+  color: #bebebe;
+  font-size: 0.9rem;
+}
+
+.recentPostItem > p {
+  color: #898989;
+  margin: 0.8em 0 0 0;
+}

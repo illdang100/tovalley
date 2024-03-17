@@ -26,55 +26,67 @@ const LostItemPostPage = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    // setLostPost({
-    //   data: {
-    //     title: "금오계곡에서 찾았어요",
-    //     content: "아이폰15 입니다.",
-    //     author: "illdang100",
-    //     waterPlaceName: "금오계곡",
-    //     waterPlaceAddress: "경상북도 구미시 옥계동",
-    //     postCreateAt: "2024-01-19 21:33:10",
-    //     postImages: [
-    //       "/img/dummy/계곡이미지5.jpg",
-    //       "/img/dummy/계곡이미지5.jpg",
-    //       "/img/dummy/계곡이미지5.jpg",
-    //     ],
-    //     isResolved: false,
-    //     isMyBoard: false,
-    //     boardAuthorProfile: "",
-    //     commentCnt: 3,
-    //     comments: [
-    //       {
-    //         commentId: 1,
-    //         commentAuthor: "행복한 어피치",
-    //         commentContent: "혹시 흰색인가요?",
-    //         commentCreatedAt: "2024-01-23 09:00:02",
-    //         isMyComment: false, // 현재 유저가 작성한 댓글인지 확인
-    //         commentAuthorProfile: "",
-    //       },
-    //     ],
-    //   },
-    // });
-    // setCommentList([
-    //   {
-    //     commentId: 1,
-    //     commentAuthor: "행복한 어피치",
-    //     commentContent: "혹시 흰색인가요?",
-    //     commentCreatedAt: "2024-01-23 09:00:02",
-    //     isMyComment: true, // 현재 유저가 작성한 댓글인지 확인,
-    //     commentAuthorProfile: "",
-    //   },
-    // ]);
+    setLostPost({
+      data: {
+        title: "금오계곡에서 찾았어요",
+        content: "아이폰입니다.",
+        author: "illdang100",
+        waterPlaceName: "금오계곡",
+        waterPlaceAddress: "경상북도 구미시 옥계동",
+        postCreateAt: "2023-09-19 21:33:10",
+        postImages: ["/img/dummy/dummy-lost-item.jpg"],
+        isResolved: false,
+        isMyBoard: false,
+        boardAuthorProfile: "",
+        commentCnt: 3,
+        comments: [
+          {
+            commentId: 1,
+            commentAuthor: "행복한 어피치",
+            commentContent: "혹시 흰색인가요?",
+            commentCreatedAt: "2024-09-19 09:00:02",
+            commentByUser: false, // 현재 유저가 작성한 댓글인지 확인
+            commentAuthorProfile: "",
+          },
+        ],
+      },
+    });
+    setCommentList([
+      {
+        commentId: 1,
+        commentAuthor: "행복한 어피치",
+        commentContent: "혹시 흰색인가요?",
+        commentCreatedAt: "2023-09-19 09:00:02",
+        commentByUser: false, // 현재 유저가 작성한 댓글인지 확인,
+        commentAuthorProfile: "",
+      },
+      {
+        commentId: 1,
+        commentAuthor: "dlraud12",
+        commentContent: "주인 찾으셨으면 좋겠네요~!",
+        commentCreatedAt: "2023-09-19 09:00:02",
+        commentByUser: false, // 현재 유저가 작성한 댓글인지 확인,
+        commentAuthorProfile: "",
+      },
+      {
+        commentId: 1,
+        commentAuthor: "tovalley",
+        commentContent: "채팅 드렸는데 확인 부탁드려요.",
+        commentCreatedAt: "2023-09-23 09:00:02",
+        commentByUser: true, // 현재 유저가 작성한 댓글인지 확인,
+        commentAuthorProfile: "",
+      },
+    ]);
 
-    axiosInstance
-      .get(`/api/lostItem/${id}`)
-      .then((res) => {
-        console.log(res);
-        setLostPost({ data: res.data.data });
-        setCommentList(res.data.data.comments);
-        setResolveCheck(res.data.data.isResolved);
-      })
-      .catch((err) => console.log(err));
+    // axiosInstance
+    //   .get(`/api/lostItem/${id}`)
+    //   .then((res) => {
+    //     console.log(res);
+    //     setLostPost({ data: res.data.data });
+    //     setCommentList(res.data.data.comments);
+    //     setResolveCheck(res.data.data.isResolved);
+    //   })
+    //   .catch((err) => console.log(err));
   }, [id]);
 
   const resolveStatus = () => {
@@ -183,7 +195,7 @@ const LostItemPostPage = () => {
       <div className={styles.body}>
         <div className={styles.lostItemPost}>
           <div className={styles.locationInfo}>
-            <MdLocationPin color="#66A5FC" size="22px" />
+            <MdLocationPin color="#66A5FC" size="28px" />
             <h4>{lostPost?.data.waterPlaceName}</h4>
             <span>{lostPost?.data.waterPlaceAddress}</span>
           </div>
@@ -192,9 +204,10 @@ const LostItemPostPage = () => {
               <div className={styles.profileImage}>
                 <img
                   src={
-                    lostPost?.data.boardAuthorProfile
-                      ? lostPost?.data.boardAuthorProfile
-                      : process.env.PUBLIC_URL + "/img/user-profile.png"
+                    // lostPost?.data.boardAuthorProfile
+                    //   ? lostPost?.data.boardAuthorProfile
+                    //   : process.env.PUBLIC_URL + "/img/user-profile.png"
+                    "/img/dummy/profile-img2.jpg"
                   }
                   alt="author-profile"
                 />
@@ -268,7 +281,8 @@ const LostItemPostPage = () => {
                   alt="author-profile"
                 />
               </div>
-              <span>{lostPost?.data.author}</span>
+              {/* <span>{lostPost?.data.author}</span> */}
+              <span>tovalley</span>
             </div>
             <input
               placeholder="댓글을 입력하세요."
@@ -283,15 +297,18 @@ const LostItemPostPage = () => {
         <div className={styles.commentList}>
           {commentList &&
             commentList.length > 0 &&
-            commentList?.map((item) => (
+            commentList?.map((item, index) => (
               <div key={item.commentAuthor} className={styles.commentItem}>
                 <div className={styles.commentTop}>
                   <div className={styles.commentInfo}>
                     <div className={styles.commentProfileImage}>
                       <img
                         src={
-                          item.commentAuthorProfile
-                            ? item.commentAuthorProfile
+                          // item.commentAuthorProfile
+                          //   ? item.commentAuthorProfile
+                          //   : process.env.PUBLIC_URL + "/img/user-profile.png"
+                          index === 0
+                            ? "/img/dummy/profile-img1.jpg"
                             : process.env.PUBLIC_URL + "/img/user-profile.png"
                         }
                         alt="author-profile"

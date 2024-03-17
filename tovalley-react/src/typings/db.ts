@@ -179,3 +179,19 @@ export interface AlarmListResp {
     empty: boolean;
   };
 }
+
+export interface RecentPostType {
+  lostFoundBoardId: number;
+  lostFoundBoardCategory: string;
+  lostFoundBoardTitle: string;
+  lostFoundBoardContent: string;
+  lostFoundBoardCreatedAt: string;
+}
+
+export interface RecentReviewType {
+  reviewId: number;
+  reviewRating: number;
+  reviewTitle: string;
+  reviewContent: string;
+  reviewCreatedAt: string;
+}

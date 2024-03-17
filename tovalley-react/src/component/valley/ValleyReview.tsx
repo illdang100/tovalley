@@ -7,6 +7,7 @@ import axiosInstance from "../../axios_interceptor";
 import { useParams } from "react-router-dom";
 import DetailReviewImg from "./DetailReviewImg";
 import useDidMountEffect from "../../useDidMountEffect";
+import { AiOutlineComment } from "react-icons/ai";
 
 type valleyReview = {
   waterPlaceRating: number;
@@ -369,11 +370,15 @@ const ValleyReview: FC<Props> = ({ reviewRespDto, setValleyReview }) => {
                           />
                         </span>
                       ) : (
-                        <div>
+                        <div className={styles.userInfoProfileImg}>
                           <img src={item.memberProfileImg} alt="profileImg" />
                         </div>
                       )}
                       <span>{item.nickname}</span>
+                      <div className={styles.chatBtn}>
+                        <AiOutlineComment size="20px" />
+                        <span>채팅하기</span>
+                      </div>
                     </div>
                     <span>{item.createdReviewDate}</span>
                   </div>
