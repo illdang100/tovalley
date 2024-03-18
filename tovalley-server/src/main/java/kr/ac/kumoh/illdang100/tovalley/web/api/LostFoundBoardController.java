@@ -15,6 +15,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
@@ -36,7 +37,7 @@ public class LostFoundBoardController {
     private final LostFoundBoardImageService lostFoundBoardImageService;
     private final S3Service s3Service;
 
-    @PostMapping(value = "/auth/lostItem")
+    @PostMapping(value = "/auth/lostItem", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> saveLostFoundBoard(@ModelAttribute @Valid LostFoundBoardSaveReqDto lostFoundBoardSaveReqDto,
                                                 BindingResult bindingResult,
                                                 @AuthenticationPrincipal PrincipalDetails principalDetails) throws IOException {
@@ -49,7 +50,7 @@ public class LostFoundBoardController {
         return new ResponseEntity<>(new ResponseDto<>(1, "분실물 게시글이 정상적으로 등록되었습니다", saveLostFoundBoardId), HttpStatus.CREATED);
     }
 
-    @PatchMapping(value = "/auth/lostItem")
+    @PatchMapping(value = "/auth/lostItem", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> updateLostFoundBoard(@ModelAttribute @Valid LostFoundBoardUpdateReqDto lostFoundBoardUpdateReqDto,
                                                   BindingResult bindingResult,
                                                   @AuthenticationPrincipal PrincipalDetails principalDetails) throws IOException {
@@ -75,7 +76,7 @@ public class LostFoundBoardController {
 
     @PatchMapping(value = "/auth/lostItem/{lostFoundBoardId}")
     public ResponseEntity<?> updateResolvedStatus(@PathVariable(value = "lostFoundBoardId")Long lostFoundBoardId,
-                                                  @RequestParam Boolean isResolved,
+                                                  @RequestParam(value = "status") Boolean isResolved,
                                                   @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
         lostFoundBoardService.updateResolvedStatus(lostFoundBoardId, isResolved, principalDetails.getMember().getId());

@@ -198,7 +198,7 @@ CREATE TABLE IF NOT EXISTS `lost_found_board` (
     `is_resolved` BOOLEAN,
     `lost_found_enum` VARCHAR(255),
     `created_date` TIMESTAMP,
-    `modified_date` TIMESTAMP,
+    `last_modified_date` TIMESTAMP,
 
     FOREIGN KEY (water_place_id) REFERENCES water_place(water_place_id),
     FOREIGN KEY (member_id) REFERENCES member(member_id)
@@ -208,7 +208,9 @@ CREATE TABLE IF NOT EXISTS `comment` (
     `comment_id`	BIGINT  NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '댓글 아이디',
     `lost_found_board_id`	BIGINT	NOT NULL COMMENT '분실물 찾기 게시글 아이디',
     `member_id` BIGINT COMMENT '댓글 작성자',
-    `content`	VARCHAR(256)	NOT NULL COMMENT '댓글 내용'
+    `content`	VARCHAR(256)	NOT NULL COMMENT '댓글 내용',
+    `created_date` TIMESTAMP,
+    `last_modified_date` TIMESTAMP
     ) engine=InnoDB;
 
 CREATE TABLE IF NOT EXISTS `lost_found_board_image` (

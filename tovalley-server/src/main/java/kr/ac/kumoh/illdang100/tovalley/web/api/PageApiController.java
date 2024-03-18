@@ -85,7 +85,8 @@ public class PageApiController {
                                                      @CookieValue(value = JwtVO.ACCESS_TOKEN, required = false) String accessToken) {
         PrincipalDetails principalDetails = null;
         if (accessToken != null) {
-            principalDetails = jwtProcess.verify(accessToken);
+            String token = accessToken.substring(7); // TOKEN_PREFIX 제외한 토큰값
+            principalDetails = jwtProcess.verify(token);
         }
 
         Optional<Member> optionalMember = Optional.ofNullable(principalDetails)

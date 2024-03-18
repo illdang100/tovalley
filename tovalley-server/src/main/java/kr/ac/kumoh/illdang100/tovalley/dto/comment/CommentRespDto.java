@@ -1,6 +1,7 @@
 package kr.ac.kumoh.illdang100.tovalley.dto.comment;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import kr.ac.kumoh.illdang100.tovalley.domain.ImageFile;
 import kr.ac.kumoh.illdang100.tovalley.domain.comment.Comment;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import lombok.AllArgsConstructor;
@@ -22,12 +23,13 @@ public class CommentRespDto {
         private String commentAuthorProfile;
 
         public static CommentSaveRespDto createCommentSaveRespDto(Comment comment, Member member) {
+            ImageFile imageFile = member.getImageFile();
             return CommentSaveRespDto.builder()
                     .commentId(comment.getId())
                     .commentAuthor(member.getNickname())
                     .commentContent(comment.getContent())
                     .commentCreateAt(comment.getCreatedDate())
-                    .commentAuthorProfile(member.getImageFile().getStoreFileUrl())
+                    .commentAuthorProfile(imageFile != null ? imageFile.getStoreFileUrl() : null)
                     .build();
         }
     }
