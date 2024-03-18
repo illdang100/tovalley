@@ -32,7 +32,7 @@ import static kr.ac.kumoh.illdang100.tovalley.util.ImageUtil.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
-public class LostFoundBoardController {
+public class LostFoundBoardApiController {
     private final LostFoundBoardService lostFoundBoardService;
     private final LostFoundBoardImageService lostFoundBoardImageService;
     private final S3Service s3Service;
