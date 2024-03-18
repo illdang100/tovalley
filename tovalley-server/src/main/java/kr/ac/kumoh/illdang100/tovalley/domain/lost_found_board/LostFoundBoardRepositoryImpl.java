@@ -40,7 +40,7 @@ public class LostFoundBoardRepositoryImpl implements LostFoundBoardRepositoryCus
                         lostFoundBoard.id,
                         lostFoundBoard.title,
                         lostFoundBoard.content,
-                        member.email,
+                        member.nickname,
                         JPAExpressions.select(comment.id.count()).from(comment).where(comment.lostFoundBoardId.eq(lostFoundBoard.id)),
                         lostFoundBoard.createdDate,
                         JPAExpressions.select(lostFoundBoardImage.imageFile.storeFileUrl).from(lostFoundBoardImage).where(lostFoundBoardImage.lostFoundBoardId.eq(lostFoundBoard.id)).limit(1),
