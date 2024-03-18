@@ -170,8 +170,9 @@ public class PageServiceImpl implements PageService{
 
         LostFoundBoard foundLostFoundBoard = findLostFoundBoardByIdWithMemberOrElseThrowEx(lostFoundBoardRepository, lostFoundBoardId);
 
-        boolean isMyBoard = member != null && isMyBoard(foundLostFoundBoard, member.getId());
-        List<CommentDetailRespDto> commentDetails = findCommentDetails(lostFoundBoardId, member != null ? member.getEmail() : null);
+        Long memberId = member != null ? member.getId() : null;
+        boolean isMyBoard = isMyBoard(foundLostFoundBoard, memberId);
+        List<CommentDetailRespDto> commentDetails = findCommentDetails(lostFoundBoardId, memberId);
         List<String> imageUrls = lostFoundBoardImageRepository.findImageByLostFoundBoardId(lostFoundBoardId);
         long commentCount = commentRepository.countByLostFoundBoardId(lostFoundBoardId);
 
@@ -182,19 +183,15 @@ public class PageServiceImpl implements PageService{
         return lostFoundBoard.getMember().getId().equals(memberId);
     }
 
-    private List<CommentDetailRespDto> findCommentDetails(long lostFoundBoardId, String memberEmail) {
+    private List<CommentDetailRespDto> findCommentDetails(long lostFoundBoardId, Long memberId) {
         return commentRepository.findCommentByLostFoundBoardIdFetchJoinMember(lostFoundBoardId)
                 .stream()
                 .map(c -> {
                     Member member = c.getMember();
-                    boolean isMyComment = memberEmail != null && isMyCommentByMemberEmail(memberEmail, member);
+                    boolean isMyComment = member.getId().equals(memberId);
                     String storeFileUrl = member.getImageFile() != null ? member.getImageFile().getStoreFileUrl() : null;
                     return new CommentDetailRespDto(c.getId(), member.getNickname(), c.getContent(), c.getCreatedDate(), isMyComment, storeFileUrl);
                 })
                 .collect(Collectors.toList());
-    }
-
-    private boolean isMyCommentByMemberEmail(String memberEmail, Member member) {
-        return (memberEmail.equals(member.getEmail()));
     }
 }
