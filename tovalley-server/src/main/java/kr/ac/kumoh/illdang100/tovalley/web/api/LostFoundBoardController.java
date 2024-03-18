@@ -76,7 +76,7 @@ public class LostFoundBoardController {
 
     @PatchMapping(value = "/auth/lostItem/{lostFoundBoardId}")
     public ResponseEntity<?> updateResolvedStatus(@PathVariable(value = "lostFoundBoardId")Long lostFoundBoardId,
-                                                  @RequestParam(value = "status") Boolean isResolved,
+                                                  @RequestParam Boolean isResolved,
                                                   @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
         lostFoundBoardService.updateResolvedStatus(lostFoundBoardId, isResolved, principalDetails.getMember().getId());
