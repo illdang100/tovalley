@@ -36,20 +36,28 @@ public class LostFoundBoardRepositoryImpl implements LostFoundBoardRepositoryCus
     @Override
     public Slice<LostFoundBoardListRespDto> getLostFoundBoardListBySlice(LostFoundBoardListReqDto lostFoundBoardListReqDto, Pageable pageable) {
         JPAQuery<LostFoundBoardListRespDto> query = queryFactory
-                .select(Projections.constructor(LostFoundBoardListRespDto.class,
+                .select(
+                        Projections.constructor(LostFoundBoardListRespDto.class,
                         lostFoundBoard.id,
                         lostFoundBoard.title,
                         lostFoundBoard.content,
-                        member.email,
+                        member.nickname,
                         JPAExpressions.select(comment.id.count()).from(comment).where(comment.lostFoundBoardId.eq(lostFoundBoard.id)),
                         lostFoundBoard.createdDate,
-                        JPAExpressions.select(lostFoundBoardImage.imageFile.storeFileUrl).from(lostFoundBoardImage).where(lostFoundBoardImage.lostFoundBoardId.eq(lostFoundBoard.id)).limit(1),
+                        JPAExpressions.select(lostFoundBoardImage.imageFile.storeFileUrl).from(lostFoundBoardImage)
+                            .where(
+                                lostFoundBoardImage.id.eq(
+                                    JPAExpressions
+                                        .select(lostFoundBoardImage.id.max())
+                                        .from(lostFoundBoardImage)
+                                        .where(lostFoundBoardImage.lostFoundBoardId.eq(lostFoundBoard.id))
+                                )
+                            ),
                         lostFoundBoard.lostFoundEnum
                 ))
                 .from(lostFoundBoard)
-                .leftJoin(lostFoundBoard.waterPlace, waterPlace)
-                .join(member).on(lostFoundBoard.member.id.eq(member.id))
-                .groupBy(lostFoundBoard.id);
+                .join(lostFoundBoard.waterPlace, waterPlace)
+                .join(lostFoundBoard.member, member);
 
         BooleanBuilder booleanBuilder = new BooleanBuilder();
 

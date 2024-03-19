@@ -32,7 +32,7 @@ import static kr.ac.kumoh.illdang100.tovalley.util.ImageUtil.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
-public class LostFoundBoardController {
+public class LostFoundBoardApiController {
     private final LostFoundBoardService lostFoundBoardService;
     private final LostFoundBoardImageService lostFoundBoardImageService;
     private final S3Service s3Service;
@@ -76,7 +76,7 @@ public class LostFoundBoardController {
 
     @PatchMapping(value = "/auth/lostItem/{lostFoundBoardId}")
     public ResponseEntity<?> updateResolvedStatus(@PathVariable(value = "lostFoundBoardId")Long lostFoundBoardId,
-                                                  @RequestParam(value = "status") Boolean isResolved,
+                                                  @RequestParam Boolean isResolved,
                                                   @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
         lostFoundBoardService.updateResolvedStatus(lostFoundBoardId, isResolved, principalDetails.getMember().getId());

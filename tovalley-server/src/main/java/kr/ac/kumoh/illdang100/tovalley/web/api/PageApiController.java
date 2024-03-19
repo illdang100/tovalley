@@ -23,6 +23,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 import static kr.ac.kumoh.illdang100.tovalley.dto.lost_found_board.LostFoundBoardRespDto.*;
@@ -85,7 +87,7 @@ public class PageApiController {
                                                      @CookieValue(value = JwtVO.ACCESS_TOKEN, required = false) String accessToken) {
         PrincipalDetails principalDetails = null;
         if (accessToken != null) {
-            String token = accessToken.substring(7); // TOKEN_PREFIX 제외한 토큰값
+            String token = URLDecoder.decode(accessToken, StandardCharsets.UTF_8).replace(JwtVO.TOKEN_PREFIX, "");
             principalDetails = jwtProcess.verify(token);
         }
 

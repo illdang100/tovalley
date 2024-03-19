@@ -36,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @Sql("classpath:db/teardown.sql")
-class CommentControllerTest extends DummyObject {
+class CommentApiControllerTest extends DummyObject {
     @Autowired
     private MockMvc mvc;
 
