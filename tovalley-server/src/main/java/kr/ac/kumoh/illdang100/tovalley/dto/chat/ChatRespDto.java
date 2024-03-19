@@ -24,6 +24,13 @@ public class ChatRespDto {
 
     @Data
     @AllArgsConstructor
+    public static class ChatRoomsRespDto {
+        private String memberName;
+        private List<ChatRoomRespDto> chatRooms;
+    }
+
+    @Data
+    @AllArgsConstructor
     @Builder
     public static class ChatRoomRespDto {
         private Long chatRoomId;
