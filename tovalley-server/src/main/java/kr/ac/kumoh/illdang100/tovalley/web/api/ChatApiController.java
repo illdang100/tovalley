@@ -1,18 +1,16 @@
 package kr.ac.kumoh.illdang100.tovalley.web.api;
 
-import static kr.ac.kumoh.illdang100.tovalley.dto.chat.ChatReqDto.*;
+import static kr.ac.kumoh.illdang100.tovalley.dto.chat.ChatReqDto.CreateNewChatRoomReqDto;
 
-import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.List;
 import javax.validation.Valid;
 import kr.ac.kumoh.illdang100.tovalley.domain.FileRootPathVO;
 import kr.ac.kumoh.illdang100.tovalley.domain.ImageFile;
+import kr.ac.kumoh.illdang100.tovalley.domain.chat.kafka.Message;
 import kr.ac.kumoh.illdang100.tovalley.dto.ResponseDto;
 import kr.ac.kumoh.illdang100.tovalley.dto.chat.ChatRespDto.ChatMessageListRespDto;
-import kr.ac.kumoh.illdang100.tovalley.dto.chat.ChatRespDto.ChatRoomRespDto;
+import kr.ac.kumoh.illdang100.tovalley.dto.chat.ChatRespDto.ChatRoomsRespDto;
 import kr.ac.kumoh.illdang100.tovalley.dto.chat.ChatRespDto.CreateNewChatRoomRespDto;
-import kr.ac.kumoh.illdang100.tovalley.domain.chat.kafka.Message;
 import kr.ac.kumoh.illdang100.tovalley.handler.ex.CustomApiException;
 import kr.ac.kumoh.illdang100.tovalley.security.auth.PrincipalDetails;
 import kr.ac.kumoh.illdang100.tovalley.service.S3Service;
@@ -65,7 +63,7 @@ public class ChatApiController {
 
     @GetMapping("/api/auth/chatroom")
     public ResponseEntity<?> findChatRoomList(@AuthenticationPrincipal PrincipalDetails principalDetails) {
-        List<ChatRoomRespDto> result = chatService.getChatRooms(principalDetails.getMember().getId());
+        ChatRoomsRespDto result = chatService.getChatRooms(principalDetails.getMember().getId());
         return new ResponseEntity<>(new ResponseDto<>(1, "채팅방 목록 조회를 성공했습니다", result), HttpStatus.OK);
     }
 
@@ -92,7 +90,7 @@ public class ChatApiController {
         Long memberId = (Long)headerAccessor.getSessionAttributes().get(ChatUtil.MEMBER_ID);
         chatService.sendMessage(message, memberId);
     }
-
+    
     @PostMapping(value = "/api/auth/chat/images/upload")
     public ResponseEntity<?> saveChatImage(@RequestPart(value = "image", required = false) MultipartFile chatImage) {
 

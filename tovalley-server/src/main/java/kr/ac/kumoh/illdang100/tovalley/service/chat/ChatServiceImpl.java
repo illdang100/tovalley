@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatMessage;
 import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatMessageRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatRoom;
@@ -20,6 +21,7 @@ import kr.ac.kumoh.illdang100.tovalley.dto.chat.ChatReqDto.CreateNewChatRoomReqD
 import kr.ac.kumoh.illdang100.tovalley.dto.chat.ChatRespDto.ChatMessageListRespDto;
 import kr.ac.kumoh.illdang100.tovalley.dto.chat.ChatRespDto.ChatMessageRespDto;
 import kr.ac.kumoh.illdang100.tovalley.dto.chat.ChatRespDto.ChatRoomRespDto;
+import kr.ac.kumoh.illdang100.tovalley.dto.chat.ChatRespDto.ChatRoomsRespDto;
 import kr.ac.kumoh.illdang100.tovalley.dto.chat.ChatRespDto.CreateNewChatRoomRespDto;
 import kr.ac.kumoh.illdang100.tovalley.handler.ex.CustomApiException;
 import kr.ac.kumoh.illdang100.tovalley.service.notification.NotificationService;
@@ -121,18 +123,23 @@ public class ChatServiceImpl implements ChatService {
      * @return 채팅방 목록
      */
     @Override
-    public List<ChatRoomRespDto> getChatRooms(Long memberId) {
-
+    public ChatRoomsRespDto getChatRooms(Long memberId) {
+        // ChatRoom 목록 조회
         List<ChatRoom> chatRooms = chatRoomRepository.findWithMembersByMemberId(memberId);
 
+        // ChatRoomRespDto 변환
         List<ChatRoomRespDto> chatRoomRespDtos = chatRooms.stream()
                 .map(chatRoom -> createChatRoomRespDto(chatRoom, memberId))
                 .collect(Collectors.toList());
 
+        // 각 채팅방에 대한 마지막 메시지 정보 설정
         List<ChatRoomRespDto> processedChatRooms = processChatRooms(chatRoomRespDtos, memberId);
 
+        // memberId에 해당하는 사용자의 닉네임 찾기
+        String memberName = findMemberName(chatRooms.get(0), memberId);
+
         // 마지막 메시지 시간으로 내림차순 정렬
-        return sortChatRoomsByLastMessageTime(processedChatRooms);
+        return new ChatRoomsRespDto(memberName, sortChatRoomsByLastMessageTime(processedChatRooms));
     }
 
     private ChatRoomRespDto createChatRoomRespDto(ChatRoom chatRoom, Long memberId) {
@@ -180,6 +187,18 @@ public class ChatServiceImpl implements ChatService {
                 .and("senderId").ne(memberId));
 
         return mongoTemplate.count(query, ChatMessage.class);
+    }
+
+    private String findMemberName(ChatRoom chatRoom, Long memberId) {
+        if (chatRoom.getSender().getId().equals(memberId)) {
+            return chatRoom.getSender().getNickname();
+        }
+
+        if (chatRoom.getRecipient().getId().equals(memberId)) {
+            return chatRoom.getRecipient().getNickname();
+        }
+
+        return "Unknown";
     }
 
     private List<ChatRoomRespDto> sortChatRoomsByLastMessageTime(List<ChatRoomRespDto> chatRooms) {
