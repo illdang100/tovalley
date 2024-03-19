@@ -69,7 +69,7 @@ public class LostFoundBoardRepositoryImpl implements LostFoundBoardRepositoryCus
 
         // 검색어 (제목, 내용 포함)
         String searchWord = lostFoundBoardListReqDto.getSearchWord();
-        if (searchWord != null && StringUtils.isBlank(searchWord)) {
+        if (searchWord != null && !StringUtils.isBlank(searchWord)) {
             booleanBuilder.andAnyOf(
                     lostFoundBoard.title.toLowerCase().containsIgnoreCase(searchWord.toLowerCase()),
                     lostFoundBoard.content.toLowerCase().containsIgnoreCase(searchWord.toLowerCase())
