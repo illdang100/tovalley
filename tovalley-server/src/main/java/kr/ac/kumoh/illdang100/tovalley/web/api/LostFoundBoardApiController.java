@@ -20,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
@@ -27,6 +28,7 @@ import java.util.List;
 
 import static kr.ac.kumoh.illdang100.tovalley.dto.lost_found_board.LostFoundBoardReqDto.*;
 import static kr.ac.kumoh.illdang100.tovalley.util.ImageUtil.*;
+import static kr.ac.kumoh.illdang100.tovalley.util.ListUtil.isEmptyList;
 
 @Slf4j
 @RestController
@@ -56,20 +58,23 @@ public class LostFoundBoardApiController {
                                                   @AuthenticationPrincipal PrincipalDetails principalDetails) throws IOException {
 
         Long memberId = principalDetails.getMember().getId();
-        List<String> deleteImage = lostFoundBoardUpdateReqDto.getDeleteImage();
         Long lostFoundBoardId = lostFoundBoardUpdateReqDto.getLostFoundBoardId();
 
         LostFoundBoard lostFoundBoard = lostFoundBoardService.updateLostFoundBoard(lostFoundBoardUpdateReqDto, memberId);
 
         lostFoundBoardImageService.validateImageCount(lostFoundBoardUpdateReqDto, lostFoundBoard);
 
-        // 사진 파일 삭제
-        lostFoundBoardImageService.deleteLostFoundImageFiles(deleteImage, lostFoundBoardId, memberId);
-        s3Service.deleteFiles(deleteImage);
+        List<String> deleteImage = lostFoundBoardUpdateReqDto.getDeleteImage();
+        if (!isEmptyList(deleteImage)) {
+            lostFoundBoardImageService.deleteLostFoundImageFiles(deleteImage, lostFoundBoardId, memberId);
+            s3Service.deleteFiles(deleteImage);
+        }
 
-        // 새로운 사진 파일 등록
-        List<ImageFile> uploadImageFiles = uploadImageFile(s3Service, lostFoundBoardUpdateReqDto.getPostImage());
-        lostFoundBoardImageService.saveLostFoundImageFile(uploadImageFiles, lostFoundBoardId);
+        List<MultipartFile> postImage = lostFoundBoardUpdateReqDto.getPostImage();
+        if (!isEmptyList(postImage)) {
+            List<ImageFile> uploadImageFiles = uploadImageFile(s3Service, postImage);
+            lostFoundBoardImageService.saveLostFoundImageFile(uploadImageFiles, lostFoundBoardId);
+        }
 
         return new ResponseEntity<>(new ResponseDto<>(1, "분실물 게시글이 정상적으로 수정되었습니다", null), HttpStatus.OK);
     }
