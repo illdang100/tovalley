@@ -7,6 +7,10 @@ import axiosInstance from "../../axios_interceptor";
 import { useParams } from "react-router-dom";
 import DetailReviewImg from "./DetailReviewImg";
 import useDidMountEffect from "../../useDidMountEffect";
+import { AiOutlineComment } from "react-icons/ai";
+import { enterChatRoom } from "../../store/chat/chatRoomIdSlice";
+import { view } from "../../store/chat/chatViewSlice";
+import { useDispatch } from "react-redux";
 
 type valleyReview = {
   waterPlaceRating: number;
@@ -119,6 +123,7 @@ const ValleyReview: FC<Props> = ({ reviewRespDto, setValleyReview }) => {
     images: string[];
   }>({ view: false, images: [] });
   const [innerWidth, setInnerWidth] = useState(window.innerWidth);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const resizeListener = () => {
@@ -168,6 +173,19 @@ const ValleyReview: FC<Props> = ({ reviewRespDto, setValleyReview }) => {
       })
       .catch((err) => console.log(err));
   }, [sort, page]);
+
+  const newChatRoom = (nickname: string) => {
+    axiosInstance
+      .post("/api/auth/chatroom", {
+        // 채팅방 생성 or 기존채팅방 id 요청
+        recipientNick: nickname,
+      })
+      .then((res) => {
+        console.log(res);
+        dispatch(enterChatRoom(res.data.data.chatRoomId));
+        dispatch(view(true));
+      });
+  };
 
   return (
     <div className={styles.valleyReview}>
@@ -369,11 +387,18 @@ const ValleyReview: FC<Props> = ({ reviewRespDto, setValleyReview }) => {
                           />
                         </span>
                       ) : (
-                        <div>
+                        <div className={styles.userInfoProfileImg}>
                           <img src={item.memberProfileImg} alt="profileImg" />
                         </div>
                       )}
                       <span>{item.nickname}</span>
+                      <div
+                        className={styles.chatBtn}
+                        onClick={() => newChatRoom(item.nickname)}
+                      >
+                        <AiOutlineComment size="20px" />
+                        <span>채팅하기</span>
+                      </div>
                     </div>
                     <span>{item.createdReviewDate}</span>
                   </div>

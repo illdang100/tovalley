@@ -178,13 +178,27 @@
   align-items: center;
 }
 
-.userInfo > span:last-child {
+.userInfo > span:nth-child(2) {
   font-weight: bold;
   margin-left: 0.5em;
   font-size: 1.1rem;
+  margin-right: 1em;
 }
 
-.userInfo > div {
+.chatBtn {
+  display: flex;
+  align-items: center;
+  color: #66a5fc;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.chatBtn span:last-child {
+  margin-left: 0.3em;
+  font-size: 0.9rem;
+}
+
+.userInfoProfileImg {
   width: 30px;
   height: 30px;
   overflow: hidden;
@@ -200,9 +214,17 @@
   object-fit: cover;
 }
 
+.chatBtnComponent {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
 .reviewInfo > span:last-child {
   font-size: 0.9rem;
   color: #696969;
+  display: block;
+  margin-top: 0.4em;
 }
 
 .reviewItemRating {
@@ -225,7 +247,7 @@
   border-radius: 30px;
   padding: 0.3em 0.8em;
   margin: 0 1.2em;
-  font-size: 0.9rem;
+  font-size: 0.7rem;
 }
 
 .reviewItemRating > span:nth-child(4) {

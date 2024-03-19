@@ -9,6 +9,7 @@ import { setSubscription } from "../../store/chat/subscriptionSlice";
 
 const ChatComponent = () => {
   const [messageList, setMessageList] = useState<MessageListType>();
+  const [newMessageList, setNewMessageList] = useState<MessageListType>();
   const [message, setMessage] = useState<MessageType>();
   const [chatMessageList, setChatMessageList] = useState<MessageType[]>([]);
   const [content, setContent] = useState(""); // 보낼 메시지
@@ -86,11 +87,13 @@ const ChatComponent = () => {
       config // 채팅 메시지 목록 조회
     );
     console.log(res);
-    setMessageList(res.data);
+    setNewMessageList(res.data);
     if (res.data.data.chatMessages.last) {
       setIsPageEnd(true);
     }
   };
+
+  useEffect(() => {}, [newMessageList]);
 
   const handleObserver = useCallback(
     async (

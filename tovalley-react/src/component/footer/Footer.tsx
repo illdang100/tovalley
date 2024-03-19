@@ -31,7 +31,7 @@ const Footer = () => {
         </div>
         <div className={styles.frontend}>
           <span>FrontEnd</span>
-          <span>장윤정 yunej27@gmail.com</span>
+          <span>장하정 zhz0207@naver.com</span>
         </div>
       </div>
     </div>

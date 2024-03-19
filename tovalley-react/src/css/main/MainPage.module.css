@@ -16,6 +16,12 @@
   display: flex;
 }
 
+.recentPost {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5em;
+}
+
 @media screen and (max-width: 1000px) {
   .top {
     flex-direction: column;

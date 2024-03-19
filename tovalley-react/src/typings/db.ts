@@ -38,7 +38,7 @@ export interface LostPostComment {
   commentId: number;
   commentAuthor: string;
   commentContent: string;
-  commentCreatedAt: string;
+  commentCreateAt: string;
   commentByUser: boolean;
   commentAuthorProfile: string;
 }
@@ -178,4 +178,20 @@ export interface AlarmListResp {
     numberOfElements: number;
     empty: boolean;
   };
+}
+
+export interface RecentPostType {
+  lostFoundBoardId: number;
+  lostFoundBoardCategory: string;
+  lostFoundBoardTitle: string;
+  lostFoundBoardContent: string;
+  lostFoundBoardCreatedAt: string;
+}
+
+export interface RecentReviewType {
+  reviewId: number;
+  reviewRating: number;
+  reviewContent: string;
+  reviewCreatedAt: string;
+  waterPlaceId: number;
 }

@@ -23,6 +23,7 @@ const Chat = () => {
   const subscription = useSelector(
     (state: RootState) => state.subscription.value
   );
+  const [bgForeground, setBgForeground] = useState(false);
 
   useEffect(() => {
     if (chatView) {
@@ -46,6 +47,19 @@ const Chat = () => {
       setAppear("end");
     }
   }, [chatView]);
+
+  useEffect(() => {
+    if (appear === "end") {
+      const fadeTimer = setTimeout(() => {
+        setBgForeground(true);
+      }, 500);
+      return () => {
+        clearTimeout(fadeTimer);
+      };
+    } else {
+      setBgForeground(false);
+    }
+  }, [appear]);
 
   useEffect(() => {
     if (clientSelector && chatView && !chatRoomId) {
@@ -109,7 +123,11 @@ const Chat = () => {
   };
 
   return (
-    <div className={chatView ? styles.chatContainer : ""}>
+    <div
+      className={`${styles.chatContainer} ${
+        bgForeground ? "" : styles.zIndex
+      } `}
+    >
       <div
         className={
           appear === "start"
@@ -130,7 +148,7 @@ const Chat = () => {
               <MdArrowBackIos />
             </span>
           )}
-          {!chatRoomId && <h1>illdang100</h1>}
+          {!chatRoomId ? <h1>tovalley</h1> : <h1>illdang100</h1>}
           <span>
             <MdLogout />
           </span>
