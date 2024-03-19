@@ -14,6 +14,7 @@ import { FaCheck } from "react-icons/fa6";
 import { useDispatch } from "react-redux";
 import { view } from "../store/chat/chatViewSlice";
 import { enterChatRoom } from "../store/chat/chatRoomIdSlice";
+import { Cookies } from "react-cookie";
 
 const LostItemPostPage = () => {
   const [lostPost, setLostPost] = useState<LostPost>();
@@ -25,6 +26,7 @@ const LostItemPostPage = () => {
   const [commentDeleteModal, setCommentDeleteModal] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const cookies = new Cookies();
 
   useEffect(() => {
     axiosInstance
@@ -225,31 +227,20 @@ const LostItemPostPage = () => {
             )}
           </div>
         </div>
-        <div className={styles.postComment}>
-          <div className={styles.commentInput}>
-            <div className={styles.commentUser}>
-              <div className={styles.commentProfileImage}>
-                <img
-                  src={
-                    lostPost?.data.boardAuthorProfile
-                      ? lostPost?.data.boardAuthorProfile
-                      : process.env.PUBLIC_URL + "/img/user-profile.png"
-                  }
-                  alt="author-profile"
-                />
-              </div>
-              <span>{lostPost?.data.author}</span>
+        {cookies.get("ISLOGIN") && (
+          <div className={styles.postComment}>
+            <div className={styles.commentInput}>
+              <input
+                placeholder="댓글을 입력하세요."
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+              />
             </div>
-            <input
-              placeholder="댓글을 입력하세요."
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-            />
+            <div className={styles.uploadBtn} onClick={addComment}>
+              등록
+            </div>
           </div>
-          <div className={styles.uploadBtn} onClick={addComment}>
-            등록
-          </div>
-        </div>
+        )}
         <div className={styles.commentList}>
           {commentList &&
             commentList.length > 0 &&
