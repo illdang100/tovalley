@@ -23,6 +23,7 @@ const Chat = () => {
   const subscription = useSelector(
     (state: RootState) => state.subscription.value
   );
+  const [bgForeground, setBgForeground] = useState(false);
 
   useEffect(() => {
     if (chatView) {
@@ -48,6 +49,19 @@ const Chat = () => {
   }, [chatView]);
 
   useEffect(() => {
+    if (appear === "end") {
+      const fadeTimer = setTimeout(() => {
+        setBgForeground(true);
+      }, 500);
+      return () => {
+        clearTimeout(fadeTimer);
+      };
+    } else {
+      setBgForeground(false);
+    }
+  }, [appear]);
+
+  useEffect(() => {
     if (clientSelector && chatView && !chatRoomId) {
       console.log("clientSelector 있음");
       console.log(clientSelector);
@@ -55,49 +69,7 @@ const Chat = () => {
         .get("/api/auth/chatroom") // 채팅방 목록
         .then((res) => {
           console.log(res);
-          // res.data !== "" && setChatRoomList(res.data.data);
-          setChatRoomList([
-            {
-              chatRoomId: 1,
-              chatRoomTitle: "test1 와(과)의 채팅방입니다.",
-              createdChatRoomDate: "2024-03-03 22:43:00",
-              lastMessageContent: "제 핸드폰인 것 같아요.",
-              lastMessageTime: "2024-03-12 12:51:25",
-              otherUserNick: "illdang100",
-              otherUserProfileImage: "/img/dummy/profile-img2.jpg",
-              unReadMessageCount: 0,
-            },
-            {
-              chatRoomId: 2,
-              chatRoomTitle: "test1 와(과)의 채팅방입니다.",
-              createdChatRoomDate: "2024-03-03 22:43:00",
-              lastMessageContent: "감사합니다.",
-              lastMessageTime: "2024-03-10 12:51:25",
-              otherUserNick: "kim123",
-              otherUserProfileImage: null,
-              unReadMessageCount: 0,
-            },
-            {
-              chatRoomId: 3,
-              chatRoomTitle: "test1 와(과)의 채팅방입니다.",
-              createdChatRoomDate: "2024-03-03 22:43:00",
-              lastMessageContent: "네~",
-              lastMessageTime: "2024-03-08 12:51:25",
-              otherUserNick: "계곡탐험가",
-              otherUserProfileImage: "/img/dummy/profile-img3.jpg",
-              unReadMessageCount: 0,
-            },
-            {
-              chatRoomId: 4,
-              chatRoomTitle: "test1 와(과)의 채팅방입니다.",
-              createdChatRoomDate: "2024-03-03 22:43:00",
-              lastMessageContent: "좋은 하루 되세요",
-              lastMessageTime: "2024-03-08 12:51:25",
-              otherUserNick: "yunej27",
-              otherUserProfileImage: "/img/dummy/profile-img4.jpg",
-              unReadMessageCount: 0,
-            },
-          ]);
+          res.data !== "" && setChatRoomList(res.data.data);
         })
         .catch((err) => console.log(err));
     }
@@ -151,7 +123,11 @@ const Chat = () => {
   };
 
   return (
-    <div className={chatView ? styles.chatContainer : ""}>
+    <div
+      className={`${styles.chatContainer} ${
+        bgForeground ? "" : styles.zIndex
+      } `}
+    >
       <div
         className={
           appear === "start"

@@ -44,7 +44,9 @@ const LostItemWritePage = () => {
     e.preventDefault();
     const formData = new FormData();
 
-    let currentCategory = "찾아요" ? "LOST" : "FOUND";
+    let category;
+    if (currentCategory === "찾아요") category = "LOST";
+    else category = "FOUND";
 
     if (
       selectedPlace.length === 0 ||
@@ -53,14 +55,12 @@ const LostItemWritePage = () => {
     ) {
       setAlert({ view: true, content: "항목을 모두 입력해주세요." });
     } else {
-      formData.append("category", currentCategory);
+      formData.append("category", category);
       formData.append("waterPlaceId", `${selectedPlace[0].waterPlaceId}`);
       formData.append("title", write.title);
       formData.append("content", write.content);
-      if (imgFiles.length !== 0) {
-        for (let i = 0; i < imgFiles.length; i++) {
-          formData.append("postImage", imgFiles[i]);
-        }
+      for (let i = 0; i < imgFiles.length; i++) {
+        formData.append("postImage", imgFiles[i]);
       }
 
       axiosInstance

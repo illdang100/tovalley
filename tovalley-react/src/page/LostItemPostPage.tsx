@@ -22,71 +22,20 @@ const LostItemPostPage = () => {
   const [comment, setComment] = useState("");
   const [deleteModal, setDeleteModal] = useState(false);
   const [resolveCheck, setResolveCheck] = useState(false);
+  const [commentDeleteModal, setCommentDeleteModal] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   useEffect(() => {
-    setLostPost({
-      data: {
-        title: "금오계곡에서 찾았어요",
-        content: "아이폰입니다.",
-        author: "illdang100",
-        waterPlaceName: "금오계곡",
-        waterPlaceAddress: "경상북도 구미시 옥계동",
-        postCreateAt: "2023-09-19 21:33:10",
-        postImages: ["/img/dummy/dummy-lost-item.jpg"],
-        isResolved: false,
-        isMyBoard: false,
-        boardAuthorProfile: "",
-        commentCnt: 3,
-        comments: [
-          {
-            commentId: 1,
-            commentAuthor: "행복한 어피치",
-            commentContent: "혹시 흰색인가요?",
-            commentCreatedAt: "2024-09-19 09:00:02",
-            commentByUser: false, // 현재 유저가 작성한 댓글인지 확인
-            commentAuthorProfile: "",
-          },
-        ],
-      },
-    });
-    setCommentList([
-      {
-        commentId: 1,
-        commentAuthor: "행복한 어피치",
-        commentContent: "혹시 흰색인가요?",
-        commentCreatedAt: "2023-09-19 09:00:02",
-        commentByUser: false, // 현재 유저가 작성한 댓글인지 확인,
-        commentAuthorProfile: "",
-      },
-      {
-        commentId: 1,
-        commentAuthor: "dlraud12",
-        commentContent: "주인 찾으셨으면 좋겠네요~!",
-        commentCreatedAt: "2023-09-19 09:00:02",
-        commentByUser: false, // 현재 유저가 작성한 댓글인지 확인,
-        commentAuthorProfile: "",
-      },
-      {
-        commentId: 1,
-        commentAuthor: "tovalley",
-        commentContent: "채팅 드렸는데 확인 부탁드려요.",
-        commentCreatedAt: "2023-09-23 09:00:02",
-        commentByUser: true, // 현재 유저가 작성한 댓글인지 확인,
-        commentAuthorProfile: "",
-      },
-    ]);
-
-    // axiosInstance
-    //   .get(`/api/lostItem/${id}`)
-    //   .then((res) => {
-    //     console.log(res);
-    //     setLostPost({ data: res.data.data });
-    //     setCommentList(res.data.data.comments);
-    //     setResolveCheck(res.data.data.isResolved);
-    //   })
-    //   .catch((err) => console.log(err));
+    axiosInstance
+      .get(`/api/lostItem/${id}`)
+      .then((res) => {
+        console.log(res);
+        setLostPost({ data: res.data.data });
+        setCommentList(res.data.data.comments);
+        setResolveCheck(res.data.data.isResolved);
+      })
+      .catch((err) => console.log(err));
   }, [id]);
 
   const resolveStatus = () => {
@@ -96,12 +45,13 @@ const LostItemPostPage = () => {
         {},
         {
           params: {
-            status: resolveCheck,
+            isResolved: !resolveCheck,
           },
         }
       )
       .then((res) => {
         console.log(res);
+        setResolveCheck(!resolveCheck);
       })
       .catch((err) => console.log(err));
   };
@@ -118,6 +68,7 @@ const LostItemPostPage = () => {
 
   const closeDeleteModal = () => {
     setDeleteModal(false);
+    setCommentDeleteModal(false);
   };
 
   const addComment = () => {
@@ -135,7 +86,7 @@ const LostItemPostPage = () => {
               commentId: commentList[commentList?.length - 1].commentId + 1,
               commentAuthor: lostPost ? lostPost.data.author : "",
               commentContent: comment,
-              commentCreatedAt: `${date}`,
+              commentCreateAt: `${date}`,
               commentByUser: true,
               commentAuthorProfile: lostPost
                 ? lostPost.data.boardAuthorProfile
@@ -148,7 +99,7 @@ const LostItemPostPage = () => {
               commentId: 1,
               commentAuthor: lostPost ? lostPost.data.author : "",
               commentContent: comment,
-              commentCreatedAt: `${date}`,
+              commentCreateAt: `${date}`,
               commentByUser: true,
               commentAuthorProfile: lostPost
                 ? lostPost.data.boardAuthorProfile
@@ -157,18 +108,22 @@ const LostItemPostPage = () => {
           ]);
         }
         // const newCommentList = commentList?.concat([res.data.data]);
+        setComment("");
       })
       .catch((err) => console.log(err));
   };
 
   const deleteComment = (item: LostPostComment) => {
-    const newCommentList = commentList?.filter((comment) => {
-      return comment !== item;
-    });
-    setCommentList(newCommentList);
     axiosInstance
       .delete(`/api/auth/lostItem/${id}/comment/${item.commentId}`)
-      .then((res) => console.log(res))
+      .then((res) => {
+        console.log(res);
+
+        const newCommentList = commentList?.filter((comment) => {
+          return comment !== item;
+        });
+        setCommentList(newCommentList);
+      })
       .catch((err) => console.log(err));
   };
 
@@ -176,11 +131,11 @@ const LostItemPostPage = () => {
     navigate(`/lost-item/${category}/${id}/update`);
   };
 
-  const newChatRoom = () => {
+  const newChatRoom = (nickname: string) => {
     axiosInstance
       .post("/api/auth/chatroom", {
         // 채팅방 생성 or 기존채팅방 id 요청
-        recipientNick: lostPost?.data.author,
+        recipientNick: nickname,
       })
       .then((res) => {
         console.log(res);
@@ -204,10 +159,9 @@ const LostItemPostPage = () => {
               <div className={styles.profileImage}>
                 <img
                   src={
-                    // lostPost?.data.boardAuthorProfile
-                    //   ? lostPost?.data.boardAuthorProfile
-                    //   : process.env.PUBLIC_URL + "/img/user-profile.png"
-                    "/img/dummy/profile-img2.jpg"
+                    lostPost?.data.boardAuthorProfile
+                      ? lostPost?.data.boardAuthorProfile
+                      : process.env.PUBLIC_URL + "/img/user-profile.png"
                   }
                   alt="author-profile"
                 />
@@ -220,7 +174,10 @@ const LostItemPostPage = () => {
               </div>
             </div>
             {!lostPost?.data.isMyBoard && (
-              <div className={styles.chatBtn} onClick={() => newChatRoom()}>
+              <div
+                className={styles.chatBtn}
+                onClick={() => lostPost && newChatRoom(lostPost.data.author)}
+              >
                 <AiOutlineComment size="22px" />
                 <span>채팅하기</span>
               </div>
@@ -231,7 +188,7 @@ const LostItemPostPage = () => {
           <div className={styles.imageList}>
             {lostPost?.data.postImages.map((img) => {
               return (
-                <div className={styles.imageContainer}>
+                <div key={img} className={styles.imageContainer}>
                   <img src={img} alt="post-img" />
                 </div>
               );
@@ -240,7 +197,8 @@ const LostItemPostPage = () => {
           <div className={styles.postBottom}>
             <div className={styles.comment}>
               <FaRegComment />
-              <span>{lostPost?.data.commentCnt}</span>
+              {/* <span>{lostPost?.data.commentCnt}</span> */}
+              <span>{commentList?.length}</span>
             </div>
             {lostPost?.data.isMyBoard && (
               <div className={styles.modifyBtn}>
@@ -248,7 +206,6 @@ const LostItemPostPage = () => {
                   <div
                     className={resolveCheck ? styles.checked : styles.checkBox}
                     onClick={() => {
-                      setResolveCheck(!resolveCheck);
                       resolveStatus();
                     }}
                   >
@@ -281,8 +238,7 @@ const LostItemPostPage = () => {
                   alt="author-profile"
                 />
               </div>
-              {/* <span>{lostPost?.data.author}</span> */}
-              <span>tovalley</span>
+              <span>{lostPost?.data.author}</span>
             </div>
             <input
               placeholder="댓글을 입력하세요."
@@ -297,18 +253,15 @@ const LostItemPostPage = () => {
         <div className={styles.commentList}>
           {commentList &&
             commentList.length > 0 &&
-            commentList?.map((item, index) => (
+            commentList?.map((item) => (
               <div key={item.commentAuthor} className={styles.commentItem}>
                 <div className={styles.commentTop}>
                   <div className={styles.commentInfo}>
                     <div className={styles.commentProfileImage}>
                       <img
                         src={
-                          // item.commentAuthorProfile
-                          //   ? item.commentAuthorProfile
-                          //   : process.env.PUBLIC_URL + "/img/user-profile.png"
-                          index === 0
-                            ? "/img/dummy/profile-img1.jpg"
+                          item.commentAuthorProfile
+                            ? item.commentAuthorProfile
                             : process.env.PUBLIC_URL + "/img/user-profile.png"
                         }
                         alt="author-profile"
@@ -317,20 +270,32 @@ const LostItemPostPage = () => {
                     <span className={styles.commentWriterName}>
                       {item.commentAuthor}
                     </span>
-                    <span>{elapsedTime(item.commentCreatedAt)}</span>
+                    <span>{elapsedTime(item.commentCreateAt)}</span>
                   </div>
                   {item.commentByUser ? (
                     <div
                       className={styles.deleteComment}
-                      onClick={() => deleteComment(item)}
+                      onClick={() => {
+                        setCommentDeleteModal(true);
+                      }}
                     >
                       삭제
                     </div>
                   ) : (
-                    <div className={styles.commentChatBtn}>
+                    <div
+                      className={styles.commentChatBtn}
+                      onClick={() => newChatRoom(item.commentAuthor)}
+                    >
                       <AiOutlineComment size="25px" />
                       <span>채팅</span>
                     </div>
+                  )}
+                  {commentDeleteModal && (
+                    <CustomModal
+                      content="댓글을 삭제하시겠습니까?"
+                      customFunc={() => deleteComment(item)}
+                      handleModal={closeDeleteModal}
+                    />
                   )}
                 </div>
                 <p>{item.commentContent}</p>

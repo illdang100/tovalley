@@ -365,127 +365,6 @@ const ValleyPage = () => {
       });
   }, []);
 
-  const dummyAccident = {
-    totalDeathCnt: 0,
-    totalDisappearanceCnt: 0,
-    totalInjuryCnt: 5,
-  };
-
-  const dummyQuality = {
-    waterPlaceImage: null,
-    waterPlaceName: "상촌계곡",
-    latitude: "37.434773498230115",
-    longitude: "127.4562411208705",
-    managementType: "일반지역",
-    detailAddress: "경기도 양평군 강상면 백석길226-2",
-    town: "강상면",
-    annualVisitors: "11",
-    safetyMeasures: "",
-    waterPlaceSegment: 300,
-    dangerSegments: 100,
-    dangerSignboardsNum: "",
-    deepestDepth: 1,
-    avgDepth: 0.5,
-    waterTemperature: 11.9,
-    bod: 5,
-    turbidity: 240,
-    waterQualityReviews: {
-      깨끗해요: 120,
-      괜찮아요: 100,
-      더러워요: 20,
-    },
-  };
-
-  const dummyReview = {
-    waterPlaceRating: 3.8,
-    reviewCnt: 162,
-    ratingRatio: {
-      "1": 9,
-      "2": 16,
-      "3": 33,
-      "4": 39,
-      "5": 65,
-    },
-    reviews: {
-      content: [
-        {
-          reviewId: 1,
-          memberProfileImg: null,
-          nickname: "tvy0314",
-          rating: 5,
-          createdReviewDate: "2023-09-18 16:18:51",
-          content: "물이 깨끗하고 좋아요~! 수심도 안 깊어서 놀기 좋아요.",
-          reviewImages: [
-            "/img/dummy/계곡이미지2.jpg",
-            "/img/dummy/계곡이미지2.jpg",
-            "/img/dummy/계곡이미지1.jpg",
-            "/img/dummy/계곡이미지1.jpg",
-          ],
-          waterQuality: "깨끗해요",
-        },
-        {
-          reviewId: 2,
-          memberProfileImg: null,
-          nickname: "산찾아물찾아",
-          rating: 4,
-          createdReviewDate: "2023-09-12 18:27:30",
-          content: "자주 올 거 같아요 ^^",
-          reviewImages: [
-            "/img/dummy/계곡이미지1.jpg",
-            "/img/dummy/계곡이미지1.jpg",
-          ],
-          waterQuality: "괜찮아요",
-        },
-        {
-          reviewId: 3,
-          memberProfileImg: null,
-          nickname: "wkadhsek12",
-          rating: 4,
-          createdReviewDate: "2023-08-31 20:05:10",
-          content:
-            "전체적으로 만족스러워요. 구조용품도 많이 비치되어 있어서 좋아요.",
-          reviewImages: ["/img/dummy/계곡이미지9.jpg"],
-          waterQuality: "괜찮아요",
-        },
-        {
-          reviewId: 4,
-          memberProfileImg: null,
-          nickname: "kim123",
-          rating: 3,
-          createdReviewDate: "2023-08-29 18:37:58",
-          content: "그냥저냥 괜찮아요.",
-          reviewImages: [],
-          waterQuality: "괜찮아요",
-        },
-      ],
-      pageable: {
-        sort: {
-          empty: false,
-          unsorted: false,
-          sorted: false,
-        },
-        offset: 0,
-        pageNumber: 0,
-        pageSize: 0,
-        paged: false,
-        unpaged: false,
-      },
-      last: false,
-      totalPages: 7,
-      totalElements: 0,
-      first: false,
-      sort: {
-        empty: false,
-        unsorted: false,
-        sorted: false,
-      },
-      number: 0,
-      size: 0,
-      numberOfElements: 0,
-      empty: false,
-    },
-  };
-
   return (
     <div className={styles.valleyPageContainer}>
       <Header />
@@ -493,11 +372,11 @@ const ValleyPage = () => {
         <ValleyInfo
           waterPlaceDetails={valley.waterPlaceDetails}
           weatherList={valley.waterPlaceWeathers}
-          accidents={dummyAccident}
+          accidents={valley.accidents}
           rescueSupplies={valley.rescueSupplies}
         />
         <div className={styles.valleyPage}>
-          <ValleyQuality waterPlaceDetails={dummyQuality} />
+          <ValleyQuality waterPlaceDetails={valley.waterPlaceDetails} />
           <ValleySchedule
             tripPlanToWaterPlace={peopleCnt}
             setPeopleCnt={setPeopleCnt}
@@ -506,7 +385,7 @@ const ValleyPage = () => {
             annualVisitors={valley.waterPlaceDetails.annualVisitors}
           />
           <ValleyReview
-            reviewRespDto={dummyReview}
+            reviewRespDto={valleyReview}
             setValleyReview={setValleyReview}
           />
         </div>

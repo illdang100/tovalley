@@ -38,7 +38,7 @@ export interface LostPostComment {
   commentId: number;
   commentAuthor: string;
   commentContent: string;
-  commentCreatedAt: string;
+  commentCreateAt: string;
   commentByUser: boolean;
   commentAuthorProfile: string;
 }
@@ -191,7 +191,7 @@ export interface RecentPostType {
 export interface RecentReviewType {
   reviewId: number;
   reviewRating: number;
-  reviewTitle: string;
   reviewContent: string;
   reviewCreatedAt: string;
+  waterPlaceId: number;
 }

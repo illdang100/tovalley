@@ -8,7 +8,6 @@ import { BiUser } from "react-icons/bi";
 import { FiLogOut } from "react-icons/fi";
 import { FaRegBell } from "react-icons/fa";
 import { IoChatbubblesSharp } from "react-icons/io5";
-import Chat from "./Chat";
 import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
 import { useDispatch, useSelector } from "react-redux";
@@ -110,7 +109,6 @@ const Header = () => {
 
   return (
     <div className={styles.header}>
-      <Chat />
       <div className={styles.headerWrapper}>
         <div className={styles.headertop}>
           <div className={styles.hamburger}>

@@ -1,10 +1,14 @@
 .chatContainer {
-  z-index: 10;
+  z-index: -10;
   position: fixed;
   top: 90px;
   left: 0;
   right: 0;
   bottom: 0;
+}
+
+.zIndex {
+  z-index: 20;
 }
 
 .chatWrap {

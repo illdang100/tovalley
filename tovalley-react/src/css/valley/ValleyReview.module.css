@@ -190,6 +190,7 @@
   align-items: center;
   color: #66a5fc;
   font-weight: 700;
+  cursor: pointer;
 }
 
 .chatBtn span:last-child {

@@ -38,22 +38,6 @@ const LostItemUpdatePage = () => {
   };
 
   useEffect(() => {
-    // setSelectedPlace([
-    //   {
-    //     waterPlaceId: -1,
-    //     waterPlaceName: "금오계곡",
-    //     address: "경북 구미시 금오계곡",
-    //   },
-    // ]);
-    // setWrite({
-    //   title: "금오계곡",
-    //   content: "금오계곡",
-    // });
-    // setUploadImg([
-    //   "/img/dummy/계곡이미지5.jpg",
-    //   "/img/dummy/계곡이미지5.jpg",
-    //   "/img/dummy/계곡이미지6.jpg",
-    // ]);
     axiosInstance
       .get(`/api/lostItem/${id}`)
       .then((res) => {

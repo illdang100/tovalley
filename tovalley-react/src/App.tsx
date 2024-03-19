@@ -18,6 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "./store/store";
 import AlarmList from "./component/common/AlarmList";
 import { setNotificationView } from "./store/notification/notificationViewSlice";
+import Chat from "./component/header/Chat";
 
 function App() {
   const notification = useSelector(
@@ -34,6 +35,7 @@ function App() {
     <div>
       {notification && notification.notificationType === "CHAT" && <Alarm />}
       <AlarmList />
+      <Chat />
       <Routes>
         <Route path="/" element={<MainPage />} />
         <Route path="/login" element={<LoginPage />} />

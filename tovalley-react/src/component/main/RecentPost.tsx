@@ -1,21 +1,31 @@
 import React, { FC } from "react";
 import styles from "../../css/main/RecentPost.module.css";
 import { RecentPostType, RecentReviewType } from "../../typings/db";
+import { elapsedTime } from "../../composables/elapsedTime";
+import RatingStar from "../common/RatingStar";
+import { useNavigate } from "react-router-dom";
 
 const RecentPost: FC<{
   recentLostPost?: RecentPostType[];
   recentReviewPost?: RecentReviewType[];
 }> = ({ recentLostPost, recentReviewPost }) => {
+  const navigation = useNavigate();
+
   return (
     <div className={styles.recentPost}>
       <h1>{recentLostPost ? "최근 분실물 게시글" : "최근 리뷰"}</h1>
       <div className={styles.recentPostList}>
         {recentLostPost
-          ? recentLostPost.map((post, index) => {
+          ? recentLostPost.map((post) => {
               return (
                 <div
                   key={post.lostFoundBoardId}
                   className={styles.recentPostItem}
+                  onClick={() => {
+                    navigation(
+                      `/lost-item/${post.lostFoundBoardCategory}/${post.lostFoundBoardId}`
+                    );
+                  }}
                 >
                   <div className={styles.header}>
                     <div className={styles.title}>
@@ -32,37 +42,28 @@ const RecentPost: FC<{
                       </span>
                       <h4>{post.lostFoundBoardTitle}</h4>
                     </div>
-                    <span>
-                      {index === 0
-                        ? "방금전"
-                        : index === 1
-                        ? "10분전"
-                        : index === 2
-                        ? "14분전"
-                        : "20분전"}
-                    </span>
+                    <span>{elapsedTime(post.lostFoundBoardCreatedAt)}</span>
                   </div>
                   <p>{post.lostFoundBoardContent}</p>
                 </div>
               );
             })
-          : recentReviewPost?.map((post, index) => {
+          : recentReviewPost?.map((post) => {
               return (
-                <div key={post.reviewId} className={styles.recentPostItem}>
+                <div
+                  key={post.reviewId}
+                  className={styles.recentPostItem}
+                  onClick={() => {
+                    navigation(`/valley/${post.waterPlaceId}`);
+                  }}
+                >
                   <div className={styles.header}>
                     <div className={styles.title}>
-                      <h4>{post.reviewTitle}</h4>
+                      <h4>{post.reviewContent}</h4>
                     </div>
-                    <span>
-                      {index === 0
-                        ? "방금전"
-                        : index === 1
-                        ? "5분전"
-                        : index === 2
-                        ? "20분전"
-                        : "25분전"}
-                    </span>
+                    <span>{elapsedTime(post.reviewCreatedAt)}</span>
                   </div>
+                  <RatingStar rating={3} size="15px" />
                   <p>{post.reviewContent}</p>
                 </div>
               );

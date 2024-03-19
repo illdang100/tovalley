@@ -9,6 +9,7 @@ import { setSubscription } from "../../store/chat/subscriptionSlice";
 
 const ChatComponent = () => {
   const [messageList, setMessageList] = useState<MessageListType>();
+  const [newMessageList, setNewMessageList] = useState<MessageListType>();
   const [message, setMessage] = useState<MessageType>();
   const [chatMessageList, setChatMessageList] = useState<MessageType[]>([]);
   const [content, setContent] = useState(""); // 보낼 메시지
@@ -26,84 +27,11 @@ const ChatComponent = () => {
 
   useEffect(() => {
     const requestMessageList = async () => {
-      // const response = await axiosInstance.get(
-      //   `/api/auth/chat/messages/${chatRoomId}` // 채팅 메시지 목록 조회
-      // );
-      //console.log(response);
-      // setMessageList(response.data);
-      setMessageList({
-        data: {
-          memberId: 1,
-          chatRoomId: 1,
-          chatMessages: {
-            content: [
-              {
-                chatMessageId: "65ec7c56316dd6207b802834",
-                content: "안녕하세요. 올리신 글 제 핸드폰인 것 같아요.",
-                createdAt: "2024-03-10 18:12:22",
-                myMsg: true,
-                readCount: 0,
-                senderId: 6,
-              },
-              {
-                chatMessageId: "65ec7c56316dd6207b802831",
-                content: "금오계곡에서 잃어버리신 거 맞나요?",
-                createdAt: "2024-03-10 18:20:22",
-                myMsg: false,
-                readCount: 0,
-                senderId: 6,
-              },
-              {
-                chatMessageId: "65ec7c56316dd6207b802831",
-                content: "네 맞아요!",
-                createdAt: "2024-03-10 18:22:22",
-                myMsg: true,
-                readCount: 0,
-                senderId: 6,
-              },
-              {
-                chatMessageId: "65ec7c56316dd6207b802831",
-                content: "어떻게 드리면 될까요?",
-                createdAt: "2024-03-10 18:23:22",
-                myMsg: false,
-                readCount: 0,
-                senderId: 6,
-              },
-              {
-                chatMessageId: "65ec7c56316dd6207b802831",
-                content: "010-xxxx-xxxx로 연락주시겠어요?",
-                createdAt: "2024-03-10 18:25:22",
-                myMsg: true,
-                readCount: 0,
-                senderId: 6,
-              },
-            ],
-            pageable: {
-              sort: {
-                empty: false,
-                sorted: false,
-                unsorted: false,
-              },
-              offset: 0,
-              pageNumber: 0,
-              pageSize: 0,
-              paged: false,
-              unpaged: false,
-            },
-            first: false,
-            last: false,
-            size: 1,
-            number: 1,
-            sort: {
-              empty: false,
-              sorted: false,
-              unsorted: false,
-            },
-            numberOfElements: 0,
-            empty: false,
-          },
-        },
-      });
+      const response = await axiosInstance.get(
+        `/api/auth/chat/messages/${chatRoomId}` // 채팅 메시지 목록 조회
+      );
+      console.log(response);
+      setMessageList(response.data);
 
       if (clientSelector?.connected) {
         console.log("채팅방 구독 시작!!");
@@ -159,11 +87,13 @@ const ChatComponent = () => {
       config // 채팅 메시지 목록 조회
     );
     console.log(res);
-    setMessageList(res.data);
+    setNewMessageList(res.data);
     if (res.data.data.chatMessages.last) {
       setIsPageEnd(true);
     }
   };
+
+  useEffect(() => {}, [newMessageList]);
 
   const handleObserver = useCallback(
     async (
