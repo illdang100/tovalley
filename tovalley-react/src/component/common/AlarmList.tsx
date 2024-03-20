@@ -206,7 +206,7 @@ const AlarmList = () => {
                 alarm.hasRead ? styles.hasRead : ""
               }`}
             >
-              {alarm.content}
+              {alarm.content === "" ? "사진을 보냈습니다." : alarm.content}
             </p>
             {alarm.createdDate && (
               <span className={styles.alarmTime}>

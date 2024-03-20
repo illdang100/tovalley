@@ -32,6 +32,11 @@ const Header = () => {
   const notificationView = useSelector(
     (state: RootState) => state.notificationView.value
   );
+  const notification = useSelector(
+    (state: RootState) => state.notification.value
+  );
+  const chatRoomId = useSelector((state: RootState) => state.chatRoomId.value);
+  const [newAlarm, setNewAlarm] = useState(false);
 
   useEffect(() => {
     const loginStatus = cookies.get("ISLOGIN");
@@ -49,6 +54,14 @@ const Header = () => {
   useEffect(() => {
     if (notificationView) dispatch(view(false));
   }, [notificationView]);
+
+  useEffect(() => {
+    if (notification && notification.notificationType === "CHAT") {
+      setNewAlarm(true);
+    } else if (chatRoomId || notificationView) {
+      setNewAlarm(false);
+    }
+  }, [notification, chatRoomId, notificationView]);
 
   const connectSocket = () => {
     const socket = new SockJS(`${localhost}/stomp/chat`); // 서버와 웹소켓 연결
@@ -139,7 +152,7 @@ const Header = () => {
                 >
                   <FaRegBell />
                 </div>
-                <span>•</span>
+                {newAlarm && <span>•</span>}
               </div>
               <div
                 className={styles.chatIcon}

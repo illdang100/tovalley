@@ -85,6 +85,8 @@ export interface ChatRoomItem {
 
 export interface ChatMessage {
   chatMessageId: string;
+  chatType: string | null;
+  imageUrl: string | null;
   senderId: number;
   myMsg: boolean;
   content: string;
@@ -94,6 +96,9 @@ export interface ChatMessage {
 
 export interface MessageType {
   chatRoomId: number;
+  chatType: string;
+  imageName: string;
+  imageUrl: string;
   senderId: number;
   content: string;
   createdAt: string;
