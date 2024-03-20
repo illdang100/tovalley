@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import styles from "../../css/common/Alarm.module.css";
-import { MdClose } from "react-icons/md";
 import { elapsedTime } from "../../composables/elapsedTime";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store/store";
@@ -39,23 +38,38 @@ const Alarm = () => {
   };
 
   return (
-    <div
-      className={`${styles.alarmComponent} ${
-        fade ? styles.fadein : styles.fadeout
-      }`}
-      style={notificationView || chatView ? { display: "none" } : {}}
-      onClick={startChat}
-    >
-      <span className={styles.closeBtn}>
-        <MdClose />
-      </span>
-      <h4>{notification?.senderNick}</h4>
-      <p className={styles.alarmContent}>{notification?.content}</p>
-      {notification?.createdDate && (
-        <span className={styles.alarmTime}>
-          {elapsedTime(notification.createdDate)}
+    <div className={styles.alarmWrap}>
+      {/* {!chatView || !chatRoomId ? (
+        <span
+          className={styles.closeBtn}
+          onClick={() => {
+            dispatch(setNotification(null));
+          }}
+        >
+          <MdClose />
         </span>
-      )}
+      ) : (
+        ""
+      )} */}
+      <div
+        className={`${styles.alarmComponent} ${
+          fade ? styles.fadein : styles.fadeout
+        }`}
+        style={notificationView || chatView ? { display: "none" } : {}}
+        onClick={startChat}
+      >
+        <h4>{notification?.senderNick}</h4>
+        <p className={styles.alarmContent}>
+          {notification?.content === ""
+            ? "사진을 보냈습니다."
+            : notification?.content}
+        </p>
+        {notification?.createdDate && (
+          <span className={styles.alarmTime}>
+            {elapsedTime(notification.createdDate)}
+          </span>
+        )}
+      </div>
     </div>
   );
 };

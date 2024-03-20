@@ -71,6 +71,7 @@ input:focus {
   color: #747474;
   right: 25px;
   top: 10px;
+  cursor: pointer;
 }
 
 .filter {

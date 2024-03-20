@@ -32,6 +32,7 @@ type valleyReview = {
       content: string;
       reviewImages: string[];
       waterQuality: string;
+      isMyReview: boolean;
     }[];
     pageable: {
       sort: {
@@ -82,6 +83,7 @@ interface Props {
         content: string;
         reviewImages: string[];
         waterQuality: string;
+        isMyReview: boolean;
       }[];
       pageable: {
         sort: {
@@ -392,13 +394,15 @@ const ValleyReview: FC<Props> = ({ reviewRespDto, setValleyReview }) => {
                         </div>
                       )}
                       <span>{item.nickname}</span>
-                      <div
-                        className={styles.chatBtn}
-                        onClick={() => newChatRoom(item.nickname)}
-                      >
-                        <AiOutlineComment size="20px" />
-                        <span>채팅하기</span>
-                      </div>
+                      {!item.isMyReview && (
+                        <div
+                          className={styles.chatBtn}
+                          onClick={() => newChatRoom(item.nickname)}
+                        >
+                          <AiOutlineComment size="20px" />
+                          <span>채팅하기</span>
+                        </div>
+                      )}
                     </div>
                     <span>{item.createdReviewDate}</span>
                   </div>
