@@ -35,6 +35,13 @@ axiosInstance.interceptors.response.use(
         } else if (errMsg === "닉네임은 필수 값 입니다.") {
           window.location.replace("/mypage");
         }
+      } else if (
+        errResponseStatus === 401 &&
+        errMsg ===
+          "다른 IP에서의 접근이 감지되었습니다. 보안을 위해 접속이 종료됩니다."
+      ) {
+        alert(errMsg);
+        window.location.replace("/login");
       } else if (errResponseStatus === 401) {
         console.log("인증 실패");
         return Axios.request(prevRequest);

@@ -9,11 +9,15 @@ import { elapsedTime } from "../../composables/elapsedTime";
 import { RootState } from "../../store/store";
 import { useDispatch, useSelector } from "react-redux";
 import { enterChatRoom } from "../../store/chat/chatRoomIdSlice";
+import { setChatRoomName } from "../../store/chat/chatRoomNameSlice";
 
 const Chat = () => {
   const chatView = useSelector((state: RootState) => state.view.value);
   const [appear, setAppear] = useState("");
-  const [chatRoomList, setChatRoomList] = useState<ChatRoomItem[]>([]);
+  const [chatRoomList, setChatRoomList] = useState<{
+    memberName: String;
+    chatRooms: ChatRoomItem[];
+  }>();
   const dispatch = useDispatch();
   const clientSelector = useSelector((state: RootState) => state.client.value);
   const chatRoomId = useSelector((state: RootState) => state.chatRoomId.value);
@@ -23,6 +27,10 @@ const Chat = () => {
   const subscription = useSelector(
     (state: RootState) => state.subscription.value
   );
+  const chatRoomName = useSelector(
+    (state: RootState) => state.chatRoomName.value
+  );
+  const [bgForeground, setBgForeground] = useState(false);
 
   useEffect(() => {
     if (chatView) {
@@ -48,6 +56,19 @@ const Chat = () => {
   }, [chatView]);
 
   useEffect(() => {
+    if (appear === "end") {
+      const fadeTimer = setTimeout(() => {
+        setBgForeground(true);
+      }, 500);
+      return () => {
+        clearTimeout(fadeTimer);
+      };
+    } else {
+      setBgForeground(false);
+    }
+  }, [appear]);
+
+  useEffect(() => {
     if (clientSelector && chatView && !chatRoomId) {
       console.log("clientSelector 있음");
       console.log(clientSelector);
@@ -63,7 +84,7 @@ const Chat = () => {
 
   useEffect(() => {
     if (notification && chatView && notification.notificationType === "CHAT") {
-      chatRoomList.forEach((chat, index) => {
+      chatRoomList?.chatRooms.forEach((chat, index) => {
         const chatLastTime = new Date(chat.lastMessageTime);
         const notificationTime = new Date(notification.createdDate);
         console.log(chatLastTime.getTime(), notificationTime.getTime());
@@ -71,8 +92,8 @@ const Chat = () => {
           chat.chatRoomId === notification.chatRoomId &&
           chatLastTime.getTime() !== notificationTime.getTime()
         ) {
-          chatRoomList.splice(index, 1);
-          chatRoomList.splice(0, 0, {
+          chatRoomList?.chatRooms.splice(index, 1);
+          chatRoomList?.chatRooms.splice(0, 0, {
             chatRoomId: chat.chatRoomId,
             chatRoomTitle: chat.chatRoomTitle,
             otherUserProfileImage: chat.otherUserProfileImage,
@@ -83,19 +104,22 @@ const Chat = () => {
             lastMessageTime: notification.createdDate,
           });
         } else if (chat.chatRoomId !== notification.chatRoomId) {
-          setChatRoomList([
-            {
-              chatRoomId: notification.chatRoomId,
-              chatRoomTitle: "",
-              otherUserProfileImage: null,
-              otherUserNick: notification.senderNick,
-              createdChatRoomDate: notification.createdDate,
-              lastMessageContent: notification.content,
-              unReadMessageCount: 1,
-              lastMessageTime: notification.createdDate,
-            },
-            ...chatRoomList,
-          ]);
+          setChatRoomList({
+            memberName: chatRoomList.memberName,
+            chatRooms: [
+              {
+                chatRoomId: notification.chatRoomId,
+                chatRoomTitle: "",
+                otherUserProfileImage: null,
+                otherUserNick: notification.senderNick,
+                createdChatRoomDate: notification.createdDate,
+                lastMessageContent: notification.content,
+                unReadMessageCount: 1,
+                lastMessageTime: notification.createdDate,
+              },
+              ...chatRoomList.chatRooms,
+            ],
+          });
         }
       });
     }
@@ -109,7 +133,11 @@ const Chat = () => {
   };
 
   return (
-    <div className={chatView ? styles.chatContainer : ""}>
+    <div
+      className={`${styles.chatContainer} ${
+        bgForeground ? "" : styles.zIndex
+      } `}
+    >
       <div
         className={
           appear === "start"
@@ -130,20 +158,27 @@ const Chat = () => {
               <MdArrowBackIos />
             </span>
           )}
-          {!chatRoomId && <h1>illdang100</h1>}
+          {!chatRoomId ? (
+            <h1>{chatRoomList?.memberName}</h1>
+          ) : (
+            <h1>{chatRoomName}</h1>
+          )}
           <span>
             <MdLogout />
           </span>
         </div>
         {!chatRoomId ? (
           <>
-            <h4>채팅목록 {chatRoomList.length}</h4>
+            <h4>채팅목록 {chatRoomList?.chatRooms.length}</h4>
             <div className={styles.chatList}>
-              {chatRoomList.map((chatRoom) => (
+              {chatRoomList?.chatRooms.map((chatRoom) => (
                 <div
                   key={chatRoom.chatRoomId}
                   className={styles.chatItem}
-                  onClick={() => dispatch(enterChatRoom(chatRoom.chatRoomId))}
+                  onClick={() => {
+                    dispatch(enterChatRoom(chatRoom.chatRoomId));
+                    dispatch(setChatRoomName(chatRoom.otherUserNick));
+                  }}
                 >
                   <div className={styles.chatTitle}>
                     <div className={styles.userInfo}>
@@ -171,7 +206,7 @@ const Chat = () => {
                     <span className={styles.content}>
                       {chatRoom.lastMessageContent
                         ? chatRoom.lastMessageContent
-                        : "(대화 내용이 없습니다.)"}
+                        : "사진을 보냈습니다."}
                     </span>
                     {chatRoom.unReadMessageCount !== 0 && (
                       <div className={styles.count}>

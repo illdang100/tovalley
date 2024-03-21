@@ -38,29 +38,13 @@ const LostItemUpdatePage = () => {
   };
 
   useEffect(() => {
-    // setSelectedPlace([
-    //   {
-    //     waterPlaceId: -1,
-    //     waterPlaceName: "금오계곡",
-    //     address: "경북 구미시 금오계곡",
-    //   },
-    // ]);
-    // setWrite({
-    //   title: "금오계곡",
-    //   content: "금오계곡",
-    // });
-    // setUploadImg([
-    //   "/img/dummy/계곡이미지5.jpg",
-    //   "/img/dummy/계곡이미지5.jpg",
-    //   "/img/dummy/계곡이미지6.jpg",
-    // ]);
     axiosInstance
       .get(`/api/lostItem/${id}`)
       .then((res) => {
         console.log(res);
         setSelectedPlace([
           {
-            waterPlaceId: -1,
+            waterPlaceId: res.data.data.waterPlaceId,
             waterPlaceName: res.data.data.waterPlaceName,
             address: res.data.data.waterPlaceAddress,
           },
@@ -86,7 +70,9 @@ const LostItemUpdatePage = () => {
     e.preventDefault();
     const formData = new FormData();
 
-    let currentCategory = "찾아요" ? "LOST" : "FOUND";
+    let category;
+    if (currentCategory === "찾아요") category = "LOST";
+    else category = "FOUND";
 
     if (
       selectedPlace.length === 0 ||
@@ -95,15 +81,13 @@ const LostItemUpdatePage = () => {
     ) {
       setAlert({ view: true, content: "항목을 모두 입력해주세요." });
     } else {
-      formData.append("category", currentCategory);
+      formData.append("category", category);
       formData.append("lostFoundBoardId", `${id}`);
       formData.append("waterPlaceId", `${selectedPlace[0].waterPlaceId}`);
       formData.append("title", write.title);
       formData.append("content", write.content);
-      if (imgFiles.length !== 0) {
-        for (let i = 0; i < imgFiles.length; i++) {
-          formData.append("postImage", imgFiles[i]);
-        }
+      for (let i = 0; i < imgFiles.length; i++) {
+        formData.append("postImage", imgFiles[i]);
       }
       if (deleteImg.length !== 0) {
         for (let i = 0; i < deleteImg.length; i++) {
@@ -115,10 +99,10 @@ const LostItemUpdatePage = () => {
         .patch("/api/auth/lostItem", formData)
         .then((res) => {
           console.log(res);
-          res.status === 201 &&
+          res.status === 200 &&
             setConfirm({
               view: true,
-              content: "글이 등록되었습니다.",
+              content: "글이 수정되었습니다.",
             });
         })
         .catch((err) => console.log(err));

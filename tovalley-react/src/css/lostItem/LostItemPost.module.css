@@ -1,5 +1,6 @@
 .body {
   margin-top: 180px;
+  margin-bottom: 8em;
   padding: 0 10%;
 }
 
@@ -12,17 +13,18 @@
 .locationInfo {
   display: flex;
   align-items: center;
-  margin-bottom: 1.8em;
+  margin-bottom: 1.2em;
 }
 
 .locationInfo h4 {
   margin: 0 0.5em 0 0.3em;
   color: #616161;
+  font-size: 1.1rem;
 }
 
 .locationInfo span {
   color: #bebebe;
-  font-size: 0.7rem;
+  font-size: 1rem;
 }
 
 .postTop {
@@ -35,8 +37,8 @@
 }
 
 .profileImage {
-  width: 35px;
-  height: 35px;
+  width: 40px;
+  height: 40px;
   border-radius: 5px;
   overflow: hidden;
   margin-right: 0.5em;
@@ -44,6 +46,7 @@
 
 .profileImage img {
   width: 100%;
+  height: 100%;
   object-fit: cover;
   display: flex;
   justify-content: center;
@@ -51,6 +54,7 @@
 
 .authorName h4 {
   margin: 0;
+  font-size: 1.1rem;
   font-weight: 600;
 }
 
@@ -86,6 +90,10 @@
   overflow-x: scroll;
 }
 
+.imageList::-webkit-scrollbar {
+  display: none;
+}
+
 .imageContainer {
   width: 400px;
   height: 260px;
@@ -96,8 +104,11 @@
 }
 
 .imageContainer img {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   display: flex;
+  justify-content: center;
 }
 
 .postBottom {
@@ -191,13 +202,13 @@
   display: flex;
   align-items: center;
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 1.1rem;
   margin-right: 2em;
 }
 
 .commentProfileImage {
-  width: 25px;
-  height: 25px;
+  width: 30px;
+  height: 30px;
   border-radius: 5px;
   overflow: hidden;
   margin-right: 0.5em;
@@ -205,6 +216,7 @@
 
 .commentProfileImage img {
   width: 100%;
+  height: 100%;
   object-fit: cover;
   display: flex;
   justify-content: center;
@@ -237,13 +249,13 @@
 }
 
 .commentList {
-  margin-top: 3.5em;
+  margin-top: 1em;
   padding: 0 3em;
 }
 
 .commentItem {
   border-bottom: 1px solid #cccccc;
-  padding: 0 0.5em;
+  padding: 1em 0.5em 0;
 }
 
 .commentTop {
@@ -257,6 +269,7 @@
 }
 
 .commentWriterName {
+  font-size: 1.1rem;
   font-weight: 700;
   margin-right: 0.5em;
 }
@@ -279,7 +292,8 @@
 }
 
 .commentItem > p {
-  margin: 1.6em 0 1.2em;
+  font-size: 1.1rem;
+  margin: 0.5em 0 1em;
 }
 
 .deleteComment {

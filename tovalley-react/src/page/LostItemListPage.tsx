@@ -12,11 +12,12 @@ import { LostList, PlaceName } from "../typings/db";
 import axios from "axios";
 import { elapsedTime } from "../composables/elapsedTime";
 import ValleyModal from "../component/lostItem/ValleyModal";
+import { Cookies } from "react-cookie";
 
 const localhost = process.env.REACT_APP_HOST;
 
 const LostItemListPage = () => {
-  const lostItemCategory = ["전체", "찾아요", "찾았어요"];
+  const lostItemCategory = ["전체", "물건 찾아요", "주인 찾아요"];
   const navigation = useNavigate();
   const [currentCategory, setCurrentCategory] = useState("전체");
   const [except, setExcept] = useState(false);
@@ -25,34 +26,38 @@ const LostItemListPage = () => {
   const [lostList, setLostList] = useState<LostList>();
   const [modalView, setModalView] = useState(false);
   const [selectedPlace, setSelectedPlace] = useState<PlaceName[]>([]);
+  const cookies = new Cookies();
 
   const getLostList = () => {
     const selectedPlaceName = selectedPlace.map((el) => el.waterPlaceId);
     let params: {
       searchWord?: string;
       isResolved: boolean;
-      waterPlaceId?: number[];
-      currentCategory?: string;
+      category?: string;
     } = {
-      isResolved: except,
+      isResolved: !except,
     };
 
     if (searchPost === search) {
       if (search) params = { ...params, searchWord: search };
     }
 
+    let waterPlaceIdList = "";
     if (selectedPlaceName.length !== 0) {
-      params = { ...params, waterPlaceId: selectedPlaceName };
+      for (let i = 0; i < selectedPlaceName.length; i++) {
+        waterPlaceIdList =
+          waterPlaceIdList + `&waterPlaceId=${selectedPlaceName[i]}`;
+      }
     }
 
-    if (currentCategory === "찾아요") {
-      params = { ...params, currentCategory: "LOST" };
-    } else if (currentCategory === "찾았어요") {
-      params = { ...params, currentCategory: "FOUND" };
+    if (currentCategory === "물건 찾아요") {
+      params = { ...params, category: "LOST" };
+    } else if (currentCategory === "주인 찾아요") {
+      params = { ...params, category: "FOUND" };
     }
 
     axios
-      .get(`${localhost}/api/lostItem`, { params })
+      .get(`${localhost}/api/lostItem?${waterPlaceIdList}`, { params })
       .then((res) => {
         console.log(res);
         setLostList({ data: res.data.data.content });
@@ -68,21 +73,6 @@ const LostItemListPage = () => {
 
   useEffect(() => {
     getLostList();
-    // setLostList({
-    //   data: [
-    //     {
-    //       id: 1,
-    //       title: "금오계곡에서 찾았어요",
-    //       content: "아이폰15 입니다.",
-    //       author: "illdang100",
-    //       category: "FOUND",
-    //       commentCnt: 3,
-    //       postCreateAt: "2024-01-19 21:33:10",
-    //       postImage:
-    //         "https://kit-molly-bucket.s3.ap-northeast-2.amazonaws.com/ex.jpg",
-    //     },
-    //   ],
-    // });
   }, [currentCategory, searchPost, except, selectedPlace]);
 
   const clickLostItemPost = (category: string, id: number) => {
@@ -90,7 +80,8 @@ const LostItemListPage = () => {
   };
 
   const toWritePage = () => {
-    navigation("/lost-item/write");
+    if (cookies.get("ISLOGIN")) navigation("/lost-item/write");
+    else navigation("/login");
   };
 
   const deleteSelectedItem = (place: PlaceName) => {
@@ -156,7 +147,7 @@ const LostItemListPage = () => {
             <span>해결한 글 제외하기</span>
             <div className={styles.filterList}>
               <div className={styles.searchValley}>
-                <span onClick={() => setModalView(true)}>계곡 선택</span>
+                <span onClick={() => setModalView(true)}>물놀이 장소 선택</span>
               </div>
               {selectedPlace.map((place) => (
                 <div key={place.waterPlaceId} className={styles.valleyFilter}>
@@ -184,7 +175,9 @@ const LostItemListPage = () => {
                           : styles.categoryLost
                       }
                     >
-                      {item.category === "FOUND" ? "찾았어요" : "찾아요"}
+                      {item.category === "FOUND"
+                        ? "주인 찾아요"
+                        : "물건 찾아요"}
                     </span>
                     <h4>{item.title}</h4>
                   </div>

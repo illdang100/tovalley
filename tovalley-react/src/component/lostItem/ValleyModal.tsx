@@ -110,17 +110,7 @@ const ValleyModal: FC<Props> = ({
       setSelectedPlace([selectPlace]);
       closeModal();
     } else {
-      let include = false;
-      selectedPlace.map((item) => {
-        selectedList.map((place) => {
-          if (item.waterPlaceId === place.waterPlaceId) {
-            include = true;
-          }
-          return null;
-        });
-        return null;
-      });
-      if (!include) setSelectedPlace(selectedPlace.concat(selectedList));
+      setSelectedPlace([...selectedList]);
       closeModal();
     }
   };

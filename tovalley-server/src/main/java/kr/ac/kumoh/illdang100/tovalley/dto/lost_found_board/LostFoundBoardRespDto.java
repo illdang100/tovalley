@@ -38,6 +38,7 @@ public class LostFoundBoardRespDto {
         private String title;
         private String content;
         private String author;
+        private Long waterPlaceId;
         private String waterPlaceName;
         private String waterPlaceAddress;
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
@@ -54,6 +55,7 @@ public class LostFoundBoardRespDto {
                     .title(lostFoundBoard.getTitle())
                     .content(lostFoundBoard.getContent())
                     .author(lostFoundBoard.getMember().getNickname())
+                    .waterPlaceId(lostFoundBoard.getWaterPlace().getId())
                     .waterPlaceName(lostFoundBoard.getWaterPlace().getWaterPlaceName())
                     .waterPlaceAddress(lostFoundBoard.getWaterPlace().getAddress())
                     .postCreateAt(lostFoundBoard.getCreatedDate())

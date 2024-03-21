@@ -20,7 +20,7 @@ import static kr.ac.kumoh.illdang100.tovalley.dto.comment.CommentRespDto.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
-public class CommentController {
+public class CommentApiController {
     private final CommentService commentService;
 
     @PostMapping(value = "/auth/lostItem/{lostFoundBoardId}/comment")

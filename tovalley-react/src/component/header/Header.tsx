@@ -8,7 +8,6 @@ import { BiUser } from "react-icons/bi";
 import { FiLogOut } from "react-icons/fi";
 import { FaRegBell } from "react-icons/fa";
 import { IoChatbubblesSharp } from "react-icons/io5";
-import Chat from "./Chat";
 import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
 import { useDispatch, useSelector } from "react-redux";
@@ -33,6 +32,11 @@ const Header = () => {
   const notificationView = useSelector(
     (state: RootState) => state.notificationView.value
   );
+  const notification = useSelector(
+    (state: RootState) => state.notification.value
+  );
+  const chatRoomId = useSelector((state: RootState) => state.chatRoomId.value);
+  const [newAlarm, setNewAlarm] = useState(false);
 
   useEffect(() => {
     const loginStatus = cookies.get("ISLOGIN");
@@ -50,6 +54,14 @@ const Header = () => {
   useEffect(() => {
     if (notificationView) dispatch(view(false));
   }, [notificationView]);
+
+  useEffect(() => {
+    if (notification && notification.notificationType === "CHAT") {
+      setNewAlarm(true);
+    } else if (chatRoomId || notificationView) {
+      setNewAlarm(false);
+    }
+  }, [notification, chatRoomId, notificationView]);
 
   const connectSocket = () => {
     const socket = new SockJS(`${localhost}/stomp/chat`); // 서버와 웹소켓 연결
@@ -110,7 +122,6 @@ const Header = () => {
 
   return (
     <div className={styles.header}>
-      <Chat />
       <div className={styles.headerWrapper}>
         <div className={styles.headertop}>
           <div className={styles.hamburger}>
@@ -141,7 +152,7 @@ const Header = () => {
                 >
                   <FaRegBell />
                 </div>
-                <span>•</span>
+                {newAlarm && <span>•</span>}
               </div>
               <div
                 className={styles.chatIcon}
@@ -206,7 +217,7 @@ const Header = () => {
                 : styles.navMenu
             }
           >
-            전국 계곡
+            전국 물놀이 장소
           </span>
           <span
             onClick={() => {

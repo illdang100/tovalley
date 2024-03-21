@@ -83,6 +83,7 @@ type valley = {
         content: string;
         reviewImages: string[];
         waterQuality: string;
+        isMyReview: boolean;
       }[];
       pageable: {
         sort: {
@@ -133,6 +134,7 @@ type valleyReview = {
       content: string;
       reviewImages: string[];
       waterQuality: string;
+      isMyReview: boolean;
     }[];
     pageable: {
       sort: {
@@ -245,16 +247,7 @@ const ValleyPage = () => {
             content: "",
             reviewImages: [],
             waterQuality: "",
-          },
-          {
-            reviewId: 0,
-            memberProfileImg: null,
-            nickname: "",
-            rating: 0,
-            createdReviewDate: "",
-            content: "",
-            reviewImages: [],
-            waterQuality: "",
+            isMyReview: false,
           },
         ],
         pageable: {
@@ -307,6 +300,7 @@ const ValleyPage = () => {
           content: "",
           reviewImages: [],
           waterQuality: "",
+          isMyReview: false,
         },
       ],
       pageable: {

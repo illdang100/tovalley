@@ -133,10 +133,56 @@
   width: 100%;
 }
 
-.myReview > h4 {
+.myReviewCategoryWrap {
+  display: flex;
+  margin-bottom: 1em;
+}
+
+.myReviewCategory > h4 {
   font-size: 1.4rem;
   margin: 0;
-  margin-bottom: 0.8em;
+}
+
+.categoryColor {
+  color: #a6a6a6;
+}
+
+.categoryClicked {
+  color: black;
+}
+
+.myReviewCategory:first-child {
+  padding-right: 1em;
+  border-right: 1px solid #a7a7a7;
+}
+
+.myReviewCategory:last-child {
+  padding-left: 1em;
+}
+
+.postItem {
+  border: 1px solid #bcbcbc;
+  border-radius: 5px;
+  padding: 1em;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  margin-bottom: 0.5em;
+}
+
+.postItem p {
+  margin: 0;
+  font-weight: 600;
+  max-width: 250px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.postItem span {
+  font-size: 0.9rem;
+  color: #8f8f8f;
 }
 
 .reviewContainer {

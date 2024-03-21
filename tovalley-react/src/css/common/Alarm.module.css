@@ -1,3 +1,7 @@
+.alarmWrap {
+  position: relative;
+}
+
 .alarmComponent {
   width: 300px;
   border-radius: 15px;
@@ -14,11 +18,12 @@
 
 .closeBtn {
   position: absolute;
-  top: 1em;
-  right: 1em;
+  bottom: 0.8em;
+  right: 2.2em;
   color: #a9a9a9;
   font-size: 0.9rem;
   cursor: pointer;
+  z-index: 31;
 }
 
 .alarmComponent h4 {

@@ -56,11 +56,12 @@
   margin-right: 0.6em;
 }
 
-.sendMessage {
+.sendMessage > div {
   width: 90%;
   display: flex;
   margin: 0 auto;
   margin-top: 0.5em;
+  align-items: center;
 }
 
 .sendMessage input {
@@ -78,6 +79,53 @@ input::placeholder {
   color: #939393;
 }
 
+.imageIcon {
+  color: #66a5fc;
+  cursor: pointer;
+  display: block;
+  margin-right: 0.5em;
+  font-size: 1.2rem;
+}
+
+.imageIcon > label {
+  cursor: pointer;
+}
+
+.imgInput[type="file"] {
+  display: none;
+}
+
+.previewImg {
+  height: 150px;
+  display: flex;
+  align-items: center;
+  overflow-x: auto;
+  white-space: nowrap;
+  padding: 0 1.5em;
+}
+
+.imageContainer {
+  display: inline-block;
+  position: relative;
+  margin-right: 1.5em;
+  border: 1px solid #b5b5b5;
+  border-radius: 10px;
+}
+
+.imageContainer > div {
+  width: 170px;
+  height: 130px;
+  overflow: hidden;
+}
+
+.imageContainer > div > img {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 9px;
+}
+
 .sendMessage button {
   background-color: transparent;
   border: none;
@@ -87,4 +135,43 @@ input::placeholder {
   color: #66a5fc;
   font-weight: 700;
   font-size: 0.9rem;
+}
+
+.chatImage {
+  max-width: 200px;
+  border-radius: 5px;
+}
+
+.newMessageContainer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  position: fixed;
+  bottom: 60px;
+}
+
+.newMessage {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 90%;
+  background-color: rgba(242, 242, 242, 0.645);
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.newMessage p {
+  margin: 0;
+  padding: 0.8em;
+  font-size: 0.8rem;
+  color: #6d6d6d;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.newMessage span {
+  display: block;
+  margin-right: 0.5em;
+  color: #888888;
 }
