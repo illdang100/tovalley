@@ -37,6 +37,7 @@ const Header = () => {
   );
   const chatRoomId = useSelector((state: RootState) => state.chatRoomId.value);
   const [newAlarm, setNewAlarm] = useState(false);
+  const [socket, setSocket] = useState<WebSocket>();
 
   useEffect(() => {
     const loginStatus = cookies.get("ISLOGIN");
@@ -64,10 +65,11 @@ const Header = () => {
   }, [notification, chatRoomId, notificationView]);
 
   const connectSocket = () => {
-    const socket = new SockJS(`${localhost}/stomp/chat`); // 서버와 웹소켓 연결
+    const newSocket = new SockJS(`${localhost}/stomp/chat`); // 서버와 웹소켓 연결
+    setSocket(newSocket);
 
     const stompClient = new Client({
-      webSocketFactory: () => socket,
+      webSocketFactory: () => newSocket,
       debug: (str) => {
         console.log(str);
       },
@@ -111,6 +113,7 @@ const Header = () => {
       .then((res) => {
         console.log(res);
         if (res.status === 200) {
+          if (client) socket?.close();
           const loginStatus = cookies.get("ISLOGIN");
           console.log("loginStatus : ", loginStatus);
           !loginStatus && setLogin(false);
