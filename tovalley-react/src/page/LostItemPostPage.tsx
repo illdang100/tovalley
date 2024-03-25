@@ -74,7 +74,6 @@ const LostItemPostPage = () => {
   };
 
   const addComment = () => {
-    const date = new Date();
     axiosInstance
       .post(`/api/auth/lostItem/${id}/comment`, {
         commentContent: comment,
@@ -85,27 +84,23 @@ const LostItemPostPage = () => {
           setCommentList([
             ...commentList,
             {
-              commentId: commentList[commentList?.length - 1].commentId + 1,
-              commentAuthor: lostPost ? lostPost.data.author : "",
-              commentContent: comment,
-              commentCreateAt: `${date}`,
+              commentId: res.data.data.commentId,
+              commentAuthor: res.data.data.commentAuthor,
+              commentContent: res.data.data.commentContent,
+              commentCreateAt: res.data.data.commentCreateAt,
               commentByUser: true,
-              commentAuthorProfile: lostPost
-                ? lostPost.data.boardAuthorProfile
-                : "",
+              commentAuthorProfile: res.data.data.commentAuthorProfile,
             },
           ]);
         } else {
           setCommentList([
             {
-              commentId: 1,
-              commentAuthor: lostPost ? lostPost.data.author : "",
-              commentContent: comment,
-              commentCreateAt: `${date}`,
+              commentId: res.data.data.commentId,
+              commentAuthor: res.data.data.commentAuthor,
+              commentContent: res.data.data.commentContent,
+              commentCreateAt: res.data.data.commentCreateAt,
               commentByUser: true,
-              commentAuthorProfile: lostPost
-                ? lostPost.data.boardAuthorProfile
-                : "",
+              commentAuthorProfile: res.data.data.commentAuthorProfile,
             },
           ]);
         }
@@ -245,7 +240,7 @@ const LostItemPostPage = () => {
           {commentList &&
             commentList.length > 0 &&
             commentList?.map((item) => (
-              <div key={item.commentAuthor} className={styles.commentItem}>
+              <div key={item.commentId} className={styles.commentItem}>
                 <div className={styles.commentTop}>
                   <div className={styles.commentInfo}>
                     <div className={styles.commentProfileImage}>

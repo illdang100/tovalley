@@ -258,12 +258,6 @@ const ChatComponent = () => {
     }
   };
 
-  const convertDate = (date: number) => {
-    if (date < 10) {
-      return `0${date}`;
-    } else return date;
-  };
-
   useEffect(() => {
     if (notification) {
       const dateString = notification.createdDate;
@@ -295,14 +289,19 @@ const ChatComponent = () => {
                 {message.myMsg ? (
                   <div style={{ justifyContent: "right" }}>
                     <div style={{ textAlign: "right" }}>
-                      {message.readCount !== 0 && !chatRoomId && (
-                        <span className={styles.readCount}>
-                          {message.readCount}
-                        </span>
-                      )}
-                      <span className={styles.sendTime}>{`${convertDate(
-                        date.getHours()
-                      )}:${convertDate(date.getMinutes())}`}</span>
+                      {notificationDate &&
+                      notification?.notificationType === "READ_COUNT_UPDATE" &&
+                      notificationDate > date
+                        ? ""
+                        : message.readCount !== 0 && (
+                            <span className={styles.readCount}>
+                              {message.readCount}
+                            </span>
+                          )}
+                      <span className={styles.sendTime}>
+                        {`${date.getHours()}`.padStart(2, "0")}:
+                        {`${date.getMinutes()}`.padStart(2, "0")}
+                      </span>
                     </div>
                     <div className={styles.mySpeechBubble}>
                       {message.chatType === "IMAGE" ? (
@@ -335,9 +334,10 @@ const ChatComponent = () => {
                           {message.readCount}
                         </span>
                       )}
-                      <span className={styles.sendTime}>{`${convertDate(
-                        date.getHours()
-                      )}:${convertDate(date.getMinutes())}`}</span>
+                      <span className={styles.sendTime}>
+                        {`${date.getHours()}`.padStart(2, "0")}:
+                        {`${date.getMinutes()}`.padStart(2, "0")}
+                      </span>
                     </div>
                   </div>
                 )}
@@ -372,9 +372,10 @@ const ChatComponent = () => {
                           : el?.readCount}
                       </span>
                     )}
-                    <span
-                      className={styles.sendTime}
-                    >{`${date.getHours()}:${date.getMinutes()}`}</span>
+                    <span className={styles.sendTime}>
+                      {`${date.getHours()}`.padStart(2, "0")}:
+                      {`${date.getMinutes()}`.padStart(2, "0")}
+                    </span>
                   </div>
                   <div className={styles.mySpeechBubble}>
                     {el?.chatType === "IMAGE" ? (
@@ -405,9 +406,10 @@ const ChatComponent = () => {
                     {el?.readCount !== 0 && (
                       <span className={styles.readCount}>{el?.readCount}</span>
                     )}
-                    <span className={styles.sendTime}>{`${convertDate(
-                      date.getHours()
-                    )}:${convertDate(date.getMinutes())}`}</span>
+                    <span className={styles.sendTime}>
+                      {`${date.getHours()}`.padStart(2, "0")}:
+                      {`${date.getMinutes()}`.padStart(2, "0")}
+                    </span>
                   </div>
                 </div>
               )}
@@ -452,6 +454,11 @@ const ChatComponent = () => {
             onChange={(e) => setContent(e.target.value)}
             readOnly={imgFiles.length !== 0}
             maxLength={200}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                sendMessage();
+              }
+            }}
           />
           <span className={styles.imageIcon}>
             <label htmlFor="input-file">

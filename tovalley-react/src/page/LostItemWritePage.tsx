@@ -117,7 +117,6 @@ const LostItemWritePage = () => {
           <div className={styles.contentWrap}>
             <div className={styles.category}>
               <h4>주소</h4>
-              <span className={styles.categoryBtn}>주소 찾기</span>
               {selectedPlace.length !== 0 && (
                 <span>{selectedPlace[0].address}</span>
               )}
