@@ -56,7 +56,6 @@ public class HttpHandshakeInterceptor implements HandshakeInterceptor {
             PrincipalDetails principalDetails = jwtProcess.verify(accessToken);
             Long memberId = principalDetails.getMember().getId();
 
-            log.debug("beforeHandshake - memberId={}", memberId);
             attributes.put(ChatUtil.MEMBER_ID, memberId);
 
             return true;

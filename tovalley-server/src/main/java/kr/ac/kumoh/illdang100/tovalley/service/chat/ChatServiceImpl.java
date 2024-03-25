@@ -1,13 +1,11 @@
 package kr.ac.kumoh.illdang100.tovalley.service.chat;
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatMessage;
 import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatMessageRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatRoom;
@@ -27,17 +25,17 @@ import kr.ac.kumoh.illdang100.tovalley.handler.ex.CustomApiException;
 import kr.ac.kumoh.illdang100.tovalley.service.notification.NotificationService;
 import kr.ac.kumoh.illdang100.tovalley.util.ChatUtil;
 import kr.ac.kumoh.illdang100.tovalley.util.KafkaVO;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -177,8 +175,7 @@ public class ChatServiceImpl implements ChatService {
     }
 
     private void updateChatRoomWithLastMessage(ChatRoomRespDto chatRoomRespDto, ChatMessage lastMessage) {
-        chatRoomRespDto.changeLastMessage(lastMessage.getContent(),
-                ChatUtil.convertZdtStringToLocalDateTime(lastMessage.getCreatedAt()));
+        chatRoomRespDto.changeLastMessage(lastMessage.getContent(), lastMessage.getCreatedAt());
     }
 
     private long countUnReadMessages(Long chatRoomId, Long memberId) {
@@ -317,7 +314,7 @@ public class ChatServiceImpl implements ChatService {
     }
 
     private void updateMessageBeforeSending(Message message, Long senderId, int readCount) {
-        message.prepareMessageForSending(senderId, ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toString(), readCount);
+        message.prepareMessageForSending(senderId, LocalDateTime.now(), readCount);
     }
 
     @Override

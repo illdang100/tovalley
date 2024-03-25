@@ -441,7 +441,7 @@ public class DummyObject {
                 .chatRoomId(chatRoomId)
                 .senderId(senderId)
                 .content(content)
-                .createdAt(ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toString())
+                .createdAt(LocalDateTime.now())
                 .readCount(1)
                 .chatType(chatType)
                 .imageName(imageName)

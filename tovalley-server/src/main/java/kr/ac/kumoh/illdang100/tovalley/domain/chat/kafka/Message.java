@@ -1,6 +1,7 @@
 package kr.ac.kumoh.illdang100.tovalley.domain.chat.kafka;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatMessage;
 import kr.ac.kumoh.illdang100.tovalley.domain.chat.ChatType;
 import lombok.AllArgsConstructor;
@@ -27,7 +28,7 @@ public class Message implements Serializable {
 
     private String content;
 
-    private String createdAt;
+    private LocalDateTime createdAt;
     private int readCount;
 
     private ChatType chatType; // 채팅 타입 필드 추가('TEXT', 'IMAGE')
@@ -35,7 +36,7 @@ public class Message implements Serializable {
     private String imageName; // 이미지 파일 이름
     private String imageUrl; // 이미지 URL
 
-    public void prepareMessageForSending(Long senderId, String createdAt, int readCount) {
+    public void prepareMessageForSending(Long senderId, LocalDateTime createdAt, int readCount) {
         this.senderId = senderId;
         this.createdAt = createdAt;
         this.readCount = readCount;
