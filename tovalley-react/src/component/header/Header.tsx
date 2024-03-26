@@ -38,6 +38,10 @@ const Header = () => {
   const chatRoomId = useSelector((state: RootState) => state.chatRoomId.value);
   const [newAlarm, setNewAlarm] = useState(false);
   const [socket, setSocket] = useState<WebSocket>();
+  const clientSelector = useSelector((state: RootState) => state.client.value);
+  const subscription = useSelector(
+    (state: RootState) => state.subscription.value
+  );
 
   useEffect(() => {
     const loginStatus = cookies.get("ISLOGIN");
@@ -123,6 +127,13 @@ const Header = () => {
       .catch((err) => console.log(err));
   };
 
+  const outChatting = () => {
+    if (clientSelector?.connected && subscription) {
+      console.log("구독해제!!");
+      clientSelector.unsubscribe(subscription.id);
+    }
+  };
+
   return (
     <div className={styles.header}>
       <div className={styles.headerWrapper}>
@@ -160,6 +171,7 @@ const Header = () => {
               <div
                 className={styles.chatIcon}
                 onClick={() => {
+                  outChatting();
                   dispatch(view(!chatView));
                   dispatch(enterChatRoom(null));
                 }}
