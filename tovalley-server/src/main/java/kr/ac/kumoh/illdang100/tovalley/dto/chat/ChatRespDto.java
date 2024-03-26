@@ -98,7 +98,7 @@ public class ChatRespDto {
             this.senderId = chatMessage.getSenderId();
             this.myMsg = chatMessage.getSenderId().equals(memberId);
             this.content = chatMessage.getContent();
-            this.createdAt = ChatUtil.convertZdtStringToLocalDateTime(chatMessage.getCreatedAt());
+            this.createdAt = chatMessage.getCreatedAt();
             this.readCount = chatMessage.getReadCount();
             this.chatType = chatMessage.getChatType();
             this.imageUrl = chatMessage.getImageUrl();

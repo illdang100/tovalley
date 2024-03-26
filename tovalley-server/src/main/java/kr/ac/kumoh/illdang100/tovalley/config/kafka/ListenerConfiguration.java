@@ -42,6 +42,7 @@ public class ListenerConfiguration {
         이 클래스는 Kafka Consumer를 생성하는 데 필요한 설정들을 받아서 Kafka Consumer를 생성한다.
          */
         factory.setConsumerFactory(kafkaChatConsumer());
+        factory.setConcurrency(2); // 컨슈머 수를 2로 설정
         return factory;
     }
 
@@ -72,6 +73,8 @@ public class ListenerConfiguration {
                         .put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class)
                         .put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, deserializer)
                         .put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest")
+                        .put(ConsumerConfig.FETCH_MIN_BYTES_CONFIG, "10000")
+                        .put(ConsumerConfig.FETCH_MAX_WAIT_MS_CONFIG, "200")
                         .build();
 
         return new DefaultKafkaConsumerFactory<>(consumerConfigurations, new StringDeserializer(), deserializer);
@@ -82,6 +85,7 @@ public class ListenerConfiguration {
         ConcurrentKafkaListenerContainerFactory<String, Notification> factory = new ConcurrentKafkaListenerContainerFactory<>();
 
         factory.setConsumerFactory(kafkaNotificationConsumer());
+        factory.setConcurrency(2); // 컨슈머 수를 2로 설정
         return factory;
     }
 
@@ -99,6 +103,8 @@ public class ListenerConfiguration {
                         .put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class)
                         .put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, deserializer)
                         .put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest")
+                        .put(ConsumerConfig.FETCH_MIN_BYTES_CONFIG, "10000")
+                        .put(ConsumerConfig.FETCH_MAX_WAIT_MS_CONFIG, "200")
                         .build();
 
         return new DefaultKafkaConsumerFactory<>(consumerConfigurations, new StringDeserializer(), deserializer);
