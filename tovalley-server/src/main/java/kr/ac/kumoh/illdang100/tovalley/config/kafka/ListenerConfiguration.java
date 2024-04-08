@@ -17,7 +17,7 @@ import org.springframework.kafka.support.serializer.JsonDeserializer;
 
 @EnableKafka // Spring Kafka 활성화 -> Kafka Listener 사용 가능
 @Configuration
-public class ListenerConfig {
+public class ListenerConfiguration {
 
     @Value("${kafka.server}")
     private String kafkaServer;

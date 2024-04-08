@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.EnableKafka;
+import org.apache.kafka.clients.producer.ProducerConfig;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
@@ -16,7 +17,7 @@ import org.springframework.kafka.support.serializer.JsonSerializer;
 
 @EnableKafka
 @Configuration
-public class ProducerConfig {
+public class ProducerConfiguration {
 
     @Value("${kafka.server}")
     private String kafkaServer;
@@ -31,9 +32,9 @@ public class ProducerConfig {
     @Bean
     public Map<String, Object> chatProducerConfigurations() {
         return ImmutableMap.<String, Object>builder()
-                .put(org.apache.kafka.clients.producer.ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer)
-                .put(org.apache.kafka.clients.producer.ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class)
-                .put(org.apache.kafka.clients.producer.ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class)
+                .put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer)
+                .put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class)
+                .put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class)
                 .build();
     }
 
@@ -52,9 +53,9 @@ public class ProducerConfig {
     @Bean
     public Map<String, Object> notificationProducerConfigurations() {
         return ImmutableMap.<String, Object>builder()
-                .put(org.apache.kafka.clients.producer.ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer)
-                .put(org.apache.kafka.clients.producer.ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class)
-                .put(org.apache.kafka.clients.producer.ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class)
+                .put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer)
+                .put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class)
+                .put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class)
                 .build();
     }
 
