@@ -16,16 +16,16 @@ public class KafkaSender {
     private final KafkaTemplate<String, Notification> kafkaNotificationTemplate;
 
     // 메시지를 지정한 Kafka 토픽으로 전송
-    public void sendMessage(String topic, Message message) {
+    public void sendMessage(String topic, String chatRoomId, Message message) {
 
         // KafkaTemplate을 사용하여 메시지를 지정된 토픽으로 전송
-        kafkaChatTemplate.send(topic, message);
+        kafkaChatTemplate.send(topic, chatRoomId, message);
     }
 
     // (알림 토픽 + 상대방 pk)로 알림 메시지 전송하기!!
-    public void sendNotification(String topic, Notification notification) {
+    public void sendNotification(String topic, String chatRoomId, Notification notification) {
 
         // KafkaTemplate을 사용하여 메시지를 지정된 토픽으로 전송
-        kafkaNotificationTemplate.send(topic, notification);
+        kafkaNotificationTemplate.send(topic, chatRoomId, notification);
     }
 }
