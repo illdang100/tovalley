@@ -115,7 +115,7 @@ public class StompHandler implements ChannelInterceptor { // WebSocket을 이용
     private void notifyReadCountUpdate(Long chatRoomId, Long otherMemberId) {
         log.debug("상대방에게 readCount값 갱신 알림 전송");
         Notification readCountUpdateNotification = Notification.createReadCountUpdateNotification(chatRoomId, otherMemberId);
-        kafkaSender.sendNotification(KafkaVO.KAFKA_NOTIFICATION_TOPIC, readCountUpdateNotification);
+        kafkaSender.sendNotification(KafkaVO.KAFKA_NOTIFICATION_TOPIC, String.valueOf(chatRoomId), readCountUpdateNotification);
     }
 
     private void handleUnsubscribe(StompHeaderAccessor accessor) {
