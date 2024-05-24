@@ -12,11 +12,14 @@ import kr.ac.kumoh.illdang100.tovalley.domain.chat.kafka.Notification;
 import kr.ac.kumoh.illdang100.tovalley.domain.chat.kafka.NotificationType;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.dto.notification.NotificationRespDto.ChatNotificationRespDto;
+import kr.ac.kumoh.illdang100.tovalley.event.SendMessageEvent;
+import kr.ac.kumoh.illdang100.tovalley.event.SendNotificationEvent;
 import kr.ac.kumoh.illdang100.tovalley.handler.ex.CustomApiException;
 import kr.ac.kumoh.illdang100.tovalley.service.chat.KafkaSender;
 import kr.ac.kumoh.illdang100.tovalley.util.KafkaVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
@@ -31,7 +34,7 @@ public class NotificationServiceImpl implements NotificationService {
 
     private final ChatNotificationRepository chatNotificationRepository;
     private final ChatRoomRepository chatRoomRepository;
-    private final KafkaSender kafkaSender;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Override
     public void sendNotification(Message message, Long senderId, Long chatRoomId) {
@@ -52,7 +55,8 @@ public class NotificationServiceImpl implements NotificationService {
                     LocalDateTime.now(), message.getContent(), NotificationType.CHAT);
 
             // "알림 토픽 + {memberId}"로 알림 메시지 전송하기!!
-            kafkaSender.sendNotification(KafkaVO.KAFKA_NOTIFICATION_TOPIC, notification);
+            applicationEventPublisher.publishEvent(
+                    new SendNotificationEvent(this, chatRoomId, notification));
         } catch (Exception e) {
             log.error("메시지 알림 전송 에러");
         }

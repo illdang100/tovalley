@@ -21,6 +21,7 @@ import kr.ac.kumoh.illdang100.tovalley.dto.chat.ChatRespDto.ChatMessageRespDto;
 import kr.ac.kumoh.illdang100.tovalley.dto.chat.ChatRespDto.ChatRoomRespDto;
 import kr.ac.kumoh.illdang100.tovalley.dto.chat.ChatRespDto.ChatRoomsRespDto;
 import kr.ac.kumoh.illdang100.tovalley.dto.chat.ChatRespDto.CreateNewChatRoomRespDto;
+import kr.ac.kumoh.illdang100.tovalley.event.SendMessageEvent;
 import kr.ac.kumoh.illdang100.tovalley.handler.ex.CustomApiException;
 import kr.ac.kumoh.illdang100.tovalley.service.notification.NotificationService;
 import kr.ac.kumoh.illdang100.tovalley.util.ChatUtil;
@@ -28,6 +29,7 @@ import kr.ac.kumoh.illdang100.tovalley.util.KafkaVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
@@ -48,10 +50,10 @@ public class ChatServiceImpl implements ChatService {
     private final ChatMessageRepository chatMessageRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final MemberRepository memberRepository;
-    private final KafkaSender kafkaSender;
     private final ChatRoomParticipantRedisRepository chatRoomParticipantRedisRepository;
     private final MongoTemplate mongoTemplate;
     private final NotificationService notificationService;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     /**
      * 특정 상대방과의 채팅방이 존재하지 않는다면, 새로운 채팅방 생성해서 응답 만약 상대방과 기존 채팅방이 존재한다면 기존 채팅방 pk 응답
@@ -296,7 +298,8 @@ public class ChatServiceImpl implements ChatService {
         }
 
         // 메시지 전송
-        kafkaSender.sendMessage(KafkaVO.KAFKA_CHAT_TOPIC, message);
+        applicationEventPublisher.publishEvent(
+                new SendMessageEvent(this, chatRoomId, message));
     }
 
     private boolean isAllMembersParticipatingInChatRoom(Long chatRoomId) {
