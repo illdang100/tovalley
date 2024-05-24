@@ -88,6 +88,9 @@ public class ChatApiController {
     @MessageMapping("/chat/message") //websocket "/pub/chat/message"로 들어오는 메시지 처리
     public void sendMessage(@Payload Message message, SimpMessageHeaderAccessor headerAccessor) {
         Long memberId = (Long)headerAccessor.getSessionAttributes().get(ChatUtil.MEMBER_ID);
+        if (memberId == null) {
+            throw new IllegalStateException("세션에서 회원 ID를 찾을 수 없습니다.");
+        }
         chatService.sendMessage(message, memberId);
     }
     
