@@ -3,6 +3,8 @@ package kr.ac.kumoh.illdang100.tovalley.util;
 import java.util.NoSuchElementException;
 import kr.ac.kumoh.illdang100.tovalley.domain.accident.Accident;
 import kr.ac.kumoh.illdang100.tovalley.domain.accident.AccidentRepository;
+import kr.ac.kumoh.illdang100.tovalley.domain.comment.Comment;
+import kr.ac.kumoh.illdang100.tovalley.domain.comment.CommentRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.email_code.EmailCode;
 import kr.ac.kumoh.illdang100.tovalley.domain.email_code.EmailCodeRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.lost_found_board.LostFoundBoard;
@@ -71,7 +73,19 @@ public class EntityFinder {
                 .orElseThrow(() -> new CustomApiException("물놀이 장소[" + waterPlaceId + "]에 대한 사고[" + accidentId + "]가 존재하지 않습니다"));
     }
 
-    public static LostFoundBoard findLostFoundBoardByIdOrElseThrow(LostFoundBoardRepository lostFoundBoardRepository, long lostFoundBoardId) {
+    public static LostFoundBoard findLostFoundBoardByIdWithMemberAndWaterPlaceOrElseThrowEx(LostFoundBoardRepository lostFoundBoardRepository, Long lostFoundBoardId) {
+        return lostFoundBoardRepository.findByIdWithMemberAndWaterPlace(lostFoundBoardId).orElseThrow(() -> new CustomApiException("분실물 찾기 게시글[" + lostFoundBoardId + "]이 존재하지 않습니다"));
+    }
+
+    public static LostFoundBoard findLostFoundBoardByIdWithMemberOrElseThrowEx(LostFoundBoardRepository lostFoundBoardRepository, Long lostFoundBoardId) {
+        return lostFoundBoardRepository.findByIdWithMember(lostFoundBoardId).orElseThrow(() -> new CustomApiException("분실물 찾기 게시글[" + lostFoundBoardId + "]이 존재하지 않습니다"));
+    }
+
+    public static LostFoundBoard findLostFoundBoardOrElseThrowEx(LostFoundBoardRepository lostFoundBoardRepository, Long lostFoundBoardId) {
         return lostFoundBoardRepository.findById(lostFoundBoardId).orElseThrow(() -> new CustomApiException("분실물 찾기 게시글[" + lostFoundBoardId + "]이 존재하지 않습니다"));
+    }
+
+    public static Comment findCommentByIdWithMemberOrElseThrowEx(CommentRepository commentRepository, Long commentId) {
+        return commentRepository.findCommentByIdFetchJoinMember(commentId).orElseThrow(() -> new CustomApiException("댓글[" + commentId + "]이 존재하지 않습니다"));
     }
 }

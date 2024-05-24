@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useRef, useState } from "react";
+import React, { FC, useCallback, useEffect, useRef, useState } from "react";
 import Header from "../component/header/Header";
 import Footer from "../component/footer/Footer";
 import styles from "../css/user/MyPage.module.css";
@@ -8,6 +8,7 @@ import ConfirmModal from "../component/common/ConfirmModal";
 import TripSchedule from "../component/user/TripSchedule";
 import { useNavigate } from "react-router-dom";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import { elapsedTime } from "../composables/elapsedTime";
 
 type user = {
   userProfile: {
@@ -72,6 +73,36 @@ type user = {
     };
     hasReview: boolean; // 리뷰 작성 여부(앞으로의 일정은 리뷰를 작성할 수 없음)
   }[];
+  myLostFoundBoards: {
+    content: {
+      lostFoundBoardId: number;
+      title: string;
+      postCreateAt: string;
+    }[];
+    pageable: {
+      sort: {
+        empty: boolean;
+        sorted: boolean;
+        unsorted: boolean;
+      };
+      offset: number;
+      pageNumber: number;
+      pageSize: number;
+      paged: boolean;
+      unpaged: boolean;
+    };
+    first: boolean;
+    last: boolean;
+    size: number;
+    number: number;
+    sort: {
+      empty: boolean;
+      sorted: boolean;
+      unsorted: boolean;
+    };
+    numberOfElements: number;
+    empty: boolean;
+  };
 };
 
 type preSchedule = {
@@ -168,6 +199,11 @@ const MyPage = () => {
   const [deleteBtn, setDeleteBtn] = useState(false);
   const [loginModal, setLoginModal] = useState(false);
   const navigation = useNavigate();
+  const [currentCategory, setCurrentCategory] = useState("내 리뷰");
+  const target = useRef<HTMLDivElement>(null);
+  const [isPageEnd, setIsPageEnd] = useState<boolean>(false);
+  const [page, setPage] = useState(0);
+  const [newMyPost, setNewMyPost] = useState();
 
   const [user, setUser] = useState<user>({
     userProfile: {
@@ -235,6 +271,38 @@ const MyPage = () => {
         hasReview: false,
       },
     ],
+    myLostFoundBoards: {
+      content: [
+        {
+          lostFoundBoardId: 0,
+          title: "",
+          postCreateAt: "",
+        },
+      ],
+      pageable: {
+        sort: {
+          empty: false,
+          unsorted: false,
+          sorted: false,
+        },
+        offset: 0,
+        pageNumber: 0,
+        pageSize: 0,
+        paged: false,
+        unpaged: false,
+      },
+      first: false,
+      last: false,
+      size: 0,
+      number: 0,
+      sort: {
+        empty: false,
+        unsorted: false,
+        sorted: false,
+      },
+      numberOfElements: 0,
+      empty: false,
+    },
   });
 
   const [upCommingSchedule, setUpCommingSchedule] = useState<schedule>([
@@ -422,6 +490,63 @@ const MyPage = () => {
     }
   };
 
+  const getMyPost = useCallback(async () => {
+    try {
+      const res = await axiosInstance.get("/api/auth/my-board", {
+        params: {
+          page,
+        },
+      });
+      console.log(res);
+      setNewMyPost(res.data.content);
+      if (res.data.last || res.data.data.content.length < 5) {
+        setIsPageEnd(true);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }, []);
+
+  useEffect(() => {
+    let newUser = user;
+    if (newMyPost)
+      newUser.myLostFoundBoards.content = [
+        ...user.myLostFoundBoards.content,
+        ...newMyPost,
+      ];
+    setUser(newUser);
+  }, [newMyPost]);
+
+  const handleObserver = useCallback(
+    async (
+      [entry]: IntersectionObserverEntry[],
+      observer: IntersectionObserver
+    ) => {
+      if (entry.isIntersecting) {
+        observer.unobserve(entry.target);
+        setPage((prev) => prev + 1);
+        await getMyPost();
+      }
+    },
+    []
+  );
+
+  useEffect(() => {
+    if (!target.current) return;
+
+    const option = {
+      root: null,
+      rootMargin: "0px",
+      threshold: 0,
+    };
+
+    const observer = new IntersectionObserver(handleObserver, option);
+
+    target.current && observer.observe(target.current);
+
+    return () => observer && observer.disconnect();
+  }, [handleObserver, isPageEnd]);
+
   return (
     <div className={styles.myPageContainer}>
       <Header />
@@ -572,59 +697,106 @@ const MyPage = () => {
               </div>
             </div>
             <div className={styles.myReview}>
-              <h4>내 리뷰</h4>
+              <div className={styles.myReviewCategoryWrap}>
+                <div
+                  className={`${
+                    currentCategory === "내 리뷰"
+                      ? styles.categoryClicked
+                      : styles.categoryColor
+                  } ${styles.myReviewCategory}`}
+                  onClick={() => setCurrentCategory("내 리뷰")}
+                >
+                  <h4>내 리뷰</h4>
+                </div>
+                <div
+                  className={`${
+                    currentCategory === "내 글"
+                      ? styles.categoryClicked
+                      : styles.categoryColor
+                  } ${styles.myReviewCategory}`}
+                  onClick={() => setCurrentCategory("내 글")}
+                >
+                  <h4>내 글</h4>
+                </div>
+              </div>
               <div className={styles.reviewContainer}>
-                {user.myReviews.content.map((item) => {
-                  return (
-                    <div key={item.reviewId} className={styles.reviewItem}>
-                      <div
-                        className={styles.reviewTitle}
-                        onClick={() =>
-                          navigation(`/valley/${item.waterPlaceId}`)
-                        }
-                      >
-                        <span>{item.waterPlaceName}</span>
-                      </div>
-                      <div className={styles.reviewContent}>
-                        {item.reviewImages !== null && (
-                          <img
-                            src={item.reviewImages}
-                            alt="리뷰 이미지"
-                            width="130px"
-                          />
-                        )}
-                        {item.reviewImages !== null && (
-                          <span>{item.reviewImages.length}</span>
-                        )}
+                {currentCategory === "내 리뷰" ? (
+                  user.myReviews.content.map((item) => {
+                    return (
+                      <div key={item.reviewId} className={styles.reviewItem}>
                         <div
-                          className={styles.reviewInfo}
-                          style={
-                            item.reviewImages === null
-                              ? {
-                                  borderRadius: "0 0 5px 5px",
-                                  borderLeft: "1px solid #bcbcbc",
-                                }
-                              : {}
+                          className={styles.reviewTitle}
+                          onClick={() =>
+                            navigation(`/valley/${item.waterPlaceId}`)
                           }
                         >
-                          <div className={styles.reviewRating}>
-                            <div>
-                              <span>
-                                <RatingStar rating={item.rating} size="20px" />
-                              </span>
-                              <span>{item.rating}</span>
+                          <span>{item.waterPlaceName}</span>
+                        </div>
+                        <div className={styles.reviewContent}>
+                          {item.reviewImages !== null && (
+                            <img
+                              src={item.reviewImages}
+                              alt="리뷰 이미지"
+                              width="130px"
+                            />
+                          )}
+                          {item.reviewImages !== null && (
+                            <span>{item.reviewImages.length}</span>
+                          )}
+                          <div
+                            className={styles.reviewInfo}
+                            style={
+                              item.reviewImages === null
+                                ? {
+                                    borderRadius: "0 0 5px 5px",
+                                    borderLeft: "1px solid #bcbcbc",
+                                  }
+                                : {}
+                            }
+                          >
+                            <div className={styles.reviewRating}>
+                              <div>
+                                <span>
+                                  <RatingStar
+                                    rating={item.rating}
+                                    size="20px"
+                                  />
+                                </span>
+                                <span>{item.rating}</span>
+                              </div>
+                              <span>{item.waterQuality}</span>
                             </div>
-                            <span>{item.waterQuality}</span>
-                          </div>
-                          <span>{item.createdReviewDate}</span>
-                          <div>
-                            <span>{item.content}</span>
+                            <span>{item.createdReviewDate}</span>
+                            <div>
+                              <span>{item.content}</span>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })
+                ) : (
+                  <div>
+                    {user.myLostFoundBoards.content.map((post) => {
+                      return (
+                        <div
+                          key={post.lostFoundBoardId}
+                          className={styles.postItem}
+                          onClick={() => navigation(`/lost-item`)}
+                        >
+                          <p>{post.title}</p>
+                          <span>{elapsedTime(post.postCreateAt)}</span>
+                        </div>
+                      );
+                    })}
+                    {!isPageEnd && (
+                      <div
+                        ref={target}
+                        style={{ width: "100%", height: "5px" }}
+                      />
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           </div>

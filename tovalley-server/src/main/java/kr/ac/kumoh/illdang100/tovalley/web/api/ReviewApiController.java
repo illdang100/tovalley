@@ -46,9 +46,10 @@ public class ReviewApiController {
     @GetMapping("/water-places/{id}/reviews")
     @Operation(summary = "물놀이 장소별 리뷰 조회", description = "물놀이 장소별 리뷰 정보를 반환합니다.")
     public ResponseEntity<?> getWaterPlaceReviews(@PathVariable("id") Long waterPlaceId,
+                                                  @AuthenticationPrincipal PrincipalDetails principalDetails,
                                                   @PageableDefault(size = 5, sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable) {
 
-        WaterPlaceReviewDetailRespDto result = reviewService.getReviewsByWaterPlaceId(waterPlaceId, pageable);  
+        WaterPlaceReviewDetailRespDto result = reviewService.getReviewsByWaterPlaceId(waterPlaceId, principalDetails.getMember().getId(), pageable);
 
         return new ResponseEntity<>(new ResponseDto<>(1, "물놀이 장소의 리뷰 조회에 성공하였습니다", result), HttpStatus.OK);
     }

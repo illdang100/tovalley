@@ -76,6 +76,40 @@ public class S3Service {
     }
 
     /**
+     * 여러 파일 업로드
+     * @param multipartFiles
+     * @param fileRootPath
+     * @return
+     * @throws IOException
+     */
+    public List<ImageFile> upload(List<MultipartFile> multipartFiles, String fileRootPath) throws IOException {
+        List<ImageFile> imageFiles = new ArrayList<>();
+
+        for (MultipartFile multipartFile : multipartFiles) {
+            String originalFilename = multipartFile.getOriginalFilename(); // 파일 이름
+            long size = multipartFile.getSize(); // 파일 크기
+
+            ObjectMetadata objectMetaData = new ObjectMetadata();
+            objectMetaData.setContentType(multipartFile.getContentType());
+            objectMetaData.setContentLength(size);
+
+            // S3에 업로드
+            String storeFileName = fileRootPath + "/" + UUID.randomUUID() + originalFilename;
+            amazonS3Client.putObject(
+                    new PutObjectRequest(bucket, storeFileName, multipartFile.getInputStream(), objectMetaData)
+                            .withCannedAcl(CannedAccessControlList.PublicRead)
+            );
+
+            String imageUrl = amazonS3Client.getUrl(bucket, storeFileName).toString();
+
+            ImageFile imageFile = new ImageFile(storeFileName, imageUrl);
+            imageFiles.add(imageFile);
+        }
+
+        return imageFiles;
+    }
+
+    /**
      * 파일 삭제
      */
     public void delete(String storeFileName) {

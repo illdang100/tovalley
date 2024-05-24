@@ -1,0 +1,303 @@
+.body {
+  margin-top: 180px;
+  margin-bottom: 8em;
+  padding: 0 10%;
+}
+
+.lostItemPost {
+  border: 1px solid #cccccc;
+  border-radius: 10px;
+  padding: 1.5em 3em 2em;
+}
+
+.locationInfo {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.2em;
+}
+
+.locationInfo h4 {
+  margin: 0 0.5em 0 0.3em;
+  color: #616161;
+  font-size: 1.1rem;
+}
+
+.locationInfo span {
+  color: #bebebe;
+  font-size: 1rem;
+}
+
+.postTop {
+  display: flex;
+  justify-content: space-between;
+}
+
+.authorInfo {
+  display: flex;
+}
+
+.profileImage {
+  width: 40px;
+  height: 40px;
+  border-radius: 5px;
+  overflow: hidden;
+  margin-right: 0.5em;
+}
+
+.profileImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: flex;
+  justify-content: center;
+}
+
+.authorName h4 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.authorName span {
+  font-size: 0.9rem;
+  color: #b2afaf;
+}
+
+.chatBtn {
+  display: flex;
+  align-items: center;
+  color: #66a5fc;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.chatBtn span {
+  margin-left: 0.2em;
+}
+
+.lostItemPost h1 {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.lostItemPost p {
+  font-size: 1.1rem;
+  margin: 1.5em 0;
+}
+
+.imageList {
+  display: flex;
+  overflow-x: scroll;
+}
+
+.imageList::-webkit-scrollbar {
+  display: none;
+}
+
+.imageContainer {
+  width: 400px;
+  height: 260px;
+  overflow: hidden;
+  flex-shrink: 0;
+  margin-right: 1em;
+  border-radius: 10px;
+}
+
+.imageContainer img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: flex;
+  justify-content: center;
+}
+
+.postBottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 2.5em;
+}
+
+.comment {
+  display: flex;
+  align-items: center;
+  color: #66a5fc;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.comment span {
+  margin-left: 0.4em;
+}
+
+.modifyBtn {
+  display: flex;
+  align-items: center;
+}
+
+.solvedStatus {
+  display: flex;
+  align-items: center;
+  margin-right: 1.5em;
+}
+
+.checkBox,
+.checked {
+  padding: 0.2em;
+  border-radius: 4px;
+  display: flex;
+  margin-right: 0.5em;
+  cursor: pointer;
+}
+
+.checkBox {
+  background-color: #eeeeee;
+  color: #999999;
+}
+
+.checked {
+  background-color: #66a5fc;
+  color: white;
+}
+
+.solvedStatus > span {
+  color: #616161;
+  font-weight: 500;
+}
+
+.deleteBtn {
+  display: flex;
+  color: #8b8b8b;
+  font-weight: bold;
+}
+
+.deleteBtn > div:first-child {
+  padding-right: 0.8em;
+  border-right: 1px solid #b5adad;
+}
+
+.deleteBtn > div:last-child {
+  padding-left: 0.8em;
+}
+
+.deleteBtn span {
+  cursor: pointer;
+}
+
+.postComment {
+  display: flex;
+  margin: 1.5em 0;
+}
+
+.commentInput {
+  display: flex;
+  border: 1px solid #cccccc;
+  border-right: none;
+  padding: 0.8em 3em;
+  border-radius: 8px 0 0 8px;
+  flex-grow: 1;
+}
+
+.commentUser {
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-right: 2em;
+}
+
+.commentProfileImage {
+  width: 30px;
+  height: 30px;
+  border-radius: 5px;
+  overflow: hidden;
+  margin-right: 0.5em;
+}
+
+.commentProfileImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: flex;
+  justify-content: center;
+}
+
+.commentInput input {
+  width: 100%;
+  box-sizing: border-box;
+  border: none;
+  font-size: 1rem;
+}
+
+.commentInput input:focus {
+  outline: none;
+}
+
+.commentInput input::placeholder {
+  color: #656565;
+  font-size: 1rem;
+}
+
+.uploadBtn {
+  background-color: #66a5fc;
+  border-radius: 0 8px 8px 0;
+  padding: 1em 1.4em;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  width: fit-content;
+}
+
+.commentList {
+  margin-top: 1em;
+  padding: 0 3em;
+}
+
+.commentItem {
+  border-bottom: 1px solid #cccccc;
+  padding: 1em 0.5em 0;
+}
+
+.commentTop {
+  display: flex;
+  justify-content: space-between;
+}
+
+.commentInfo {
+  display: flex;
+  align-items: center;
+}
+
+.commentWriterName {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-right: 0.5em;
+}
+
+.commentInfo > span:last-child {
+  color: #b2afaf;
+  font-size: 0.9rem;
+}
+
+.commentChatBtn {
+  color: #66a5fc;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.commentChatBtn span {
+  margin-left: 0.3em;
+}
+
+.commentItem > p {
+  font-size: 1.1rem;
+  margin: 0.5em 0 1em;
+}
+
+.deleteComment {
+  font-weight: 700;
+  color: #8b8b8b;
+  cursor: pointer;
+}

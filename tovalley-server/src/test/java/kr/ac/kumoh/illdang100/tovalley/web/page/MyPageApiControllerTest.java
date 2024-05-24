@@ -1,14 +1,13 @@
 package kr.ac.kumoh.illdang100.tovalley.web.page;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import kr.ac.kumoh.illdang100.tovalley.domain.accident.AccidentRepository;
+import kr.ac.kumoh.illdang100.tovalley.domain.lost_found_board.LostFoundBoardRepository;
+import kr.ac.kumoh.illdang100.tovalley.domain.lost_found_board.LostFoundEnum;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.review.*;
 import kr.ac.kumoh.illdang100.tovalley.domain.trip_schedule.TripSchedule;
 import kr.ac.kumoh.illdang100.tovalley.domain.trip_schedule.TripScheduleRepository;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.*;
-import kr.ac.kumoh.illdang100.tovalley.domain.weather.water_place_weather.WaterPlaceWeatherRepository;
 import kr.ac.kumoh.illdang100.tovalley.dummy.DummyObject;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtProcess;
 import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtVO;
@@ -43,13 +42,7 @@ public class MyPageApiControllerTest extends DummyObject {
     @Autowired
     private MockMvc mvc;
     @Autowired
-    private ObjectMapper om;
-    @Autowired
-    private WaterPlaceWeatherRepository waterPlaceWeatherRepository;
-    @Autowired
     private WaterPlaceRepository waterPlaceRepository;
-    @Autowired
-    private AccidentRepository accidentRepository;
     @Autowired
     private WaterPlaceDetailRepository waterPlaceDetailRepository;
     @Autowired
@@ -62,6 +55,8 @@ public class MyPageApiControllerTest extends DummyObject {
     private ReviewRepository reviewRepository;
     @Autowired
     private ReviewImageRepository reviewImageRepository;
+    @Autowired
+    private LostFoundBoardRepository lostFoundBoardRepository;
     @Autowired
     private JwtProcess jwtProcess;
     @Autowired
@@ -96,6 +91,8 @@ public class MyPageApiControllerTest extends DummyObject {
                 .andExpect(jsonPath("$.data.myUpcomingTripSchedules[0].tripScheduleId").value(13))
                 .andExpect(jsonPath("$.data.myUpcomingTripSchedules[1].tripScheduleId").value(14))
                 .andExpect(jsonPath("$.data.myUpcomingTripSchedules[2].tripScheduleId").value(15))
+                .andExpect(jsonPath("$.data.myLostFoundBoards.content[0].title").value("title10"))
+                .andExpect(jsonPath("$.data.myLostFoundBoards.content[4].title").value("title6"))
                 .andDo(MockMvcResultHandlers.print());
     }
 
@@ -201,6 +198,17 @@ public class MyPageApiControllerTest extends DummyObject {
         reviewImageList.add(newReviewImage(review6, "storeFileUrl5"));
         reviewImageList.add(newReviewImage(review6, "storeFileUrl6"));
         reviewImageRepository.saveAll(reviewImageList);
+
+        lostFoundBoardRepository.save(newLostFoundBoard("title1", "content1", member1, false, LostFoundEnum.LOST, waterPlace1));
+        lostFoundBoardRepository.save(newLostFoundBoard("title2", "content2", member1, true, LostFoundEnum.LOST, waterPlace1));
+        lostFoundBoardRepository.save(newLostFoundBoard("title3", "content3", member1, false, LostFoundEnum.LOST, waterPlace1));
+        lostFoundBoardRepository.save(newLostFoundBoard("title4", "content4", member1, true, LostFoundEnum.LOST, waterPlace1));
+        lostFoundBoardRepository.save(newLostFoundBoard("title5", "content5", member2, false, LostFoundEnum.LOST, waterPlace1));
+        lostFoundBoardRepository.save(newLostFoundBoard("title6", "content6", member1, true, LostFoundEnum.LOST, waterPlace1));
+        lostFoundBoardRepository.save(newLostFoundBoard("title7", "content7", member1, true, LostFoundEnum.LOST, waterPlace1));
+        lostFoundBoardRepository.save(newLostFoundBoard("title8", "content8", member1, true, LostFoundEnum.LOST, waterPlace1));
+        lostFoundBoardRepository.save(newLostFoundBoard("title9", "content9", member1, true, LostFoundEnum.LOST, waterPlace1));
+        lostFoundBoardRepository.save(newLostFoundBoard("title10", "content10", member1, true, LostFoundEnum.LOST, waterPlace1));
 
         em.clear();
     }

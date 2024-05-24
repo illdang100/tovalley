@@ -1,8 +1,11 @@
 package kr.ac.kumoh.illdang100.tovalley.dto.review;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import kr.ac.kumoh.illdang100.tovalley.domain.review.Review;
 import kr.ac.kumoh.illdang100.tovalley.domain.review.WaterQualityReviewEnum;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.domain.Page;
 
@@ -25,9 +28,12 @@ public class ReviewRespDto {
         private String content;
         private List<String> reviewImages;
         private String waterQuality;
+        @JsonProperty("isMyReview")
+        private boolean isMyReview;
 
         public WaterPlaceReviewRespDto(Long reviewId, String memberProfileImg, String nickname, Integer rating,
-                                       LocalDateTime createdReviewDate, String content, WaterQualityReviewEnum waterQuality) {
+                                       LocalDateTime createdReviewDate, String content, WaterQualityReviewEnum waterQuality,
+                                       boolean isMyReview) {
             this.reviewId = reviewId;
             this.memberProfileImg = memberProfileImg;
             this.nickname = nickname;
@@ -35,6 +41,7 @@ public class ReviewRespDto {
             this.createdReviewDate = createdReviewDate;
             this.content = content;
             this.waterQuality = waterQuality.getValue();
+            this.isMyReview = isMyReview;
         }
     }
 
@@ -71,5 +78,27 @@ public class ReviewRespDto {
         private int reviewCnt; // 리뷰 수
         private Map<Integer, Long> ratingRatio;
         private Page<WaterPlaceReviewRespDto> reviews; // 리뷰
+    }
+
+    @Data
+    @Builder
+    @AllArgsConstructor
+    public static class RecentReviewRespDto {
+        private Long reviewId;
+        private int reviewRating;
+        private String reviewContent;
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
+        private LocalDateTime reviewCreatedAt;
+        private Long waterPlaceId;
+
+        public static RecentReviewRespDto createRecentReviewRespDto(Review review) {
+            return RecentReviewRespDto.builder()
+                    .reviewId(review.getId())
+                    .reviewContent(review.getReviewContent())
+                    .reviewRating(review.getRating())
+                    .reviewCreatedAt(review.getCreatedDate())
+                    .waterPlaceId(review.getTripSchedule().getWaterPlace().getId())
+                    .build();
+        }
     }
 }

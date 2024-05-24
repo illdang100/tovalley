@@ -148,7 +148,7 @@ const Report: FC<Props> = ({ alert }) => {
     if (alertNum === alert.weatherAlerts.length) handleAlertOriginSlide(0);
     if (preAlertNum === alert.weatherPreAlerts.length)
       handlePreAlertOriginSlide(0);
-    console.log(alertNum, preAlertNum);
+    // console.log(alertNum, preAlertNum);
   }, [alertNum, preAlertNum]);
 
   function handleAlertOriginSlide(index: number) {

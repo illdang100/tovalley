@@ -12,7 +12,7 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.response.use(
   (res) => {
-    console.log(res);
+    //console.log(res);
     return res;
   },
   async (error) => {
@@ -32,7 +32,16 @@ axiosInstance.interceptors.response.use(
           window.location.reload();
         } else if (errMsg === "사용 불가능한 닉네임입니다.") {
           alert("사용 불가능한 닉네임입니다.");
+        } else if (errMsg === "닉네임은 필수 값 입니다.") {
+          window.location.replace("/mypage");
         }
+      } else if (
+        errResponseStatus === 401 &&
+        errMsg ===
+          "다른 IP에서의 접근이 감지되었습니다. 보안을 위해 접속이 종료됩니다."
+      ) {
+        alert(errMsg);
+        window.location.replace("/login");
       } else if (errResponseStatus === 401) {
         console.log("인증 실패");
         return Axios.request(prevRequest);

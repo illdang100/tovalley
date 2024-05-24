@@ -9,9 +9,10 @@ interface Props {
       content: string;
     }>
   >;
+  CustomFunc?: () => void;
 }
 
-const ConfirmModal: FC<Props> = ({ content, handleModal }) => {
+const ConfirmModal: FC<Props> = ({ content, handleModal, CustomFunc }) => {
   useEffect(() => {
     document.body.style.cssText = `
           position: fixed; 
@@ -36,6 +37,8 @@ const ConfirmModal: FC<Props> = ({ content, handleModal }) => {
           onClick={() =>
             handleModal
               ? handleModal({ view: false, content: content })
+              : CustomFunc
+              ? CustomFunc()
               : window.location.reload()
           }
         >

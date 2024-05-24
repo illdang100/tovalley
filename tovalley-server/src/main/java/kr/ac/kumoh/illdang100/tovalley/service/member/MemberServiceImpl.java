@@ -18,6 +18,7 @@ import kr.ac.kumoh.illdang100.tovalley.service.refreshToken.RefreshTokenRedisSer
 import kr.ac.kumoh.illdang100.tovalley.util.TokenUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -244,5 +245,17 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public void deleteRefreshTokenByMemberId(Long memberId) {
         refreshTokenRedisService.deleteRefreshTokenByMemberId(String.valueOf(memberId));
+    }
+
+    /**
+     * 분실물 게시글 등록 시 작성자 닉네임 유무 검사
+     * @param member
+     * @return
+     */
+    @Override
+    public Boolean isEmptyMemberNickname(Member member) {
+
+        String nickname = member.getNickname();
+        return nickname == null || StringUtils.isBlank(nickname);
     }
 }

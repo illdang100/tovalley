@@ -10,8 +10,6 @@ import kr.ac.kumoh.illdang100.tovalley.domain.member.Member;
 import kr.ac.kumoh.illdang100.tovalley.domain.member.MemberEnum;
 import kr.ac.kumoh.illdang100.tovalley.domain.water_place.WaterPlace;
 import kr.ac.kumoh.illdang100.tovalley.dummy.DummyObject;
-import kr.ac.kumoh.illdang100.tovalley.security.auth.PrincipalDetails;
-import kr.ac.kumoh.illdang100.tovalley.security.jwt.JwtProcess;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -25,7 +23,6 @@ import java.util.Optional;
 
 import static kr.ac.kumoh.illdang100.tovalley.dto.lost_found_board.LostFoundBoardRespDto.*;
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
@@ -40,8 +37,6 @@ class LostFoundBoardServiceImplTest extends DummyObject {
     private CommentRepository commentRepository;
     @Mock
     private LostFoundBoardImageRepository lostFoundBoardImageRepository;
-    @Mock
-    private JwtProcess jwtProcess;
 
     @Test
     public void getLostFoundBoardDetails() {
@@ -50,12 +45,12 @@ class LostFoundBoardServiceImplTest extends DummyObject {
         String memberEmail = "kakao_1234@naver.com";
         Member member = newMockMember(1L, "kakao_1234", "nickname1", MemberEnum.CUSTOMER);
         WaterPlace waterPlace = newWaterPlace(1L, "금오계곡", "경북", 3.5, 3);
-        LostFoundBoard lostFoundBoard = newLostFoundBoard(1L, "지갑 찾아요", "금오계곡에서 지갑 잃어버림 검정색 지갑", member, false, LostFoundEnum.LOST, waterPlace);
+        LostFoundBoard lostFoundBoard = newMockLostFoundBoard(1L, "지갑 찾아요", "금오계곡에서 지갑 잃어버림 검정색 지갑", member, false, LostFoundEnum.LOST, waterPlace);
 
         List<Comment> comments = new ArrayList<>();
-        comments.add(newComment(1L, 1L));
-        comments.add(newComment(2L, 1L));
-        comments.add(newComment(3L, 1L));
+        comments.add(newMockComment(1L, 1L, member));
+        comments.add(newMockComment(2L, 1L, member));
+        comments.add(newMockComment(3L, 1L, member));
 
         List<String> postImages = new ArrayList<>();
         postImages.add("https://imageUrl1.com");
@@ -63,14 +58,13 @@ class LostFoundBoardServiceImplTest extends DummyObject {
         postImages.add("https://imageUrl3.com");
 
         // stub
-        when(lostFoundBoardRepository.findById(anyLong())).thenReturn(Optional.of(lostFoundBoard));
-        when(commentRepository.findCommentByLostFoundBoardId(anyLong())).thenReturn(comments);
+        when(lostFoundBoardRepository.findByIdWithMember(anyLong())).thenReturn(Optional.of(lostFoundBoard));
+        when(commentRepository.findCommentByLostFoundBoardIdFetchJoinMember(anyLong())).thenReturn(comments);
         when(lostFoundBoardImageRepository.findImageByLostFoundBoardId(anyLong())).thenReturn(postImages);
         when(commentRepository.countByLostFoundBoardId(anyLong())).thenReturn((long)comments.size());
-        when(jwtProcess.verify(any())).thenReturn(new PrincipalDetails(member));
 
         // when
-        LostFoundBoardDetailRespDto lostFoundBoardDetail = pageService.getLostFoundBoardDetail(lostFoundBoardId, "refreshToken");
+        LostFoundBoardDetailRespDto lostFoundBoardDetail = pageService.getLostFoundBoardDetail(lostFoundBoardId, member);
 
         // then
         assertThat(lostFoundBoardDetail.getTitle()).isEqualTo("지갑 찾아요");

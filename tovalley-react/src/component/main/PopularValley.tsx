@@ -54,7 +54,7 @@ const PopularValley: FC<Props> = ({ place, setPopularValley }) => {
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setNum((num) => num + 1);
+      //setNum((num) => num + 1);
       setCarouselTransition("transform 500ms ease-in-out");
     }, 2500);
 
@@ -92,7 +92,7 @@ const PopularValley: FC<Props> = ({ place, setPopularValley }) => {
 
   return (
     <div className={styles.popularValley}>
-      <h4>전국 인기 계곡</h4>
+      <h4>전국 인기 물놀이 장소</h4>
       <div className={styles.category}>
         <span
           onClick={() => {

@@ -1,0 +1,70 @@
+.alarmWrap {
+  position: relative;
+}
+
+.alarmComponent {
+  width: 300px;
+  border-radius: 15px;
+  background-color: #fbfdff;
+  position: fixed;
+  z-index: 30;
+  right: 20px;
+  top: 80px;
+  box-shadow: 2px 1px 5px 1px rgba(125, 125, 125, 0.21);
+  padding: 0.8em 1em;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+.closeBtn {
+  position: absolute;
+  bottom: 0.8em;
+  right: 2.2em;
+  color: #a9a9a9;
+  font-size: 0.9rem;
+  cursor: pointer;
+  z-index: 31;
+}
+
+.alarmComponent h4 {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.alarmContent {
+  font-size: 0.9rem;
+  margin: 0.3em 0 0.2em;
+}
+
+.alarmTime {
+  font-size: 0.8rem;
+  display: flex;
+  justify-content: right;
+  color: #a9a9a9;
+}
+
+.fadein {
+  animation: fadein 0.5s;
+}
+
+.fadeout {
+  animation: fadeout 0.5s;
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeout {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}

@@ -31,6 +31,7 @@ import static kr.ac.kumoh.illdang100.tovalley.util.CustomResponseUtil.ISLOGIN;
 import static kr.ac.kumoh.illdang100.tovalley.util.TokenUtil.createTestAccessToken;
 import static org.assertj.core.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ActiveProfiles("test")
@@ -146,6 +147,21 @@ class MemberApiControllerTest extends DummyObject {
 
         //then
         resultActions.andExpect(status().isCreated());
+    }
+
+    @Test
+    @DisplayName("사용자Id 조회 테스트")
+    void findMemberId_test() throws Exception {
+        //given
+
+        //when
+        ResultActions resultActions = mvc.perform(get("/api/auth/members/me")
+                .cookie(new Cookie(JwtVO.ACCESS_TOKEN, accessToken))
+                .contentType(MediaType.APPLICATION_JSON));
+
+        //then
+        resultActions.andExpect(status().isOk())
+                .andDo(MockMvcResultHandlers.print());
     }
 
     private void dataSetting() {

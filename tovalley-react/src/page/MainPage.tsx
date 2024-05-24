@@ -6,6 +6,8 @@ import PopularValley from "../component/main/PopularValley";
 import Footer from "../component/footer/Footer";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import RecentPost from "../component/main/RecentPost";
+import { RecentPostType, RecentReviewType } from "../typings/db";
 
 const localhost = process.env.REACT_APP_HOST;
 
@@ -62,6 +64,8 @@ type main = {
     rating: number;
     reviewCnt: number;
   }[];
+  recentReviews: RecentReviewType[];
+  recentLostFoundBoards: RecentPostType[];
 };
 
 const MainPage = () => {
@@ -133,6 +137,24 @@ const MainPage = () => {
         reviewCnt: 0,
       },
     ],
+    recentReviews: [
+      {
+        reviewId: 0,
+        reviewRating: 0,
+        reviewContent: "",
+        reviewCreatedAt: "",
+        waterPlaceId: 0,
+      },
+    ],
+    recentLostFoundBoards: [
+      {
+        lostFoundBoardId: 0,
+        lostFoundBoardCategory: "",
+        lostFoundBoardTitle: "",
+        lostFoundBoardContent: "",
+        lostFoundBoardCreatedAt: "",
+      },
+    ],
   });
 
   const [regionAccident, setRegionAccident] = useState({
@@ -161,6 +183,26 @@ const MainPage = () => {
     },
   ]);
 
+  const [recentLostPost, setRecentLostPost] = useState([
+    {
+      lostFoundBoardId: 0,
+      lostFoundBoardCategory: "",
+      lostFoundBoardTitle: "",
+      lostFoundBoardContent: "",
+      lostFoundBoardCreatedAt: "",
+    },
+  ]);
+
+  const [recentReview, setRecentReview] = useState([
+    {
+      reviewId: 0,
+      reviewRating: 0,
+      reviewContent: "",
+      reviewCreatedAt: "",
+      waterPlaceId: 0,
+    },
+  ]);
+
   useEffect(() => {
     setLoading(true);
     axios
@@ -170,6 +212,8 @@ const MainPage = () => {
         setMain(res.data.data);
         setRegionAccident(res.data.data.accidentCountDto);
         setPopularValley(res.data.data.nationalPopularWaterPlaces);
+        setRecentLostPost(res.data.data.recentLostFoundBoards);
+        setRecentReview(res.data.data.recentReviews);
       })
       .catch((err) => console.log(err))
       .finally(() => setLoading(false));
@@ -197,6 +241,10 @@ const MainPage = () => {
               place={popularValley}
               setPopularValley={setPopularValley}
             />
+          </div>
+          <div className={styles.recentPost}>
+            <RecentPost recentLostPost={recentLostPost} />
+            <RecentPost recentReviewPost={recentReview} />
           </div>
         </div>
         <Footer />
