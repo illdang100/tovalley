@@ -94,7 +94,10 @@
 <details>
 <summary>회원가입 및 로그인 GIF 보기</summary>
 <div markdown="1">
-<p align="center"><img src="https://github.com/wl2258/tovalley/assets/77067383/d959cf08-ef7e-432b-8fcd-5863d7b2ccf0" width=90%></p>
+<p align="center"><img src="https://github.com/illdang100/tovalley/assets/97449471/eb7e543a-ac36-43a7-8a2b-e934b7f47f92" width=90%></p>
+<p align="center"><img src="https://github.com/illdang100/tovalley/assets/97449471/48b25f4d-daa0-43ab-bfe4-63aee84d9a35" width=90%></p>
+<p align="center"><img src="https://github.com/illdang100/tovalley/assets/97449471/fb8357a5-ef0f-46ad-b6bf-066bd48fc187" width=90%></p>
+
 </div>
 </details>
 
@@ -125,6 +128,7 @@
 <summary>분실물 커뮤니티 페이지 GIF 보기</summary>
 <div markdown="1">
 <p align="center"><img src="https://github.com/illdang100/tovalley/assets/97449471/2d239399-92e4-40ee-805e-88d151282f5b" width=90% /></p>
+<p align="center"><img src="https://github.com/illdang100/tovalley/assets/97449471/321047f0-8161-4834-9a72-82c50f417d96" width=90% /></p>
 </div>
 </details>
 
@@ -148,7 +152,12 @@
 <details>
 <summary>관리자 페이지 GIF 보기</summary>
 <div markdown="1">
-<p align="center"><img src="https://github.com/wl2258/tovalley/assets/77067383/47d15066-3814-4207-9c83-079da498e236" width=90%></p>
+
+<p align="center"><img src="https://github.com/illdang100/tovalley/assets/97449471/4f1e713f-bd3b-4a00-b780-aa47ecc17e8a" width=90%></p>
+<p align="center"><img src="https://github.com/illdang100/tovalley/assets/97449471/83dfe899-1df9-4c33-99db-899db4561419" width=90%></p>
+<p align="center"><img src="https://github.com/illdang100/tovalley/assets/97449471/21f53df1-225b-4ba5-b6d6-06080726348b" width=90%></p>
+<p align="center"><img src="https://github.com/illdang100/tovalley/assets/97449471/b2b63344-b26f-4b03-91b7-a05f45911471" width="90%"></p>
+
 </div>
 </details>
 
